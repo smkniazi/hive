@@ -1574,10 +1574,12 @@ public class Hive {
   public void loadPartition(Path loadPath, String tableName,
       Map<String, String> partSpec, boolean replace,
       boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
-      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
+      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask, boolean isMmTable)
+          throws HiveException {
     Table tbl = getTable(tableName);
+    // TODO# dbl check if table is still mm for consistency
     loadPartition(loadPath, tbl, partSpec, replace, inheritTableSpecs,
-        isSkewedStoreAsSubdir, isSrcLocal, isAcid, hasFollowingStatsTask);
+        isSkewedStoreAsSubdir, isSrcLocal, isAcid, hasFollowingStatsTask, isMmTable);
   }
 
   /**
@@ -1601,10 +1603,10 @@ public class Hive {
    *          If the source directory is LOCAL
    * @param isAcid true if this is an ACID operation
    */
-  public Partition loadPartition(Path loadPath, Table tbl,
-      Map<String, String> partSpec, boolean replace,
-      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
-      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
+  public Partition loadPartition(Path loadPath, Table tbl, Map<String, String> partSpec,
+      boolean replace, boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
+      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask, boolean isMmTable)
+          throws HiveException {
 
     Path tblDataLocationPath =  tbl.getDataLocation();
     try {
@@ -1642,20 +1644,25 @@ public class Hive {
       } else {
         newPartPath = oldPartPath;
       }
-      List<Path> newFiles = null;
-      PerfLogger perfLogger = SessionState.getPerfLogger();
-      perfLogger.PerfLogBegin("MoveTask", "FileMoves");
-      if (replace || (oldPart == null && !isAcid)) {
-        boolean isAutoPurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
-        replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf(),
-            isSrcLocal, isAutoPurge);
-      } else {
-        if (conf.getBoolVar(ConfVars.FIRE_EVENTS_FOR_DML) && !tbl.isTemporary() && oldPart != null) {
-          newFiles = Collections.synchronizedList(new ArrayList<Path>());
+      List<Path> newFiles = null, mmFiles = null;
+      if (isMmTable) {
+        mmFiles = handleMicromanagedPartition(
+            loadPath, tbl, replace, oldPart, newPartPath, isAcid);
+        if (areEventsForDmlNeeded(tbl, oldPart)) {
+          newFiles = mmFiles;
         }
+      } else {
+        if (replace || (oldPart == null && !isAcid)) {
+          replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf(),
+              isSrcLocal);
+        } else {
+          if (areEventsForDmlNeeded(tbl, oldPart)) {
+            newFiles = Collections.synchronizedList(new ArrayList<Path>());
+          }
 
-        FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
-        Hive.copyFiles(conf, loadPath, newPartPath, fs, isSrcLocal, isAcid, newFiles);
+          FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
+          Hive.copyFiles(conf, loadPath, newPartPath, fs, isSrcLocal, isAcid, newFiles);
+        }
       }
       perfLogger.PerfLogEnd("MoveTask", "FileMoves");
       Partition newTPart = oldPart != null ? oldPart : new Partition(tbl, partSpec, newPartPath);
@@ -1725,6 +1732,58 @@ public class Hive {
       LOG.error(StringUtils.stringifyException(e));
       throw new HiveException(e);
     }
+  }
+
+
+  private boolean areEventsForDmlNeeded(Table tbl, Partition oldPart) {
+    return conf.getBoolVar(ConfVars.FIRE_EVENTS_FOR_DML) && !tbl.isTemporary() && oldPart != null;
+  }
+
+
+  private List<Path> handleMicromanagedPartition(Path loadPath, Table tbl, boolean replace,
+      Partition oldPart, Path newPartPath, boolean isAcid) throws HiveException {
+    Utilities.LOG14535.info("not moving " + loadPath + " to " + newPartPath);
+    if (replace) {
+      // TODO#: would need a list of new files to support. Then, old ones only would need
+      //        to be removed from MS (and FS). Also, per-partition IOW is problematic for
+      //        the prefix case.
+      throw new HiveException("Replace and MM are not supported");
+    }
+    if (isAcid) {
+      // TODO# need to make sure ACID writes to final directories. Otherwise, might need to move.
+      throw new HiveException("ACID and MM are not supported");
+    }
+    List<Path> newFiles = new ArrayList<Path>();
+    FileStatus[] srcs;
+    FileSystem srcFs;
+    try {
+      srcFs = loadPath.getFileSystem(conf);
+      srcs = srcFs.globStatus(loadPath);
+    } catch (IOException e) {
+      LOG.error("Error listing files", e);
+      throw new HiveException(e);
+    }
+    if (srcs == null) {
+      LOG.info("No sources specified: " + loadPath);
+      return newFiles;
+    }
+
+    // TODO: just like the move path, we only do one level of recursion.
+    for (FileStatus src : srcs) {
+      if (src.isDirectory()) {
+        try {
+          for (FileStatus srcFile :
+            srcFs.listStatus(src.getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER)) {
+            newFiles.add(srcFile.getPath());
+          }
+        } catch (IOException e) {
+          throw new HiveException(e);
+        }
+      } else {
+        newFiles.add(src.getPath());
+      }
+    }
+    return newFiles;
   }
 
   private void setStatsPropAndAlterPartition(boolean hasFollowingStatsTask, Table tbl,
@@ -1919,9 +1978,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
               LOG.info("New loading path = " + partPath + " with partSpec " + fullPartSpec);
 
               // load the partition
+              Utilities.LOG14535.info("loadPartition called for DPP from " + partPath + " to " + tbl.getTableName());
               Partition newPartition = loadPartition(partPath, tbl, fullPartSpec,
                   replace, true, listBucketingEnabled,
-                  false, isAcid, hasFollowingStatsTask);
+                  false, isAcid, hasFollowingStatsTask, false); // TODO# here
               partitionsMap.put(fullPartSpec, newPartition);
 
               if (inPlaceEligible) {
@@ -2919,6 +2979,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
           try {
             Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
 
+            if (inheritPerms) {
+              HdfsUtils.setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
+            }
             if (null != newFiles) {
               newFiles.add(destPath);
             }

@@ -306,7 +306,9 @@ public class GenTezUtils {
         linked = context.linkedFileSinks.get(path);
         linked.add(desc);
 
+        // TODO# special case #N - unions (tez)
         desc.setDirName(new Path(path, "" + linked.size()));
+        Utilities.LOG14535.info("removing union - new desc with " + desc.getDirName() + "; parent " + path);
         desc.setLinkedFileSink(true);
         desc.setParentDir(path);
         desc.setLinkedFileSinkDesc(linked);
@@ -375,6 +377,8 @@ public class GenTezUtils {
       // If underlying data is RCFile or OrcFile, RCFileBlockMerge task or
       // OrcFileStripeMerge task would be created.
       LOG.info("using CombineHiveInputformat for the merge job");
+      Utilities.LOG14535.info("merging files from " + fileSink.getConf().getDirName() + " to " + finalName);
+      // TODO# special case #N - merge
       GenMapRedUtils.createMRWorkForMergingFiles(fileSink, finalName,
           context.dependencyTask, context.moveTask,
           hconf, context.currentTask);

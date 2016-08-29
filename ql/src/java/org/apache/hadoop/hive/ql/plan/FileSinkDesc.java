@@ -96,6 +96,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   private transient Table table;
   private Path destPath;
   private boolean isHiveServerQuery;
+  private boolean isMmTable;
 
   /**
    * Whether is a HiveServer query, and the destination table is
@@ -112,7 +113,8 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   public FileSinkDesc(final Path dirName, final TableDesc tableInfo,
       final boolean compressed, final int destTableId, final boolean multiFileSpray,
       final boolean canBeMerged, final int numFiles, final int totalFiles,
-      final ArrayList<ExprNodeDesc> partitionCols, final DynamicPartitionCtx dpCtx, Path destPath) {
+      final ArrayList<ExprNodeDesc> partitionCols, final DynamicPartitionCtx dpCtx, Path destPath,
+      boolean isMmTable) {
 
     this.dirName = dirName;
     this.tableInfo = tableInfo;
@@ -126,6 +128,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
     this.dpCtx = dpCtx;
     this.dpSortState = DPSortState.NONE;
     this.destPath = destPath;
+    this.isMmTable = isMmTable;
   }
 
   public FileSinkDesc(final Path dirName, final TableDesc tableInfo,
@@ -147,7 +150,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   public Object clone() throws CloneNotSupportedException {
     FileSinkDesc ret = new FileSinkDesc(dirName, tableInfo, compressed,
         destTableId, multiFileSpray, canBeMerged, numFiles, totalFiles,
-        partitionCols, dpCtx, destPath);
+        partitionCols, dpCtx, destPath, isMmTable);
     ret.setCompressCodec(compressCodec);
     ret.setCompressType(compressType);
     ret.setGatherStats(gatherStats);
@@ -260,6 +263,10 @@ public class FileSinkDesc extends AbstractOperatorDesc {
 
   public void setTemporary(boolean temporary) {
     this.temporary = temporary;
+  }
+
+  public boolean isMmTable() {
+    return isMmTable;
   }
 
   public boolean isMaterialization() {
