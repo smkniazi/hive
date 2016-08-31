@@ -97,6 +97,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   private Path destPath;
   private boolean isHiveServerQuery;
   private boolean isMmTable;
+  private String executionPrefix;
 
   /**
    * Whether is a HiveServer query, and the destination table is
@@ -164,6 +165,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
     ret.setWriteType(writeType);
     ret.setTransactionId(txnId);
     ret.setStatsTmpDir(statsTmpDir);
+    ret.setExecutionPrefix(executionPrefix);
     return ret;
   }
 
@@ -501,19 +503,11 @@ public class FileSinkDesc extends AbstractOperatorDesc {
     this.statsTmpDir = statsCollectionTempDir;
   }
 
-  public class FileSinkOperatorExplainVectorization extends OperatorExplainVectorization {
-
-    public FileSinkOperatorExplainVectorization(VectorDesc vectorDesc) {
-      // Native vectorization not supported.
-      super(vectorDesc, false);
-    }
+  public String getExecutionPrefix() {
+    return this.executionPrefix;
   }
 
-  @Explain(vectorization = Vectorization.OPERATOR, displayName = "File Sink Vectorization", explainLevels = { Level.DEFAULT, Level.EXTENDED })
-  public FileSinkOperatorExplainVectorization getFileSinkVectorization() {
-    if (vectorDesc == null) {
-      return null;
-    }
-    return new FileSinkOperatorExplainVectorization(vectorDesc);
+  public void setExecutionPrefix(String value) {
+    this.executionPrefix = value;
   }
 }
