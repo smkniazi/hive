@@ -273,7 +273,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   private final Map<JoinOperator, QBJoinTree> joinContext;
   private final Map<SMBMapJoinOperator, QBJoinTree> smbMapJoinContext;
   private final HashMap<TableScanOperator, Table> topToTable;
-  private final Map<FileSinkOperator, Table> fsopToTable;
   private final List<ReduceSinkOperator> reduceSinkOperatorsAddedByEnforceBucketingSorting;
   private final HashMap<TableScanOperator, Map<String, String>> topToTableProps;
   private QB qb;
@@ -374,7 +373,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     smbMapJoinContext = new HashMap<SMBMapJoinOperator, QBJoinTree>();
     // Must be deterministic order map for consistent q-test output across Java versions
     topToTable = new LinkedHashMap<TableScanOperator, Table>();
-    fsopToTable = new HashMap<FileSinkOperator, Table>();
     reduceSinkOperatorsAddedByEnforceBucketingSorting = new ArrayList<ReduceSinkOperator>();
     topToTableProps = new HashMap<TableScanOperator, Map<String, String>>();
     destTableId = 1;
@@ -435,7 +433,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     opToPartToSkewedPruner.clear();
     opToSamplePruner.clear();
     nameToSplitSample.clear();
-    fsopToTable.clear();
     resultSchema = null;
     createVwDesc = null;
     viewsExpanded = null;
@@ -6769,6 +6766,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     ListBucketingCtx lbCtx = null;
     Map<String, String> partSpec = null;
     boolean isMmTable = false;
+    Long mmWriteId = null;
 
     switch (dest_type.intValue()) {
     case QBMetaData.DEST_TABLE: {
@@ -6792,7 +6790,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
 
       boolean isNonNativeTable = dest_tab.isNonNative();
-      isMmTable = isMmTable(dest_tab);
+      isMmTable = AcidUtils.isMmTable(dest_tab);
       if (isNonNativeTable || isMmTable) {
         queryTmpdir = dest_path;
       } else {
@@ -6825,9 +6823,14 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           acidOp = getAcidType(table_desc.getOutputFileFormatClass(), dest);
           checkAcidConstraints(qb, table_desc, dest_tab);
         }
+        try {
+          mmWriteId = getMmWriteId(dest_tab, isMmTable);
+        } catch (HiveException e) {
+          throw new SemanticException(e);
+        }
         boolean isReplace = !qb.getParseInfo().isInsertIntoTable(
             dest_tab.getDbName(), dest_tab.getTableName());
-        ltd = new LoadTableDesc(queryTmpdir, table_desc, dpCtx, acidOp, isReplace, isMmTable);
+        ltd = new LoadTableDesc(queryTmpdir, table_desc, dpCtx, acidOp, isReplace, mmWriteId);
         ltd.setLbCtx(lbCtx);
         loadTableWork.add(ltd);
       } else {
@@ -6864,7 +6867,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       dest_path = new Path(tabPath.toUri().getScheme(), tabPath.toUri()
           .getAuthority(), partPath.toUri().getPath());
 
-      isMmTable = isMmTable(dest_tab);
+      isMmTable = AcidUtils.isMmTable(dest_tab);
       queryTmpdir = isMmTable ? dest_path : ctx.getTempDirForPath(dest_path);
       Utilities.LOG14535.info("createFS for partition specifying " + queryTmpdir + " from " + dest_path);
       table_desc = Utilities.getTableDesc(dest_tab);
@@ -6884,7 +6887,13 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         acidOp = getAcidType(table_desc.getOutputFileFormatClass(), dest);
         checkAcidConstraints(qb, table_desc, dest_tab);
       }
-      ltd = new LoadTableDesc(queryTmpdir, table_desc, dest_part.getSpec(), acidOp, isMmTable);
+      try {
+        mmWriteId = getMmWriteId(dest_tab, isMmTable);
+      } catch (HiveException e) {
+        // How is this a semantic exception? Stupid Java and signatures.
+        throw new SemanticException(e);
+      }
+      ltd = new LoadTableDesc(queryTmpdir, table_desc, dest_part.getSpec(), acidOp, mmWriteId);
       ltd.setReplace(!qb.getParseInfo().isInsertIntoTable(dest_tab.getDbName(),
           dest_tab.getTableName()));
       ltd.setLbCtx(lbCtx);
@@ -7091,13 +7100,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       genPartnCols(dest, input, qb, table_desc, dest_tab, rsCtx);
     }
 
+    assert isMmTable == (mmWriteId != null);
     FileSinkDesc fileSinkDesc = createFileSinkDesc(table_desc, dest_part,
         dest_path, currentTableId, destTableIsAcid, destTableIsTemporary,
         destTableIsMaterialization, queryTmpdir, rsCtx, dpCtx, lbCtx, fsRS,
-        canBeMerged, isMmTable);
-    if (isMmTable) {
-      fileSinkDesc.setExecutionPrefix(ctx.getExecutionPrefix());
-    }
+        canBeMerged, mmWriteId);
 
     Operator output = putOpInsertMap(OperatorFactory.getAndMakeChild(
         fileSinkDesc, fsRS, input), inputRR);
@@ -7111,7 +7118,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     FileSinkOperator fso = (FileSinkOperator) output;
     fso.getConf().setTable(dest_tab);
-    fsopToTable.put(fso, dest_tab);
     // the following code is used to collect column stats when
     // hive.stats.autogather=true
     // and it is an insert overwrite or insert into table
@@ -7130,10 +7136,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     return output;
   }
 
-  private static boolean isMmTable(Table table) {
-    // TODO: perhaps it should be a 3rd value for 'transactional'?
-    String value = table.getProperty(hive_metastoreConstants.TABLE_IS_MM);
-    return value != null && value.equalsIgnoreCase("true");
+  private static Long getMmWriteId(Table tbl, boolean isMmTable) throws HiveException {
+    if (!isMmTable) return null;
+    // Get the next write ID for this table. We will prefix files with this write ID.
+    return Hive.get().getNextTableWriteId(tbl.getDbName(), tbl.getTableName());
   }
 
   private FileSinkDesc createFileSinkDesc(TableDesc table_desc,
@@ -7141,7 +7147,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       boolean destTableIsAcid, boolean destTableIsTemporary,
       boolean destTableIsMaterialization, Path queryTmpdir,
       SortBucketRSCtx rsCtx, DynamicPartitionCtx dpCtx, ListBucketingCtx lbCtx,
-      RowSchema fsRS, boolean canBeMerged, boolean isMmTable) throws SemanticException {
+      RowSchema fsRS, boolean canBeMerged, Long mmWriteId) throws SemanticException {
     FileSinkDesc fileSinkDesc = new FileSinkDesc(
       queryTmpdir,
       table_desc,
@@ -7154,7 +7160,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       rsCtx.getPartnCols(),
       dpCtx,
       dest_path,
-      isMmTable);
+      mmWriteId);
 
     boolean isHiveServerQuery = SessionState.get().isHiveServerQuery();
     fileSinkDesc.setHiveServerQuery(isHiveServerQuery);

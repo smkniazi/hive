@@ -1143,6 +1143,12 @@ public class AcidUtils {
     return tableIsTransactional != null && tableIsTransactional.equalsIgnoreCase("true");
   }
 
+  public static boolean isMmTable(Table table) {
+    // TODO: perhaps it should be a 3rd value for 'transactional'?
+    String value = table.getProperty(hive_metastoreConstants.TABLE_IS_MM);
+    return value != null && value.equalsIgnoreCase("true");
+  }
+
   /**
    * Sets the acidOperationalProperties in the configuration object argument.
    * @param conf Mutable configuration object
@@ -1222,39 +1228,8 @@ public class AcidUtils {
     }
     return AcidOperationalProperties.parseString(resultStr);
   }
-  /**
-   * See comments at {@link AcidUtils#DELTA_SIDE_FILE_SUFFIX}.
-   *
-   * Returns the logical end of file for an acid data file.
-   *
-   * This relies on the fact that if delta_x_y has no committed transactions it wil be filtered out
-   * by {@link #getAcidState(Path, Configuration, ValidTxnList)} and so won't be read at all.
-   * @param file - data file to read/compute splits on
-   */
-  public static long getLogicalLength(FileSystem fs, FileStatus file) throws IOException {
-    Path lengths = OrcAcidUtils.getSideFile(file.getPath());
-    if(!fs.exists(lengths)) {
-      /**
-       * if here for delta_x_y that means txn y is resolved and all files in this delta are closed so
-       * they should all have a valid ORC footer and info from NameNode about length is good
-       */
-      return file.getLen();
-    }
-    long len = OrcAcidUtils.getLastFlushLength(fs, file.getPath());
-    if(len >= 0) {
-      /**
-       * if here something is still writing to delta_x_y so  read only as far as the last commit,
-       * i.e. where last footer was written.  The file may contain more data after 'len' position
-       * belonging to an open txn.
-       */
-      return len;
-    }
-    /**
-     * if here, side file is there but we couldn't read it.  We want to avoid a read where
-     * (file.getLen() < 'value from side file' which may happen if file is not closed) because this
-     * means some committed data from 'file' would be skipped.
-     * This should be very unusual.
-     */
-    throw new IOException(lengths + " found but is not readable.  Consider waiting or orcfiledump --recover");
+
+  public static String getMmFilePrefix(long mmWriteId) {
+    return "mm_" + mmWriteId + "_";
   }
 }
