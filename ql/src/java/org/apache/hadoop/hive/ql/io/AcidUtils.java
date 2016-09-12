@@ -1228,8 +1228,4 @@ public class AcidUtils {
     }
     return AcidOperationalProperties.parseString(resultStr);
   }
-
-  public static String getMmFilePrefix(long mmWriteId) {
-    return "mm_" + mmWriteId + "_";
-  }
 }

@@ -41,6 +41,7 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.hive.common.ValidTxnList;
+import org.apache.hadoop.hive.common.ValidWriteIds;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
@@ -48,8 +49,11 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.conf.HiveVariableSource;
 import org.apache.hadoop.hive.conf.VariableSubstitution;
+import org.apache.hadoop.hive.metastore.LockComponentBuilder;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
+import org.apache.hadoop.hive.metastore.api.DataOperationType;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
+import org.apache.hadoop.hive.metastore.api.LockComponent;
 import org.apache.hadoop.hive.metastore.api.Schema;
 import org.apache.hadoop.hive.ql.exec.ConditionalTask;
 import org.apache.hadoop.hive.ql.exec.ExplainTask;
@@ -74,6 +78,7 @@ import org.apache.hadoop.hive.ql.hooks.QueryLifeTimeHookContext;
 import org.apache.hadoop.hive.ql.hooks.QueryLifeTimeHookContextImpl;
 import org.apache.hadoop.hive.ql.hooks.ReadEntity;
 import org.apache.hadoop.hive.ql.hooks.WriteEntity;
+import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.lockmgr.HiveLock;
 import org.apache.hadoop.hive.ql.lockmgr.HiveTxnManager;
 import org.apache.hadoop.hive.ql.lockmgr.LockException;
@@ -1527,6 +1532,17 @@ public class Driver implements CommandProcessor {
         //if needRequireLock is false, the release here will do nothing because there is no lock
         return rollback(createProcessorResponse(ret));
       }
+    }
+    try {
+      acquireWriteIds(plan, conf);
+    } catch (HiveException e) {
+      return handleHiveException(e, 1);
+    }
+    ret = execute();
+    if (ret != 0) {
+      //if needRequireLock is false, the release here will do nothing because there is no lock
+      return rollback(createProcessorResponse(ret));
+    }
 
       //if needRequireLock is false, the release here will do nothing because there is no lock
       try {
@@ -1580,6 +1596,34 @@ public class Driver implements CommandProcessor {
         lDrvState.stateLock.unlock();
       }
     }
+  }
+
+  private static void acquireWriteIds(QueryPlan plan, HiveConf conf) throws HiveException {
+    // Output IDs are put directly into FileSinkDesc; here, we only need to take care of inputs.
+    for (ReadEntity input : plan.getInputs()) {
+      Table t = extractMmTable(input);
+      if (t == null) continue;
+      ValidWriteIds ids = Hive.get().getValidWriteIdsForTable(t.getDbName(), t.getTableName());
+      ids.addToConf(conf, t.getDbName(), t.getTableName());
+      if (plan.getFetchTask() != null) {
+        ids.addToConf(plan.getFetchTask().getFetchConf(), t.getDbName(), t.getTableName());
+      }
+    }
+  }
+
+  private static Table extractMmTable(ReadEntity input) {
+    Table t = null;
+    switch (input.getType()) {
+      case TABLE:
+        t = input.getTable();
+        break;
+      case DUMMYPARTITION:
+      case PARTITION:
+        t = input.getPartition().getTable();
+        break;
+      default: return null;
+    }
+    return (t != null && !t.isTemporary() && AcidUtils.isMmTable(t)) ? t : null;
   }
 
   private CommandProcessorResponse rollback(CommandProcessorResponse cpr) {

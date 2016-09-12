@@ -56,6 +56,7 @@ import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleRequest;
 import org.apache.hadoop.hive.metastore.api.GetPrincipalsInRoleResponse;
 import org.apache.hadoop.hive.metastore.api.GetRoleGrantsForPrincipalRequest;
 import org.apache.hadoop.hive.metastore.api.GetRoleGrantsForPrincipalResponse;
+import org.apache.hadoop.hive.metastore.api.GetValidWriteIdsResult;
 import org.apache.hadoop.hive.metastore.api.HeartbeatTxnRangeResponse;
 import org.apache.hadoop.hive.metastore.api.HiveObjectPrivilege;
 import org.apache.hadoop.hive.metastore.api.HiveObjectRef;
@@ -1657,4 +1658,6 @@ public interface IMetaStoreClient {
 
   void finalizeTableWrite(String dbName, String tableName, long writeId,
       boolean commit) throws TException;
+
+  GetValidWriteIdsResult getValidWriteIds(String dbName, String tableName) throws TException;
 }

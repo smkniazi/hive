@@ -102,6 +102,7 @@ import org.apache.hadoop.hive.metastore.events.PreLoadPartitionDoneEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadDatabaseEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadTableEvent;
 import org.apache.hadoop.hive.metastore.filemeta.OrcFileMetadataHandler;
+import org.apache.hadoop.hive.metastore.messaging.EventMessage;
 import org.apache.hadoop.hive.metastore.model.MTableWrite;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.txn.TxnStore;
@@ -139,12 +140,46 @@ import org.apache.thrift.transport.TTransportFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.facebook.fb303.FacebookBase;
-import com.facebook.fb303.fb_status;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import javax.jdo.JDOException;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Formatter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
+import java.util.Timer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
+
+import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_COMMENT;
+import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_NAME;
+import static org.apache.hadoop.hive.metastore.MetaStoreUtils.validateName;
+>>>>>>> 3e481b4719... HIVE-14644 : use metastore information on the read path appropriately (Sergey Shelukhin)
 
 /**
  * TODO:pc remove application logic to a separate interface.
@@ -442,19 +477,19 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         updateMetrics();
         LOG.info("Finished metadata count metrics: " + initDatabaseCount + " databases, " + initTableCount +
           " tables, " + initPartCount + " partitions.");
-        metrics.addGauge(MetricsConstant.INIT_TOTAL_DATABASES, new MetricsVariable() {
+        metrics.addGauge(MetricsConstant.INIT_TOTAL_DATABASES, new MetricsVariable<Object>() {
           @Override
           public Object getValue() {
             return initDatabaseCount;
           }
         });
-        metrics.addGauge(MetricsConstant.INIT_TOTAL_TABLES, new MetricsVariable() {
+        metrics.addGauge(MetricsConstant.INIT_TOTAL_TABLES, new MetricsVariable<Object>() {
           @Override
           public Object getValue() {
             return initTableCount;
           }
         });
-        metrics.addGauge(MetricsConstant.INIT_TOTAL_PARTITIONS, new MetricsVariable() {
+        metrics.addGauge(MetricsConstant.INIT_TOTAL_PARTITIONS, new MetricsVariable<Object>() {
           @Override
           public Object getValue() {
             return initPartCount;
@@ -1298,26 +1333,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       return (ms.getType(typeName) != null);
     }
 
-    private void drop_type_core(final RawStore ms, String typeName)
-        throws NoSuchObjectException, MetaException {
-      boolean success = false;
-      try {
-        ms.openTransaction();
-        // drop any partitions
-        if (!is_type_exists(ms, typeName)) {
-          throw new NoSuchObjectException(typeName + " doesn't exist");
-        }
-        if (!ms.dropType(typeName)) {
-          throw new MetaException("Unable to drop type " + typeName);
-        }
-        success = ms.commitTransaction();
-      } finally {
-        if (!success) {
-          ms.rollbackTransaction();
-        }
-      }
-    }
-
     @Override
     public boolean drop_type(final String name) throws MetaException, NoSuchObjectException {
       startFunction("drop_type", ": " + name);
@@ -1874,7 +1889,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           //No drop part listener events fired for public listeners historically, for drop table case.
           //Limiting to internal listeners for now, to avoid unexpected calls for public listeners.
           if (listener instanceof HMSMetricsListener) {
-            for (Partition part : partsToDelete) {
+            for (@SuppressWarnings("unused") Partition part : partsToDelete) {
               listener.onDropPartition(null);
             }
           }
@@ -2419,7 +2434,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
             throw new RuntimeException(e);
           }
 
-          partFutures.add(threadPool.submit(new Callable() {
+          partFutures.add(threadPool.submit(new Callable<Partition>() {
             @Override
             public Partition call() throws Exception {
               ugi.doAs(new PrivilegedExceptionAction<Object>() {
@@ -2619,33 +2634,16 @@ public class HiveMetaStore extends ThriftHiveMetastore {
             continue;
           }
 
-          final UserGroupInformation ugi;
-          try {
-            ugi = UserGroupInformation.getCurrentUser();
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-
-          partFutures.add(threadPool.submit(new Callable() {
-            @Override public Object call() throws Exception {
-              ugi.doAs(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                  try {
-                    boolean madeDir = createLocationForAddedPartition(table, part);
-                    if (addedPartitions.put(new PartValEqWrapperLite(part), madeDir) != null) {
-                      // Technically, for ifNotExists case, we could insert one and discard the other
-                      // because the first one now "exists", but it seems better to report the problem
-                      // upstream as such a command doesn't make sense.
-                      throw new MetaException("Duplicate partitions in the list: " + part);
-                    }
-                    initializeAddedPartition(table, part, madeDir);
-                  } catch (MetaException e) {
-                    throw new IOException(e.getMessage(), e);
-                  }
-                  return null;
-                }
-              });
+          partFutures.add(threadPool.submit(new Callable<Partition>() {
+            @Override public Partition call() throws Exception {
+              boolean madeDir = createLocationForAddedPartition(table, part);
+              if (addedPartitions.put(new PartValEqWrapperLite(part), madeDir) != null) {
+                // Technically, for ifNotExists case, we could insert one and discard the other
+                // because the first one now "exists", but it seems better to report the problem
+                // upstream as such a command doesn't make sense.
+                throw new MetaException("Duplicate partitions in the list: " + part);
+              }
+              initializeAddedPartition(table, part, madeDir);
               return part;
             }
           }));
@@ -2654,7 +2652,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
         try {
           for (Future<Partition> partFuture : partFutures) {
-            Partition part = partFuture.get();
+            partFuture.get();
           }
         } catch (InterruptedException | ExecutionException e) {
           // cancel other tasks
@@ -2671,7 +2669,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         if (!transactionalListeners.isEmpty()) {
           transactionalListenerResponses =
               MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
-                                                    EventType.ADD_PARTITION,
+                                                    EventMessage.EventType.ADD_PARTITION,
                                                     new AddPartitionEvent(tbl, partitionSpecProxy, true, this));
         }
 
@@ -4083,6 +4081,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
               }
             }
 
+            @SuppressWarnings("deprecation")
             Deserializer s = MetaStoreUtils.getDeserializer(curConf, tbl, false);
             ret = MetaStoreUtils.getFieldsFromDeserializer(tableName, s);
           } catch (SerDeException e) {
@@ -6117,7 +6116,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           throw newMetaException(e);
         }
       }
-      endFunction("partition_name_has_valid_characters", true, null);
+      endFunction("partition_name_has_valid_characters", true, ex);
       return ret;
     }
 
@@ -6447,21 +6446,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
       //List<RolePrincipalGrant> roleGrantsList = getRolePrincipalGrants(roleMaps);
       return new GetRoleGrantsForPrincipalResponse(roleMaps);
-    }
-
-    /**
-     * Convert each MRoleMap object into a thrift RolePrincipalGrant object
-     * @param roles
-     * @return
-     */
-    private List<RolePrincipalGrant> getRolePrincipalGrants(List<Role> roles) throws MetaException {
-      List<RolePrincipalGrant> rolePrinGrantList = new ArrayList<RolePrincipalGrant>();
-      if (roles != null) {
-        for (Role role : roles) {
-          rolePrinGrantList.addAll(getMS().listRoleMembers(role.getRoleName()));
-        }
-      }
-      return rolePrinGrantList;
     }
 
     @Override
@@ -6859,31 +6843,47 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       }
     }
 
+    private final Random random = new Random();
     @Override
     public GetNextWriteIdResult get_next_write_id(GetNextWriteIdRequest req) throws TException {
       RawStore ms = getMS();
       String dbName = req.getDbName(), tblName = req.getTblName();
       startFunction("get_next_write_id", " : db=" + dbName + " tbl=" + tblName);
-      Exception ex = null;
+      Exception exception = null;
       long writeId = -1;
-      // TODO# see TXN about how to handle conflicts
       try {
-        boolean ok = false;
-        ms.openTransaction();
-        try {
-          Table tbl = ms.getTable(dbName, tblName);
-          if (tbl == null) {
-            throw new NoSuchObjectException(dbName + "." + tblName);
+        int deadlockTryCount = 10;
+        int deadlockRetryBackoffMs = 200;
+        while (deadlockTryCount > 0) {
+          boolean ok = false;
+          ms.openTransaction();
+          try {
+            Table tbl = ms.getTable(dbName, tblName);
+            if (tbl == null) {
+              throw new NoSuchObjectException(dbName + "." + tblName);
+            }
+            writeId = tbl.isSetMmNextWriteId() ? tbl.getMmNextWriteId() : 0;
+            tbl.setMmNextWriteId(writeId + 1);
+            ms.alterTable(dbName, tblName, tbl);
+            ok = true;
+          } finally {
+            if (!ok) {
+              ms.rollbackTransaction();
+              // Exception should propagate; don't override it by breaking out of the loop.
+            } else {
+              Boolean commitResult = ms.commitTransactionExpectDeadlock();
+              if (commitResult != null) {
+                if (commitResult) break; // Assume no exception; ok to break out of the loop.
+                throw new MetaException("Failed to commit");
+              }
+            }
           }
-          writeId = tbl.isSetMmNextWriteId() ? tbl.getMmNextWriteId() : 0;
-          tbl.setMmNextWriteId(writeId + 1);
-          ms.alterTable(dbName, tblName, tbl);
-          ok = true;
-        } finally {
-          commitOrRollback(ms, ok);
+          LOG.warn("Getting the next write ID failed due to a deadlock; retrying");
+          Thread.sleep(random.nextInt(deadlockRetryBackoffMs));
         }
+
         // Do a separate txn after we have reserved the number. TODO: If we fail, ignore on read.
-        ok = false;
+        boolean ok = false;
         ms.openTransaction();
         try {
           Table tbl = ms.getTable(dbName, tblName);
@@ -6893,10 +6893,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           commitOrRollback(ms, ok);
         }
       } catch (Exception e) {
-        ex = e;
+        exception = e;
         throwMetaException(e);
       } finally {
-        endFunction("get_next_write_id", ex == null, ex, tblName);
+        endFunction("get_next_write_id", exception == null, exception, tblName);
       }
       return new GetNextWriteIdResult(writeId);
     }
@@ -6973,9 +6973,64 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       assert tw.getState().length() == 1;
       char state = tw.getState().charAt(0);
       if (state != MM_WRITE_OPEN) {
-        throw new MetaException("Invalid write state to finalize: " + state);
+        throw new MetaException("Invalid write state: " + state);
       }
       return tw;
+    }
+
+    @Override
+    public GetValidWriteIdsResult get_valid_write_ids(
+        GetValidWriteIdsRequest req) throws TException {
+      RawStore ms = getMS();
+      String dbName = req.getDbName(), tblName = req.getTblName();
+      startFunction("get_valid_write_ids", " : db=" + dbName + " tbl=" + tblName);
+      GetValidWriteIdsResult result = new GetValidWriteIdsResult();
+      Exception ex = null;
+      try {
+        boolean ok = false;
+        ms.openTransaction();
+        try {
+          Table tbl = ms.getTable(dbName, tblName);
+          if (tbl == null) {
+            throw new InvalidObjectException(dbName + "." + tblName);
+          }
+          long nextId = tbl.isSetMmNextWriteId() ? tbl.getMmNextWriteId() : 0;
+          long watermarkId = tbl.isSetMmWatermarkWriteId() ? tbl.getMmWatermarkWriteId() : -1;
+          if (nextId > (watermarkId + 1)) {
+            // There may be some intermediate failed or active writes; get the valid ones.
+            List<Long> ids = ms.getWriteIds(
+                dbName, tblName, watermarkId, nextId, MM_WRITE_COMMITTED);
+            // TODO: we could optimize here and send the smaller of the lists, and also use ranges
+            if (ids != null) {
+              Iterator<Long> iter = ids.iterator();
+              long oldWatermarkId = watermarkId;
+              while (iter.hasNext()) {
+                if (iter.next() != watermarkId + 1) break;
+                ++watermarkId;
+              }
+              long removed = watermarkId - oldWatermarkId;
+              if (removed > 0) {
+                ids = ids.subList((int)removed, ids.size());
+              }
+              if (!ids.isEmpty()) {
+                result.setIds(ids);
+                result.setAreIdsValid(true);
+              }
+            }
+          }
+          result.setHighWatermarkId(nextId);
+          result.setLowWatermarkId(watermarkId);
+          ok = true;
+        } finally {
+          commitOrRollback(ms, ok);
+        }
+      } catch (Exception e) {
+        ex = e;
+        throwMetaException(e);
+      } finally {
+        endFunction("get_valid_write_ids", ex == null, ex, tblName);
+      }
+      return result;
     }
   }
 
@@ -7517,7 +7572,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
   }
 
   private static MetaStoreThread instantiateThread(String classname) throws Exception {
-    Class c = Class.forName(classname);
+    Class<?> c = Class.forName(classname);
     Object o = c.newInstance();
     if (MetaStoreThread.class.isAssignableFrom(o.getClass())) {
       return (MetaStoreThread)o;
@@ -7546,7 +7601,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     startHouseKeeperService(conf, Class.forName("org.apache.hadoop.hive.ql.txn.AcidCompactionHistoryService"));
     startHouseKeeperService(conf, Class.forName("org.apache.hadoop.hive.ql.txn.AcidWriteSetService"));
   }
-  private static void startHouseKeeperService(HiveConf conf, Class c) throws Exception {
+  private static void startHouseKeeperService(HiveConf conf, Class<?> c) throws Exception {
     //todo: when metastore adds orderly-shutdown logic, houseKeeper.stop()
     //should be called form it
     HouseKeeperService houseKeeper = (HouseKeeperService)c.newInstance();
