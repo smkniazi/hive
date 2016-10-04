@@ -1676,6 +1676,7 @@ public class Hive {
               getConf(), new ValidWriteIds.IdPathFilter(mmWriteId, false));
         }
       } else {
+        Utilities.LOG14535.info("moving " + loadPath + " to " + newPartPath);
         if (replace || (oldPart == null && !isAcid)) {
           replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf(),
               isSrcLocal);
@@ -2097,6 +2098,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
 
     if (mmWriteId == null) {
+      Utilities.LOG14535.info("moving " + loadPath + " to " + tbl.getPath());
       if (replace) {
         Path tableDest = tbl.getPath();
         replaceFiles(tableDest, loadPath, tableDest, tableDest, sessionConf, isSrcLocal);
@@ -2110,6 +2112,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         }
       }
     } else {
+      Utilities.LOG14535.info("not moving " + loadPath + " to " + tbl.getPath());
       if (replace) {
         Path tableDest = tbl.getPath();
         deleteOldPathForReplace(tableDest, tableDest, sessionConf,
