@@ -1664,14 +1664,16 @@ public class Hive {
         newPartPath = oldPartPath;
       }
       List<Path> newFiles = null;
+      PerfLogger perfLogger = SessionState.getPerfLogger();
+      perfLogger.PerfLogBegin("MoveTask", "FileMoves");
       if (mmWriteId != null) {
         Utilities.LOG14535.info("not moving " + loadPath + " to " + newPartPath);
-        assert !isAcid && !replace;
+        assert !isAcid;
         if (areEventsForDmlNeeded(tbl, oldPart)) {
           newFiles = listFilesCreatedByQuery(loadPath, mmWriteId);
         }
-        if (replace) {
-          Path tableDest = tbl.getPath();
+        Utilities.LOG14535.info("maybe deleting stuff from " + oldPartPath + " (new " + newPartPath + ") for replace");
+        if (replace && oldPartPath != null) { // TODO# is this correct? ignore until iow jira
           deleteOldPathForReplace(newPartPath, oldPartPath,
               getConf(), new ValidWriteIds.IdPathFilter(mmWriteId, false));
         }
@@ -2976,8 +2978,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
   }
 
   private static void copyFiles(final HiveConf conf, final FileSystem destFs,
-      FileStatus[] srcs, final FileSystem srcFs, final Path destf, final boolean isSrcLocal, final List<Path> newFiles)
-          throws HiveException {
+                                FileStatus[] srcs, final FileSystem srcFs, final Path destf, final boolean isSrcLocal, final List<Path> newFiles)
+      throws HiveException {
 
     final HdfsUtils.HadoopFileStatus fullDestStatus;
     try {
@@ -2989,10 +2991,12 @@ private void constructOneLBLocationMap(FileStatus fSta,
     if (!fullDestStatus.getFileStatus().isDirectory()) {
       throw new HiveException(destf + " is not a directory.");
     }
+    final boolean inheritPerms = HiveConf.getBoolVar(conf,
+        HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
     final List<Future<ObjectPair<Path, Path>>> futures = new LinkedList<>();
     final ExecutorService pool = conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25) > 0 ?
         Executors.newFixedThreadPool(conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25),
-        new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Move-Thread-%d").build()) : null;
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Move-Thread-%d").build()) : null;
     for (FileStatus src : srcs) {
       FileStatus[] files;
       if (src.isDirectory()) {
@@ -3010,14 +3014,36 @@ private void constructOneLBLocationMap(FileStatus fSta,
       for (final FileStatus srcFile : files) {
         final Path srcP = srcFile.getPath();
         final boolean needToCopy = needToCopy(srcP, destf, srcFs, destFs);
-
-        final boolean isRenameAllowed = !needToCopy && !isSrcLocal;
+        // Strip off the file type, if any so we don't make:
+        // 000000_0.gz -> 000000_0.gz_copy_1
+        final String name;
+        final String filetype;
+        String itemName = srcP.getName();
+        int index = itemName.lastIndexOf('.');
+        if (index >= 0) {
+          filetype = itemName.substring(index);
+          name = itemName.substring(0, index);
+        } else {
+          name = itemName;
+          filetype = "";
+        }
+        final boolean renameNonLocal = !needToCopy && !isSrcLocal;
         // If we do a rename for a non-local file, we will be transfering the original
         // file permissions from source to the destination. Else, in case of mvFile() where we
         // copy from source to destination, we will inherit the destination's parent group ownership.
+        final String srcGroup = renameNonLocal ? srcFile.getGroup() :
+            fullDestStatus.getFileStatus().getGroup();
         if (null == pool) {
+          Path destPath = new Path(destf, srcP.getName());
           try {
-            Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
+
+            if (renameNonLocal) {
+              for (int counter = 1; !destFs.rename(srcP,destPath); counter++) {
+                destPath = new Path(destf, name + ("_copy_" + counter) + filetype);
+              }
+            } else {
+              destPath = mvFile(conf, srcP, destPath, isSrcLocal, srcFs, destFs, name, filetype);
+            }
 
             if (inheritPerms) {
               HdfsUtils.setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
@@ -3034,9 +3060,18 @@ private void constructOneLBLocationMap(FileStatus fSta,
             @Override
             public ObjectPair<Path, Path> call() throws Exception {
               SessionState.setCurrentSessionState(parentSession);
+              Path destPath = new Path(destf, srcP.getName());
+              if (renameNonLocal) {
+                for (int counter = 1; !destFs.rename(srcP,destPath); counter++) {
+                  destPath = new Path(destf, name + ("_copy_" + counter) + filetype);
+                }
+              } else {
+                destPath = mvFile(conf, srcP, destPath, isSrcLocal, srcFs, destFs, name, filetype);
+              }
 
-              Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
-
+              if (inheritPerms) {
+                HdfsUtils.setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
+              }
               if (null != newFiles) {
                 newFiles.add(destPath);
               }
@@ -3046,7 +3081,11 @@ private void constructOneLBLocationMap(FileStatus fSta,
         }
       }
     }
-    if (null != pool) {
+    if (null == pool) {
+      if (inheritPerms) {
+        HdfsUtils.setFullFileStatus(conf, fullDestStatus, null, destFs, destf, true);
+      }
+    } else {
       pool.shutdown();
       for (Future<ObjectPair<Path, Path>> future : futures) {
         try {
@@ -3104,65 +3143,24 @@ private void constructOneLBLocationMap(FileStatus fSta,
     return ShimLoader.getHadoopShims().getPathWithoutSchemeAndAuthority(path);
   }
 
-  /**
-   * <p>
-   *   Moves a file from one {@link Path} to another. If {@code isRenameAllowed} is true then the
-   *   {@link FileSystem#rename(Path, Path)} method is used to move the file. If its false then the data is copied, if
-   *   {@code isSrcLocal} is true then the {@link FileSystem#copyFromLocalFile(Path, Path)} method is used, else
-   *   {@link FileUtils#copy(FileSystem, Path, FileSystem, Path, boolean, boolean, HiveConf)} is used.
-   * </p>
-   *
-   * <p>
-   *   If the destination file already exists, then {@code _copy_[counter]} is appended to the file name, where counter
-   *   is an integer starting from 1.
-   * </p>
-   *
-   * @param conf the {@link HiveConf} to use if copying data
-   * @param sourceFs the {@link FileSystem} where the source file exists
-   * @param sourcePath the {@link Path} to move
-   * @param destFs the {@link FileSystem} to move the file to
-   * @param destDirPath the {@link Path} to move the file to
-   * @param isSrcLocal if the source file is on the local filesystem
-   * @param isRenameAllowed true if the data should be renamed and not copied, false otherwise
-   *
-   * @return the {@link Path} the source file was moved to
-   *
-   * @throws IOException if there was an issue moving the file
-   */
-  private static Path mvFile(HiveConf conf, FileSystem sourceFs, Path sourcePath, FileSystem destFs, Path destDirPath,
-                             boolean isSrcLocal, boolean isRenameAllowed) throws IOException {
+  private static Path mvFile(HiveConf conf, Path srcf, Path destf, boolean isSrcLocal,
+                             FileSystem srcFs, FileSystem destFs, String srcName, String filetype) throws IOException {
 
-    // Strip off the file type, if any so we don't make:
-    // 000000_0.gz -> 000000_0.gz_copy_1
-    final String fullname = sourcePath.getName();
-    final String name = FilenameUtils.getBaseName(sourcePath.getName());
-    final String type = FilenameUtils.getExtension(sourcePath.getName());
-
-    Path destFilePath = new Path(destDirPath, fullname);
-
-    /*
-    * The below loop may perform bad when the destination file already exists and it has too many _copy_
-    * files as well. A desired approach was to call listFiles() and get a complete list of files from
-    * the destination, and check whether the file exists or not on that list. However, millions of files
-    * could live on the destination directory, and on concurrent situations, this can cause OOM problems.
-    *
-    * I'll leave the below loop for now until a better approach is found.
-    */
-    for (int counter = 1; destFs.exists(destFilePath); counter++) {
-      destFilePath =  new Path(destDirPath, name + (Utilities.COPY_KEYWORD + counter) + (!type.isEmpty() ? "." + type : ""));
+    for (int counter = 1; destFs.exists(destf); counter++) {
+      destf = new Path(destf.getParent(), srcName + ("_copy_" + counter) + filetype);
     }
-
-    if (isRenameAllowed) {
-      destFs.rename(sourcePath, destFilePath);
-    } else if (isSrcLocal) {
-      destFs.copyFromLocalFile(sourcePath, destFilePath);
+    if (isSrcLocal) {
+      // For local src file, copy to hdfs
+      destFs.copyFromLocalFile(srcf, destf);
     } else {
-      FileUtils.copy(sourceFs, sourcePath, destFs, destFilePath,
-          true,   // delete source
-          false,  // overwrite destination
+      //copy if across file system or encryption zones.
+      LOG.info("Copying source " + srcf + " to " + destf + " because HDFS encryption zones are different.");
+      FileUtils.copy(srcFs, srcf, destFs, destf,
+          true,    // delete source
+          false, // overwrite destination
           conf);
     }
-    return destFilePath;
+    return destf;
   }
 
   // Clears the dest dir when src is sub-dir of dest.
@@ -3489,7 +3487,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    *          If the source directory is LOCAL
    */
   protected void replaceFiles(Path tablePath, Path srcf, Path destf, Path oldPath, HiveConf conf,
-          boolean isSrcLocal, boolean purge) throws HiveException {
+          boolean isSrcLocal) throws HiveException {
     try {
 
       FileSystem destFs = destf.getFileSystem(conf);
@@ -3583,7 +3581,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @throws IOException
    */
   public static boolean trashFiles(final FileSystem fs, final FileStatus[] statuses,
-      final Configuration conf, final boolean purge)
+      final Configuration conf)
       throws IOException {
     boolean result = true;
 
@@ -3597,13 +3595,13 @@ private void constructOneLBLocationMap(FileStatus fSta,
     final SessionState parentSession = SessionState.get();
     for (final FileStatus status : statuses) {
       if (null == pool) {
-        result &= FileUtils.moveToTrash(fs, status.getPath(), conf, purge);
+        result &= FileUtils.moveToTrash(fs, status.getPath(), conf);
       } else {
         futures.add(pool.submit(new Callable<Boolean>() {
           @Override
           public Boolean call() throws Exception {
             SessionState.setCurrentSessionState(parentSession);
-            return FileUtils.moveToTrash(fs, status.getPath(), conf, purge);
+            return FileUtils.moveToTrash(fs, status.getPath(), conf);
           }
         }));
       }

@@ -43,10 +43,15 @@ import java.util.regex.Pattern;
 
 import javax.jdo.JDOException;
 
+import com.facebook.fb303.FacebookBase;
+import com.facebook.fb303.fb_status;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimaps;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
@@ -103,6 +108,7 @@ import org.apache.hadoop.hive.metastore.events.PreReadDatabaseEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadTableEvent;
 import org.apache.hadoop.hive.metastore.filemeta.OrcFileMetadataHandler;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage;
+import org.apache.hadoop.hive.metastore.messaging.EventMessage.EventType;
 import org.apache.hadoop.hive.metastore.model.MTableWrite;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.txn.TxnStore;
@@ -179,7 +185,6 @@ import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_COMMENT;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_NAME;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.validateName;
->>>>>>> 3e481b4719... HIVE-14644 : use metastore information on the read path appropriately (Sergey Shelukhin)
 
 /**
  * TODO:pc remove application logic to a separate interface.
@@ -915,7 +920,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         if (!transactionalListeners.isEmpty()) {
           transactionalListenersResponses =
               MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
-                                                    EventType.CREATE_DATABASE,
+                                                    EventMessage.EventType.CREATE_DATABASE,
                                                     new CreateDatabaseEvent(db, true, this));
         }
 
