@@ -32,6 +32,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.ContentSummary;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -44,6 +46,7 @@ import org.apache.hadoop.hive.common.HiveStatsUtils;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.StringInternUtils;
+import org.apache.hadoop.hive.common.ValidWriteIds;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
@@ -96,6 +99,7 @@ import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.plan.BaseWork;
 import org.apache.hadoop.hive.ql.plan.DynamicPartitionCtx;
 import org.apache.hadoop.hive.ql.plan.FileSinkDesc;
+import org.apache.hadoop.hive.ql.plan.ListBucketingCtx;
 import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.MergeJoinWork;
@@ -1416,7 +1420,7 @@ public final class Utilities {
       boolean success, Logger log, DynamicPartitionCtx dpCtx, FileSinkDesc conf,
       Reporter reporter) throws IOException,
       HiveException {
-
+    
     FileSystem fs = specPath.getFileSystem(hconf);
     Path tmpPath = Utilities.toTempPath(specPath);
     Path taskTmpPath = Utilities.toTaskTempPath(specPath);
@@ -1427,12 +1431,14 @@ public final class Utilities {
         PerfLogger perfLogger = SessionState.getPerfLogger();
         perfLogger.PerfLogBegin("FileSinkOperator", "RemoveTempOrDuplicateFiles");
         // remove any tmp file or double-committed output files
-        List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(fs, statuses, dpCtx, conf, hconf);
+        List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(
+            fs, statuses, dpCtx, conf, hconf);
         perfLogger.PerfLogEnd("FileSinkOperator", "RemoveTempOrDuplicateFiles");
         // create empty buckets if necessary
         if (emptyBuckets.size() > 0) {
           perfLogger.PerfLogBegin("FileSinkOperator", "CreateEmptyBuckets");
-          createEmptyBuckets(hconf, emptyBuckets, conf, reporter);
+          createEmptyBuckets(
+              hconf, emptyBuckets, conf.getCompressed(), conf.getTableInfo(), reporter);
           perfLogger.PerfLogEnd("FileSinkOperator", "CreateEmptyBuckets");
         }
         // move to the file destination
@@ -1461,7 +1467,7 @@ public final class Utilities {
    * @throws IOException
    */
   static void createEmptyBuckets(Configuration hconf, List<Path> paths,
-      FileSinkDesc conf, Reporter reporter)
+      boolean isCompressed, TableDesc tableInfo, Reporter reporter)
       throws HiveException, IOException {
 
     JobConf jc;
@@ -1473,13 +1479,11 @@ public final class Utilities {
     }
     HiveOutputFormat<?, ?> hiveOutputFormat = null;
     Class<? extends Writable> outputClass = null;
-    boolean isCompressed = conf.getCompressed();
-    TableDesc tableInfo = conf.getTableInfo();
     try {
       Serializer serializer = (Serializer) tableInfo.getDeserializerClass().newInstance();
       serializer.initialize(null, tableInfo.getProperties());
       outputClass = serializer.getSerializedClass();
-      hiveOutputFormat = HiveFileFormatUtils.getHiveOutputFormat(hconf, conf.getTableInfo());
+      hiveOutputFormat = HiveFileFormatUtils.getHiveOutputFormat(hconf, tableInfo);
     } catch (SerDeException e) {
       throw new HiveException(e);
     } catch (InstantiationException e) {
@@ -1522,13 +1526,21 @@ public final class Utilities {
    */
   public static List<Path> removeTempOrDuplicateFiles(FileSystem fs, FileStatus[] fileStats,
       DynamicPartitionCtx dpCtx, FileSinkDesc conf, Configuration hconf) throws IOException {
+    int dpLevels = dpCtx == null ? 0 : dpCtx.getNumDPCols(),
+        numBuckets = (conf != null && conf.getTable() != null)
+          ? conf.getTable().getNumBuckets() : 0;
+    return removeTempOrDuplicateFiles(fs, fileStats, dpLevels, numBuckets, hconf);
+  }
+
+  public static List<Path> removeTempOrDuplicateFiles(FileSystem fs, FileStatus[] fileStats,
+      int dpLevels, int numBuckets, Configuration hconf) throws IOException {
     if (fileStats == null) {
       return null;
     }
 
     List<Path> result = new ArrayList<Path>();
     HashMap<String, FileStatus> taskIDToFile = null;
-    if (dpCtx != null) {
+    if (dpLevels > 0) {
       FileStatus parts[] = fileStats;
 
       for (int i = 0; i < parts.length; ++i) {
@@ -1547,14 +1559,14 @@ public final class Utilities {
 
         taskIDToFile = removeTempOrDuplicateFiles(items, fs);
         // if the table is bucketed and enforce bucketing, we should check and generate all buckets
-        if (dpCtx.getNumBuckets() > 0 && taskIDToFile != null && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
+        if (numBuckets > 0 && taskIDToFile != null && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
           // refresh the file list
           items = fs.listStatus(parts[i].getPath());
           // get the missing buckets and generate empty buckets
           String taskID1 = taskIDToFile.keySet().iterator().next();
           Path bucketPath = taskIDToFile.values().iterator().next().getPath();
           Utilities.LOG14535.info("Bucket path " + bucketPath);
-          for (int j = 0; j < dpCtx.getNumBuckets(); ++j) {
+          for (int j = 0; j < numBuckets; ++j) {
             addBucketFileIfMissing(result, taskIDToFile, taskID1, bucketPath, j);
           }
         }
@@ -1565,13 +1577,13 @@ public final class Utilities {
         return result;
       }
       taskIDToFile = removeTempOrDuplicateFiles(items, fs);
-      if(taskIDToFile != null && taskIDToFile.size() > 0 && conf != null && conf.getTable() != null
-          && (conf.getTable().getNumBuckets() > taskIDToFile.size()) && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
+      if(taskIDToFile != null && taskIDToFile.size() > 0 && (numBuckets > taskIDToFile.size())
+          && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
           // get the missing buckets and generate empty buckets for non-dynamic partition
         String taskID1 = taskIDToFile.keySet().iterator().next();
         Path bucketPath = taskIDToFile.values().iterator().next().getPath();
         Utilities.LOG14535.info("Bucket path " + bucketPath);
-        for (int j = 0; j < conf.getTable().getNumBuckets(); ++j) {
+        for (int j = 0; j < numBuckets; ++j) {
           addBucketFileIfMissing(result, taskIDToFile, taskID1, bucketPath, j);
         }
       }
@@ -3039,7 +3051,7 @@ public final class Utilities {
    * @throws Exception
    */
   public static List<Path> getInputPaths(JobConf job, MapWork work, Path hiveScratchDir,
-      Context ctx, boolean skipDummy) throws Exception {
+                                         Context ctx, boolean skipDummy) throws Exception {
 
     Set<Path> pathsProcessed = new HashSet<Path>();
     List<Path> pathsToAdd = new LinkedList<Path>();
@@ -3053,30 +3065,24 @@ public final class Utilities {
         Path file = e.getKey();
         List<String> aliases = e.getValue();
         if (aliases.contains(alias)) {
-          if (file != null) {
-            isEmptyTable = false;
-          } else {
-            LOG.warn("Found a null path for alias " + alias);
-            continue;
-          }
+          path = file;
 
           // Multiple aliases can point to the same path - it should be
           // processed only once
-          if (pathsProcessed.contains(file)) {
+          if (pathsProcessed.contains(path)) {
             continue;
           }
 
-          StringInternUtils.internUriStringsInPath(file);
-          pathsProcessed.add(file);
+          pathsProcessed.add(path);
 
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding input file " + file);
-          } else if (!hasLogged) {
-            hasLogged = true;
-            LOG.info("Adding " + work.getPathToAliases().size()
-                + " inputs; the first input is " + file);
+          LOG.info("Adding input file " + path);
+          if (!skipDummy
+              && isEmptyPath(job, path, ctx)) {
+            path = createDummyFileForEmptyPartition(path, job, work,
+                hiveScratchDir);
+
           }
-          pathsToAdd.add(file);
+          pathsToAdd.add(path);
         }
       }
 
@@ -3088,35 +3094,12 @@ public final class Utilities {
       // T2) x;
       // If T is empty and T2 contains 100 rows, the user expects: 0, 100 (2
       // rows)
-      if (isEmptyTable && !skipDummy) {
-        pathsToAdd.add(createDummyFileForEmptyTable(job, work, hiveScratchDir, alias));
+      if (path == null && !skipDummy) {
+        path = createDummyFileForEmptyTable(job, work, hiveScratchDir, alias);
+        pathsToAdd.add(path);
       }
     }
-
-    ExecutorService pool = null;
-    int numExecutors = getMaxExecutorsForInputListing(job, pathsToAdd.size());
-    if (numExecutors > 1) {
-      pool = Executors.newFixedThreadPool(numExecutors,
-          new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Get-Input-Paths-%d").build());
-    }
-
-    List<Path> finalPathsToAdd = new LinkedList<>();
-    List<Future<Path>> futures = new LinkedList<>();
-    for (final Path path : pathsToAdd) {
-      if (pool == null) {
-        finalPathsToAdd.add(new GetInputPathsCallable(path, job, work, hiveScratchDir, ctx, skipDummy).call());
-      } else {
-        futures.add(pool.submit(new GetInputPathsCallable(path, job, work, hiveScratchDir, ctx, skipDummy)));
-      }
-    }
-
-    if (pool != null) {
-      for (Future<Path> future : futures) {
-        finalPathsToAdd.add(future.get());
-      }
-    }
-
-    return finalPathsToAdd;
+    return pathsToAdd;
   }
 
   private static class GetInputPathsCallable implements Callable<Path> {
@@ -3850,25 +3833,190 @@ public final class Utilities {
     return String.format("%.2f%sB", bytes / Math.pow(unit, exp), suffix);
   }
 
+  private static final String MANIFEST_EXTENSION = ".manifest";
 
-  public static String getAclStringWithHiveModification(Configuration tezConf,
-                                                        String propertyName,
-                                                        boolean addHs2User,
-                                                        String user,
-                                                        String hs2User) throws
-      IOException {
-
-    // Start with initial ACLs
-    ACLConfigurationParser aclConf =
-        new ACLConfigurationParser(tezConf, propertyName);
-
-    // Always give access to the user
-    aclConf.addAllowedUser(user);
-
-    // Give access to the process user if the config is set.
-    if (addHs2User && hs2User != null) {
-      aclConf.addAllowedUser(hs2User);
-    }
-    return aclConf.toAclString();
+  private static Path getManifestDir(Path specPath, String unionSuffix) {
+    return (unionSuffix == null) ? specPath : new Path(specPath, unionSuffix);
   }
+
+  private static void tryDelete(FileSystem fs, Path path) {
+    try {
+      fs.delete(path, true);
+    } catch (IOException ex) {
+      LOG.error("Failed to delete " + path, ex);
+    }
+  }
+
+  private static FileStatus[] getMmDirectoryCandidates(FileSystem fs, Path path,
+      int dpLevels, int lbLevels, String unionSuffix, PathFilter filter) throws IOException {
+    StringBuilder sb = new StringBuilder(path.toUri().getPath());
+    for (int i = 0; i < dpLevels + lbLevels; i++) {
+      sb.append(Path.SEPARATOR).append("*");
+    }
+    if (unionSuffix != null) {
+      sb.append(Path.SEPARATOR).append(unionSuffix);
+    }
+    sb.append(Path.SEPARATOR).append("*"); // TODO: we could add exact mm prefix here
+    Utilities.LOG14535.info("Looking for files via: " + sb.toString());
+    Path pathPattern = new Path(path, sb.toString());
+    return fs.globStatus(pathPattern, filter);
+  }
+
+  private static void tryDeleteAllMmFiles(FileSystem fs, Path specPath, Path manifestDir,
+      int dpLevels, int lbLevels, String unionSuffix, ValidWriteIds.IdPathFilter filter)
+          throws IOException {
+    FileStatus[] files = getMmDirectoryCandidates(
+        fs, specPath, dpLevels, lbLevels, unionSuffix, filter);
+    if (files != null) {
+      for (FileStatus status : files) {
+        Utilities.LOG14535.info("Deleting " + status.getPath() + " on failure");
+        tryDelete(fs, status.getPath());
+      }
+    }
+    files = HiveStatsUtils.getFileStatusRecurse(manifestDir, 1, fs, filter);
+    if (files != null) {
+      for (FileStatus status : files) {
+        Utilities.LOG14535.info("Deleting " + status.getPath() + " on failure");
+        tryDelete(fs, status.getPath());
+      }
+    }
+  }
+
+
+  public static void writeMmCommitManifest(List<Path> commitPaths, Path specPath, FileSystem fs,
+      String taskId, Long mmWriteId, String unionSuffix) throws HiveException {
+    if (commitPaths.isEmpty()) return;
+    Path manifestPath = getManifestDir(specPath, unionSuffix);
+    manifestPath = new Path(manifestPath, "_tmp." + ValidWriteIds.getMmFilePrefix(
+        mmWriteId) + "_" + taskId + MANIFEST_EXTENSION);
+    Utilities.LOG14535.info("Writing manifest to " + manifestPath + " with " + commitPaths);
+    try {
+      // Don't overwrite the manifest... should fail if we have collisions.
+      // We assume one FSOP per task (per specPath), so we create it in specPath.
+      try (FSDataOutputStream out = fs.create(manifestPath, false)) {
+        if (out == null) {
+          throw new HiveException("Failed to create manifest at " + manifestPath);
+        }
+        out.writeInt(commitPaths.size());
+        for (Path path : commitPaths) {
+          out.writeUTF(path.toString());
+        }
+      }
+    } catch (IOException e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public static final class MissingBucketsContext {
+    public final TableDesc tableInfo;
+    public final int numBuckets;
+    public final boolean isCompressed;
+    public MissingBucketsContext(TableDesc tableInfo, int numBuckets, boolean isCompressed) {
+      this.tableInfo = tableInfo;
+      this.numBuckets = numBuckets;
+      this.isCompressed = isCompressed;
+    }
+  }
+
+  public static void handleMmTableFinalPath(Path specPath, String unionSuffix, Configuration hconf,
+      boolean success, int dpLevels, int lbLevels, MissingBucketsContext mbc, long mmWriteId,
+      Reporter reporter) throws IOException, HiveException {
+    FileSystem fs = specPath.getFileSystem(hconf);
+    // Manifests would be at the root level, but the results at target level.
+    // TODO# special case - doesn't take bucketing into account
+    Path manifestDir = getManifestDir(specPath, unionSuffix);
+
+    ValidWriteIds.IdPathFilter filter = new ValidWriteIds.IdPathFilter(mmWriteId, true);
+    if (!success) {
+      tryDeleteAllMmFiles(fs, specPath, manifestDir, dpLevels, lbLevels, unionSuffix, filter);
+      return;
+    }
+    FileStatus[] files = HiveStatsUtils.getFileStatusRecurse(manifestDir, 1, fs, filter);
+    Utilities.LOG14535.info("Looking for manifests in: " + manifestDir + " (" + mmWriteId + ")");
+    List<Path> manifests = new ArrayList<>();
+    if (files != null) {
+      for (FileStatus status : files) {
+        Path path = status.getPath();
+        if (path.getName().endsWith(MANIFEST_EXTENSION)) {
+          Utilities.LOG14535.info("Reading manifest " + path);
+          manifests.add(path);
+        }
+      }
+    }
+
+    Utilities.LOG14535.info("Looking for files in: " + specPath);
+    files = getMmDirectoryCandidates(fs, specPath, dpLevels, lbLevels, unionSuffix, filter);
+    ArrayList<FileStatus> results = new ArrayList<>();
+    if (files != null) {
+      for (FileStatus status : files) {
+        Path path = status.getPath();
+        Utilities.LOG14535.info("Looking at path: " + path);
+        if (!status.isDirectory()) {
+          if (!path.getName().endsWith(MANIFEST_EXTENSION)) {
+            Utilities.LOG14535.warn("Unknown file found, deleting: " + path);
+            tryDelete(fs, path);
+          }
+        } else {
+          results.add(status);
+        }
+      }
+    }
+
+    HashSet<String> committed = new HashSet<>();
+    for (Path mfp : manifests) {
+      try (FSDataInputStream mdis = fs.open(mfp)) {
+        int fileCount = mdis.readInt();
+        for (int i = 0; i < fileCount; ++i) {
+          String nextFile = mdis.readUTF();
+          if (!committed.add(nextFile)) {
+            throw new HiveException(nextFile + " was specified in multiple manifests");
+          }
+        }
+      }
+    }
+
+    for (FileStatus status : results) {
+      for (FileStatus child : fs.listStatus(status.getPath())) {
+        Path childPath = child.getPath();
+        if (committed.remove(childPath.toString())) continue; // A good file.
+        Utilities.LOG14535.info("Deleting " + childPath + " that was not committed");
+        // We should actually succeed here - if we fail, don't commit the query.
+        if (!fs.delete(childPath, true)) {
+          throw new HiveException("Failed to delete an uncommitted path " + childPath);
+        }
+      }
+    }
+
+    if (!committed.isEmpty()) {
+      throw new HiveException("The following files were committed but not found: " + committed);
+    }
+    for (Path mfp : manifests) {
+      Utilities.LOG14535.info("Deleting manifest " + mfp);
+      tryDelete(fs, mfp);
+    }
+    // Delete the manifest directory if we only created it for manifests; otherwise the
+    // dynamic partition loader will find it and try to load it as a partition... what a mess.
+    if (manifestDir != specPath) {
+      FileStatus[] remainingFiles = fs.listStatus(manifestDir);
+      if (remainingFiles == null || remainingFiles.length == 0) {
+        Utilities.LOG14535.info("Deleting directory " + manifestDir);
+        tryDelete(fs, manifestDir);
+      }
+    }
+
+    if (results.isEmpty()) return;
+
+    // TODO: see HIVE-14886 - removeTempOrDuplicateFiles is broken for list bucketing,
+    //       so maintain parity here by not calling it at all.
+    if (lbLevels != 0) return;
+    FileStatus[] finalResults = results.toArray(new FileStatus[results.size()]);
+    List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(
+        fs, finalResults, dpLevels, mbc == null ? 0 : mbc.numBuckets, hconf);
+    // create empty buckets if necessary
+    if (emptyBuckets.size() > 0) {
+      assert mbc != null;
+      Utilities.createEmptyBuckets(hconf, emptyBuckets, mbc.isCompressed, mbc.tableInfo, reporter);
+    }
+  }
+
 }
