@@ -61,6 +61,7 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.InvalidTableException;
 import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.plan.AddPartitionDesc;
+import org.apache.hadoop.hive.ql.plan.CopyWork;
 import org.apache.hadoop.hive.ql.plan.ImportTableDesc;
 import org.apache.hadoop.hive.ql.plan.DDLWork;
 import org.apache.hadoop.hive.ql.plan.DropTableDesc;
@@ -334,15 +335,15 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     return tblDesc;
   }
 
-  private static Task<?> loadTable(URI fromURI, Table table, boolean replace, Path tgtPath,
-                            ReplicationSpec replicationSpec, EximUtil.SemanticAnalyzerWrapperContext x) {
-    Path dataPath = new Path(fromURI.toString(), EximUtil.DATA_PATH_NAME);
-    Path tmpPath = x.getCtx().getExternalTmpPath(tgtPath);
-    Task<?> copyTask = ReplCopyTask.getLoadCopyTask(replicationSpec, dataPath, tmpPath, x.getConf());
+  private Task<?> loadTable(URI fromURI, Table table, boolean replace, Path tgtPath) {
+    Path dataPath = new Path(fromURI.toString(), "data");
+    Path tmpPath = ctx.getExternalTmpPath(tgtPath);
+    Task<?> copyTask = TaskFactory.get(new CopyWork(dataPath,
+       tmpPath, false), conf);
+    // TODO# we assume mm=false here
     LoadTableDesc loadTableWork = new LoadTableDesc(tmpPath,
         Utilities.getTableDesc(table), new TreeMap<String, String>(),
-        replace);
-    // TODO# movetask is created here; handle MM tables
+        replace, null);
     Task<?> loadTableTask = TaskFactory.get(new MoveWork(getInputs(),
         getOutputs(), loadTableWork, null, false), conf);
     copyTask.addDependentTask(loadTableTask);
@@ -407,14 +408,15 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
           + partSpecToString(partSpec.getPartSpec())
           + " with source location: " + srcLocation);
       Path tgtLocation = new Path(partSpec.getLocation());
-      Path tmpPath = x.getCtx().getExternalTmpPath(tgtLocation);
-      Task<?> copyTask = ReplCopyTask.getLoadCopyTask(
-          replicationSpec, new Path(srcLocation), tmpPath, x.getConf());
-      Task<?> addPartTask = TaskFactory.get(new DDLWork(x.getInputs(),
-          x.getOutputs(), addPartitionDesc), x.getConf());
+      Path tmpPath = ctx.getExternalTmpPath(tgtLocation);
+      Task<?> copyTask = TaskFactory.get(new CopyWork(new Path(srcLocation),
+          tmpPath, false), conf);
+      Task<?> addPartTask = TaskFactory.get(new DDLWork(getInputs(),
+          getOutputs(), addPartitionDesc), conf);
+      // TODO# we assume mm=false here
       LoadTableDesc loadTableWork = new LoadTableDesc(tmpPath,
           Utilities.getTableDesc(table),
-          partSpec.getPartSpec(), true);
+          partSpec.getPartSpec(), true, null);
       loadTableWork.setInheritTableSpecs(false);
       // TODO# movetask is created here; handle MM tables
       Task<?> loadPartTask = TaskFactory.get(new MoveWork(
