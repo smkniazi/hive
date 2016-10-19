@@ -97,6 +97,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   private Path destPath;
   private boolean isHiveServerQuery;
   private Long mmWriteId;
+  private boolean isMerge;
 
   /**
    * Whether is a HiveServer query, and the destination table is
@@ -163,6 +164,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
     ret.setWriteType(writeType);
     ret.setTransactionId(txnId);
     ret.setStatsTmpDir(statsTmpDir);
+    ret.setIsMerge(isMerge);
     return ret;
   }
 
@@ -509,5 +511,29 @@ public class FileSinkDesc extends AbstractOperatorDesc {
 
   public void setMmWriteId(Long mmWriteId) {
     this.mmWriteId = mmWriteId;
+  }
+
+  public class FileSinkOperatorExplainVectorization extends OperatorExplainVectorization {
+
+    public FileSinkOperatorExplainVectorization(VectorDesc vectorDesc) {
+      // Native vectorization not supported.
+      super(vectorDesc, false);
+    }
+  }
+
+  @Explain(vectorization = Vectorization.OPERATOR, displayName = "File Sink Vectorization", explainLevels = { Level.DEFAULT, Level.EXTENDED })
+  public FileSinkOperatorExplainVectorization getFileSinkVectorization() {
+    if (vectorDesc == null) {
+      return null;
+    }
+    return new FileSinkOperatorExplainVectorization(vectorDesc);
+  }
+
+  public void setIsMerge(boolean b) {
+    this.isMerge = b;
+  }
+
+  public boolean isMerge() {
+    return isMerge;
   }
 }
