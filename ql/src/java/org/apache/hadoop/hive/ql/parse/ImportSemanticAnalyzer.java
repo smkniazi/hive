@@ -521,7 +521,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       throws MetaException, IOException, HiveException {
     AddPartitionDesc.OnePartitionDesc partSpec = addPartitionDesc.getPartition(0);
     if (tblDesc.isExternal() && tblDesc.getLocation() == null) {
-      x.getLOG().debug("Importing in-place: adding AddPart for partition "
+      x.getLOG().debug("Importing in-place: adding AddPart for parition "
           + partSpecToString(partSpec.getPartSpec()));
       // addPartitionDesc already has the right partition location
       @SuppressWarnings("unchecked")

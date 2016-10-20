@@ -6839,10 +6839,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         // This is a non-native table.
         // We need to set stats as inaccurate.
         setStatsForNonNativeTable(dest_tab);
-        // true if it is insert overwrite.
-        boolean overwrite = !qb.getParseInfo().isInsertIntoTable(
-                String.format("%s.%s", dest_tab.getDbName(), dest_tab.getTableName()));
-        createInsertDesc(dest_tab, overwrite);
       }
 
       WriteEntity output = generateTableWriteEntity(
