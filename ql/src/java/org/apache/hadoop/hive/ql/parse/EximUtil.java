@@ -152,7 +152,8 @@ public class EximUtil {
    */
   static URI getValidatedURI(HiveConf conf, String dcPath) throws SemanticException {
     try {
-      boolean testMode = conf.getBoolVar(HiveConf.ConfVars.HIVETESTMODE);
+      boolean testMode = conf.getBoolVar(HiveConf.ConfVars.HIVETESTMODE)
+          || conf.getBoolVar(HiveConf.ConfVars.HIVEEXIMTESTMODE);
       URI uri = new Path(dcPath).toUri();
       String scheme = uri.getScheme();
       String authority = uri.getAuthority();
@@ -206,31 +207,29 @@ public class EximUtil {
     }
   }
 
-  public static String relativeToAbsolutePath(HiveConf conf, String location)
-      throws SemanticException {
-    try {
-      boolean testMode = conf.getBoolVar(HiveConf.ConfVars.HIVETESTMODE);
-      if (testMode) {
-        URI uri = new Path(location).toUri();
-        FileSystem fs = FileSystem.get(uri, conf);
-        String scheme = fs.getScheme();
-        String authority = uri.getAuthority();
-        String path = uri.getPath();
-        if (!path.startsWith("/")) {
-          path = (new Path(System.getProperty("test.tmp.dir"), path)).toUri().getPath();
-        }
-        try {
-          uri = new URI(scheme, authority, path, null, null);
-        } catch (URISyntaxException e) {
-          throw new SemanticException(ErrorMsg.INVALID_PATH.getMsg(), e);
-        }
-        return uri.toString();
-      } else {
-        // no-op for non-test mode for now
-        return location;
+  public static String relativeToAbsolutePath(HiveConf conf, String location) throws SemanticException {
+    boolean testMode = conf.getBoolVar(HiveConf.ConfVars.HIVETESTMODE)
+        || conf.getBoolVar(HiveConf.ConfVars.HIVEEXIMTESTMODE);
+    if (testMode) {
+      URI uri = new Path(location).toUri();
+      String scheme = uri.getScheme();
+      String authority = uri.getAuthority();
+      String path = uri.getPath();
+      if (!path.startsWith("/")) {
+        path = (new Path(System.getProperty("test.tmp.dir"),
+            path)).toUri().getPath();
       }
-    } catch (IOException e) {
-      throw new SemanticException(ErrorMsg.IO_ERROR.getMsg() + ": " + e.getMessage(), e);
+      if (StringUtils.isEmpty(scheme)) {
+        scheme = "pfile";
+      }
+      try {
+        uri = new URI(scheme, authority, path, null, null);
+      } catch (URISyntaxException e) {
+        throw new SemanticException(ErrorMsg.INVALID_PATH.getMsg(), e);
+      }
+      return uri.toString();
+    } else {
+      return location;
     }
   }
 
