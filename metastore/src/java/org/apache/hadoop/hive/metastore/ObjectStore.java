@@ -8999,7 +8999,7 @@ public class ObjectStore implements RawStore, Configurable {
       pm.retrieveAll(tables);
       ArrayList<FullTableName> result = new ArrayList<>(tables.size());
       for (MTable table : tables) {
-        if (MetaStoreUtils.isMmTable(table.getParameters())) {
+        if (MetaStoreUtils.isInsertOnlyTable(table.getParameters())) {
           result.add(new FullTableName(table.getDatabase().getName(), table.getTableName()));
         }
       }
