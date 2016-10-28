@@ -343,7 +343,6 @@ public class StatsOptimizer extends Transform {
         }
 
         List<Object> oneRow = new ArrayList<Object>();
-
         Hive hive = Hive.get(pctx.getConf());
 
         for (AggregationDesc aggr : pgbyOp.getConf().getAggregators()) {

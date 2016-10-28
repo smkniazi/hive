@@ -2008,6 +2008,25 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           throw new SemanticException(ErrorMsg.INVALID_TABLE.getMsg(alias));
         }
       }
+
+      // Disallow INSERT INTO on bucketized tables
+      boolean isAcid = AcidUtils.isFullAcidTable(tab);
+      boolean isTableWrittenTo = qb.getParseInfo().isInsertIntoTable(tab.getDbName(), tab.getTableName());
+      if (isTableWrittenTo &&
+          tab.getNumBuckets() > 0 && !isAcid) {
+        throw new SemanticException(ErrorMsg.INSERT_INTO_BUCKETIZED_TABLE.
+            getMsg("Table: " + tabName));
+      }
+      // Disallow update and delete on non-acid tables
+      if ((updating() || deleting()) && !isAcid && isTableWrittenTo) {
+        //isTableWrittenTo: delete from acidTbl where a in (select id from nonAcidTable)
+        //so only assert this if we are actually writing to this table
+        // Whether we are using an acid compliant transaction manager has already been caught in
+        // UpdateDeleteSemanticAnalyzer, so if we are updating or deleting and getting nonAcid
+        // here, it means the table itself doesn't support it.
+        throw new SemanticException(ErrorMsg.ACID_OP_ON_NONACID_TABLE, tabName);
+      }
+
      if (tab.isView()) {
         if (qb.getParseInfo().isAnalyzeCommand()) {
           throw new SemanticException(ErrorMsg.ANALYZE_VIEW.getMsg());
@@ -6688,7 +6707,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         nullOrder.append(sortOrder == BaseSemanticAnalyzer.HIVE_COLUMN_ORDER_ASC ? 'a' : 'z');
       }
       input = genReduceSinkPlan(input, partnCols, sortCols, order.toString(), nullOrder.toString(),
-              maxReducers, (AcidUtils.isAcidTable(dest_tab) ?
+              maxReducers, (AcidUtils.isFullAcidTable(dest_tab) ?
               getAcidType(dest_tab, table_desc.getOutputFileFormatClass()) : AcidUtils.Operation.NOT_ACID));
       reduceSinkOperatorsAddedByEnforceBucketingSorting.add((ReduceSinkOperator)input.getParentOperators().get(0));
       ctx.setMultiFileSpray(multiFileSpray);
@@ -6774,7 +6793,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     case QBMetaData.DEST_TABLE: {
 
       dest_tab = qbm.getDestTableForAlias(dest);
-      destTableIsAcid = AcidUtils.isAcidTable(dest_tab);
+      destTableIsAcid = AcidUtils.isFullAcidTable(dest_tab);
       destTableIsTemporary = dest_tab.isTemporary();
 
       // Is the user trying to insert into a external tables
@@ -6851,7 +6870,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
       dest_part = qbm.getDestPartitionForAlias(dest);
       dest_tab = dest_part.getTable();
-      destTableIsAcid = AcidUtils.isAcidTable(dest_tab);
+      destTableIsAcid = AcidUtils.isFullAcidTable(dest_tab);
 
       checkExternalTable(dest_tab);
 
@@ -6920,7 +6939,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         field_schemas = new ArrayList<FieldSchema>();
         destTableIsTemporary = tblDesc.isTemporary();
         destTableIsMaterialization = tblDesc.isMaterialization();
-        if (MetaStoreUtils.isInsertOnlyTable(tblDesc.getTblProps())) {
+        if (!destTableIsTemporary && MetaStoreUtils.isInsertOnlyTable(tblDesc.getTblProps())) {
           isMmTable = isMmCtas = true;
           // TODO# this should really get current ACID txn; assuming ACID works correctly the txn
           //       should have been opened to create the ACID table. For now use the first ID.
@@ -11724,7 +11743,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       if (p != null) {
         tbl = p.getTable();
       }
-      if (tbl != null && AcidUtils.isAcidTable(tbl)) {
+      if (tbl != null && AcidUtils.isFullAcidTable(tbl)) {
         acidInQuery = true;
         checkAcidTxnManager(tbl);
       }
@@ -11787,7 +11806,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         tbl = writeEntity.getTable();
       }
 
-      if (tbl != null && AcidUtils.isAcidTable(tbl)) {
+      if (tbl != null && AcidUtils.isFullAcidTable(tbl)) {
         acidInQuery = true;
         checkAcidTxnManager(tbl);
       }

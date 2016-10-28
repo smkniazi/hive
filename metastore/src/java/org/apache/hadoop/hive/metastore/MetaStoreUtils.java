@@ -1932,6 +1932,7 @@ public class MetaStoreUtils {
    * @param params table properties
    * @return true if table is an INSERT_ONLY table, false otherwise
    */
+  // TODO# also check that transactional is true
   public static boolean isInsertOnlyTable(Map<String, String> params) {
     String transactionalProp = params.get(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
     return transactionalProp != null && "insert_only".equalsIgnoreCase(transactionalProp);

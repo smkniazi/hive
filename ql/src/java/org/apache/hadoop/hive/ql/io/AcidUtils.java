@@ -1179,6 +1179,10 @@ public class AcidUtils {
     return tableIsTransactional != null && tableIsTransactional.equalsIgnoreCase("true");
   }
 
+  public static boolean isFullAcidTable(Table table) {
+    return isAcidTable(table) && !MetaStoreUtils.isInsertOnlyTable(table.getParameters());
+  }
+
   /**
    * Sets the acidOperationalProperties in the configuration object argument.
    * @param conf Mutable configuration object
