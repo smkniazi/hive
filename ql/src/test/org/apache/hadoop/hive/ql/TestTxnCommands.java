@@ -526,7 +526,9 @@ public class TestTxnCommands {
     return TestTxnCommands2.makeValuesClause(rows);
   }
 
+  private static final Logger LOG = LoggerFactory.getLogger(TestTxnCommands.class);
   private List<String> runStatementOnDriver(String stmt) throws Exception {
+    LOG.info("Running " + stmt);
     CommandProcessorResponse cpr = d.run(stmt);
     if(cpr.getResponseCode() != 0) {
       throw new RuntimeException(stmt + " failed: " + cpr);
