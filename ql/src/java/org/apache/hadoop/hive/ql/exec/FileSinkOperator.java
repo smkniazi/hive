@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -170,7 +171,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     Path[] finalPaths;
     RecordWriter[] outWriters;
     RecordUpdater[] updaters;
-    Stat stat;
+    private Stat stat;
+    int acidLastBucket = -1;
+    int acidFileOffset = -1;
     private boolean isMmTable;
 
     public FSPaths(Path specPath, boolean isMmTable) {
@@ -292,10 +295,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       }
     }
 
-    public Stat getStat() {
-      return stat;
-    }
-
     public void configureDynPartPath(String dirName, String childSpecPathDynLinkedPartitions) {
       dirName = (childSpecPathDynLinkedPartitions == null) ? dirName :
         dirName + Path.SEPARATOR + childSpecPathDynLinkedPartitions;
@@ -353,6 +352,18 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
 
     public Path getTaskOutputTempPath() {
       return taskOutputTempPath;
+    }
+
+    public void addToStat(String statType, long amount) {
+      if ("rowCount".equals(statType)) {
+        Utilities.LOG14535.info("Adding " + statType + " = " + amount + " to " + System.identityHashCode(this));
+      }
+      stat.addToStat(statType, amount);
+    }
+
+    public Collection<String> getStoredStats() {
+      Utilities.LOG14535.info("Getting stats from " + System.identityHashCode(this));
+      return stat.getStoredStats();
     }
   } // class FSPaths
 
@@ -503,6 +514,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
 
       if (!bDynParts) {
         fsp = new FSPaths(specPath, conf.isMmTable());
+        Utilities.LOG14535.info("creating new paths " + System.identityHashCode(fsp)
+            + " from ctor; childSpec " + unionPath + ": tmpPath " + fsp.getTmpPath()
+            + ", task path " + fsp.getTaskOutputTempPath());
 
         // Create all the files - this is required because empty files need to be created for
         // empty buckets
@@ -818,9 +832,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       if (conf.isGatherStats() && !isCollectRWStats) {
         SerDeStats stats = serializer.getSerDeStats();
         if (stats != null) {
-          fpaths.stat.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
+          fpaths.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
         }
-        fpaths.stat.addToStat(StatsSetupConst.ROW_COUNT, 1);
+        fpaths.addToStat(StatsSetupConst.ROW_COUNT, 1);
       }
 
       if ((++numRows == cntr) && isLogInfoEnabled) {
@@ -958,8 +972,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   private FSPaths createNewPaths(String dirName) throws HiveException {
     FSPaths fsp2 = new FSPaths(specPath, conf.isMmTable());
     fsp2.configureDynPartPath(dirName, !conf.isMmTable() && isUnionDp ? unionPath : null);
-    Utilities.LOG14535.info("creating new paths for " + dirName + ", childSpec " + unionPath
-        + ": tmpPath " + fsp2.getTmpPath() + ", task path " + fsp2.getTaskOutputTempPath()/*, new Exception()*/);
+    Utilities.LOG14535.info("creating new paths " + System.identityHashCode(fsp2) + " for "
+        + dirName + ", childSpec " + unionPath + ": tmpPath " + fsp2.getTmpPath()
+        + ", task path " + fsp2.getTaskOutputTempPath(), new Exception());
     if(!conf.getDpSortState().equals(DPSortState.PARTITION_BUCKET_SORTED)) {
       createBucketFiles(fsp2);
       valToPaths.put(dirName, fsp2);
@@ -1059,8 +1074,8 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
               stats = prevFsp.updaters[0].getStats();
             }
             if (stats != null) {
-                prevFsp.stat.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
-                prevFsp.stat.addToStat(StatsSetupConst.ROW_COUNT, stats.getRowCount());
+                prevFsp.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
+                prevFsp.addToStat(StatsSetupConst.ROW_COUNT, stats.getRowCount());
             }
           }
 
@@ -1159,8 +1174,8 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
               if (outWriter != null) {
                 SerDeStats stats = ((StatsProvidingRecordWriter) outWriter).getStats();
                 if (stats != null) {
-                  fsp.stat.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
-                  fsp.stat.addToStat(StatsSetupConst.ROW_COUNT, stats.getRowCount());
+                  fsp.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
+                  fsp.addToStat(StatsSetupConst.ROW_COUNT, stats.getRowCount());
                 }
               }
             }
@@ -1169,8 +1184,8 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
               if (fsp.updaters[i] != null) {
                 SerDeStats stats = fsp.updaters[i].getStats();
                 if (stats != null) {
-                  fsp.stat.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
-                  fsp.stat.addToStat(StatsSetupConst.ROW_COUNT, stats.getRowCount());
+                  fsp.addToStat(StatsSetupConst.RAW_DATA_SIZE, stats.getRawDataSize());
+                  fsp.addToStat(StatsSetupConst.ROW_COUNT, stats.getRowCount());
                 }
               }
             }
@@ -1347,7 +1362,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       prefix = prefix.endsWith(Path.SEPARATOR) ? prefix : prefix + Path.SEPARATOR;
 
       Map<String, String> statsToPublish = new HashMap<String, String>();
-      for (String statType : fspValue.stat.getStoredStats()) {
+      for (String statType : fspValue.getStoredStats()) {
         statsToPublish.put(statType, Long.toString(fspValue.stat.getStat(statType)));
       }
       if (!statsPublisher.publishStat(prefix, statsToPublish)) {
