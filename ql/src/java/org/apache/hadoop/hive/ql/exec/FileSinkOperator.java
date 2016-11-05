@@ -147,6 +147,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   protected transient long cntr = 1;
   protected transient long logEveryNRows = 0;
   protected transient int rowIndex = 0;
+  private transient boolean inheritPerms = false;
   /**
    * Counters.
    */
@@ -255,7 +256,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       if ((bDynParts || isSkewedStoredAsSubDirectories)
           && !fs.exists(finalPaths[idx].getParent())) {
         Utilities.LOG14535.info("commit making path for dyn/skew: " + finalPaths[idx].getParent());
-        fs.mkdirs(finalPaths[idx].getParent());
+        FileUtils.mkdir(fs, finalPaths[idx].getParent(), inheritPerms, hconf);
       }
       // If we're updating or deleting there may be no file to close.  This can happen
       // because the where clause strained out all of the records for a given bucket.  So
@@ -475,6 +476,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       serializer = (Serializer) conf.getTableInfo().getDeserializerClass().newInstance();
       serializer.initialize(unsetNestedColumnPaths(hconf), conf.getTableInfo().getProperties());
       outputClass = serializer.getSerializedClass();
+      inheritPerms = HiveConf.getBoolVar(hconf, ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
 
       if (isLogInfoEnabled) {
         LOG.info("Using serializer : " + serializer + " and formatter : " + hiveOutputFormat +
@@ -710,8 +712,10 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       // buckets of dynamic partitions will be created for each newly created partition
       if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID ||
           conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY) {
+        Path outPath = fsp.outPaths[filesIdx];
+        mkDirIfPermsAreNeeded(outPath); // Make sure we inherit permissions.
         fsp.outWriters[filesIdx] = HiveFileFormatUtils.getHiveRecordWriter(jc, conf.getTableInfo(),
-            outputClass, conf, fsp.outPaths[filesIdx], reporter);
+            outputClass, conf, outPath, reporter);
         // If the record writer provides stats, get it from there instead of the serde
         statsFromRecordWriter[filesIdx] = fsp.outWriters[filesIdx] instanceof
             StatsProvidingRecordWriter;
@@ -731,6 +735,12 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
 
     } catch (IOException e) {
       throw new HiveException(e);
+    }
+  }
+
+  private void mkDirIfPermsAreNeeded(Path outPath) throws IOException {
+    if (inheritPerms && !FileUtils.mkdir(fs, outPath.getParent(), inheritPerms, hconf)) {
+      LOG.warn("Unable to create directory with inheritPerms: " + outPath);
     }
   }
 
@@ -1307,6 +1317,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   }
 
   private void publishStats() throws HiveException {
+    Utilities.LOG14535.error("FSOP publishStats called.");
     boolean isStatsReliable = conf.isStatsReliable();
 
     // Initializing a stats publisher
@@ -1337,6 +1348,8 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     for (Map.Entry<String, FSPaths> entry : valToPaths.entrySet()) {
       String fspKey = entry.getKey();     // DP/LB
       FSPaths fspValue = entry.getValue();
+      Utilities.LOG14535.info("Observing entry for stats " + fspKey
+          + " => FSP with tmpPath " + fspValue.getTmpPath());
       // for bucketed tables, hive.optimize.sort.dynamic.partition optimization
       // adds the taskId to the fspKey.
       if (conf.getDpSortState().equals(DPSortState.PARTITION_BUCKET_SORTED)) {
@@ -1349,6 +1362,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         // not be retrieved from staging table and hence not aggregated. To avoid this issue
         // we will remove the taskId from the key which is redundant anyway.
         fspKey = fspKey.split(taskID)[0];
+        Utilities.LOG14535.info("Adjusting fspKey for stats to " + fspKey);
       }
 
       // split[0] = DP, split[1] = LB
@@ -1360,12 +1374,14 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       String prefix = conf.getTableInfo().getTableName().toLowerCase();
       prefix = Utilities.join(prefix, spSpec, dpSpec);
       prefix = prefix.endsWith(Path.SEPARATOR) ? prefix : prefix + Path.SEPARATOR;
+      Utilities.LOG14535.info("Prefix for stats " + prefix + " (from " + spSpec + ", " + dpSpec + ")");
 
       Map<String, String> statsToPublish = new HashMap<String, String>();
       for (String statType : fspValue.getStoredStats()) {
         statsToPublish.put(statType, Long.toString(fspValue.stat.getStat(statType)));
       }
       if (!statsPublisher.publishStat(prefix, statsToPublish)) {
+        Utilities.LOG14535.error("Failed to publish stats");
         // The original exception is lost.
         // Not changing the interface to maintain backward compatibility
         if (isStatsReliable) {
@@ -1375,6 +1391,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     }
     sContext.setIndexForTezUnion(this.getIndexForTezUnion());
     if (!statsPublisher.closeConnection(sContext)) {
+      Utilities.LOG14535.error("Failed to close stats");
       // The original exception is lost.
       // Not changing the interface to maintain backward compatibility
       if (isStatsReliable) {
