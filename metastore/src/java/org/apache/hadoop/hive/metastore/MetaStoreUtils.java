@@ -1984,5 +1984,4 @@ public class MetaStoreUtils {
         hasProps = removedSet.contains(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
     return hasTxn || hasProps;
   }
-
 }
