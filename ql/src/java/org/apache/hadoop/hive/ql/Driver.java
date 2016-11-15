@@ -1442,7 +1442,7 @@ public class Driver implements CommandProcessor {
         driverRunHooks = getHooks(HiveConf.ConfVars.HIVE_DRIVER_RUN_HOOKS,
             HiveDriverRunHook.class);
         for (HiveDriverRunHook driverRunHook : driverRunHooks) {
-            driverRunHook.preDriverRun(hookContext);
+          driverRunHook.preDriverRun(hookContext);
         }
       } catch (Exception e) {
         errorMessage = "FAILED: Hive Internal Error: " + Utilities.getNameMessage(e);
@@ -1484,7 +1484,7 @@ public class Driver implements CommandProcessor {
         if (txnManager.isTxnOpen() && !plan.getOperation().isAllowedInTransaction()) {
           assert !txnManager.getAutoCommit() : "didn't expect AC=true";
           return rollback(new CommandProcessorResponse(12, ErrorMsg.OP_NOT_ALLOWED_IN_TXN, null,
-            plan.getOperationName(), Long.toString(txnManager.getCurrentTxnId())));
+              plan.getOperationName(), Long.toString(txnManager.getCurrentTxnId())));
         }
         if(!txnManager.isTxnOpen() && plan.getOperation().isRequiresOpenTransaction()) {
           return rollback(new CommandProcessorResponse(12, ErrorMsg.OP_NOT_ALLOWED_WITHOUT_TXN, null, plan.getOperationName()));
@@ -1502,7 +1502,7 @@ public class Driver implements CommandProcessor {
         try {
           if(plan.getAutoCommitValue() && !txnManager.getAutoCommit()) {
             /*here, if there is an open txn, we want to commit it; this behavior matches
-            * https://docs.oracle.com/javase/6/docs/api/java/sql/Connection.html#setAutoCommit(boolean)*/
+             * https://docs.oracle.com/javase/6/docs/api/java/sql/Connection.html#setAutoCommit(boolean)*/
             releaseLocksAndCommitOrRollback(true, null);
             txnManager.setAutoCommit(true);
           }
@@ -1527,22 +1527,18 @@ public class Driver implements CommandProcessor {
           return rollback(createProcessorResponse(ret));
         }
       }
+
+      try {
+        acquireWriteIds(plan, conf);
+      } catch (HiveException e) {
+        return handleHiveException(e, 1);
+      }
+
       ret = execute(true);
       if (ret != 0) {
         //if needRequireLock is false, the release here will do nothing because there is no lock
         return rollback(createProcessorResponse(ret));
       }
-    }
-    try {
-      acquireWriteIds(plan, conf);
-    } catch (HiveException e) {
-      return handleHiveException(e, 1);
-    }
-    ret = execute();
-    if (ret != 0) {
-      //if needRequireLock is false, the release here will do nothing because there is no lock
-      return rollback(createProcessorResponse(ret));
-    }
 
       //if needRequireLock is false, the release here will do nothing because there is no lock
       try {
@@ -1566,7 +1562,7 @@ public class Driver implements CommandProcessor {
       // Take all the driver run hooks and post-execute them.
       try {
         for (HiveDriverRunHook driverRunHook : driverRunHooks) {
-            driverRunHook.postDriverRun(hookContext);
+          driverRunHook.postDriverRun(hookContext);
         }
       } catch (Exception e) {
         errorMessage = "FAILED: Hive Internal Error: " + Utilities.getNameMessage(e);

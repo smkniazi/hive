@@ -156,9 +156,10 @@ public final class HiveMaterializedViewsRegistry {
    */
   public RelOptMaterialization addMaterializedView(Table materializedViewTable) {
     // Bail out if it is not enabled for rewriting
-    if (!materializedViewTable.isRewriteEnabled()) {
-      return null;
-    }
+    // TODO(Fabio): commeted out as it's too forward in the history i guess
+    //if (!materializedViewTable.isRewriteEnabled()) {
+    //  return null;
+    //}
     ConcurrentMap<ViewKey, RelOptMaterialization> cq =
         new ConcurrentHashMap<ViewKey, RelOptMaterialization>();
     final ConcurrentMap<ViewKey, RelOptMaterialization> prevCq = materializedViews.putIfAbsent(
@@ -201,9 +202,10 @@ public final class HiveMaterializedViewsRegistry {
    */
   public void dropMaterializedView(Table materializedViewTable) {
     // Bail out if it is not enabled for rewriting
-    if (!materializedViewTable.isRewriteEnabled()) {
-      return;
-    }
+    // TODO(Fabio): commeted out as it's too forward in the history i guess
+    //if (!materializedViewTable.isRewriteEnabled()) {
+    //  return;
+    //}
     final ViewKey vk = new ViewKey(
         materializedViewTable.getTableName(), materializedViewTable.getCreateTime());
     materializedViews.get(materializedViewTable.getDbName()).remove(vk);

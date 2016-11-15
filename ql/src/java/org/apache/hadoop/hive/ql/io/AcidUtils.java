@@ -395,6 +395,11 @@ public class AcidUtils {
     private AcidOperationalProperties() {
     }
 
+    public static AcidOperationalProperties getLegacy() {
+      AcidOperationalProperties obj = new AcidOperationalProperties();
+      // In legacy mode, none of these properties are turned on.
+      return obj;
+    }
 
     /**
      * Returns an acidOperationalProperties object that represents default ACID behavior for tables

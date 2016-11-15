@@ -20,11 +20,11 @@ package org.apache.hadoop.hive.ql.io;
 
 import java.io.DataInput;
 import java.io.DataOutput;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
 import org.slf4j.Logger;
@@ -77,8 +78,9 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.JobConfigurable;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.Reporter;
-import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.common.util.ReflectionUtil;
+
+import static org.apache.hive.common.util.HiveStringUtils.getStrings;
 
 /**
  * HiveInputFormat is a parameterized InputFormat which looks at the path name
@@ -282,7 +284,7 @@ public class HiveInputFormat<K extends WritableComparable, V extends Writable>
     if (LOG.isDebugEnabled()) {
       LOG.debug("Checking " + ifName + " against " + formatList);
     }
-    String[] formats = StringUtils.getStrings(formatList);
+    String[] formats = getStrings(formatList);
     if (formats != null) {
       for (String format : formats) {
         // TODO: should we check isAssignableFrom?

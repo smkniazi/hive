@@ -161,11 +161,21 @@ public class Warehouse {
     return new Path(db.getLocationUri());
   }
 
+  public Path getTablePath(String whRootString, String tableName) throws MetaException {
+    Path whRoot = getDnsPath(new Path(whRootString));
+    return new Path(whRoot, MetaStoreUtils.encodeTableName(tableName.toLowerCase()));
+  }
+
   public Path getDefaultDatabasePath(String dbName) throws MetaException {
     if (dbName.equalsIgnoreCase(DEFAULT_DATABASE_NAME)) {
       return getWhRoot();
     }
     return new Path(getWhRoot(), dbName.toLowerCase() + DATABASE_WAREHOUSE_SUFFIX);
+  }
+
+  public Path getTablePath(Database db, String tableName)
+      throws MetaException {
+    return getDnsPath(new Path(getDatabasePath(db), MetaStoreUtils.encodeTableName(tableName.toLowerCase())));
   }
 
   /**

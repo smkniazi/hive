@@ -37,7 +37,7 @@ public class HiveMetaStoreFsImpl implements MetaStoreFS {
   public boolean deleteDir(FileSystem fs, Path f, boolean recursive,
       boolean ifPurge, Configuration conf) throws MetaException {
     try {
-      FileUtils.moveToTrash(fs, f, conf, ifPurge);
+      FileUtils.moveToTrash(fs, f, conf);
       if (fs.exists(f)) {
         throw new MetaException("Unable to delete directory: " + f);
       }

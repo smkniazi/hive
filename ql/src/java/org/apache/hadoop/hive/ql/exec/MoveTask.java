@@ -610,6 +610,26 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
     }
   }
 
+  /**
+   * so to make sure we crate WriteEntity with the right WriteType.  This is (at this point) only
+   * for consistency since LockManager (which is the only thing that pays attention to WriteType)
+   * has done it's job before the query ran.
+   */
+  WriteEntity.WriteType getWriteType(LoadTableDesc tbd, AcidUtils.Operation operation) {
+    if(tbd.getReplace()) {
+      return WriteEntity.WriteType.INSERT_OVERWRITE;
+    }
+    switch (operation) {
+      case DELETE:
+        return WriteEntity.WriteType.DELETE;
+      case UPDATE:
+        return WriteEntity.WriteType.UPDATE;
+      default:
+        return WriteEntity.WriteType.INSERT;
+    }
+  }
+
+
   private boolean isSkewedStoredAsDirs(LoadTableDesc tbd) {
     return (tbd.getLbCtx() == null) ? false : tbd.getLbCtx()
         .isSkewedStoredAsDir();

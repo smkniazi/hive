@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.parse;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.ql.exec.TaskFactory;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 
@@ -219,25 +220,25 @@ public class ExportSemanticAnalyzer extends BaseSemanticAnalyzer {
         for (Partition partition : partitions) {
           Path fromPath = partition.getDataLocation();
           Path toPartPath = new Path(parentPath, partition.getName());
-          CopyWork cw = createCopyWork(isMmTable, lbLevels, ids, fromPath, toPartPath);
+          CopyWork cw = createCopyWork(isMmTable, lbLevels, ids, fromPath, toPartPath, conf);
           rootTasks.add(TaskFactory.get(cw, conf));
           inputs.add(new ReadEntity(partition));
         }
       } else {
         Path fromPath = ts.tableHandle.getDataLocation();
         Path toDataPath = new Path(parentPath, "data");
-        CopyWork cw = createCopyWork(isMmTable, lbLevels, ids, fromPath, toDataPath);
+        CopyWork cw = createCopyWork(isMmTable, lbLevels, ids, fromPath, toDataPath, conf);
         rootTasks.add(TaskFactory.get(cw, conf));
         inputs.add(new ReadEntity(ts.tableHandle));
       }
-      outputs.add(toWriteEntity(parentPath));
+      outputs.add(toWriteEntity(parentPath, conf));
     } catch (HiveException | IOException ex) {
       throw new SemanticException(ex);
     }
   }
 
-  private CopyWork createCopyWork(boolean isMmTable, int lbLevels, ValidWriteIds ids,
-      Path fromPath, Path toDataPath) throws IOException {
+  private static CopyWork createCopyWork(boolean isMmTable, int lbLevels, ValidWriteIds ids,
+      Path fromPath, Path toDataPath, Configuration conf) throws IOException {
     List<Path> validPaths = null;
     if (isMmTable) {
       fromPath = fromPath.getFileSystem(conf).makeQualified(fromPath);
@@ -250,7 +251,7 @@ public class ExportSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
   }
 
-  private CopyWork createCopyWorkForValidPaths(
+  private static CopyWork createCopyWorkForValidPaths(
       Path fromPath, Path toPartPath, List<Path> validPaths) {
     Path[] from = new Path[validPaths.size()], to = new Path[validPaths.size()];
     int i = 0;
@@ -268,5 +269,4 @@ public class ExportSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
     return new CopyWork(from, to);
   }
->>>>>>> 2e602596f7... HIVE-15027 : make sure export takes MM information into account (Sergey Shelukhin)
 }

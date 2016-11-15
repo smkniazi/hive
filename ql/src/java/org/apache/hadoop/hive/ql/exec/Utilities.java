@@ -1173,6 +1173,9 @@ public final class Utilities {
     if (orig.getName().indexOf(tmpPrefix) == 0) {
       return orig;
     }
+    if (orig.getName().contains("=1")) {
+      LOG.error("TODO# creating tmp path from " + orig, new Exception());
+    }
     return new Path(orig.getParent(), tmpPrefix + orig.getName());
   }
 
@@ -3441,8 +3444,8 @@ public final class Utilities {
 
       if (op instanceof FileSinkOperator) {
         FileSinkDesc fdesc = ((FileSinkOperator) op).getConf();
+        if (fdesc.isMmTable()) continue; // No need to create for MM tables
         Path tempDir = fdesc.getDirName();
-
         if (tempDir != null) {
           Path tempPath = Utilities.toTempPath(tempDir);
           FileSystem fs = tempPath.getFileSystem(conf);
@@ -4099,7 +4102,7 @@ public final class Utilities {
 
   public static void handleMmTableFinalPath(Path specPath, String unionSuffix, Configuration hconf,
       boolean success, int dpLevels, int lbLevels, MissingBucketsContext mbc, long mmWriteId,
-      Reporter reporter) throws IOException, HiveException {
+      Reporter reporter, boolean isMmCtas) throws IOException, HiveException {
     FileSystem fs = specPath.getFileSystem(hconf);
     Path manifestDir = getManifestDir(specPath, mmWriteId, unionSuffix);
     if (!success) {
@@ -4111,20 +4114,30 @@ public final class Utilities {
 
     Utilities.LOG14535.info("Looking for manifests in: " + manifestDir + " (" + mmWriteId + ")");
     // TODO# may be wrong if there are no splits (empty insert/CTAS)
-    FileStatus[] manifestFiles = fs.listStatus(manifestDir);
     List<Path> manifests = new ArrayList<>();
-    if (manifestFiles != null) {
-      for (FileStatus status : manifestFiles) {
-        Path path = status.getPath();
-        if (path.getName().endsWith(MANIFEST_EXTENSION)) {
-          Utilities.LOG14535.info("Reading manifest " + path);
-          manifests.add(path);
+    if (fs.exists(manifestDir)) {
+      FileStatus[] manifestFiles = fs.listStatus(manifestDir);
+      if (manifestFiles != null) {
+        for (FileStatus status : manifestFiles) {
+          Path path = status.getPath();
+          if (path.getName().endsWith(MANIFEST_EXTENSION)) {
+            Utilities.LOG14535.info("Reading manifest " + path);
+            manifests.add(path);
+          }
         }
       }
+    } else {
+      Utilities.LOG14535.info("No manifests found - query produced no output");
+      manifestDir = null;
     }
 
     Utilities.LOG14535.info("Looking for files in: " + specPath);
     ValidWriteIds.IdPathFilter filter = new ValidWriteIds.IdPathFilter(mmWriteId, true);
+    if (isMmCtas && !fs.exists(specPath)) {
+      // TODO: do we also need to do this when creating an empty partition from select?
+      Utilities.LOG14535.info("Creating table directory for CTAS with no output at " + specPath);
+      FileUtils.mkdir(fs, specPath, hconf);
+    }
     Path[] files = getMmDirectoryCandidates(
         fs, specPath, dpLevels, lbLevels, filter, mmWriteId, hconf);
     ArrayList<Path> mmDirectories = new ArrayList<>();
@@ -4148,15 +4161,17 @@ public final class Utilities {
       }
     }
 
-    Utilities.LOG14535.info("Deleting manifest directory " + manifestDir);
-    tryDelete(fs, manifestDir);
-    if (unionSuffix != null) {
-      // Also delete the parent directory if we are the last union FSOP to execute.
-      manifestDir = manifestDir.getParent();
-      FileStatus[] remainingFiles = fs.listStatus(manifestDir);
-      if (remainingFiles == null || remainingFiles.length == 0) {
-        Utilities.LOG14535.info("Deleting manifest directory " + manifestDir);
-        tryDelete(fs, manifestDir);
+    if (manifestDir != null) {
+      Utilities.LOG14535.info("Deleting manifest directory " + manifestDir);
+      tryDelete(fs, manifestDir);
+      if (unionSuffix != null) {
+        // Also delete the parent directory if we are the last union FSOP to execute.
+        manifestDir = manifestDir.getParent();
+        FileStatus[] remainingFiles = fs.listStatus(manifestDir);
+        if (remainingFiles == null || remainingFiles.length == 0) {
+          Utilities.LOG14535.info("Deleting manifest directory " + manifestDir);
+          tryDelete(fs, manifestDir);
+        }
       }
     }
 
@@ -4256,4 +4271,26 @@ public final class Utilities {
     }
     return result;
   }
+
+  public static String getAclStringWithHiveModification(Configuration tezConf,
+                                                        String propertyName,
+                                                        boolean addHs2User,
+                                                        String user,
+                                                        String hs2User) throws
+      IOException {
+
+    // Start with initial ACLs
+    ACLConfigurationParser aclConf =
+        new ACLConfigurationParser(tezConf, propertyName);
+
+    // Always give access to the user
+    aclConf.addAllowedUser(user);
+
+    // Give access to the process user if the config is set.
+    if (addHs2User && hs2User != null) {
+      aclConf.addAllowedUser(hs2User);
+    }
+    return aclConf.toAclString();
+  }
+
 }

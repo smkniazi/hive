@@ -824,21 +824,6 @@ public class Table implements Serializable {
     tTable.setViewExpandedText(viewExpandedText);
   }
 
-  /**
-   * @return whether this view can be used for rewriting queries
-   */
-  public boolean isRewriteEnabled() {
-    return tTable.isRewriteEnabled();
-  }
-
-  /**
-   * @param rewriteEnabled
-   *          whether this view can be used for rewriting queries
-   */
-  public void setRewriteEnabled(boolean rewriteEnabled) {
-    tTable.setRewriteEnabled(rewriteEnabled);
-  }
-
   public void clearSerDeInfo() {
     tTable.getSd().getSerdeInfo().getParameters().clear();
   }

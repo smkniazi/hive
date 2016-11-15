@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -256,7 +257,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       if ((bDynParts || isSkewedStoredAsSubDirectories)
           && !fs.exists(finalPaths[idx].getParent())) {
         Utilities.LOG14535.info("commit making path for dyn/skew: " + finalPaths[idx].getParent());
-        FileUtils.mkdir(fs, finalPaths[idx].getParent(), inheritPerms, hconf);
+        FileUtils.mkdir(fs, finalPaths[idx].getParent(), hconf);
       }
       // If we're updating or deleting there may be no file to close.  This can happen
       // because the where clause strained out all of the records for a given bucket.  So
@@ -739,7 +740,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   }
 
   private void mkDirIfPermsAreNeeded(Path outPath) throws IOException {
-    if (inheritPerms && !FileUtils.mkdir(fs, outPath.getParent(), inheritPerms, hconf)) {
+    if (inheritPerms && !FileUtils.mkdir(fs, outPath.getParent(), hconf)) {
       LOG.warn("Unable to create directory with inheritPerms: " + outPath);
     }
   }
@@ -856,7 +857,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         LOG.info(toString() + ": records written - " + numRows);
       }
 
-      int writerOffset;
+      int writerOffset = findWriterOffset(row);
       // This if/else chain looks ugly in the inner loop, but given that it will be 100% the same
       // for a given operator branch prediction should work quite nicely on it.
       // RecordUpdateer expects to get the actual row, not a serialized version of it.  Thus we
@@ -1264,7 +1265,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           MissingBucketsContext mbc = new MissingBucketsContext(
               conf.getTableInfo(), numBuckets, conf.getCompressed());
           Utilities.handleMmTableFinalPath(specPath, unionSuffix, hconf, success,
-              dpLevels, lbLevels, mbc, conf.getMmWriteId(), reporter);
+              dpLevels, lbLevels, mbc, conf.getMmWriteId(), reporter, conf.isMmCtas());
         }
       }
     } catch (IOException e) {

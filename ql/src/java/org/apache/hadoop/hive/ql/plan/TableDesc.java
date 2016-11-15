@@ -224,4 +224,11 @@ public class TableDesc implements Serializable, Cloneable {
       jobProperties.equals(target.jobProperties));
     return ret;
   }
+
+  @Override
+  public String toString() {
+    return "TableDesc [inputFileFormatClass=" + inputFileFormatClass
+        + ", outputFileFormatClass=" + outputFileFormatClass + ", properties="
+        + properties + ", jobProperties=" + jobProperties + "]";
+  }
 }

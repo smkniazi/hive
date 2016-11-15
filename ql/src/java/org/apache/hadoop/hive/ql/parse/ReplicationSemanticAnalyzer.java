@@ -1298,8 +1298,7 @@ public class ReplicationSemanticAnalyzer extends BaseSemanticAnalyzer {
           new EximUtil.SemanticAnalyzerWrapperContext(conf, db, inputs, outputs, importTasks, LOG,
               ctx);
       ImportSemanticAnalyzer.prepareImport(isLocationSet, isExternalSet, isPartSpecSet,
-          (precursor != null), parsedLocation, tblName, dbName, parsedPartSpec, locn, x,
-          dbsUpdated, tablesUpdated);
+          (precursor != null), parsedLocation, tblName, dbName, parsedPartSpec, locn, x);
 
       if (precursor != null) {
         for (Task<? extends Serializable> t : importTasks) {

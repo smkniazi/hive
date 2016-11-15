@@ -376,7 +376,6 @@ public final class MetaDataFormatUtils {
   private static void getViewInfo(StringBuilder tableInfo, Table tbl) {
     formatOutput("View Original Text:", tbl.getViewOriginalText(), tableInfo);
     formatOutput("View Expanded Text:", tbl.getViewExpandedText(), tableInfo);
-    formatOutput("View Rewrite Enabled:", tbl.isRewriteEnabled() ? "Yes" : "No", tableInfo);
   }
 
   private static void getStorageDescriptorInfo(StringBuilder tableInfo,

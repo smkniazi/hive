@@ -2009,25 +2009,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         }
       }
 
-      // Disallow INSERT INTO on bucketized tables
-      boolean isAcid = AcidUtils.isFullAcidTable(tab);
-      boolean isTableWrittenTo = qb.getParseInfo().isInsertIntoTable(tab.getDbName(), tab.getTableName());
-      if (isTableWrittenTo &&
-          tab.getNumBuckets() > 0 && !isAcid) {
-        throw new SemanticException(ErrorMsg.INSERT_INTO_BUCKETIZED_TABLE.
-            getMsg("Table: " + tabName));
-      }
-      // Disallow update and delete on non-acid tables
-      if ((updating() || deleting()) && !isAcid && isTableWrittenTo) {
-        //isTableWrittenTo: delete from acidTbl where a in (select id from nonAcidTable)
-        //so only assert this if we are actually writing to this table
-        // Whether we are using an acid compliant transaction manager has already been caught in
-        // UpdateDeleteSemanticAnalyzer, so if we are updating or deleting and getting nonAcid
-        // here, it means the table itself doesn't support it.
-        throw new SemanticException(ErrorMsg.ACID_OP_ON_NONACID_TABLE, tabName);
-      }
-
-     if (tab.isView()) {
+      if (tab.isView()) {
         if (qb.getParseInfo().isAnalyzeCommand()) {
           throw new SemanticException(ErrorMsg.ANALYZE_VIEW.getMsg());
         }
@@ -6708,7 +6690,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
       input = genReduceSinkPlan(input, partnCols, sortCols, order.toString(), nullOrder.toString(),
               maxReducers, (AcidUtils.isFullAcidTable(dest_tab) ?
-              getAcidType(dest_tab, table_desc.getOutputFileFormatClass()) : AcidUtils.Operation.NOT_ACID));
+              getAcidType(dest_tab, table_desc.getOutputFileFormatClass(), dest) : AcidUtils.Operation.NOT_ACID));
       reduceSinkOperatorsAddedByEnforceBucketingSorting.add((ReduceSinkOperator)input.getParentOperators().get(0));
       ctx.setMultiFileSpray(multiFileSpray);
       ctx.setNumFiles(numFiles);
@@ -6841,7 +6823,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       if (!isNonNativeTable) {
         AcidUtils.Operation acidOp = AcidUtils.Operation.NOT_ACID;
         if (destTableIsAcid) {
-          acidOp = getAcidType(dest_tab, table_desc.getOutputFileFormatClass());
+          acidOp = getAcidType(dest_tab, table_desc.getOutputFileFormatClass(), dest);
           checkAcidConstraints(qb, table_desc, dest_tab, acidOp);
         }
         try {
@@ -6861,7 +6843,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
 
       WriteEntity output = generateTableWriteEntity(
-          dest_tab, partSpec, ltd, dpCtx, isNonNativeTable);
+          dest, dest_tab, partSpec, ltd, dpCtx, isNonNativeTable);
 
       ctx.getLoadTableOutputMap().put(ltd, output);
       break;
@@ -6901,7 +6883,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           dest_part.isStoredAsSubDirectories(), conf);
       AcidUtils.Operation acidOp = AcidUtils.Operation.NOT_ACID;
       if (destTableIsAcid) {
-        acidOp = getAcidType(dest_tab, table_desc.getOutputFileFormatClass());
+        acidOp = getAcidType(dest_tab, table_desc.getOutputFileFormatClass(), dest);
         checkAcidConstraints(qb, table_desc, dest_tab, acidOp);
       }
       try {
@@ -6935,6 +6917,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       List<FieldSchema> field_schemas = null;
       CreateTableDesc tblDesc = qb.getTableDesc();
       CreateViewDesc viewDesc = qb.getViewDesc();
+      boolean isCtas = false;
       if (tblDesc != null) {
         field_schemas = new ArrayList<FieldSchema>();
         destTableIsTemporary = tblDesc.isTemporary();
@@ -7074,10 +7057,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     assert isMmTable == (mmWriteId != null);
-    FileSinkDesc fileSinkDesc = createFileSinkDesc(table_desc, dest_part,
+    FileSinkDesc fileSinkDesc = createFileSinkDesc(dest, table_desc, dest_part,
         dest_path, currentTableId, destTableIsAcid, destTableIsTemporary,
         destTableIsMaterialization, queryTmpdir, rsCtx, dpCtx, lbCtx, fsRS,
-        canBeMerged, mmWriteId);
+        canBeMerged, mmWriteId, isMmCtas);
     if (isMmCtas) {
       // Add FSD so that the LoadTask compilation could fix up its path to avoid the move.
       tableDesc.setWriter(fileSinkDesc);
@@ -7177,25 +7160,16 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     return Hive.get().getNextTableWriteId(tbl.getDbName(), tbl.getTableName());
   }
 
-  private FileSinkDesc createFileSinkDesc(TableDesc table_desc,
+  private FileSinkDesc createFileSinkDesc(String dest, TableDesc table_desc,
       Partition dest_part, Path dest_path, int currentTableId,
       boolean destTableIsAcid, boolean destTableIsTemporary,
       boolean destTableIsMaterialization, Path queryTmpdir,
       SortBucketRSCtx rsCtx, DynamicPartitionCtx dpCtx, ListBucketingCtx lbCtx,
-      RowSchema fsRS, boolean canBeMerged, Long mmWriteId) throws SemanticException {
-    FileSinkDesc fileSinkDesc = new FileSinkDesc(
-      queryTmpdir,
-      table_desc,
-      conf.getBoolVar(HiveConf.ConfVars.COMPRESSRESULT),
-      currentTableId,
-      rsCtx.isMultiFileSpray(),
-      canBeMerged,
-      rsCtx.getNumFiles(),
-      rsCtx.getTotalFiles(),
-      rsCtx.getPartnCols(),
-      dpCtx,
-      dest_path,
-      mmWriteId);
+      RowSchema fsRS, boolean canBeMerged, Long mmWriteId, boolean isMmCtas) throws SemanticException {
+    FileSinkDesc fileSinkDesc = new FileSinkDesc(queryTmpdir, table_desc,
+        conf.getBoolVar(HiveConf.ConfVars.COMPRESSRESULT), currentTableId, rsCtx.isMultiFileSpray(),
+        canBeMerged, rsCtx.getNumFiles(), rsCtx.getTotalFiles(), rsCtx.getPartnCols(), dpCtx,
+        dest_path, mmWriteId, isMmCtas);
 
     boolean isHiveServerQuery = SessionState.get().isHiveServerQuery();
     fileSinkDesc.setHiveServerQuery(isHiveServerQuery);
@@ -7206,8 +7180,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         || (table_desc != null && MetaStoreUtils.isInsertOnlyTable(table_desc.getProperties()));
 
     if (destTableIsAcid && !isDestInsertOnly) {
-      AcidUtils.Operation wt = updating() ? AcidUtils.Operation.UPDATE :
-          (deleting() ? AcidUtils.Operation.DELETE : AcidUtils.Operation.INSERT);
+      AcidUtils.Operation wt = updating(dest) ? AcidUtils.Operation.UPDATE :
+          (deleting(dest) ? AcidUtils.Operation.DELETE : AcidUtils.Operation.INSERT);
       fileSinkDesc.setWriteType(wt);
       acidFileSinks.add(fileSinkDesc);
     }
@@ -7268,7 +7242,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     }
   }
 
-  private WriteEntity generateTableWriteEntity(Table dest_tab,
+  private WriteEntity generateTableWriteEntity(String dest, Table dest_tab,
       Map<String, String> partSpec, LoadTableDesc ltd,
       DynamicPartitionCtx dpCtx, boolean isNonNativeTable)
       throws SemanticException {
@@ -7278,7 +7252,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     // in the case of DP, we will register WriteEntity in MoveTask when the
     // list of dynamically created partitions are known.
     if ((dpCtx == null || dpCtx.getNumDPCols() == 0)) {
-      output = new WriteEntity(dest_tab, determineWriteType(ltd, isNonNativeTable));
+      output = new WriteEntity(dest_tab, determineWriteType(ltd, isNonNativeTable, dest));
       if (!outputs.add(output)) {
         throw new SemanticException(ErrorMsg.OUTPUT_SPECIFIED_MULTIPLE_TIMES
             .getMsg(dest_tab.getTableName()));
@@ -7287,7 +7261,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     if ((dpCtx != null) && (dpCtx.getNumDPCols() >= 0)) {
       // No static partition specified
       if (dpCtx.getNumSPCols() == 0) {
-        output = new WriteEntity(dest_tab, determineWriteType(ltd, isNonNativeTable), false);
+        output = new WriteEntity(dest_tab, determineWriteType(ltd, isNonNativeTable, dest), false);
         outputs.add(output);
       }
       // part of the partition specified
@@ -13474,7 +13448,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             AcidUtils.Operation.INSERT);
   }
 
-  private AcidUtils.Operation getAcidType(Table table, Class<? extends OutputFormat> of) {
+  private AcidUtils.Operation getAcidType(Table table, Class<? extends OutputFormat> of, String dest) {
     if (SessionState.get() == null || !SessionState.get().getTxnMgr().supportsAcid()) {
       return AcidUtils.Operation.NOT_ACID;
     } else if (MetaStoreUtils.isInsertOnlyTable(table.getParameters())) {

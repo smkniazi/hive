@@ -169,8 +169,6 @@ public class TestHive extends TestCase {
       tbl.setSerializationLib(LazySimpleSerDe.class.getName());
       tbl.setStoredAsSubDirectories(false);
 
-      tbl.setRewriteEnabled(false);
-
       // create table
       setNullCreateTableGrants();
       try {
@@ -229,8 +227,6 @@ public class TestHive extends TestCase {
       tbl.setSerdeParam(serdeConstants.SERIALIZATION_FORMAT, TBinaryProtocol.class
           .getName());
       tbl.setStoredAsSubDirectories(false);
-
-      tbl.setRewriteEnabled(false);
 
       setNullCreateTableGrants();
       try {

@@ -709,7 +709,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
     // merge work only needs input and output.
     MergeFileWork mergeWork = new MergeFileWork(mergeFilesDesc.getInputDir(),
-        mergeFilesDesc.getOutputDir(), mergeFilesDesc.getInputFormatClass().getName());
+        mergeFilesDesc.getOutputDir(), mergeFilesDesc.getInputFormatClass().getName(),
+        mergeFilesDesc.getTableDesc());
     LinkedHashMap<Path, ArrayList<String>> pathToAliases = new LinkedHashMap<>();
     ArrayList<String> inputDirstr = new ArrayList<String>(1);
     inputDirstr.add(mergeFilesDesc.getInputDir().toString());
@@ -3675,16 +3676,15 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       tbl.setDbName(Utilities.getDatabaseName(alterTbl.getNewName()));
       tbl.setTableName(Utilities.getTableName(alterTbl.getNewName()));
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDCOLS) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
-      String serializationLib = sd.getSerdeInfo().getSerializationLib();
-      AvroSerdeUtils.handleAlterTableForAvro(conf, serializationLib, tbl.getTTable().getParameters());
       List<FieldSchema> oldCols = (part == null
           ? tbl.getColsForMetastore() : part.getColsForMetastore());
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       List<FieldSchema> newCols = alterTbl.getNewCols();
+      String serializationLib = sd.getSerdeInfo().getSerializationLib();
       if (serializationLib.equals(
           "org.apache.hadoop.hive.serde.thrift.columnsetSerDe")) {
         console
-        .printInfo("Replacing columns for columnsetSerDe and changing to LazySimpleSerDe");
+            .printInfo("Replacing columns for columnsetSerDe and changing to LazySimpleSerDe");
         sd.getSerdeInfo().setSerializationLib(LazySimpleSerDe.class.getName());
         sd.setCols(newCols);
       } else {
@@ -3705,11 +3705,9 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         sd.setCols(oldCols);
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.RENAMECOLUMN) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
-      String serializationLib = sd.getSerdeInfo().getSerializationLib();
-      AvroSerdeUtils.handleAlterTableForAvro(conf, serializationLib, tbl.getTTable().getParameters());
       List<FieldSchema> oldCols = (part == null
           ? tbl.getColsForMetastore() : part.getColsForMetastore());
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       List<FieldSchema> newCols = new ArrayList<FieldSchema>();
       Iterator<FieldSchema> iterOldCols = oldCols.iterator();
       String oldName = alterTbl.getOldColName();
@@ -3721,7 +3719,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       // if orc table, restrict reordering columns as it will break schema evolution
       boolean isOrcSchemaEvolution =
           sd.getInputFormat().equals(OrcInputFormat.class.getName()) &&
-          isSchemaEvolutionEnabled(tbl);
+              isSchemaEvolutionEnabled(tbl);
       if (isOrcSchemaEvolution && (first || (afterCol != null && !afterCol.trim().isEmpty()))) {
         throw new HiveException(ErrorMsg.CANNOT_REORDER_COLUMNS, alterTbl.getOldName());
       }
@@ -3779,13 +3777,13 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
       sd.setCols(newCols);
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.REPLACECOLS) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       // change SerDe to LazySimpleSerDe if it is columnsetSerDe
       String serializationLib = sd.getSerdeInfo().getSerializationLib();
       if (serializationLib.equals(
           "org.apache.hadoop.hive.serde.thrift.columnsetSerDe")) {
         console
-        .printInfo("Replacing columns for columnsetSerDe and changing to LazySimpleSerDe");
+            .printInfo("Replacing columns for columnsetSerDe and changing to LazySimpleSerDe");
         sd.getSerdeInfo().setSerializationLib(LazySimpleSerDe.class.getName());
       } else if (!serializationLib.equals(
           MetadataTypedColumnsetSerDe.class.getName())
@@ -3798,7 +3796,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       }
       final boolean isOrcSchemaEvolution =
           serializationLib.equals(OrcSerde.class.getName()) &&
-          isSchemaEvolutionEnabled(tbl);
+              isSchemaEvolutionEnabled(tbl);
       // adding columns and limited integer type promotion is supported for ORC schema evolution
       if (isOrcSchemaEvolution) {
         final List<FieldSchema> existingCols = sd.getCols();
@@ -3814,10 +3812,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.DROPPROPS) {
       return alterTableDropProps(alterTbl, tbl, part);
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSERDEPROPS) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       sd.getSerdeInfo().getParameters().putAll(alterTbl.getProps());
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSERDE) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       String serdeName = alterTbl.getSerdeName();
       String oldSerdeName = sd.getSerdeInfo().getSerializationLib();
       // if orc table, restrict changing the serde as it can break schema evolution
@@ -3850,7 +3848,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         }
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDFILEFORMAT) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       // if orc table, restrict changing the file format as it can break schema evolution
       if (isSchemaEvolutionEnabled(tbl) &&
           sd.getInputFormat().equals(OrcInputFormat.class.getName())
@@ -3863,7 +3861,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         sd.getSerdeInfo().setSerializationLib(alterTbl.getSerdeName());
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDCLUSTERSORTCOLUMN) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       // validate sort columns and bucket columns
       List<String> columns = Utilities.getColumnNamesFromFieldSchema(tbl
           .getCols());
@@ -3888,7 +3886,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         sd.setSortCols(alterTbl.getSortColumns());
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ALTERLOCATION) {
-      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
+      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
       String newLocation = alterTbl.getNewLocation();
       try {
         URI locUri = new URI(newLocation);
@@ -3899,8 +3897,6 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       } catch (URISyntaxException e) {
         throw new HiveException(e);
       }
-      environmentContext.getProperties().remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
-
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSKEWEDBY) {
       // Validation's been done at compile time. no validation is needed here.
       List<String> skewedColNames = null;
@@ -3946,8 +3942,6 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           throw new HiveException(e);
         }
       }
-
-      environmentContext.getProperties().remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
     } else if (alterTbl.getOp() == AlterTableTypes.ALTERBUCKETNUM) {
       if (part != null) {
         if (part.getBucketCount() == alterTbl.getNumberBuckets()) {
@@ -4739,10 +4733,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       Table tbl = db.newTable(crtView.getViewName());
       tbl.setViewOriginalText(crtView.getViewOriginalText());
       if (crtView.isMaterialized()) {
-        tbl.setRewriteEnabled(crtView.isRewriteEnabled());
         tbl.setTableType(TableType.MATERIALIZED_VIEW);
       } else {
-        tbl.setViewExpandedText(crtView.getViewExpandedText());
         tbl.setTableType(TableType.VIRTUAL_VIEW);
       }
       tbl.setSerializationLib(null);
@@ -4829,7 +4821,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           HdfsUtils.HadoopFileStatus status = new HdfsUtils.HadoopFileStatus(conf, fs, location);
           FileStatus targetStatus = fs.getFileStatus(location);
           String targetGroup = targetStatus == null ? null : targetStatus.getGroup();
-          FileUtils.moveToTrash(fs, location, conf, isAutopurge);
+          FileUtils.moveToTrash(fs, location, conf);
           fs.mkdirs(location);
           HdfsUtils.setFullFileStatus(conf, status, targetGroup, fs, location, false);
         } else {
@@ -4837,7 +4829,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           if (statuses == null || statuses.length == 0) {
             continue;
           }
-          boolean success = Hive.trashFiles(fs, statuses, conf, isAutopurge);
+          boolean success = Hive.trashFiles(fs, statuses, conf);
           if (!success) {
             throw new HiveException("Error in deleting the contents of " + location.toString());
           }
