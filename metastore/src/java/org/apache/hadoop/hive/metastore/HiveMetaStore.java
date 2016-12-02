@@ -831,7 +831,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
      Iterator<String> users = Splitter.on(",").trimResults().omitEmptyStrings().split(userStr).iterator();
       if (!users.hasNext()) {
         LOG.info("No user is added in admin role, since config value "+ userStr +
-          " is in incorrect format. We accept comma seprated list of users.");
+          " is in incorrect format. We accept comma separated list of users.");
         return;
       }
       Role adminRole;
@@ -5002,7 +5002,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         Table origTbl = ms.getTable(index.getDbName(), index.getOrigTableName());
         if (origTbl == null) {
           throw new InvalidObjectException(
-              "Unable to add index because database or the orginal table do not exist");
+              "Unable to add index because database or the original table do not exist");
         }
 
         // set create time
@@ -5751,7 +5751,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       incrementCounter("add_role_member");
       firePreEvent(new PreAuthorizationCallEvent(this));
       if (PUBLIC.equals(roleName)) {
-        throw new MetaException("No user can be added to " + PUBLIC +". Since all users implictly"
+        throw new MetaException("No user can be added to " + PUBLIC +". Since all users implicitly"
         + " belong to " + PUBLIC + " role.");
       }
       Boolean ret = null;
@@ -5812,7 +5812,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       incrementCounter("create_role");
       firePreEvent(new PreAuthorizationCallEvent(this));
       if (PUBLIC.equals(role.getRoleName())) {
-         throw new MetaException(PUBLIC + " role implictly exists. It can't be created.");
+         throw new MetaException(PUBLIC + " role implicitly exists. It can't be created.");
       }
       Boolean ret = null;
       try {
@@ -8301,7 +8301,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           try {
             Thread.sleep(1000);
           } catch (InterruptedException e) {
-            LOG.warn("Signalling thread was interuppted: " + e.getMessage());
+            LOG.warn("Signalling thread was interrupted: " + e.getMessage());
           }
         } while (!server.isServing());
         startLock.lock();

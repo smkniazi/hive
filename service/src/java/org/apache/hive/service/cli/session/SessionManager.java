@@ -418,7 +418,7 @@ public class SessionManager extends CompositeService {
         session = (HiveSession) constructor.newInstance(sessionHandle, protocol, username, password,
           hiveConf, ipAddress, forwardedAddresses);
         } catch (Exception e) {
-          throw new HiveSQLException("Cannot initilize session class:" + sessionImplclassName, e);
+          throw new HiveSQLException("Cannot initialize session class:" + sessionImplclassName, e);
         }
       }
     }
