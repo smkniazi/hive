@@ -3187,7 +3187,7 @@ public final class Utilities {
             continue;
           }
 
-          pathsProcessed.add(path);
+          pathsProcessed.add(file);
 
           LOG.info("Adding input file " + path);
           if (!skipDummy && isEmptyPath(job, path, ctx)) {
