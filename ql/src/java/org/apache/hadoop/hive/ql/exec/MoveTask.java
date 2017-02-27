@@ -453,8 +453,15 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         work.getLoadTableWork().getWriteType(),
         tbd.getMmWriteId());
 
-    console.printInfo("\t Time taken to load dynamic partitions: "  +
-        (System.currentTimeMillis() - startTime)/1000.0 + " seconds");
+    // publish DP columns to its subscribers
+    if (dps != null && dps.size() > 0) {
+      pushFeed(FeedType.DYNAMIC_PARTITIONS, dp.values());
+    }
+
+    String loadTime = "\t Time taken to load dynamic partitions: "  +
+        (System.currentTimeMillis() - startTime)/1000.0 + " seconds";
+    console.printInfo(loadTime);
+    LOG.info(loadTime);
 
     if (dp.size() == 0 && conf.getBoolVar(HiveConf.ConfVars.HIVE_ERROR_ON_EMPTY_PARTITION)) {
       throw new HiveException("This query creates no partitions." +
