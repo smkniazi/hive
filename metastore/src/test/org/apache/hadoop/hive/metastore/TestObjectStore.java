@@ -224,15 +224,15 @@ public class TestObjectStore {
 
     String[] keys = objectStore.getMasterKeys();
     Assert.assertEquals(2, keys.length);
-    Assert.assertEquals(KEY1, keys[0]);
-    Assert.assertEquals(KEY2, keys[1]);
+    Assert.assertTrue((keys[0].equals(KEY1) && keys[1].equals(KEY2)) ||
+        (keys[0].equals(KEY2) && keys[1].equals(KEY1)) );
 
     objectStore.updateMasterKey(id1, "new" + KEY1);
     objectStore.updateMasterKey(id2, "new" + KEY2);
     keys = objectStore.getMasterKeys();
     Assert.assertEquals(2, keys.length);
-    Assert.assertEquals("new" + KEY1, keys[0]);
-    Assert.assertEquals("new" + KEY2, keys[1]);
+    Assert.assertTrue((keys[0].equals("new" + KEY1) && keys[1].equals("new" + KEY2)) ||
+        (keys[0].equals("new" + KEY2) && keys[1].equals("new" + KEY1)) );
 
     objectStore.removeMasterKey(id1);
     keys = objectStore.getMasterKeys();
@@ -251,7 +251,7 @@ public class TestObjectStore {
     objectStore.addRole(ROLE2, OWNER);
     List<String> roles = objectStore.listRoleNames();
     Assert.assertEquals(2, roles.size());
-    Assert.assertEquals(ROLE2, roles.get(1));
+    Assert.assertTrue(roles.get(1).equals(ROLE1) || roles.get(1).equals(ROLE2));
     Role role1 = objectStore.getRole(ROLE1);
     Assert.assertEquals(OWNER, role1.getOwnerName());
     objectStore.grantRole(role1, USER1, PrincipalType.USER, OWNER, PrincipalType.ROLE, true);
