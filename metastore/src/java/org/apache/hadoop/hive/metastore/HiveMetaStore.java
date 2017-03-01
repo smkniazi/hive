@@ -164,6 +164,8 @@ import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.common.util.ShutdownHookManager;
 import org.apache.hive.service.rpc.thrift.TCLIService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -7959,17 +7961,22 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     // any log specific settings via hiveconf will be ignored
     Properties hiveconf = cli.addHiveconfToSystemProperties();
 
-    // If the log4j.configuration property hasn't already been explicitly set,
-    // use Hive's default log4j configuration
-    if (System.getProperty("log4j.configurationFile") == null) {
-      // NOTE: It is critical to do this here so that log4j is reinitialized
-      // before any of the other core hive classes are loaded
-      try {
+    // NOTE: It is critical to do this here so that log4j is reinitialized
+    // before any of the other core hive classes are loaded
+    try {
+      // If the log4j.configuration property hasn't already been explicitly set,
+      // use Hive's default log4j configuration
+      if (System.getProperty("log4j.configurationFile") == null) {
         LogUtils.initHiveLog4j();
-      } catch (LogInitializationException e) {
-        HMSHandler.LOG.warn(e.getMessage());
+      }else{
+        //reconfigure log4j after settings via hiveconf are write into System Properties
+        LoggerContext context =  (LoggerContext)LogManager.getContext(false);
+        context.reconfigure();
       }
+    } catch (LogInitializationException e) {
+      HMSHandler.LOG.warn(e.getMessage());
     }
+     
     HiveStringUtils.startupShutdownMessage(HiveMetaStore.class, args, LOG);
 
     try {
