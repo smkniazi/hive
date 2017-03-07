@@ -45,6 +45,7 @@
         <map key-type="java.lang.String" value-type="java.lang.String"/>
         <join>
           <column name="DB_ID"/>
+          <foreign-key name="DB_PARAMS_DBS_FK" delete-action="cascade"/>
         </join>
         <key>
            <column name="PARAM_KEY" length="180" jdbc-type="VARCHAR"/>
@@ -122,6 +123,7 @@
       </field>
       <field name="database">
         <column name="DB_ID"/>
+        <foreign-key name="TBL_DB_FK" delete-action="cascade"/>
       </field>
       <field name="partitionKeys" table="PARTITION_KEYS" >
         <collection element-type="MFieldSchema"/>
@@ -131,6 +133,7 @@
             <column name="PKEY_NAME"/>
           </primary-key>
           <column name="TBL_ID"/>
+          <foreign-key name="PKEY_TBL_FK" delete-action="cascade"/>
         </join>
         <element>
           <embedded>
@@ -148,6 +151,7 @@
       </field>
       <field name="sd" dependent="true">
         <column name="SD_ID"/>
+        <foreign-key name="TBL_SD_FK" delete-action="cascade"/>
       </field>
       <field name="owner">
         <column name="OWNER" length="767" jdbc-type="VARCHAR"/>
@@ -165,6 +169,7 @@
         <map key-type="java.lang.String" value-type="java.lang.String"/>
         <join>
           <column name="TBL_ID"/>
+          <foreign-key name="PARAM_TBL_FK" delete-action="cascade"/>
         </join>
         <key>
            <column name="PARAM_KEY" length="256" jdbc-type="VARCHAR"/>
@@ -240,6 +245,7 @@
         <map key-type="java.lang.String" value-type="java.lang.String"/>
         <join>
           <column name="SERDE_ID"/>
+          <foreign-key name="SERDE_PARAMS_FK" delete-action="cascade"/>
         </join>
         <key>
            <column name="PARAM_KEY" length="256" jdbc-type="VARCHAR"/>
@@ -270,6 +276,7 @@
             <column name="COLUMN_NAME"/>
           </primary-key>
           <column name="CD_ID"/>
+          <foreign-key name="COLUMN_CDS_FK" delete-action="cascade"/>
         </join>
         <element>
           <embedded>
@@ -295,6 +302,7 @@
        <collection element-type="java.lang.String"/>
        <join>
          <column name="STRING_LIST_ID"/>
+         <foreign-key name="SKEWED_STRING_LIST_VALUES_FK" delete-action="cascade"/>
        </join>
        <element column="STRING_LIST_VALUE"/>
      </field>
@@ -332,6 +340,7 @@
         <collection element-type="java.lang.String"/>
         <join>
           <column name="SD_ID"/>
+          <foreign-key name="BCK_SD_FK" delete-action="cascade"/>
         </join>
         <element column="BUCKET_COL_NAME"/>
       </field>
@@ -339,6 +348,7 @@
         <collection element-type="MOrder"/>
         <join>
           <column name="SD_ID"/>
+          <foreign-key name="SORT_SD_FK" delete-action="cascade"/>
         </join>
         <element>
           <embedded>
@@ -355,6 +365,7 @@
         <map key-type="java.lang.String" value-type="java.lang.String"/>
         <join>
           <column name="SD_ID"/>
+          <foreign-key name="PARAMS_SD_FK" delete-action="cascade"/>
         </join>
         <key>
            <column name="PARAM_KEY" length="256" jdbc-type="VARCHAR"/>
@@ -367,6 +378,7 @@
         <collection element-type="java.lang.String"/>
         <join>
           <column name="SD_ID"/>
+          <foreign-key name="SK_COL_NAME_SDS_FK" delete-action="cascade"/>
         </join>
         <element column="SKEWED_COL_NAME"/>
       </field>
@@ -378,6 +390,7 @@
         <map key-type="MStringList" value-type="java.lang.String"/>
         <join>
           <column name="SD_ID"/>
+          <foreign-key name="SKVAL_SD_FK" delete-action="cascade"/>
         </join>
         <value>
           <column name="location" length="4000" jdbc-type="VARCHAR"/>
@@ -398,6 +411,7 @@
       </field>
       <field name="table">
         <column name="TBL_ID"/>
+        <foreign-key name="PART_TBL_FK" delete-action="cascade"/>
       </field>
       <field name="createTime">
         <column name="CREATE_TIME" jdbc-type="integer"/>
@@ -409,16 +423,19 @@
         <collection element-type="java.lang.String"/>
         <join>
           <column name="PART_ID"/>
+          <foreign-key name="PART_KEY_VAL_PART_FK" delete-action="cascade"/>
         </join>
         <element column="PART_KEY_VAL"/>
       </field>
       <field name="sd" dependent="true">
         <column name="SD_ID"/>
+        <foreign-key name="PART_SDS_FK" delete-action="cascade"/>
       </field>
       <field name="parameters" table="PARTITION_PARAMS">
         <map key-type="java.lang.String" value-type="java.lang.String"/>
         <join>
           <column name="PART_ID"/>
+          <foreign-key name="PART_PARAMS_PART_KF" delete-action="cascade"/>
         </join>
         <key>
            <column name="PARAM_KEY" length="256" jdbc-type="VARCHAR"/>
@@ -443,9 +460,11 @@
       </field>
       <field name="origTable">
         <column name="ORIG_TBL_ID"/>
+        <foreign-key name="TBL_IDX_FK" delete-action="cascade"/>
       </field>
       <field name="indexTable">
         <column name="INDEX_TBL_ID"/>
+        <foreign-key name="IDX_TBL_IDX_FK" delete-action="cascade"/>
       </field>
       <field name="indexHandlerClass">
         <column name="INDEX_HANDLER_CLASS" length="4000" jdbc-type="VARCHAR"/>
@@ -461,11 +480,13 @@
       </field>
       <field name="sd" dependent="true">
         <column name="SD_ID"/>
+        <foreign-key name="SD_IDX_FK" delete-action="cascade"/>
       </field>
       <field name="parameters" table="INDEX_PARAMS">
         <map key-type="java.lang.String" value-type="java.lang.String"/>
         <join>
           <column name="INDEX_ID"/>
+          <foreign-key name="IDX_PARAMS_ID_FK" delete-action="cascade"/>
         </join>
         <key>
            <column name="PARAM_KEY" length="256" jdbc-type="VARCHAR"/>
@@ -593,6 +614,7 @@
       </field>
       <field name="database">
         <column name="DB_ID" />
+        <foreign-key name="DB_PRIVS_DBS_FK" delete-action="cascade"/>
       </field>
       <field name="privilege">
         <column name="DB_PRIV" length="128" jdbc-type="VARCHAR"/>
@@ -634,6 +656,7 @@
       </field>
       <field name="table">
         <column name="TBL_ID"/>
+        <foreign-key name="PRIVS_TBL_FK" delete-action="cascade"/>
       </field>
       <field name="privilege">
         <column name="TBL_PRIV" length="128" jdbc-type="VARCHAR"/>
@@ -675,6 +698,7 @@
       </field>
       <field name="partition">
         <column name="PART_ID" />
+        <foreign-key name="PART_PRIVS_PART_FK" delete-action="cascade"/>
       </field>
       <field name="privilege">
         <column name="PART_PRIV" length="128" jdbc-type="VARCHAR"/>
@@ -717,6 +741,7 @@
       </field>
       <field name="table">
         <column name="TBL_ID" />
+        <foreign-key name="COL_PRIVS_TBL_FK" delete-action="cascade"/>
       </field>
       <field name="columnName">
         <column name="COLUMN_NAME" length="128" jdbc-type="VARCHAR"/>
@@ -762,6 +787,7 @@
       </field>
       <field name="partition">
         <column name="PART_ID" />
+        <foreign-key name="PART_PRIVS_PART_FK" delete-action="cascade"/>
       </field>
       <field name="columnName">
         <column name="COLUMN_NAME" length="128" jdbc-type="VARCHAR"/>
@@ -848,6 +874,7 @@
       </field>
       <field name="table">
         <column name="TBL_ID"/>
+        <foreign-key name="COL_STATS_TBL_FK" delete-action="cascade"/>
       </field>
       <field name="colName">
         <column name="COLUMN_NAME" length="128" jdbc-type="VARCHAR" allows-null="false"/>
@@ -912,6 +939,7 @@
       </field>
       <field name="partition">
         <column name="PART_ID"/>
+        <foreign-key name="PART_COL_STATS_PART_FK" delete-action="cascade"/>
       </field>
       <field name="colName">
         <column name="COLUMN_NAME" length="128" jdbc-type="VARCHAR" allows-null="false"/>
@@ -993,6 +1021,7 @@
       </field>
       <field name="database">
         <column name="DB_ID"/>
+        <foreign-key name="FUNC_DB_FK" delete-action="cascade"/>
       </field>
       <field name="functionType">
         <column name="FUNC_TYPE" jdbc-type="integer"/>
@@ -1013,6 +1042,7 @@
         <collection element-type="MResourceUri"/>
         <join>
           <column name="FUNC_ID"/>
+          <foreign-key name="FUNC_RU_FUNCS_FK" delete-action="cascade"/>
         </join>
         <element>
           <embedded>
