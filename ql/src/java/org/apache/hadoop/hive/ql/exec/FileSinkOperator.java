@@ -264,8 +264,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       // before attempting the rename below, check if our file exists.  If it doesn't,
       // then skip the rename.  If it does try it.  We could just blindly try the rename
       // and avoid the extra stat, but that would mask other errors.
-      boolean needToRename = (conf.getWriteType() != AcidUtils.Operation.UPDATE &&
-          conf.getWriteType() != AcidUtils.Operation.DELETE) || fs.exists(outPaths[idx]);
+      AcidUtils.Operation acidOp = conf.getWriteType();
+      boolean needToRename = outPaths[idx] != null && ((acidOp != AcidUtils.Operation.UPDATE
+          && acidOp != AcidUtils.Operation.DELETE) || fs.exists(outPaths[idx]));
       if (needToRename && outPaths[idx] != null) {
         Utilities.LOG14535.info("committing " + outPaths[idx] + " to " + finalPaths[idx] + " (" + isMmTable + ")");
         if (isMmTable) {
