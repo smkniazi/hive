@@ -1311,14 +1311,16 @@ public class Driver implements CommandProcessor {
 
     final ReentrantLock compileLock = tryAcquireCompileLock(isParallelEnabled,
       command);
+
+    if (metrics != null) {
+      metrics.decrementCounter(MetricsConstant.WAITING_COMPILE_OPS, 1);
+    }
+
     if (compileLock == null) {
       return ErrorMsg.COMPILE_LOCK_TIMED_OUT.getErrorCode();
     }
 
     try {
-      if (metrics != null) {
-        metrics.decrementCounter(MetricsConstant.WAITING_COMPILE_OPS, 1);
-      }
       ret = compile(command, true, deferClose);
     } finally {
       compileLock.unlock();
