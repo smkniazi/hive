@@ -25,9 +25,9 @@
   Non-indexed VARCHAR: 4000 bytes (max length on Oracle 9i/10g/11g)
 
 -->
-<jdo>  
-  <package name="org.apache.hadoop.hive.metastore.model">  
-    <class name="MDatabase" identity-type="datastore" table="DBS" detachable="true">  
+<jdo>
+  <package name="org.apache.hadoop.hive.metastore.model">
+    <class name="MDatabase" identity-type="datastore" table="DBS" detachable="true">
       <datastore-identity>
         <column name="DB_ID"/>
       </datastore-identity>
@@ -317,6 +317,15 @@
       </field>
       <field name="location">
         <column name="LOCATION" length="4000" jdbc-type="VARCHAR"/>
+      </field>
+      <field name="partitionId">
+        <column name="partition_id"/>
+      </field>
+      <field name="parentId">
+        <column name="parent_id"/>
+      </field>
+      <field name="name">
+        <column name="name" length="255" jdbc-type="VARCHAR"/>
       </field>
       <field name="inputFormat">
         <column name="INPUT_FORMAT" length="4000" jdbc-type="VARCHAR"/>
