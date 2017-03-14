@@ -18,6 +18,9 @@
 
 package org.apache.hadoop.hive.metastore.model;
 
+import org.apache.hadoop.hive.metastore.model.helper.INodeHelper;
+import org.apache.hadoop.hive.metastore.model.helper.InodePK;
+
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +40,19 @@ public class MStorageDescriptor {
   private Map<MStringList, String> skewedColValueLocationMaps;
   private boolean isStoredAsSubDirectories;
 
+  // Inode foreign key
+  private Integer partitionId;
+  private Integer parentId;
+  private String name;
+
   public MStorageDescriptor() {}
 
+  private void setInodePK() {
+    InodePK inodePK = INodeHelper.getInstance().getInodePK(this.location);
+    this.partitionId = inodePK.partitionId;
+    this.parentId = inodePK.parentId;
+    this.name = inodePK.name;
+  }
 
   /**
    * @param cd
@@ -56,7 +70,8 @@ public class MStorageDescriptor {
       String outputFormat, boolean isCompressed, int numBuckets, MSerDeInfo serDeInfo,
       List<String> bucketCols, List<MOrder> sortOrder, Map<String, String> parameters,
       List<String> skewedColNames, List<MStringList> skewedColValues,
-      Map<MStringList, String> skewedColValueLocationMaps, boolean storedAsSubDirectories) {
+      Map<MStringList, String> skewedColValueLocationMaps, boolean storedAsSubDirectories,
+      Integer partitionId, Integer parentId, String name) {
     this.cd = cd;
     this.location = location;
     this.inputFormat = inputFormat;
@@ -71,8 +86,14 @@ public class MStorageDescriptor {
     this.skewedColValues = skewedColValues;
     this.skewedColValueLocationMaps = skewedColValueLocationMaps;
     this.isStoredAsSubDirectories = storedAsSubDirectories;
-  }
+    this.partitionId = partitionId;
+    this.parentId = parentId;
+    this.name = name;
 
+    if (partitionId == null) {
+      setInodePK();
+    }
+  }
 
   /**
    * @return the location
@@ -86,8 +107,32 @@ public class MStorageDescriptor {
    */
   public void setLocation(String location) {
     this.location = location;
+    setInodePK();
   }
 
+  public Integer getPartitionId() {
+    return partitionId;
+  }
+
+  public void setPartitionId(Integer partitionId) {
+    this.partitionId = partitionId;
+  }
+
+  public Integer getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Integer parentId) {
+    this.parentId = parentId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
   /**
    * @return the isCompressed
    */
