@@ -18,7 +18,7 @@
 
 package org.apache.hadoop.hive.metastore.model;
 
-import org.apache.hadoop.hive.metastore.model.helper.INodeHelper;
+import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.metastore.model.helper.InodePK;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class MStorageDescriptor {
   public MStorageDescriptor() {}
 
   private void setInodePK() {
-    InodePK inodePK = INodeHelper.getInstance().getInodePK(this.location);
+    InodePK inodePK = InodeHelper.getInstance().getInodePK(this.location);
     this.partitionId = inodePK.partitionId;
     this.parentId = inodePK.parentId;
     this.name = inodePK.name;
