@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.hadoop.hdfs.server.common.Storage;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
@@ -46,6 +47,7 @@ import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
@@ -109,6 +111,10 @@ public class TestObjectStore {
     objectStore = new ObjectStore();
     objectStore.setConf(conf);
     dropAllStoreObjects(objectStore);
+
+    // Set up the INodeHelperClass
+    InodeHelper iNodeHelper = InodeHelper.getInstance();
+    iNodeHelper.initConnections(conf);
   }
 
   @After
@@ -146,7 +152,7 @@ public class TestObjectStore {
   public void testTableOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
     Database db1 = new Database(DB1, "description", "locationurl", null);
     objectStore.createDatabase(db1);
-    StorageDescriptor sd = new StorageDescriptor(null, "location", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    StorageDescriptor sd = new StorageDescriptor(null, "/tmp", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> params = new HashMap<String,String>();
     params.put("EXTERNAL", "false");
     Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
@@ -156,11 +162,13 @@ public class TestObjectStore {
     Assert.assertEquals(1, tables.size());
     Assert.assertEquals(TABLE1, tables.get(0));
 
-    Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
+    StorageDescriptor newSd = new StorageDescriptor(null, "/user", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, newSd, null, params, null, null, "MANAGED_TABLE");
     objectStore.alterTable(DB1, TABLE1, newTbl1);
     tables = objectStore.getTables(DB1, "new*");
     Assert.assertEquals(1, tables.size());
     Assert.assertEquals("new" + TABLE1, tables.get(0));
+
 
     objectStore.dropTable(DB1, "new" + TABLE1);
     tables = objectStore.getAllTables(DB1);

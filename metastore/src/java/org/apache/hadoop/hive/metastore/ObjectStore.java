@@ -1739,7 +1739,8 @@ public class ObjectStore implements RawStore, Configurable {
         convertToMStringLists((null == sd.getSkewedInfo()) ? null : sd.getSkewedInfo()
             .getSkewedColValues()),
         covertToMapMStringList((null == sd.getSkewedInfo()) ? null : sd.getSkewedInfo()
-            .getSkewedColValueLocationMaps()), sd.isStoredAsSubDirectories());
+            .getSkewedColValueLocationMaps()), sd.isStoredAsSubDirectories(),
+        null, null, null);
   }
 
   @Override
