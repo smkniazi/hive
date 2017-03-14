@@ -112,6 +112,7 @@ import org.apache.hadoop.hive.metastore.events.PreLoadPartitionDoneEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadDatabaseEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadTableEvent;
 import org.apache.hadoop.hive.metastore.filemeta.OrcFileMetadataHandler;
+import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.txn.TxnStore;
 import org.apache.hadoop.hive.metastore.txn.TxnUtils;
@@ -7048,6 +7049,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       boolean useCompactProtocol = conf.getBoolVar(ConfVars.METASTORE_USE_THRIFT_COMPACT_PROTOCOL);
       boolean useSSL = conf.getBoolVar(ConfVars.HIVE_METASTORE_USE_SSL);
       useSasl = conf.getBoolVar(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL);
+
+      // Fabio: Setup the InodeHelper class
+      InodeHelper inodeHelper = InodeHelper.getInstance();
+      inodeHelper.initConnections(conf);
 
       TProcessor processor;
       TTransportFactory transFactory;
