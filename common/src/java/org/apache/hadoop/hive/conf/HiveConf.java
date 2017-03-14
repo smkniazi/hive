@@ -220,6 +220,7 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTORE_CLIENT_SOCKET_LIFETIME,
       HiveConf.ConfVars.METASTOREPWD,
       HiveConf.ConfVars.METASTORECONNECTURLHOOK,
+      HiveConf.ConfVars.HOPSDBURLKEY,
       HiveConf.ConfVars.METASTORECONNECTURLKEY,
       HiveConf.ConfVars.METASTORESERVERMINTHREADS,
       HiveConf.ConfVars.METASTORESERVERMAXTHREADS,
@@ -240,6 +241,7 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTORE_STORE_MANAGER_TYPE,
       HiveConf.ConfVars.METASTORE_AUTO_CREATE_ALL,
       HiveConf.ConfVars.METASTORE_MYSQL_ENGINE,
+      HiveConf.ConfVars.METASTORE_MYSQL_CHARSET,
       HiveConf.ConfVars.METASTORE_TRANSACTION_ISOLATION,
       HiveConf.ConfVars.METASTORE_CACHE_LEVEL2,
       HiveConf.ConfVars.METASTORE_CACHE_LEVEL2_TYPE,
@@ -577,6 +579,11 @@ public class HiveConf extends Configuration {
     // a symbolic name to reference in the Hive source code. Properties with non-null
     // values will override any values set in the underlying Hadoop configuration.
     HADOOPBIN("hadoop.bin.path", findHadoopBinary(), "", true),
+    HOPSDBURLKEY("hops.db.ConnectionURL",
+        "jdbc:mysql:://myhost/hops",
+        "JDBC connect string to connect to HOPS db.\n" +
+        "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
+        "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
     YARNBIN("yarn.bin.path", findYarnBinary(), "", true),
     HIVE_FS_HAR_IMPL("fs.har.impl", "org.apache.hadoop.hive.shims.HiveHarFileSystem",
         "The implementation for accessing Hadoop Archives. Note that this won't be applicable to Hadoop versions less than 0.20"),
@@ -753,6 +760,7 @@ public class HiveConf extends Configuration {
         + "To enable auto create also set hive.metastore.schema.verification=false. Auto creation is not "
         + "recommended for production use cases, run schematool command instead." ),
     METASTORE_MYSQL_ENGINE("datanucleus.rdbms.mysql.engineType", "ndbcluster", "MySQL engine to use"),
+    METASTORE_MYSQL_CHARSET("datanucleus.rdbms.mysql.characterSet", "latin1", "MySQL character set to use"),
     METASTORE_SCHEMA_VERIFICATION("hive.metastore.schema.verification", true,
         "Enforce metastore schema version consistency.\n" +
         "True: Verify that version information stored in is compatible with one from Hive jars.  Also disable automatic\n" +
