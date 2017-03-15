@@ -3669,6 +3669,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     return false;
   }
 
+  private static StorageDescriptor retrieveStorageDescriptor(Table tbl, Partition part) {
+    return (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+  }
+
   private List<Task<?>> alterTableOrSinglePartition(
       AlterTableDesc alterTbl, Table tbl, Partition part) throws HiveException {
 
@@ -3678,7 +3682,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDCOLS) {
       List<FieldSchema> oldCols = (part == null
           ? tbl.getColsForMetastore() : part.getColsForMetastore());
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       List<FieldSchema> newCols = alterTbl.getNewCols();
       String serializationLib = sd.getSerdeInfo().getSerializationLib();
       if (serializationLib.equals(
@@ -3707,7 +3711,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.RENAMECOLUMN) {
       List<FieldSchema> oldCols = (part == null
           ? tbl.getColsForMetastore() : part.getColsForMetastore());
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       List<FieldSchema> newCols = new ArrayList<FieldSchema>();
       Iterator<FieldSchema> iterOldCols = oldCols.iterator();
       String oldName = alterTbl.getOldColName();
@@ -3812,10 +3816,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.DROPPROPS) {
       return alterTableDropProps(alterTbl, tbl, part);
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSERDEPROPS) {
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       sd.getSerdeInfo().getParameters().putAll(alterTbl.getProps());
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSERDE) {
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       String serdeName = alterTbl.getSerdeName();
       String oldSerdeName = sd.getSerdeInfo().getSerializationLib();
       // if orc table, restrict changing the serde as it can break schema evolution
@@ -3848,7 +3852,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         }
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDFILEFORMAT) {
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       // if orc table, restrict changing the file format as it can break schema evolution
       if (isSchemaEvolutionEnabled(tbl) &&
           sd.getInputFormat().equals(OrcInputFormat.class.getName())
@@ -3861,7 +3865,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         sd.getSerdeInfo().setSerializationLib(alterTbl.getSerdeName());
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDCLUSTERSORTCOLUMN) {
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       // validate sort columns and bucket columns
       List<String> columns = Utilities.getColumnNamesFromFieldSchema(tbl
           .getCols());
@@ -3886,7 +3890,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         sd.setSortCols(alterTbl.getSortColumns());
       }
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ALTERLOCATION) {
-      StorageDescriptor sd = (part == null ? tbl.getTTable().getSd() : part.getTPartition().getSd());
+      StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       String newLocation = alterTbl.getNewLocation();
       try {
         URI locUri = new URI(newLocation);
@@ -3984,16 +3988,26 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   }
 
   private List<Task<?>> generateRemoveMmTasks(Table tbl) throws HiveException {
-    // To avoid confusion from nested MM directories when table is converted back and forth,
-    // we will do the following - we will rename mm_ dirs to remove the prefix; we will also
-    // delete any directories that are not committed. Note that this relies on locks.
-    // Note also that we only do the renames AFTER the metastore operation commits.
-    // Deleting uncommitted things is safe, but moving stuff before we convert is data loss.
+    // To avoid confusion from nested MM directories when table is converted back and forth, we
+    // want to rename mm_ dirs to remove the prefix; however, given the unpredictable nested
+    // directory handling in Hive/MR, we will instead move all the files into the root directory.
+    // We will also delete any directories that are not committed. 
+    // Note that this relies on locks. Note also that we only do the renames AFTER the metastore
+    // operation commits. Deleting uncommitted things is safe, but moving stuff before we convert
+    // could cause data loss.
     List<Path> allMmDirs = new ArrayList<>();
     if (tbl.isStoredAsSubDirectories()) {
-      // TODO: support this?
+      // TODO: support this? we only bail because it's a PITA and hardly anyone seems to care.
       throw new HiveException("Converting list bucketed tables stored as subdirectories "
           + " to and from MM is not supported");
+    }
+    List<String> bucketCols = tbl.getBucketCols();
+    if (bucketCols != null && !bucketCols.isEmpty()
+        && HiveConf.getBoolVar(conf, ConfVars.HIVE_STRICT_CHECKS_BUCKETING)) {
+      throw new HiveException("Converting bucketed tables from MM is not supported by default; "
+          + "copying files from multiple MM directories may potentially break the buckets. You "
+          + "can set " + ConfVars.HIVE_STRICT_CHECKS_BUCKETING.varname
+          + " to false for this query if you want to force the conversion.");
     }
     Hive db = getHive();
     ValidWriteIds ids = db.getValidWriteIdsForTable(tbl.getDbName(), tbl.getTableName());
@@ -4011,16 +4025,20 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       handleRemoveMm(tbl.getDataLocation(), ids, allMmDirs);
     }
     List<Path> targetPaths = new ArrayList<>(allMmDirs.size());
+    List<String> targetPrefix = new ArrayList<>(allMmDirs.size());
     int prefixLen = ValidWriteIds.MM_PREFIX.length();
     for (int i = 0; i < allMmDirs.size(); ++i) {
       Path src = allMmDirs.get(i);
-      Path tgt = new Path(src.getParent(), src.getName().substring(prefixLen + 1));
-      Utilities.LOG14535.info("Will move " + src + " to " + tgt);
+      Path tgt = src.getParent();
+      String prefix = src.getName().substring(prefixLen + 1) + "_";
+      Utilities.LOG14535.info("Will move " + src + " to " + tgt + " (prefix " + prefix + ")");
       targetPaths.add(tgt);
+      targetPrefix.add(prefix);
     }
     // Don't set inputs and outputs - the locks have already been taken so it's pointless.
     MoveWork mw = new MoveWork(null, null, null, null, false);
-    mw.setMultiFilesDesc(new LoadMultiFilesDesc(allMmDirs, targetPaths, true, null, null));
+    mw.setMultiFilesDesc(new LoadMultiFilesDesc(
+        allMmDirs, targetPaths, targetPrefix, true, null, null));
     return Lists.<Task<?>>newArrayList(TaskFactory.get(mw, conf));
   }
 
