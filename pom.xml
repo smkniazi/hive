@@ -158,7 +158,6 @@
     <javolution.version>5.5.1</javolution.version>
     <jdo-api.version>3.0.1</jdo-api.version>
     <jetty.version>9.3.8.v20160314</jetty.version>
-    <jettison.version>1.1</jettison.version>
     <jersey.version>1.14</jersey.version>
     <!-- Glassfish jersey is included for Spark client test only -->
     <glassfish.jersey.version>2.22.2</glassfish.jersey.version>
@@ -625,15 +624,19 @@
         <version>${jetty.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.jettison</groupId>
-        <artifactId>jettison</artifactId>
-        <version>${jettison.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${jetty.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>

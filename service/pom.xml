@@ -113,8 +113,12 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-rewrite</artifactId>
+      <artifactId>jetty-runner</artifactId>
       <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <!-- used by thrift generated code -->
     <dependency>
@@ -168,6 +172,7 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>commons-collections</groupId>
@@ -203,6 +208,7 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>javax.servlet</groupId>

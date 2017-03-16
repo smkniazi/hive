@@ -46,7 +46,7 @@
       <version>${project.version}</version>
       <scope>provided</scope>
       <exclusions>
-       <exclusion>
+        <exclusion>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-runner</artifactId>
         </exclusion>
