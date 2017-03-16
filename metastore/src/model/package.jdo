@@ -393,7 +393,9 @@
       </field>
       <field name="skewedColValues" table="SKEWED_VALUES">
         <collection element-type="MStringList"/>
-        <join/>
+        <join>
+        <foreign-key name="SKVAL_SD_FK" delete-action="cascade"/>
+        </join>
       </field>
       <field name="skewedColValueLocationMaps" table="SKEWED_COL_VALUE_LOC_MAP">
         <map key-type="MStringList" value-type="java.lang.String"/>
