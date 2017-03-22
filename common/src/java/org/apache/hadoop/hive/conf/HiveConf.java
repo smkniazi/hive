@@ -579,11 +579,6 @@ public class HiveConf extends Configuration {
     // a symbolic name to reference in the Hive source code. Properties with non-null
     // values will override any values set in the underlying Hadoop configuration.
     HADOOPBIN("hadoop.bin.path", findHadoopBinary(), "", true),
-    HOPSDBURLKEY("hops.db.ConnectionURL",
-        "jdbc:mysql:://myhost/hops",
-        "JDBC connect string to connect to HOPS db.\n" +
-        "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
-        "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
     YARNBIN("yarn.bin.path", findYarnBinary(), "", true),
     HIVE_FS_HAR_IMPL("fs.har.impl", "org.apache.hadoop.hive.shims.HiveHarFileSystem",
         "The implementation for accessing Hadoop Archives. Note that this won't be applicable to Hadoop versions less than 0.20"),
@@ -597,6 +592,11 @@ public class HiveConf extends Configuration {
     HADOOPNUMREDUCERS("mapreduce.job.reduces", -1, "", true),
 
     // Metastore stuff. Be sure to update HiveConf.metaVars when you add something here!
+    HOPSDBURLKEY("hops.db.ConnectionURL",
+        "jdbc:mysql:://myhost/hops",
+        "JDBC connect string to connect to HOPS db.\n" +
+        "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
+        "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
     METASTOREWAREHOUSE("hive.metastore.warehouse.dir", "/user/hive/warehouse",
         "location of default database for the warehouse"),
     METASTOREURIS("hive.metastore.uris", "",

@@ -40,7 +40,7 @@ public class TestInodeHelper {
 
   @Test
   public void TestRandom() {
-    String path = "/user/glassfish/glassfish/warehouse/";
+    String path = "hdfs://10.0.2.15/user/glassfish/glassfish/warehouse/";
     InodePK inodePk = inodeHelper.getInodePK(path);
     Assert.assertEquals(inodePk, new InodePK(17,17,"warehouse"));
   }

@@ -126,8 +126,8 @@ public class TestObjectStore {
    */
   @Test
   public void testDatabaseOps() throws MetaException, InvalidObjectException, NoSuchObjectException {
-    Database db1 = new Database(DB1, "description", "locationurl", null);
-    Database db2 = new Database(DB2, "description", "locationurl", null);
+    Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
+    Database db2 = new Database(DB2, "description", "hdfs://0.0.0.0:0/locationurl", null);
     objectStore.createDatabase(db1);
     objectStore.createDatabase(db2);
 
@@ -150,9 +150,9 @@ public class TestObjectStore {
    */
   @Test
   public void testTableOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
-    Database db1 = new Database(DB1, "description", "locationurl", null);
+    Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
     objectStore.createDatabase(db1);
-    StorageDescriptor sd = new StorageDescriptor(null, "/tmp", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    StorageDescriptor sd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/tmp", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> params = new HashMap<String,String>();
     params.put("EXTERNAL", "false");
     Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
@@ -162,7 +162,7 @@ public class TestObjectStore {
     Assert.assertEquals(1, tables.size());
     Assert.assertEquals(TABLE1, tables.get(0));
 
-    StorageDescriptor newSd = new StorageDescriptor(null, "/user", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    StorageDescriptor newSd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/user", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, newSd, null, params, null, null, "MANAGED_TABLE");
     objectStore.alterTable(DB1, TABLE1, newTbl1);
     tables = objectStore.getTables(DB1, "new*");
@@ -182,9 +182,9 @@ public class TestObjectStore {
    */
   @Test
   public void testPartitionOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
-    Database db1 = new Database(DB1, "description", "locationurl", null);
+    Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
     objectStore.createDatabase(db1);
-    StorageDescriptor sd = new StorageDescriptor(null, "location", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    StorageDescriptor sd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/location", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> tableParams = new HashMap<String,String>();
     tableParams.put("EXTERNAL", "false");
     FieldSchema partitionKey1 = new FieldSchema("Country", serdeConstants.STRING_TYPE_NAME, "");

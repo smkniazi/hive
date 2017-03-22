@@ -265,9 +265,10 @@ class MetaStoreDirectSql {
       dbName = dbName.toLowerCase();
 
       String queryTextDbSelector= "select "
-          + "\"DB_ID\", \"NAME\", \"DB_LOCATION_URI\", \"DESC\", "
-          + "\"OWNER_NAME\", \"OWNER_TYPE\" "
-          + "FROM \"DBS\" where \"NAME\" = ? ";
+          + "\"DBS\".\"DB_ID\", \"DBS\".\"NAME\", \"SDS\".\"LOCATION\", \"DBS\".\"DESC\", "
+          + "\"DBS\".\"OWNER_NAME\", \"DBS\".\"OWNER_TYPE\" "
+          + "FROM \"DBS\" left outer join \"SDS\" on \"DBS\".\"SD_ID\" = \"SDS\".\"SD_ID\" "
+          + "where \"NAME\" = ? ";
       Object[] params = new Object[] { dbName };
       queryDbSelector = pm.newQuery("javax.jdo.query.SQL", queryTextDbSelector);
 

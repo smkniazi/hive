@@ -660,7 +660,11 @@ public class ObjectStore implements RawStore, Configurable {
     boolean commited = false;
     MDatabase mdb = new MDatabase();
     mdb.setName(db.getName().toLowerCase());
-    mdb.setLocationUri(db.getLocationUri());
+    // Fabio: map the locationUri to a MStorage descriptor
+    MStorageDescriptor msd = new MStorageDescriptor();
+    msd.setLocation(db.getLocationUri());
+    mdb.setSd(msd);
+
     mdb.setDescription(db.getDescription());
     mdb.setParameters(db.getParameters());
     mdb.setOwnerName(db.getOwnerName());
@@ -754,7 +758,7 @@ public class ObjectStore implements RawStore, Configurable {
     Database db = new Database();
     db.setName(mdb.getName());
     db.setDescription(mdb.getDescription());
-    db.setLocationUri(mdb.getLocationUri());
+    db.setLocationUri(mdb.getSd().getLocation());
     db.setParameters(convertMap(mdb.getParameters()));
     db.setOwnerName(mdb.getOwnerName());
     String type = mdb.getOwnerType();
@@ -6531,7 +6535,7 @@ public class ObjectStore implements RawStore, Configurable {
       List<MDatabase> mDBs = (List<MDatabase>) query.execute();
       pm.retrieveAll(mDBs);
       for (MDatabase mDB : mDBs) {
-        fsRoots.add(mDB.getLocationUri());
+        fsRoots.add(mDB.getSd().getLocation());
       }
       committed = commitTransaction();
       if (committed) {
@@ -6632,7 +6636,7 @@ public class ObjectStore implements RawStore, Configurable {
 
       for (MDatabase mDB : mDBs) {
         URI locationURI = null;
-        String location = mDB.getLocationUri();
+        String location = mDB.getSd().getLocation();
         try {
           locationURI = new Path(location).toUri();
         } catch (IllegalArgumentException e) {
@@ -6642,10 +6646,10 @@ public class ObjectStore implements RawStore, Configurable {
           badRecords.add(location);
         } else {
           if (shouldUpdateURI(locationURI, oldLoc)) {
-            String dbLoc = mDB.getLocationUri().replaceAll(oldLoc.toString(), newLoc.toString());
+            String dbLoc = mDB.getSd().getLocation().replaceAll(oldLoc.toString(), newLoc.toString());
             updateLocations.put(locationURI.toString(), dbLoc);
             if (!dryRun) {
-              mDB.setLocationUri(dbLoc);
+              mDB.getSd().setLocation(dbLoc);
             }
           }
         }
