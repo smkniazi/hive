@@ -21,6 +21,8 @@
  */
 package org.apache.hadoop.hive.metastore.model;
 
+import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
+
 import java.util.Map;
 
 /**
@@ -29,7 +31,7 @@ import java.util.Map;
  */
 public class MDatabase {
   private String name;
-  private String locationUri;
+  private MStorageDescriptor sd;
   private String description;
   private Map<String, String> parameters;
   private String ownerName;
@@ -43,13 +45,13 @@ public class MDatabase {
   /**
    * To create a database object
    * @param name of the database
-   * @param locationUri Location of the database in the warehouse
+   * @param sd StorageDescriptor of the database in the warehouse
    * @param description Comment describing the database
    */
-  public MDatabase(String name, String locationUri, String description,
+  public MDatabase(String name, MStorageDescriptor sd, String description,
       Map<String, String> parameters) {
     this.name = name;
-    this.locationUri = locationUri;
+    this.sd = sd;
     this.description = description;
     this.parameters = parameters;
   }
@@ -69,17 +71,17 @@ public class MDatabase {
   }
 
   /**
-   * @return the location_uri
+   * @return the StorageDescriptor of the Database
    */
-  public String getLocationUri() {
-    return locationUri;
+  public MStorageDescriptor getSd() {
+    return sd;
   }
 
   /**
-   * @param locationUri the locationUri to set
+   * @param sd the StorageDescriptor to set
    */
-  public void setLocationUri(String locationUri) {
-    this.locationUri = locationUri;
+  public void setSd(MStorageDescriptor sd) {
+    this.sd = sd;
   }
 
   /**
