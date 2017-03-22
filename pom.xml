@@ -60,6 +60,8 @@
 
     <!-- Build Properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.useIncrementalCompilation>false</maven.compiler.useIncrementalCompilation>
     <maven.repo.local>${settings.localRepository}</maven.repo.local>
     <hive.path.to.root>.</hive.path.to.root>
@@ -85,11 +87,11 @@
     <!-- Plugin and Plugin Dependency Versions -->
     <ant.contrib.version>1.0b3</ant.contrib.version>
     <datanucleus.maven.plugin.version>3.3.0-release</datanucleus.maven.plugin.version>
-    <maven.test.jvm.args>-Xmx1024m -XX:MaxPermSize=256M</maven.test.jvm.args>
+    <maven.test.jvm.args>-Xmx1024m</maven.test.jvm.args>
     <maven.antrun.plugin.version>1.7</maven.antrun.plugin.version>
     <maven.assembly.plugin.version>2.3</maven.assembly.plugin.version>
     <maven.checkstyle.plugin.version>2.12.1</maven.checkstyle.plugin.version>
-    <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
+    <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
     <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
     <maven.install.plugin.version>2.4</maven.install.plugin.version>
     <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
@@ -823,10 +825,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven.compiler.plugin.version}</version>
+<<<<<<< HEAD
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
           </configuration>
+=======
+>>>>>>> c3aec12363... HIVE-16281: Upgrade master branch to JDK8 (Aihua Xu, reviewed by Thejas M Nair, Sergio Peña, Sean Busbey)
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
