@@ -18,9 +18,11 @@
 
 package org.apache.hadoop.hive.metastore.model;
 
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.metastore.model.helper.InodePK;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +49,7 @@ public class MStorageDescriptor {
 
   public MStorageDescriptor() {}
 
-  private void setInodePK() {
+  private void setInodePK() throws MetaException{
     InodePK inodePK = InodeHelper.getInstance().getInodePK(this.location);
     this.partitionId = inodePK.partitionId;
     this.parentId = inodePK.parentId;
@@ -71,7 +73,7 @@ public class MStorageDescriptor {
       List<String> bucketCols, List<MOrder> sortOrder, Map<String, String> parameters,
       List<String> skewedColNames, List<MStringList> skewedColValues,
       Map<MStringList, String> skewedColValueLocationMaps, boolean storedAsSubDirectories,
-      Integer partitionId, Integer parentId, String name) {
+      Integer partitionId, Integer parentId, String name) throws MetaException {
     this.cd = cd;
     this.location = location;
     this.inputFormat = inputFormat;
@@ -105,7 +107,7 @@ public class MStorageDescriptor {
   /**
    * @param location the location to set
    */
-  public void setLocation(String location) {
+  public void setLocation(String location) throws MetaException{
     this.location = location;
     setInodePK();
   }

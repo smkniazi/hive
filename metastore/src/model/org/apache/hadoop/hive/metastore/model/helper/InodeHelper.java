@@ -11,6 +11,8 @@ import java.util.Properties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,7 @@ public class InodeHelper {
     }
   }
 
-  public InodePK getInodePK(String path) {
+  public InodePK getInodePK(String path) throws MetaException{
 
     // Check for null paths (Virtual view case)
     if (path == null){
@@ -99,9 +101,8 @@ public class InodeHelper {
     Connection dbConn = null;
     try {
       dbConn = getDbConn();
-    } catch (Exception e) {
-      logger.error("Cannot get a connection from the connection pool");
-      return new InodePK();
+    } catch (SQLException e) {
+      throw new MetaException(e.getMessage());
     }
 
     int inodeId = getInodeID(dbConn, path);
@@ -109,12 +110,14 @@ public class InodeHelper {
 
     try {
       dbConn.close();
-    } catch (Exception e) {}
+    } catch (SQLException e) {
+      throw new MetaException(e.getMessage());
+    }
 
     return pk;
   }
 
-  private int getInodeID(Connection dbConn, String path) {
+  private int getInodeID(Connection dbConn, String path) throws MetaException{
     // Get the path components
     String[] p;
     if (path.charAt(0) == '/') {
@@ -130,11 +133,10 @@ public class InodeHelper {
     //Get the right root node
     int curr = getRootNode(dbConn, p[0]);
     if (curr == -1) {
-      logger.warn("Could not resolve root inode at path: {0}", path);
       try {
         dbConn.close();
-      } catch (Exception e) {}
-      return  -1;
+      } catch (SQLException e) { }
+      throw new MetaException("Could not resolve inode at path: " + path);
     }
 
     //Move down the path
@@ -142,11 +144,10 @@ public class InodeHelper {
       int partitionId = calculatePartitionId(curr, p[i], i+1);
       int next = findByInodePK(dbConn, curr, p[i], partitionId);
       if (next == -1) {
-        logger.warn("Could not resolve inode at path: {0} and path-component " + i, path);
         try {
           dbConn.close();
-        } catch (Exception e) {}
-        return -1;
+        } catch (SQLException e) { }
+        throw new MetaException("Could not resolve inode at path: " + path);
       } else {
         curr = next;
       }
@@ -155,12 +156,12 @@ public class InodeHelper {
     return curr;
   }
 
-  private int getRootNode(Connection conn, String name) {
+  private int getRootNode(Connection conn, String name) throws MetaException{
     int partitionId = calculatePartitionId(ROOT_INODE_ID, name, ROOT_DIR_DEPTH + 1);
     return findByInodePK(conn, ROOT_INODE_ID, name, partitionId);
   }
 
-  private int findByInodePK(Connection conn, int parentId, String name, int partitionId){
+  private int findByInodePK(Connection conn, int parentId, String name, int partitionId) throws MetaException{
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
@@ -171,12 +172,12 @@ public class InodeHelper {
       stmt.setInt(1, partitionId);
       stmt.setInt(2, parentId);
       stmt.setString(3, name);
-      rs= stmt.executeQuery();
-      if (rs.next()){
+      rs = stmt.executeQuery();
+      if (rs.next()) {
         return rs.getInt("id");
       }
-    } catch (SQLException ex) {
-
+    } catch (SQLException e) {
+      throw new MetaException(e.getMessage());
     } finally {
       try {
         if (rs != null) {
@@ -185,38 +186,39 @@ public class InodeHelper {
         if (stmt != null) {
           stmt.close();
         }
-      } catch (SQLException ex) {
-        logger.warn("Cannot close resources");
+      } catch (SQLException e) {
+        throw new MetaException(e.getMessage());
       }
     }
 
     return -1;
   }
 
-  private InodePK findInodePK(Connection dbConn, int id) {
+  private InodePK findInodePK(Connection dbConn, int id) throws MetaException{
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
       stmt = dbConn.prepareStatement(
           "SELECT partition_id, parent_id, name FROM hdfs_inodes WHERE id = ?");
       stmt.setInt(1, id);
-      rs= stmt.executeQuery();
-      if (rs.next()){
+      rs = stmt.executeQuery();
+      if (rs.next()) {
         return new InodePK(rs.getInt("partition_id"),
             rs.getInt("parent_id"),
             rs.getString("name"));
       }
-    } catch (SQLException ex) {
+    } catch (SQLException e) {
+      throw new MetaException(e.getMessage());
     } finally {
-      try {
+      try{
         if (rs != null) {
-          rs.close();
+            rs.close();
         }
         if (stmt != null) {
-          stmt.close();
+            stmt.close();
         }
-      } catch (SQLException ex) {
-        logger.warn("Cannot close resources");
+      } catch (SQLException e) {
+        throw new MetaException(e.getMessage());
       }
     }
 

@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -3423,7 +3424,7 @@ public class ObjectStore implements RawStore, Configurable {
     }
   }
 
-  private void copyMSD(MStorageDescriptor newSd, MStorageDescriptor oldSd) {
+  private void copyMSD(MStorageDescriptor newSd, MStorageDescriptor oldSd) throws MetaException{
     oldSd.setLocation(newSd.getLocation());
     MColumnDescriptor oldCD = oldSd.getCD();
     // If the columns of the old column descriptor != the columns of the new one,
@@ -6622,7 +6623,7 @@ public class ObjectStore implements RawStore, Configurable {
   * is used by HiveMetaTool. This API **shouldn't** be exposed via Thrift.
   *
   */
-  public UpdateMDatabaseURIRetVal updateMDatabaseURI(URI oldLoc, URI newLoc, boolean dryRun) {
+  public UpdateMDatabaseURIRetVal updateMDatabaseURI(URI oldLoc, URI newLoc, boolean dryRun) throws MetaException{
     boolean committed = false;
     Query query = null;
     Map<String, String> updateLocations = new HashMap<String, String>();
@@ -6846,7 +6847,7 @@ public class ObjectStore implements RawStore, Configurable {
   *
   */
   public UpdateMStorageDescriptorTblURIRetVal updateMStorageDescriptorTblURI(URI oldLoc,
-      URI newLoc, boolean isDryRun) {
+      URI newLoc, boolean isDryRun) throws MetaException {
     boolean committed = false;
     Query query = null;
     Map<String, String> updateLocations = new HashMap<String, String>();
