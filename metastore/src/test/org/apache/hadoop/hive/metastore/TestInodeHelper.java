@@ -1,6 +1,7 @@
 package org.apache.hadoop.hive.metastore;
 
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.metastore.model.helper.InodePK;
 import org.junit.After;
@@ -9,6 +10,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.sql.SQLException;
 
 public class TestInodeHelper {
 
@@ -27,19 +30,19 @@ public class TestInodeHelper {
   }
 
   @Test
-  public void TestTmp() {
+  public void TestTmp() throws MetaException{
     InodePK inodePk = inodeHelper.getInodePK("hdfs://10.0.2.15:8020/tmp");
     Assert.assertEquals(inodePk, new InodePK(3564026, 1, "tmp"));
   }
 
   @Test
-  public void TestEmpty() {
+  public void TestEmpty() throws MetaException{
     InodePK inodePk = inodeHelper.getInodePK(null);
     Assert.assertEquals(inodePk, new InodePK());
   }
 
   @Test
-  public void TestRandom() {
+  public void TestRandom() throws MetaException{
     String path = "hdfs://10.0.2.15/user/glassfish/glassfish/warehouse/";
     InodePK inodePk = inodeHelper.getInodePK(path);
     Assert.assertEquals(inodePk, new InodePK(17,17,"warehouse"));

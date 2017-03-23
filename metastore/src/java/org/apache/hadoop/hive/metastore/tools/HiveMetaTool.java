@@ -33,6 +33,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.fs.Path;
@@ -326,7 +327,7 @@ public class HiveMetaTool {
   }
 
   public void updateFSRootLocation(URI oldURI, URI newURI, String serdePropKey, String
-      tablePropKey, boolean isDryRun) {
+      tablePropKey, boolean isDryRun) throws MetaException {
     HiveConf hiveConf = new HiveConf(HiveMetaTool.class);
     initObjectStore(hiveConf);
 
@@ -372,7 +373,7 @@ public class HiveMetaTool {
     System.exit(1);
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws MetaException{
     HiveMetaTool metaTool = new HiveMetaTool();
     metaTool.init();
     CommandLineParser parser = new GnuParser();
