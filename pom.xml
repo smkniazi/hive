@@ -810,6 +810,12 @@
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.skyscreamer</groupId>
+      <artifactId>jsonassert</artifactId>
+      <version>1.4.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -825,13 +831,10 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven.compiler.plugin.version}</version>
-<<<<<<< HEAD
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
           </configuration>
-=======
->>>>>>> c3aec12363... HIVE-16281: Upgrade master branch to JDK8 (Aihua Xu, reviewed by Thejas M Nair, Sergio Peña, Sean Busbey)
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
