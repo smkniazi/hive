@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.management.ObjectName;
 
+import org.apache.hadoop.hive.llap.daemon.impl.LlapDaemon;
 import org.apache.hadoop.hive.llap.daemon.impl.StatsRecordingThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
