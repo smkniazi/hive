@@ -415,6 +415,7 @@ public class TaskRunnerCallable extends CallableWithNdc<TaskRunner2Result> {
       taskReporter.shutdown();
     }
     if (umbilical != null) {
+      // TODO: Can this be moved out of the main callback path
       RPC.stopProxy(umbilical);
     }
   }
