@@ -45,6 +45,7 @@ import org.apache.hadoop.hive.common.HiveStatsUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidWriteIds;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.conf.HiveConfUtil;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.CompilationOpContext;
 import org.apache.hadoop.hive.ql.ErrorMsg;
@@ -593,13 +594,10 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   }
 
   private void logOutputFormatError(Configuration hconf, HiveException ex) {
-    StringWriter errorWriter = new StringWriter();
+    StringBuilder errorWriter = new StringBuilder();
     errorWriter.append("Failed to create output format; configuration: ");
-    try {
-      Configuration.dumpConfiguration(hconf, errorWriter);
-    } catch (IOException ex2) {
-      errorWriter.append("{ failed to dump configuration: " + ex2.getMessage() + " }");
-    }
+    // redact sensitive information before logging
+    HiveConfUtil.dumpConfig(hconf, errorWriter);
     Properties tdp = null;
     if (this.conf.getTableInfo() != null
         && (tdp = this.conf.getTableInfo().getProperties()) != null) {
