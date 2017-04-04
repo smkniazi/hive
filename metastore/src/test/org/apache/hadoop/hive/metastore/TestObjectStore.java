@@ -185,51 +185,6 @@ public class TestObjectStore {
   }
 
   /**
-   * Test notification operations
-   */
-  @Test
-  public void testNotificationOps() throws InterruptedException {
-    final int NO_EVENT_ID = 0;
-    final int FIRST_EVENT_ID = 1;
-    final int SECOND_EVENT_ID = 2;
-
-    NotificationEvent event =
-        new NotificationEvent(0, 0, EventMessage.EventType.CREATE_DATABASE.toString(), "");
-    NotificationEventResponse eventResponse;
-    CurrentNotificationEventId eventId;
-
-    // Verify that there is no notifications available yet
-    eventId = objectStore.getCurrentNotificationEventId();
-    Assert.assertEquals(NO_EVENT_ID, eventId.getEventId());
-
-    // Verify that addNotificationEvent() updates the NotificationEvent with the new event ID
-    objectStore.addNotificationEvent(event);
-    Assert.assertEquals(FIRST_EVENT_ID, event.getEventId());
-    objectStore.addNotificationEvent(event);
-    Assert.assertEquals(SECOND_EVENT_ID, event.getEventId());
-
-    // Verify that objectStore fetches the latest notification event ID
-    eventId = objectStore.getCurrentNotificationEventId();
-    Assert.assertEquals(SECOND_EVENT_ID, eventId.getEventId());
-
-    // Verify that getNextNotification() returns all events
-    eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
-    Assert.assertEquals(2, eventResponse.getEventsSize());
-    Assert.assertEquals(FIRST_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
-    Assert.assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(1).getEventId());
-    // Verify that getNextNotification(last) returns events after a specified event
-    eventResponse = objectStore.getNextNotification(new NotificationEventRequest(FIRST_EVENT_ID));
-    Assert.assertEquals(1, eventResponse.getEventsSize());
-    Assert.assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
-
-    // Verify that cleanNotificationEvents() cleans up all old notifications
-    Thread.sleep(1);
-    objectStore.cleanNotificationEvents(1);
-    eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
-    Assert.assertEquals(0, eventResponse.getEventsSize());
-  }
-
-  /**
    * Test database operations
    */
   @Test
