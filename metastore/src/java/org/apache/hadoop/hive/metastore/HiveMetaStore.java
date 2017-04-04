@@ -922,7 +922,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         if (!transactionalListeners.isEmpty()) {
           transactionalListenersResponses =
               MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
-                                                    EventMessage.EventType.CREATE_DATABASE,
+                                                    EventType.CREATE_DATABASE,
                                                     new CreateDatabaseEvent(db, true, this));
         }
 
@@ -2685,7 +2685,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         if (!transactionalListeners.isEmpty()) {
           transactionalListenerResponses =
               MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
-                                                    EventMessage.EventType.ADD_PARTITION,
+                                                    EventType.ADD_PARTITION,
                                                     new AddPartitionEvent(tbl, partitionSpecProxy, true, this));
         }
 
