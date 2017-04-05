@@ -32,6 +32,7 @@ public class NanoTimeUtils {
   static final long NANOS_PER_DAY = TimeUnit.DAYS.toNanos(1);
 
   private static final ThreadLocal<Calendar> parquetGMTCalendar = new ThreadLocal<Calendar>();
+  private static final ThreadLocal<Calendar> parquetUTCCalendar = new ThreadLocal<Calendar>();
   private static final ThreadLocal<Calendar> parquetLocalCalendar = new ThreadLocal<Calendar>();
 
   private static Calendar getGMTCalendar() {
@@ -41,6 +42,15 @@ public class NanoTimeUtils {
     }
     return parquetGMTCalendar.get();
   }
+
+  private static Calendar getUTCCalendar() {
+    //Calendar.getInstance calculates the current-time needlessly, so cache an instance.
+    if (parquetUTCCalendar.get() == null) {
+      parquetUTCCalendar.set(Calendar.getInstance(TimeZone.getTimeZone("UTC")));
+    }
+    return parquetUTCCalendar.get();
+  }
+
 
   private static Calendar getLocalCalendar() {
     if (parquetLocalCalendar.get() == null) {
@@ -55,22 +65,44 @@ public class NanoTimeUtils {
     return calendar;
   }
 
-  public static NanoTime getNanoTime(Timestamp ts, boolean skipConversion) {
 
-    Calendar calendar = getCalendar(skipConversion);
-    calendar.setTime(ts);
-    int year = calendar.get(Calendar.YEAR);
-    if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
+  @Deprecated
+  public static NanoTime getNanoTime(Timestamp ts, boolean skipConversion) {
+    return getNanoTime(ts, getCalendar(skipConversion));
+  }
+
+  /**
+   * Constructs a julian date from the floating time Timestamp.
+   * If the timezone of the calendar is different from the current local
+   * timezone, then the timestamp value will be adjusted.
+   * Possible adjustments:
+   *   - UTC Ts -> Local Ts copied to TableTZ Calendar -> UTC Ts -> JD
+   * @param ts floating time timestamp to store
+   * @param calendar timezone used to adjust the timestamp for parquet
+   * @return adjusted julian date
+   */
+  public static NanoTime getNanoTime(Timestamp ts, Calendar calendar) {
+
+    Calendar localCalendar = getLocalCalendar();
+    localCalendar.setTimeInMillis(ts.getTime());
+
+    Calendar adjustedCalendar = copyToCalendarWithTZ(localCalendar, calendar);
+
+    Calendar utcCalendar = getUTCCalendar();
+    utcCalendar.setTimeInMillis(adjustedCalendar.getTimeInMillis());
+
+    int year = utcCalendar.get(Calendar.YEAR);
+    if (utcCalendar.get(Calendar.ERA) == GregorianCalendar.BC) {
       year = 1 - year;
     }
     JDateTime jDateTime = new JDateTime(year,
-        calendar.get(Calendar.MONTH) + 1,  //java calendar index starting at 1.
-        calendar.get(Calendar.DAY_OF_MONTH));
+        utcCalendar.get(Calendar.MONTH) + 1,  //java calendar index starting at 1.
+        utcCalendar.get(Calendar.DAY_OF_MONTH));
     int days = jDateTime.getJulianDayNumber();
 
-    long hour = calendar.get(Calendar.HOUR_OF_DAY);
-    long minute = calendar.get(Calendar.MINUTE);
-    long second = calendar.get(Calendar.SECOND);
+    long hour = utcCalendar.get(Calendar.HOUR_OF_DAY);
+    long minute = utcCalendar.get(Calendar.MINUTE);
+    long second = utcCalendar.get(Calendar.SECOND);
     long nanos = ts.getNanos();
     long nanosOfDay = nanos + NANOS_PER_SECOND * second + NANOS_PER_MINUTE * minute +
         NANOS_PER_HOUR * hour;
@@ -78,7 +110,24 @@ public class NanoTimeUtils {
     return new NanoTime(days, nanosOfDay);
   }
 
+  @Deprecated
   public static Timestamp getTimestamp(NanoTime nt, boolean skipConversion) {
+    return getTimestamp(nt, getCalendar(skipConversion));
+  }
+
+  /**
+   * Constructs a floating time Timestamp from the julian date contained in NanoTime.
+   * If the timezone of the calendar is different from the current local
+   * timezone, then the timestamp value will be adjusted.
+   * Possible adjustments:
+   *   - JD -> UTC Ts -> TableTZ Calendar copied to LocalTZ Calendar -> UTC Ts
+   * @param nt stored julian date
+   * @param calendar timezone used to adjust the timestamp for parquet
+   * @return floating time represented as a timestamp. Guaranteed to display
+   * the same when formatted using the current local timezone as with the local
+   * timezone at the time it was stored.
+   */
+  public static Timestamp getTimestamp(NanoTime nt, Calendar calendar) {
     int julianDay = nt.getJulianDay();
     long nanosOfDay = nt.getTimeOfDayNanos();
 
@@ -91,10 +140,12 @@ public class NanoTimeUtils {
     }
 
     JDateTime jDateTime = new JDateTime((double) julianDay);
-    Calendar calendar = getCalendar(skipConversion);
-    calendar.set(Calendar.YEAR, jDateTime.getYear());
-    calendar.set(Calendar.MONTH, jDateTime.getMonth() - 1); //java calendar index starting at 1.
-    calendar.set(Calendar.DAY_OF_MONTH, jDateTime.getDay());
+
+    Calendar utcCalendar = getUTCCalendar();
+    utcCalendar.clear();
+    utcCalendar.set(Calendar.YEAR, jDateTime.getYear());
+    utcCalendar.set(Calendar.MONTH, jDateTime.getMonth() - 1); //java calendar index starting at 1.
+    utcCalendar.set(Calendar.DAY_OF_MONTH, jDateTime.getDay());
 
     int hour = (int) (remainder / (NANOS_PER_HOUR));
     remainder = remainder % (NANOS_PER_HOUR);
@@ -103,11 +154,45 @@ public class NanoTimeUtils {
     int seconds = (int) (remainder / (NANOS_PER_SECOND));
     long nanos = remainder % NANOS_PER_SECOND;
 
-    calendar.set(Calendar.HOUR_OF_DAY, hour);
-    calendar.set(Calendar.MINUTE, minutes);
-    calendar.set(Calendar.SECOND, seconds);
-    Timestamp ts = new Timestamp(calendar.getTimeInMillis());
+    utcCalendar.set(Calendar.HOUR_OF_DAY, hour);
+    utcCalendar.set(Calendar.MINUTE, minutes);
+    utcCalendar.set(Calendar.SECOND, seconds);
+
+    calendar.setTimeInMillis(utcCalendar.getTimeInMillis());
+
+    Calendar adjusterCalendar = copyToCalendarWithTZ(calendar, getLocalCalendar());
+
+    Timestamp ts = new Timestamp(adjusterCalendar.getTimeInMillis());
     ts.setNanos((int) nanos);
     return ts;
+  }
+
+
+  /**
+   * Check if the string id is a valid java TimeZone id.
+   * TimeZone#getTimeZone will return "GMT" if the id cannot be understood.
+   * @param timeZoneID
+   */
+  public static void validateTimeZone(String timeZoneID) {
+    if (TimeZone.getTimeZone(timeZoneID).getID().equals("GMT")
+        && !"GMT".equals(timeZoneID)) {
+      throw new IllegalStateException(
+          "Unexpected timezone id found for parquet int96 conversion: " + timeZoneID);
+    }
+  }
+
+  private static Calendar copyToCalendarWithTZ(Calendar from, Calendar to) {
+    if(from.getTimeZone().getID().equals(to.getTimeZone().getID())) {
+      return from;
+    } else {
+      to.set(Calendar.ERA, from.get(Calendar.ERA));
+      to.set(Calendar.YEAR, from.get(Calendar.YEAR));
+      to.set(Calendar.MONTH, from.get(Calendar.MONTH));
+      to.set(Calendar.DAY_OF_MONTH, from.get(Calendar.DAY_OF_MONTH));
+      to.set(Calendar.HOUR_OF_DAY, from.get(Calendar.HOUR_OF_DAY));
+      to.set(Calendar.MINUTE, from.get(Calendar.MINUTE));
+      to.set(Calendar.SECOND, from.get(Calendar.SECOND));
+      return to;
+    }
   }
 }
