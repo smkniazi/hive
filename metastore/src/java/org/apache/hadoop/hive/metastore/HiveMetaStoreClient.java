@@ -408,6 +408,11 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
         LOG.info("Trying to connect to metastore with URI " + store);
 
         try {
+          // In HopsHive the meaning of useSSL is different. We require client authentication.
+          // Moreover, the information regarding truststore location and password are written
+          // in a different file. We removed the properties from HiveConf to avoid confusion.
+          // Hence, here the upstream branch of the if (useSSL) is missing.
+
           if (useSasl) {
             // Wrap thrift connection with SASL for secure connection.
             try {
@@ -422,25 +427,27 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
               String tokenSig = conf.getVar(ConfVars.METASTORE_TOKEN_SIGNATURE);
               // tokenSig could be null
               tokenStrForm = Utils.getTokenStrForm(tokenSig);
-              transport = new TSocket(store.getHost(), store.getPort(), clientSocketTimeout);
 
               if(tokenStrForm != null) {
                 // authenticate using delegation tokens via the "DIGEST" mechanism
                 transport = authBridge.createClientTransport(null, store.getHost(),
                     "DIGEST", tokenStrForm, transport,
-                        MetaStoreUtils.getMetaStoreSaslProperties(conf));
+                        // Se comment above on why this is hardcoded to false
+                        MetaStoreUtils.getMetaStoreSaslProperties(conf, false));
               } else {
                 String principalConfig =
                     conf.getVar(HiveConf.ConfVars.METASTORE_KERBEROS_PRINCIPAL);
                 transport = authBridge.createClientTransport(
                     principalConfig, store.getHost(), "KERBEROS", null,
-                    transport, MetaStoreUtils.getMetaStoreSaslProperties(conf));
+                    // Se comment above on why this is hardcoded to false
+                    transport, MetaStoreUtils.getMetaStoreSaslProperties(conf, false));
               }
             } catch (IOException ioe) {
               LOG.error("Couldn't create client transport", ioe);
               throw new MetaException(ioe.toString());
             }
           } else {
+
             if (hopsTLS) {
               try {
                 hopsSecurityMaterial = getHopsSecurityMaterial();

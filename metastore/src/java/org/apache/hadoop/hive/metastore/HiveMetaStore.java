@@ -7353,12 +7353,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
             ServerMode.METASTORE);
         saslServer.setSecretManager(delegationTokenManager.getSecretManager());
         transFactory = saslServer.createTransportFactory(
-                MetaStoreUtils.getMetaStoreSaslProperties(conf));
+                MetaStoreUtils.getMetaStoreSaslProperties(conf, useSSL));
         processor = saslServer.wrapProcessor(
           new ThriftHiveMetastore.Processor<IHMSHandler>(handler));
-        serverSocket = TServerSocketFactory.getServerSocket(conf,
-                TServerSocketFactory.TSocketType.PLAIN, null, port);
-
         LOG.info("Starting DB backed MetaStore Server in Secure Mode");
       } else {
         // we are in unsecure mode.
@@ -7376,32 +7373,35 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           processor = new TSetIpAddressProcessor<IHMSHandler>(handler);
           LOG.info("Starting DB backed MetaStore Server");
         }
+      }
 
-        if (!useSSL) {
-          serverSocket = TServerSocketFactory.getServerSocket(conf,
-                  TServerSocketFactory.TSocketType.PLAIN, null, port);
-        } else {
-          // Create an instance of the CertificateLocalizationService to keep the track
-          // of the certificates sent by the users
-          certLocService = new CertificateLocalizationService(CertificateLocalizationService.ServiceType.HM);
-          certLocService.init(conf);
-          certLocService.start();
-          CertificateLocalizationCtx.getInstance().setCertificateLocalization(certLocService);
+      // In HopsHive for useSSL we mean, TLS with client authentication
+      // This requires the client to send the certificate so the authenticity
+      // of the requerst can be validated.
+      if (!useSSL) {
+        serverSocket = TServerSocketFactory.getServerSocket(conf,
+            TServerSocketFactory.TSocketType.PLAIN, null, port);
+      } else {
+        // Create an instance of the CertificateLocalizationService to keep the track
+        // of the certificates sent by the users
+        certLocService = new CertificateLocalizationService(CertificateLocalizationService.ServiceType.HM);
+        certLocService.init(conf);
+        certLocService.start();
+        CertificateLocalizationCtx.getInstance().setCertificateLocalization(certLocService);
 
-          // Add shutdown hook to shutdown the CertificateLocalizationService
-          ShutdownHookManager.addShutdownHook(new Runnable() {
-            @Override
-            public void run() {
-              String shutdownMsg = "Shutting down the CertificateLocalizationService.";
-              HMSHandler.LOG.info(shutdownMsg);
-              certLocService.stop();
-            }
-          });
+        // Add shutdown hook to shutdown the CertificateLocalizationService
+        ShutdownHookManager.addShutdownHook(new Runnable() {
+          @Override
+          public void run() {
+            String shutdownMsg = "Shutting down the CertificateLocalizationService.";
+            HMSHandler.LOG.info(shutdownMsg);
+            certLocService.stop();
+          }
+        });
 
-          serverSocket = TServerSocketFactory.getServerSocket(conf,
-                  TServerSocketFactory.TSocketType.TWOWAYTLS, null, port);
-          processor = new TSSLBasedProcessor<IHMSHandler>(handler, conf);
-        }
+        serverSocket = TServerSocketFactory.getServerSocket(conf,
+            TServerSocketFactory.TSocketType.TWOWAYTLS, null, port);
+        processor = new TSSLBasedProcessor<IHMSHandler>(handler, conf);
       }
 
       if (tcpKeepAlive) {
@@ -7479,6 +7479,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       HMSHandler.LOG.info("Options.maxWorkerThreads = "
           + maxWorkerThreads);
       HMSHandler.LOG.info("TCP keepalive = " + tcpKeepAlive);
+      HMSHandler.LOG.info("Enable SSL = " + useSSL);
 
       if (startLock != null) {
         signalOtherThreadsToStart(tServer, startLock, startCondition, startedServing);
