@@ -172,9 +172,9 @@ public class TestObjectStore {
   @Test
   public void testDatabaseOps() throws MetaException, InvalidObjectException, NoSuchObjectException {
     Path db1Path = new Path(wh.getWhRoot(), DB1);
-    wh.mkdirs(db1Path, true);
+    wh.mkdirs(db1Path);
     Path db2Path = new Path(wh.getWhRoot(), DB2);
-    wh.mkdirs(db2Path, true);
+    wh.mkdirs(db2Path);
 
     Database db1 = new Database(DB1, "description", db1Path.toString(), null);
     Database db2 = new Database(DB2, "description", db2Path.toString(), null);
@@ -204,12 +204,12 @@ public class TestObjectStore {
   @Test
   public void testTableOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
     Path db1Path = new Path(wh.getWhRoot(), DB1);
-    wh.mkdirs(db1Path, true);
+    wh.mkdirs(db1Path);
     Database db1 = new Database(DB1, "description", db1Path.toString(), null);
     objectStore.createDatabase(db1);
 
     Path tbl1Path = new Path(db1Path, TABLE1);
-    wh.mkdirs(tbl1Path, true);
+    wh.mkdirs(tbl1Path);
     StorageDescriptor sd = new StorageDescriptor(null, tbl1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> params = new HashMap<String,String>();
     params.put("EXTERNAL", "false");
@@ -221,7 +221,7 @@ public class TestObjectStore {
     Assert.assertEquals(TABLE1, tables.get(0));
 
     Path tbl2Path = new Path(db1Path, "new" + TABLE1);
-    wh.mkdirs(tbl2Path, true);
+    wh.mkdirs(tbl2Path);
     StorageDescriptor newSd = new StorageDescriptor(null, tbl2Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, newSd, null, params, null, null, "MANAGED_TABLE");
     objectStore.alterTable(DB1, TABLE1, newTbl1);
@@ -246,12 +246,12 @@ public class TestObjectStore {
   @Test
   public void testPartitionOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
     Path db1Path = new Path(wh.getWhRoot(), DB1);
-    wh.mkdirs(db1Path, true);
+    wh.mkdirs(db1Path);
     Database db1 = new Database(DB1, "description", db1Path.toString(), null);
     objectStore.createDatabase(db1);
 
     Path tbl1Path = new Path(db1Path, TABLE1);
-    wh.mkdirs(tbl1Path, true);
+    wh.mkdirs(tbl1Path);
     StorageDescriptor sd = new StorageDescriptor(null, tbl1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> tableParams = new HashMap<String,String>();
     tableParams.put("EXTERNAL", "false");
@@ -264,14 +264,14 @@ public class TestObjectStore {
     List<String> value1 = Arrays.asList("US", "CA");
 
     Path part1Path = new Path(tbl1Path, "US/CA/");
-    wh.mkdirs(part1Path, true);
+    wh.mkdirs(part1Path);
     sd = new StorageDescriptor(null, part1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     Partition part1 = new Partition(value1, DB1, TABLE1, 111, 111, sd, partitionParams);
     objectStore.addPartition(part1);
 
 
     Path part2Path = new Path(tbl1Path, "US/MA");
-    wh.mkdirs(part2Path, true);
+    wh.mkdirs(part2Path);
     sd = new StorageDescriptor(null, part2Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     List<String> value2 = Arrays.asList("US", "MA");
     Partition part2 = new Partition(value2, DB1, TABLE1, 222, 222, sd, partitionParams);

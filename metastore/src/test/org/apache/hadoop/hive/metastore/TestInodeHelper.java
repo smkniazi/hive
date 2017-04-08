@@ -64,7 +64,7 @@ public class TestInodeHelper {
     Warehouse wh = new Warehouse(hiveConf);
     // Create directory in the warehouse
     Path path = new Path(wh.getWhRoot(), "testdir");
-    wh.mkdirs(path, true);
+    wh.mkdirs(path);
 
     // Resolve the inode
     InodePK inodePk = inodeHelper.getInodePK(path.toString());
