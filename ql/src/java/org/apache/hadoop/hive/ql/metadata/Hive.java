@@ -3053,8 +3053,6 @@ private void constructOneLBLocationMap(FileStatus fSta,
     if (!fullDestStatus.getFileStatus().isDirectory()) {
       throw new HiveException(destf + " is not a directory.");
     }
-    final boolean inheritPerms = HiveConf.getBoolVar(conf,
-        HiveConf.ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
     final List<Future<ObjectPair<Path, Path>>> futures = new LinkedList<>();
     final ExecutorService pool = conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25) > 0 ?
         Executors.newFixedThreadPool(conf.getInt(ConfVars.HIVE_MOVE_FILES_THREAD_COUNT.varname, 25),
@@ -3100,9 +3098,6 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
             Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
 
-            if (inheritPerms) {
-              HdfsUtils.setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
-            }
             if (null != newFiles) {
               newFiles.add(destPath);
             }
@@ -3116,11 +3111,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
             public ObjectPair<Path, Path> call() throws Exception {
               SessionState.setCurrentSessionState(parentSession);
 
-
               Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
-              if (inheritPerms) {
-                HdfsUtils.setFullFileStatus(conf, fullDestStatus, srcGroup, destFs, destPath, false);
-              }
+
               if (null != newFiles) {
                 newFiles.add(destPath);
               }
@@ -3130,11 +3122,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         }
       }
     }
-    if (null == pool) {
-      if (inheritPerms) {
-        HdfsUtils.setFullFileStatus(conf, fullDestStatus, null, destFs, destf, true);
-      }
-    } else {
+    if (null != pool) {
       pool.shutdown();
       for (Future<ObjectPair<Path, Path>> future : futures) {
         try {
