@@ -149,7 +149,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   protected transient long cntr = 1;
   protected transient long logEveryNRows = 0;
   protected transient int rowIndex = 0;
-  private transient boolean inheritPerms = false;
   /**
    * Counters.
    */
@@ -494,7 +493,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       serializer = (Serializer) conf.getTableInfo().getDeserializerClass().newInstance();
       serializer.initialize(unsetNestedColumnPaths(hconf), conf.getTableInfo().getProperties());
       outputClass = serializer.getSerializedClass();
-      inheritPerms = HiveConf.getBoolVar(hconf, ConfVars.HIVE_WAREHOUSE_SUBDIR_INHERIT_PERMS);
 
       if (isLogInfoEnabled) {
         LOG.info("Using serializer : " + serializer + " and formatter : " + hiveOutputFormat +
@@ -728,10 +726,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID ||
           conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY) {
         Path outPath = fsp.outPaths[filesIdx];
-        if ((conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY || conf.isMmTable())
-            && inheritPerms && !FileUtils.mkdir(fs, outPath.getParent(), hconf)) {
-          LOG.warn("Unable to create directory with inheritPerms: " + outPath);
-        }
         fsp.outWriters[filesIdx] = HiveFileFormatUtils.getHiveRecordWriter(jc, conf.getTableInfo(),
             outputClass, conf, outPath, reporter);
         // If the record writer provides stats, get it from there instead of the serde

@@ -365,6 +365,14 @@
          <exclusion>
           <groupId>io.hops</groupId>
           <artifactId>hadoop-hdfs</artifactId>
+         </exclusion>
+        <exclusion>
+          <groupId>io.hops</groupId>
+          <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.hops</groupId>
@@ -411,8 +419,8 @@
           <artifactId>jettison</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm</artifactId>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
