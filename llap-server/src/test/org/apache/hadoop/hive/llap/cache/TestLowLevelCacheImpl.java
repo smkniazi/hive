@@ -124,6 +124,10 @@ public class TestLowLevelCacheImpl {
     @Override
     public void debugDumpShort(StringBuilder sb) {
     }
+
+    @Override
+    public void debugDumpShort(StringBuilder sb) {
+    }
   }
 
 /*
