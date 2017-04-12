@@ -580,5 +580,4 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
   public int getNumActive() {
     return executorService.getNumActive();
   }
-
 }
