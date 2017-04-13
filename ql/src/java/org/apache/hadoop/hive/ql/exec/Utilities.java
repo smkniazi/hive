@@ -110,6 +110,8 @@ import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Order;
 import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.ql.Context;
+import org.apache.hadoop.hive.ql.Driver.DriverState;
+import org.apache.hadoop.hive.ql.Driver.LockedDriverState;
 import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.QueryPlan;
 import org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter;
@@ -3158,42 +3160,45 @@ public final class Utilities {
 
     Set<Path> pathsProcessed = new HashSet<Path>();
     List<Path> pathsToAdd = new LinkedList<Path>();
+    LockedDriverState lDrvStat = LockedDriverState.getLockedDriverState();
     // AliasToWork contains all the aliases
-    Collection<String> aliasToWork = work.getAliasToWork().keySet();
-    if (!skipDummy) {
-      // ConcurrentModification otherwise if adding dummy.
-      aliasToWork = new ArrayList<>(aliasToWork);
-    }
-    for (String alias : aliasToWork) {
+    for (String alias : work.getAliasToWork().keySet()) {
       LOG.info("Processing alias " + alias);
 
       // The alias may not have any path
-      Collection<Map.Entry<Path, ArrayList<String>>> pathToAliases =
-          work.getPathToAliases().entrySet();
-      if (!skipDummy) {
-        // ConcurrentModification otherwise if adding dummy.
-        pathToAliases = new ArrayList<>(pathToAliases);
-      }
-      Path path = null;
-      for (Map.Entry<Path, ArrayList<String>> e : pathToAliases) {
-        Path file = e.getKey();
-        List<String> aliases = e.getValue();
-        if (aliases.contains(alias)) {
-          path = file;
+      boolean isEmptyTable = true;
+      boolean hasLogged = false;
+      // Note: this copies the list because createDummyFileForEmptyPartition may modify the map.
+      for (Path file : new LinkedList<Path>(work.getPathToAliases().keySet())) {
+        if (lDrvStat != null && lDrvStat.driverState == DriverState.INTERRUPT)
+          throw new IOException("Operation is Canceled. ");
 
-          // Multiple aliases can point to the same path - it should be
-          // processed only once
-          if (pathsProcessed.contains(path)) {
+        List<String> aliases = work.getPathToAliases().get(file);
+        if (aliases.contains(alias)) {
+          if (file != null) {
+            isEmptyTable = false;
+          } else {
+            LOG.warn("Found a null path for alias " + alias);
             continue;
           }
 
+          // Multiple aliases can point to the same path - it should be
+          // processed only once
+          if (pathsProcessed.contains(file)) {
+            continue;
+          }
+
+          StringInternUtils.internUriStringsInPath(file);
           pathsProcessed.add(file);
 
-          LOG.info("Adding input file " + path);
-          if (!skipDummy && isEmptyPath(job, path, ctx)) {
-            path = createDummyFileForEmptyPartition(path, job, work, hiveScratchDir);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding input file " + file);
+          } else if (!hasLogged) {
+            hasLogged = true;
+            LOG.info("Adding " + work.getPathToAliases().size()
+                + " inputs; the first input is " + file);
           }
-          pathsToAdd.add(path);
+          pathsToAdd.add(file);
         }
       }
 
@@ -3205,12 +3210,39 @@ public final class Utilities {
       // T2) x;
       // If T is empty and T2 contains 100 rows, the user expects: 0, 100 (2
       // rows)
-      if (path == null && !skipDummy) {
-        path = createDummyFileForEmptyTable(job, work, hiveScratchDir, alias);
-        pathsToAdd.add(path);
+      if (isEmptyTable && !skipDummy) {
+        pathsToAdd.add(createDummyFileForEmptyTable(job, work, hiveScratchDir, alias));
       }
     }
-    return pathsToAdd;
+
+    ExecutorService pool = null;
+    int numExecutors = getMaxExecutorsForInputListing(job, pathsToAdd.size());
+    if (numExecutors > 1) {
+      pool = Executors.newFixedThreadPool(numExecutors,
+          new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Get-Input-Paths-%d").build());
+    }
+
+    List<Path> finalPathsToAdd = new LinkedList<>();
+    List<Future<Path>> futures = new LinkedList<>();
+    for (final Path path : pathsToAdd) {
+      if (lDrvStat != null && lDrvStat.driverState == DriverState.INTERRUPT)
+        throw new IOException("Operation is Canceled. ");
+      if (pool == null) {
+        finalPathsToAdd.add(new GetInputPathsCallable(path, job, work, hiveScratchDir, ctx, skipDummy).call());
+      } else {
+        futures.add(pool.submit(new GetInputPathsCallable(path, job, work, hiveScratchDir, ctx, skipDummy)));
+      }
+    }
+
+    if (pool != null) {
+      for (Future<Path> future : futures) {
+        if (lDrvStat != null && lDrvStat.driverState == DriverState.INTERRUPT)
+          throw new IOException("Operation is Canceled. ");
+        finalPathsToAdd.add(future.get());
+      }
+    }
+
+    return finalPathsToAdd;
   }
 
   private static class GetInputPathsCallable implements Callable<Path> {
