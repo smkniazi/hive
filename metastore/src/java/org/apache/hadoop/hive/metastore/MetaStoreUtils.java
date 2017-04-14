@@ -1988,4 +1988,27 @@ public class MetaStoreUtils {
         hasProps = removedSet.contains(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
     return hasTxn || hasProps;
   }
+
+  /**
+   * convert Exception to MetaException, which sets the cause to such exception
+   * @param e cause of the exception
+   * @return  the MetaException with the specified exception as the cause
+   */
+  public static MetaException newMetaException(Exception e) {
+    return newMetaException(e != null ? e.getMessage() : null, e);
+  }
+
+  /**
+   * convert Exception to MetaException, which sets the cause to such exception
+   * @param errorMessage  the error message for this MetaException
+   * @param e             cause of the exception
+   * @return  the MetaException with the specified exception as the cause
+   */
+  public static MetaException newMetaException(String errorMessage, Exception e) {
+    MetaException metaException = new MetaException(errorMessage);
+    if (e != null) {
+      metaException.initCause(e);
+    }
+    return metaException;
+  }
 }
