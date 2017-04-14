@@ -651,9 +651,21 @@ public class Driver implements CommandProcessor {
 
 
   private int handleInterruption(String msg) {
+    return handleInterruptionWithHook(msg, null, null);
+  }
+
+  private int handleInterruptionWithHook(String msg, HookContext hookContext,
+      PerfLogger perfLogger) {
     SQLState = "HY008";  //SQLState for cancel operation
     errorMessage = "FAILED: command has been interrupted: " + msg;
     console.printError(errorMessage);
+    if (hookContext != null) {
+      try {
+        invokeFailureHooks(perfLogger, hookContext, errorMessage, null);
+      } catch (Exception e) {
+        LOG.warn("Caught exception attempting to invoke Failure Hooks", e);
+      }
+    }
     return 1000;
   }
 
@@ -1853,7 +1865,7 @@ public class Driver implements CommandProcessor {
       // The main thread polls the TaskRunners to check if they have finished.
 
       if (isInterrupted()) {
-        return handleInterruption("before running tasks.");
+        return handleInterruptionWithHook("before running tasks.", hookContext, perfLogger);
       }
       DriverContext driverCxt = new DriverContext(ctx);
       driverCxt.prepare(plan);
@@ -1903,7 +1915,7 @@ public class Driver implements CommandProcessor {
 
         int exitVal = result.getExitVal();
         if (isInterrupted()) {
-          return handleInterruption("when checking the execution result.");
+          return handleInterruptionWithHook("when checking the execution result.", hookContext, perfLogger);
         }
         if (exitVal != 0) {
           if (tsk.ifRetryCmdWhenFail()) {
@@ -1928,6 +1940,9 @@ public class Driver implements CommandProcessor {
 
           } else {
             setErrorMsgAndDetail(exitVal, result.getTaskError(), tsk);
+            if (driverCxt.isShutdown()) {
+              errorMessage = "FAILED: Operation cancelled. " + errorMessage;
+            }
             invokeFailureHooks(perfLogger, hookContext,
               errorMessage + Strings.nullToEmpty(tsk.getDiagnosticsMessage()), result.getTaskError());
             SQLState = "08S01";
@@ -2016,7 +2031,7 @@ public class Driver implements CommandProcessor {
     } catch (Throwable e) {
       executionError = true;
       if (isInterrupted()) {
-        return handleInterruption("during query execution: \n" + e.getMessage());
+        return handleInterruptionWithHook("during query execution: \n" + e.getMessage(), hookContext, perfLogger);
       }
 
       ctx.restoreOriginalTracker();
