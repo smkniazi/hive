@@ -173,11 +173,6 @@ public class Warehouse {
     return new Path(getWhRoot(), dbName.toLowerCase() + DATABASE_WAREHOUSE_SUFFIX);
   }
 
-  public Path getTablePath(Database db, String tableName)
-      throws MetaException {
-    return getDnsPath(new Path(getDatabasePath(db), MetaStoreUtils.encodeTableName(tableName.toLowerCase())));
-  }
-
   /**
    * Returns the default location of the table path using the parent database's location
    * @param db Database where the table is created
