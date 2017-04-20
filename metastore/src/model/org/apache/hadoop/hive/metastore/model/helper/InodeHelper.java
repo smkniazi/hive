@@ -36,9 +36,9 @@ public class InodeHelper {
   private final Logger logger = LoggerFactory.getLogger(InodeHelper.class.getName());
 
   private static InodeHelper instance = null;
-
-  private static HiveConf hiveConf = null;
   private static DataSource connPool = null;
+
+  private HiveConf hiveConf = null;
 
   public static InodeHelper getInstance() {
     if (instance == null) {
@@ -48,13 +48,14 @@ public class InodeHelper {
     return instance;
   }
 
-  private InodeHelper() {}
+  private InodeHelper() {
+    hiveConf = new HiveConf(this.getClass());
+  }
 
-  public synchronized void initConnections(HiveConf conf) {
+  private synchronized void initConnections() {
     if (connPool != null) { return; }
 
     // Setup connections.
-    hiveConf = conf;
     HikariConfig config = new HikariConfig();
     config.setJdbcUrl(hiveConf.getVar(HiveConf.ConfVars.HOPSDBURLKEY));
     config.setUsername(hiveConf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME));
@@ -64,6 +65,10 @@ public class InodeHelper {
   }
 
   private Connection getDbConn() throws SQLException {
+    if (connPool == null){
+      initConnections();
+    }
+
     //Rety to get a connection up to 10 times
     int rc = 10;
     Connection dbConn = null;
@@ -83,13 +88,13 @@ public class InodeHelper {
 
   public InodePK getInodePK(String path) throws MetaException{
 
-    // Check for null paths (Virtual view case)
-    if (path == null){
+    // Check HiveConf if consistency disabled.
+    if (!hiveConf.getBoolVar(HiveConf.ConfVars.METADATACONSISTENCY)){
       return new InodePK();
     }
 
-    // Check for empty strings.
-    if (path.equals("")) {
+    // Check for null paths (Virtual view case) or empty strings
+    if (path == null || path.isEmpty()){
       return new InodePK();
     }
 

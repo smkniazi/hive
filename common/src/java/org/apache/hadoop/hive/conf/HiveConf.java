@@ -221,6 +221,7 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTOREPWD,
       HiveConf.ConfVars.METASTORECONNECTURLHOOK,
       HiveConf.ConfVars.HOPSDBURLKEY,
+      HiveConf.ConfVars.METADATACONSISTENCY,
       HiveConf.ConfVars.METASTORECONNECTURLKEY,
       HiveConf.ConfVars.METASTORESERVERMINTHREADS,
       HiveConf.ConfVars.METASTORESERVERMAXTHREADS,
@@ -597,6 +598,8 @@ public class HiveConf extends Configuration {
         "JDBC connect string to connect to HOPS db.\n" +
         "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
         "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
+    METADATACONSISTENCY("hops.metadata.consistent", true, "enable hops metadata consistency. This option is meant to be disabled for" +
+        "testing purposes"),
     METASTOREWAREHOUSE("hive.metastore.warehouse.dir", "/user/hive/warehouse",
         "location of default database for the warehouse"),
     METASTOREURIS("hive.metastore.uris", "",
