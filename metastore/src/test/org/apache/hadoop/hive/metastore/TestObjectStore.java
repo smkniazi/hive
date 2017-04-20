@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.hadoop.hdfs.server.common.Storage;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
@@ -56,6 +55,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +72,7 @@ public class TestObjectStore {
   private static final String ROLE1 = "testobjectstorerole1";
   private static final String ROLE2 = "testobjectstorerole2";
   private static final Logger LOG = LoggerFactory.getLogger(TestObjectStore.class.getName());
+  private Connection conn = null;
 
   public static class MockPartitionExpressionProxy implements PartitionExpressionProxy {
     @Override
@@ -111,14 +112,25 @@ public class TestObjectStore {
     objectStore = new ObjectStore();
     objectStore.setConf(conf);
     dropAllStoreObjects(objectStore);
-
-    // Set up the INodeHelperClass
-    InodeHelper iNodeHelper = InodeHelper.getInstance();
-    iNodeHelper.initConnections(conf);
+    // Insert fake data into the database
+    conn = DriverManager.getConnection(conf.getVar(HiveConf.ConfVars.HOPSDBURLKEY),
+        conf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME),
+        conf.getVar(HiveConf.ConfVars.METASTOREPWD));
+    Statement stmt = conn.createStatement();
+    stmt.execute("insert into hdfs_inodes(partition_id, parent_id, name, id, size, quota_enabled, is_dir, under_construction) " +
+                    "values (0, 0,\"\", 1, 0, 0, 1, 0)," +
+                    "(3564026, 1, \"tmp\", 2, 0, 0, 1, 0),"+
+                    "(111578566, 1, \"user\", 3, 0, 0, 1, 0),"+
+                    "(-57301545, 1, \"locationurl\", 4, 0, 0, 1, 0)");
+    stmt.close();
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws Exception{
+    Statement stmt = conn.createStatement();
+    stmt.execute("delete from hdfs_inodes");
+    stmt.close();
+    conn.close();
   }
 
   /**
@@ -184,7 +196,7 @@ public class TestObjectStore {
   public void testPartitionOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
     Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
     objectStore.createDatabase(db1);
-    StorageDescriptor sd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/location", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    StorageDescriptor sd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/locationurl", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> tableParams = new HashMap<String,String>();
     tableParams.put("EXTERNAL", "false");
     FieldSchema partitionKey1 = new FieldSchema("Country", serdeConstants.STRING_TYPE_NAME, "");
@@ -265,6 +277,13 @@ public class TestObjectStore {
     objectStore.grantRole(role1, USER1, PrincipalType.USER, OWNER, PrincipalType.ROLE, true);
     objectStore.revokeRole(role1, USER1, PrincipalType.USER, false);
     objectStore.removeRole(ROLE1);
+  }
+
+  @Test
+  public void testAuth() throws Exception {
+    objectStore.addUser("dummy", "s3isslow");
+    Assert.assertTrue(objectStore.authenticate("dummy", "s3isslow"));
+    Assert.assertFalse(objectStore.authenticate("dummy", "s3isfast"));
   }
 
   @Test
