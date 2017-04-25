@@ -53,7 +53,6 @@ public class InodeHelper {
   }
 
   private synchronized void initConnections() {
-    if (connPool != null) { return; }
 
     // Setup connections.
     HikariConfig config = new HikariConfig();

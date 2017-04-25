@@ -7050,10 +7050,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       boolean useSSL = conf.getBoolVar(ConfVars.HIVE_METASTORE_USE_SSL);
       useSasl = conf.getBoolVar(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL);
 
-      // Fabio: Setup the InodeHelper class
-      InodeHelper inodeHelper = InodeHelper.getInstance();
-      inodeHelper.initConnections(conf);
-
       TProcessor processor;
       TTransportFactory transFactory;
       final TProtocolFactory protocolFactory;

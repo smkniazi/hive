@@ -46,7 +46,6 @@ import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
@@ -279,12 +278,6 @@ public class TestObjectStore {
     objectStore.removeRole(ROLE1);
   }
 
-  @Test
-  public void testAuth() throws Exception {
-    objectStore.addUser("dummy", "s3isslow");
-    Assert.assertTrue(objectStore.authenticate("dummy", "s3isslow"));
-    Assert.assertFalse(objectStore.authenticate("dummy", "s3isfast"));
-  }
 
   @Test
   public void testDirectSqlErrorMetrics() throws Exception {
