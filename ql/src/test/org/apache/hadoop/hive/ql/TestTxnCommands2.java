@@ -122,7 +122,6 @@ public class TestTxnCommands2 {
     hiveConf = new HiveConf(this.getClass());
     hiveConf.set(HiveConf.ConfVars.PREEXECHOOKS.varname, "");
     hiveConf.set(HiveConf.ConfVars.POSTEXECHOOKS.varname, "");
-    hiveConf.setBoolVar(HiveConf.ConfVars.METADATACONSISTENCY, false);
     hiveConf.set(HiveConf.ConfVars.METASTOREWAREHOUSE.varname, TEST_WAREHOUSE_DIR);
     hiveConf.setVar(HiveConf.ConfVars.HIVEMAPREDMODE, "nonstrict");
     hiveConf.setVar(HiveConf.ConfVars.HIVEINPUTFORMAT, HiveInputFormat.class.getName());
@@ -1823,7 +1822,8 @@ public class TestTxnCommands2 {
       return 0;
     }
   }
-  static String makeValuesClause(int[][] rows) {
+
+  String makeValuesClause(int[][] rows) {
     assert rows.length > 0;
     StringBuilder sb = new StringBuilder("values");
     for(int[] row : rows) {
