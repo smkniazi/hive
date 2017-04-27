@@ -500,7 +500,6 @@ class EncodedReaderImpl implements EncodedReader {
           // essentially the "consumer" refcount being released here.
           for (MemoryBuffer buf : sctx.stripeLevelStream.getCacheBuffers()) {
             if (LOG.isTraceEnabled()) {
-              LOG.trace("Unlocking {} at the end of processing", buf);
             }
             cacheWrapper.releaseBuffer(buf);
           }
