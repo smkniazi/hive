@@ -32,16 +32,12 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hive.service.Service;
 import org.apache.hive.service.auth.HiveAuthFactory.AuthTypes;
-import org.apache.hive.service.cli.OperationHandle;
-import org.apache.hive.service.cli.OperationState;
-import org.apache.hive.service.cli.OperationStatus;
-import org.apache.hive.service.cli.SessionHandle;
+import org.apache.hive.service.cli.*;
 import org.apache.hive.service.server.HiveServer2;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
+
+import javax.security.sasl.AuthenticationException;
 
 /**
  * ThriftCLIServiceTestWithCookie.
@@ -53,14 +49,21 @@ public class ThriftCliServiceTestWithCookie {
   protected static HiveServer2 hiveServer2;
   protected static ThriftCLIServiceClient client;
   protected static HiveConf hiveConf;
-  protected static String USERNAME = "anonymous";
-  protected static String PASSWORD = "anonymous";
+  protected static String USERNAME = "admin@kth.se";
+  protected static String PASSWORD = "admin";
+  protected static Map<String, String> connConfiguration;
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   /**
    * @throws java.lang.Exception
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    connConfiguration = new HashMap<>();
+    connConfiguration.put("use:database", "default");
+
     // Find a free port
     port = MetaStoreUtils.findFreePort();
     hiveServer2 = new HiveServer2();
@@ -76,7 +79,7 @@ public class ThriftCliServiceTestWithCookie {
     assertNotNull(hiveServer2);
     assertNotNull(hiveConf);
 
-    hiveConf.setBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS, false);
+    hiveConf.setBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS, true);
     hiveConf.setVar(ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST, host);
     hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT, port);
     hiveConf.setVar(ConfVars.HIVE_SERVER2_AUTHENTICATION, AuthTypes.NOSASL.toString());
@@ -145,8 +148,7 @@ public class ThriftCliServiceTestWithCookie {
   @Test
   public void testOpenSession() throws Exception {
     // Open a new client session
-    SessionHandle sessHandle = client.openSession(USERNAME,
-        PASSWORD, new HashMap<String, String>());
+    SessionHandle sessHandle = client.openSession(USERNAME, PASSWORD, connConfiguration);
     // Session handle should not be null
     assertNotNull("Session handle should not be null", sessHandle);
     // Close client session
@@ -154,9 +156,33 @@ public class ThriftCliServiceTestWithCookie {
   }
 
   @Test
+  public void testOpenSessionNullPassword() throws Exception {
+    thrown.expect(HiveSQLException.class);
+    SessionHandle sessHandle = client.openSession("admin@kth.se", null, connConfiguration);
+  }
+
+  @Test
+  public void testOpenSessionEmtpyPassword() throws Exception {
+    thrown.expect(HiveSQLException.class);
+    SessionHandle sessHandle = client.openSession("admin@kth.se", null, connConfiguration);
+  }
+
+  @Test
+  public void testOpenSessionUnregistered() throws Exception {
+    thrown.expect(HiveSQLException.class);
+    SessionHandle sessHandle = client.openSession("not-registered@kth.se", null, connConfiguration);
+  }
+
+  @Test
+  public void testOpenSessionWrongPassword() throws Exception {
+    thrown.expect(HiveSQLException.class);
+    SessionHandle sessHandle = client.openSession(USERNAME, "wrong", connConfiguration);
+  }
+
+  @Test
   public void testGetFunctions() throws Exception {
     SessionHandle sessHandle = client.openSession(USERNAME,
-        PASSWORD, new HashMap<String, String>());
+        PASSWORD, connConfiguration);
     assertNotNull("Session handle should not be null", sessHandle);
 
     String catalogName = null;
@@ -177,29 +203,28 @@ public class ThriftCliServiceTestWithCookie {
    */
   @Test
   public void testExecuteStatement() throws Exception {
-    Map<String, String> opConf = new HashMap<String, String>();
     // Open a new client session
     SessionHandle sessHandle = client.openSession(USERNAME,
-        PASSWORD, opConf);
+        PASSWORD, connConfiguration);
     // Session handle should not be null
     assertNotNull("Session handle should not be null", sessHandle);
 
     // Change lock manager to embedded mode
     String queryString = "SET hive.lock.manager=" +
         "org.apache.hadoop.hive.ql.lockmgr.EmbeddedLockManager";
-    client.executeStatement(sessHandle, queryString, opConf);
+    client.executeStatement(sessHandle, queryString, connConfiguration);
 
     // Drop the table if it exists
     queryString = "DROP TABLE IF EXISTS TEST_EXEC_THRIFT";
-    client.executeStatement(sessHandle, queryString, opConf);
+    client.executeStatement(sessHandle, queryString, connConfiguration);
 
     // Create a test table
     queryString = "CREATE TABLE TEST_EXEC_THRIFT(ID STRING)";
-    client.executeStatement(sessHandle, queryString, opConf);
+    client.executeStatement(sessHandle, queryString, connConfiguration);
 
     // Execute another query
     queryString = "SELECT ID+1 FROM TEST_EXEC_THRIFT";
-    OperationHandle opHandle = client.executeStatement(sessHandle, queryString, opConf);
+    OperationHandle opHandle = client.executeStatement(sessHandle, queryString, connConfiguration);
     assertNotNull(opHandle);
 
     OperationStatus opStatus = client.getOperationStatus(opHandle, false);
@@ -211,7 +236,7 @@ public class ThriftCliServiceTestWithCookie {
 
     // Cleanup
     queryString = "DROP TABLE TEST_EXEC_THRIFT";
-    client.executeStatement(sessHandle, queryString, opConf);
+    client.executeStatement(sessHandle, queryString, connConfiguration);
 
     client.closeSession(sessHandle);
   }
