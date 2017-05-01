@@ -791,7 +791,7 @@ public class TestStreaming {
     txnBatch.write("1,Hello streaming".getBytes());
     txnBatch.commit();
 
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}");
 
     Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
       , txnBatch.getCurrentTransactionState());
@@ -803,11 +803,11 @@ public class TestStreaming {
     txnBatch.write("2,Welcome to streaming".getBytes());
 
     // data should not be visible
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}");
 
     txnBatch.commit();
 
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}",
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}",
       "{2, Welcome to streaming}");
 
     txnBatch.close();
@@ -859,7 +859,7 @@ public class TestStreaming {
     txnBatch.write("1,Hello streaming".getBytes());
     txnBatch.commit();
 
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}");
 
     Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
       , txnBatch.getCurrentTransactionState());
@@ -871,11 +871,11 @@ public class TestStreaming {
     txnBatch.write("2,Welcome to streaming".getBytes());
 
     // data should not be visible
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}");
 
     txnBatch.commit();
 
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}",
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}",
       "{2, Welcome to streaming}");
 
     txnBatch.close();
@@ -921,7 +921,7 @@ public class TestStreaming {
     txnBatch.write(rec1.getBytes());
     txnBatch.commit();
 
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
+    checkDataWritten(partLoc, 15, 24, 1, 1, "{1, Hello streaming}");
 
     Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
             , txnBatch.getCurrentTransactionState());
@@ -1048,7 +1048,7 @@ public class TestStreaming {
     txnBatch.write("2,Welcome to streaming".getBytes());
     txnBatch.commit();
 
-    checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}",
+    checkDataWritten(partLoc, 14, 23, 1, 1, "{1, Hello streaming}",
             "{2, Welcome to streaming}");
 
     txnBatch.close();
@@ -1858,7 +1858,7 @@ public class TestStreaming {
     txnBatch.heartbeat();//this is no-op on closed batch
     txnBatch.abort();//ditto
     GetOpenTxnsInfoResponse r = msClient.showTxns();
-    Assert.assertEquals("HWM didn't match", 2, r.getTxn_high_water_mark());
+    Assert.assertEquals("HWM didn't match", 17, r.getTxn_high_water_mark());
     List<TxnInfo> ti = r.getOpen_txns();
     Assert.assertEquals("wrong status ti(0)", TxnState.ABORTED, ti.get(0).getState());
     Assert.assertEquals("wrong status ti(1)", TxnState.ABORTED, ti.get(1).getState());
@@ -1922,7 +1922,7 @@ public class TestStreaming {
       expectedEx != null && expectedEx.getMessage().contains("has been closed()"));
 
     r = msClient.showTxns();
-    Assert.assertEquals("HWM didn't match", 4, r.getTxn_high_water_mark());
+    Assert.assertEquals("HWM didn't match", 19, r.getTxn_high_water_mark());
     ti = r.getOpen_txns();
     Assert.assertEquals("wrong status ti(0)", TxnState.ABORTED, ti.get(0).getState());
     Assert.assertEquals("wrong status ti(1)", TxnState.ABORTED, ti.get(1).getState());
@@ -1945,7 +1945,7 @@ public class TestStreaming {
       expectedEx != null && expectedEx.getMessage().contains("Simulated fault occurred"));
     
     r = msClient.showTxns();
-    Assert.assertEquals("HWM didn't match", 6, r.getTxn_high_water_mark());
+    Assert.assertEquals("HWM didn't match", 21, r.getTxn_high_water_mark());
     ti = r.getOpen_txns();
     Assert.assertEquals("wrong status ti(3)", TxnState.ABORTED, ti.get(3).getState());
     Assert.assertEquals("wrong status ti(4)", TxnState.ABORTED, ti.get(4).getState());

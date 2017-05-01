@@ -17,13 +17,11 @@ POSTHOOK: Output: default@acidtbldefault
 POSTHOOK: Lineage: acidtbldefault.a SIMPLE [(alltypesorc)alltypesorc.FieldSchema(name:cint, type:int, comment:null), ]
 PREHOOK: query: INSERT INTO TABLE acidTblDefault VALUES (1)
 PREHOOK: type: QUERY
-PREHOOK: Input: _dummy_database@_dummy_table
 PREHOOK: Output: default@acidtbldefault
 POSTHOOK: query: INSERT INTO TABLE acidTblDefault VALUES (1)
 POSTHOOK: type: QUERY
-POSTHOOK: Input: _dummy_database@_dummy_table
 POSTHOOK: Output: default@acidtbldefault
-POSTHOOK: Lineage: acidtbldefault.a SCRIPT []
+POSTHOOK: Lineage: acidtbldefault.a EXPRESSION [(values__tmp__table__1)values__tmp__table__1.FieldSchema(name:tmp_values_col1, type:string, comment:), ]
 PREHOOK: query: EXPLAIN EXTENDED
 SELECT * FROM acidTblDefault WHERE a = 1
 PREHOOK: type: QUERY
@@ -44,24 +42,24 @@ STAGE PLANS:
                 TableScan
                   alias: acidtbldefault
                   filterExpr: (a = 1) (type: boolean)
-                  buckets included: [13,] of 16
-                  Statistics: Num rows: 1854 Data size: 7052 Basic stats: COMPLETE Column stats: NONE
+                  buckets included: [1,] of 16
+                  Statistics: Num rows: 7972 Data size: 31888 Basic stats: COMPLETE Column stats: NONE
                   GatherStats: false
                   Filter Operator
                     isSamplingPred: false
                     predicate: (a = 1) (type: boolean)
-                    Statistics: Num rows: 5 Data size: 19 Basic stats: COMPLETE Column stats: NONE
+                    Statistics: Num rows: 3986 Data size: 15944 Basic stats: COMPLETE Column stats: NONE
                     Select Operator
                       expressions: 1 (type: int)
                       outputColumnNames: _col0
-                      Statistics: Num rows: 5 Data size: 19 Basic stats: COMPLETE Column stats: NONE
+                      Statistics: Num rows: 3986 Data size: 15944 Basic stats: COMPLETE Column stats: NONE
                       File Output Operator
                         compressed: false
                         GlobalTableId: 0
-                        directory: hdfs://### HDFS PATH ###
+#### A masked pattern was here ####
                         NumFilesPerFileSink: 1
-                        Statistics: Num rows: 5 Data size: 19 Basic stats: COMPLETE Column stats: NONE
-                        Stats Publishing Key Prefix: hdfs://### HDFS PATH ###
+                        Statistics: Num rows: 3986 Data size: 15944 Basic stats: COMPLETE Column stats: NONE
+#### A masked pattern was here ####
                         table:
                             input format: org.apache.hadoop.mapred.SequenceFileInputFormat
                             output format: org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat
@@ -77,12 +75,12 @@ STAGE PLANS:
                         TotalFiles: 1
                         GatherStats: false
                         MultiFileSpray: false
-            Execution mode: vectorized, llap
+            Execution mode: llap
             LLAP IO: may be used (ACID table)
             Path -> Alias:
-              hdfs://### HDFS PATH ### [acidtbldefault]
+#### A masked pattern was here ####
             Path -> Partition:
-              hdfs://### HDFS PATH ### 
+#### A masked pattern was here ####
                 Partition
                   base file name: acidtbldefault
                   input format: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
@@ -90,19 +88,19 @@ STAGE PLANS:
                   properties:
                     bucket_count 16
                     bucket_field_name a
-                    bucketing_version 2
                     column.name.delimiter ,
                     columns a
                     columns.comments 
                     columns.types int
 #### A masked pattern was here ####
-                    location hdfs://### HDFS PATH ###
                     name default.acidtbldefault
                     numFiles 17
+                    numRows 0
+                    rawDataSize 0
                     serialization.ddl struct acidtbldefault { i32 a}
                     serialization.format 1
                     serialization.lib org.apache.hadoop.hive.ql.io.orc.OrcSerde
-                    totalSize 34863
+                    totalSize 31888
                     transactional true
                     transactional_properties default
 #### A masked pattern was here ####
@@ -113,19 +111,19 @@ STAGE PLANS:
                     properties:
                       bucket_count 16
                       bucket_field_name a
-                      bucketing_version 2
                       column.name.delimiter ,
                       columns a
                       columns.comments 
                       columns.types int
 #### A masked pattern was here ####
-                      location hdfs://### HDFS PATH ###
                       name default.acidtbldefault
                       numFiles 17
+                      numRows 0
+                      rawDataSize 0
                       serialization.ddl struct acidtbldefault { i32 a}
                       serialization.format 1
                       serialization.lib org.apache.hadoop.hive.ql.io.orc.OrcSerde
-                      totalSize 34863
+                      totalSize 31888
                       transactional true
                       transactional_properties default
 #### A masked pattern was here ####
@@ -141,21 +139,3 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
-PREHOOK: query: select count(*) from acidTblDefault WHERE a = 1
-PREHOOK: type: QUERY
-PREHOOK: Input: default@acidtbldefault
-PREHOOK: Output: hdfs://### HDFS PATH ###
-POSTHOOK: query: select count(*) from acidTblDefault WHERE a = 1
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@acidtbldefault
-POSTHOOK: Output: hdfs://### HDFS PATH ###
-1
-PREHOOK: query: select count(*) from acidTblDefault WHERE a = 1
-PREHOOK: type: QUERY
-PREHOOK: Input: default@acidtbldefault
-PREHOOK: Output: hdfs://### HDFS PATH ###
-POSTHOOK: query: select count(*) from acidTblDefault WHERE a = 1
-POSTHOOK: type: QUERY
-POSTHOOK: Input: default@acidtbldefault
-POSTHOOK: Output: hdfs://### HDFS PATH ###
-1
