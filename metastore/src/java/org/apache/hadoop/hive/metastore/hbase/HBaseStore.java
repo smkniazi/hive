@@ -2921,4 +2921,10 @@ public class HBaseStore implements RawStore {
     // TODO: Auto-generated method stub
     throw new UnsupportedOperationException();
   }
+
+  public Map<String, ColumnStatisticsObj> getAggrColStatsForTablePartitions(String dbName,
+      String tableName) throws MetaException, NoSuchObjectException {
+    // TODO: see if it makes sense to implement this here
+    return null;
+  }
 }
