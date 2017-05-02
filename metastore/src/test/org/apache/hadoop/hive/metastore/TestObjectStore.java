@@ -62,16 +62,17 @@ import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hive.common.util.MockFileSystem;
 import org.apache.hive.common.util.MockFileSystem.MockFile;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
+import org.mockito.Mockito;
+
+import javax.jdo.Query;
 
 public class TestObjectStore {
   private ObjectStore objectStore = null;
@@ -616,5 +617,16 @@ public class TestObjectStore {
       }
     } catch (NoSuchObjectException e) {
     }
+  }
+
+  @Test
+  public void testQueryCloseOnError() throws Exception {
+    ObjectStore spy = Mockito.spy(objectStore);
+    spy.getAllDatabases();
+    spy.getAllFunctions();
+    spy.getAllTables(DB1);
+    spy.getPartitionCount();
+    Mockito.verify(spy, Mockito.times(3))
+        .rollbackAndCleanup(Mockito.anyBoolean(), Mockito.<Query>anyObject());
   }
 }
