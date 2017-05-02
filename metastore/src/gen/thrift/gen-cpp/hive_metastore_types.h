@@ -4960,21 +4960,24 @@ class GetOpenTxnsResponse {
 
   GetOpenTxnsResponse(const GetOpenTxnsResponse&);
   GetOpenTxnsResponse& operator=(const GetOpenTxnsResponse&);
-  GetOpenTxnsResponse() : txn_high_water_mark(0), min_open_txn(0) {
+  GetOpenTxnsResponse() : txn_high_water_mark(0), min_open_txn(0), abortedBits() {
   }
 
   virtual ~GetOpenTxnsResponse() throw();
   int64_t txn_high_water_mark;
-  std::set<int64_t>  open_txns;
+  std::vector<int64_t>  open_txns;
   int64_t min_open_txn;
+  std::string abortedBits;
 
   _GetOpenTxnsResponse__isset __isset;
 
   void __set_txn_high_water_mark(const int64_t val);
 
-  void __set_open_txns(const std::set<int64_t> & val);
+  void __set_open_txns(const std::vector<int64_t> & val);
 
   void __set_min_open_txn(const int64_t val);
+
+  void __set_abortedBits(const std::string& val);
 
   bool operator == (const GetOpenTxnsResponse & rhs) const
   {
@@ -4985,6 +4988,8 @@ class GetOpenTxnsResponse {
     if (__isset.min_open_txn != rhs.__isset.min_open_txn)
       return false;
     else if (__isset.min_open_txn && !(min_open_txn == rhs.min_open_txn))
+      return false;
+    if (!(abortedBits == rhs.abortedBits))
       return false;
     return true;
   }
