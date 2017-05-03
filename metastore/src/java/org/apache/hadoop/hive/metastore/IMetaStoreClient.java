@@ -72,6 +72,7 @@ import org.apache.hadoop.hive.metastore.api.MetadataPpdResult;
 import org.apache.hadoop.hive.metastore.api.NoSuchLockException;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.NoSuchTxnException;
+import org.apache.hadoop.hive.metastore.api.NotNullConstraintsRequest;
 import org.apache.hadoop.hive.metastore.api.NotificationEvent;
 import org.apache.hadoop.hive.metastore.api.NotificationEventResponse;
 import org.apache.hadoop.hive.metastore.api.OpenTxnsResponse;
@@ -83,7 +84,9 @@ import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.PrivilegeBag;
 import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.SQLForeignKey;
+import org.apache.hadoop.hive.metastore.api.SQLNotNullConstraint;
 import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
+import org.apache.hadoop.hive.metastore.api.SQLUniqueConstraint;
 import org.apache.hadoop.hive.metastore.api.SetPartitionsStatsRequest;
 import org.apache.hadoop.hive.metastore.api.ShowCompactResponse;
 import org.apache.hadoop.hive.metastore.api.ShowLocksRequest;
@@ -92,6 +95,7 @@ import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.api.TableMeta;
 import org.apache.hadoop.hive.metastore.api.TxnAbortedException;
 import org.apache.hadoop.hive.metastore.api.TxnOpenException;
+import org.apache.hadoop.hive.metastore.api.UniqueConstraintsRequest;
 import org.apache.hadoop.hive.metastore.api.UnknownDBException;
 import org.apache.hadoop.hive.metastore.api.UnknownPartitionException;
 import org.apache.hadoop.hive.metastore.api.UnknownTableException;
@@ -1652,9 +1656,17 @@ public interface IMetaStoreClient {
   List<SQLForeignKey> getForeignKeys(ForeignKeysRequest request) throws MetaException,
     NoSuchObjectException, TException;
 
+  List<SQLUniqueConstraint> getUniqueConstraints(UniqueConstraintsRequest request) throws MetaException,
+    NoSuchObjectException, TException;
+
+  List<SQLNotNullConstraint> getNotNullConstraints(NotNullConstraintsRequest request) throws MetaException,
+    NoSuchObjectException, TException;
+
   void createTableWithConstraints(
     org.apache.hadoop.hive.metastore.api.Table tTbl,
-    List<SQLPrimaryKey> primaryKeys, List<SQLForeignKey> foreignKeys)
+    List<SQLPrimaryKey> primaryKeys, List<SQLForeignKey> foreignKeys,
+    List<SQLUniqueConstraint> uniqueConstraints,
+    List<SQLNotNullConstraint> notNullConstraints)
     throws AlreadyExistsException, InvalidObjectException, MetaException, NoSuchObjectException, TException;
 
   void dropConstraint(String dbName, String tableName, String constraintName) throws
@@ -1674,6 +1686,13 @@ public interface IMetaStoreClient {
       boolean commit) throws TException;
 
   GetValidWriteIdsResult getValidWriteIds(String dbName, String tableName) throws TException;
+
+  void addUniqueConstraint(List<SQLUniqueConstraint> uniqueConstraintCols) throws
+  MetaException, NoSuchObjectException, TException;
+
+  void addNotNullConstraint(List<SQLNotNullConstraint> notNullConstraintCols) throws
+  MetaException, NoSuchObjectException, TException;
+
   /**
    * Gets the unique id of the backing database instance used for storing metadata
    * @return unique id of the backing database instance
@@ -1681,4 +1700,5 @@ public interface IMetaStoreClient {
    * @throws TException in case of Thrift errors
    */
   String getMetastoreDbUuid() throws MetaException, TException;
+
 }
