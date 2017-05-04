@@ -16,13 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hive.ql.io;
+package org.apache.hadoop.hive.ql.parse.repl.events;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hive.common.io.DataCache;
-import org.apache.hadoop.hive.common.io.FileMetadataCache;
+import org.apache.hadoop.hive.metastore.api.NotificationEvent;
+import org.apache.hadoop.hive.ql.parse.repl.DumpType;
 
-/** Marker interface for LLAP IO. */
-public interface LlapCacheOnlyInputFormatInterface {
-  void injectCaches(FileMetadataCache metadataCache, DataCache dataCache, Configuration cacheConf);
+import org.apache.hadoop.hive.ql.parse.repl.load.DumpMetaData;
+
+public class DropTableHandler extends AbstractHandler {
+
+  DropTableHandler(NotificationEvent event) {
+    super(event);
+  }
+
+  @Override
+  public void handle(Context withinContext) throws Exception {
+    LOG.info("Processing#{} DROP_TABLE message : {}", fromEventId(), event.getMessage());
+    DumpMetaData dmd = withinContext.createDmd(this);
+    dmd.setPayload(event.getMessage());
+    dmd.write();
+  }
+
+  @Override
+  public DumpType dumpType() {
+    return DumpType.EVENT_DROP_TABLE;
+  }
 }

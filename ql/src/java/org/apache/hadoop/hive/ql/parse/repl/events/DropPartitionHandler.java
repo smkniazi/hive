@@ -15,41 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.hadoop.hive.ql.exec;
+package org.apache.hadoop.hive.ql.parse.repl.events;
 
-import java.io.Serializable;
-
-import org.apache.hadoop.hive.ql.plan.Explain;
-import org.apache.hadoop.hive.ql.plan.Explain.Level;
+import org.apache.hadoop.hive.metastore.api.NotificationEvent;
 import org.apache.hadoop.hive.ql.parse.repl.DumpType;
 
+import org.apache.hadoop.hive.ql.parse.repl.load.DumpMetaData;
 
-@Explain(displayName = "Import Commit", explainLevels = { Level.USER, Level.DEFAULT, Level.EXTENDED })
-public class ImportCommitWork implements Serializable {
-  private static final long serialVersionUID = 1L;
-  private String dbName, tblName;
-  private long mmWriteId;
+public class DropPartitionHandler extends AbstractHandler {
 
-  public ImportCommitWork(String dbName, String tblName, long mmWriteId) {
-    this.mmWriteId = mmWriteId;
-    this.dbName = dbName;
-    this.tblName = tblName;
+  DropPartitionHandler(NotificationEvent event) {
+    super(event);
   }
 
-  public long getMmWriteId() {
-    return mmWriteId;
-  }
-
-  public String getDbName() {
-    return dbName;
-  }
-
-  public String getTblName() {
-    return tblName;
+  @Override
+  public void handle(Context withinContext) throws Exception {
+    LOG.info("Processing#{} DROP_PARTITION message : {}", fromEventId(), event.getMessage());
+    DumpMetaData dmd = withinContext.createDmd(this);
+    dmd.setPayload(event.getMessage());
+    dmd.write();
   }
 
   @Override
   public DumpType dumpType() {
-    return DumpType.EVENT_UNKNOWN;
+    return DumpType.EVENT_DROP_PARTITION;
   }
 }

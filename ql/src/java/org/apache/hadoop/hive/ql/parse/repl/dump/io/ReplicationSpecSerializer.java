@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,10 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.hadoop.hive.ql.parse.repl.dump.io;
 
-package org.apache.hadoop.hive.common.io.encoded;
+import org.apache.hadoop.hive.ql.parse.ReplicationSpec;
+import org.apache.hadoop.hive.ql.parse.SemanticException;
 
-public interface MemoryBufferOrBuffers {
-  MemoryBuffer getSingleBuffer();
-  MemoryBuffer[] getMultipleBuffers();
+import java.io.IOException;
+
+public class ReplicationSpecSerializer implements JsonWriter.Serializer {
+  @Override
+  public void writeTo(JsonWriter writer, ReplicationSpec additionalPropertiesProvider)
+      throws SemanticException, IOException {
+    for (ReplicationSpec.KEY key : ReplicationSpec.KEY.values()) {
+      String value = additionalPropertiesProvider.get(key);
+      if (value != null) {
+        writer.jsonGenerator.writeStringField(key.toString(), value);
+      }
+    }
+  }
 }
