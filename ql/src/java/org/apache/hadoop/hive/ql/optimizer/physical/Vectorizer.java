@@ -2531,7 +2531,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     vectorDesc.setVectorMapJoinInfo(vectorMapJoinInfo);
 
     vectorOp = OperatorFactory.getVectorOperator(
-        opClass, op.getCompilationOpContext(), op.getConf(), vContext, op);
+        opClass, op.getCompilationOpContext(), op.getConf(), vContext);
     LOG.info("Vectorizer vectorizeOperator map join class " + vectorOp.getClass().getSimpleName());
 
     return vectorOp;
@@ -2996,7 +2996,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     Operator<? extends OperatorDesc> vectorOp = null;
     try {
       vectorOp = OperatorFactory.getVectorOperator(
-          opClass, op.getCompilationOpContext(), op.getConf(), vContext, op);
+          opClass, op.getCompilationOpContext(), op.getConf(), vContext);
     } catch (Exception e) {
       LOG.info("Vectorizer vectorizeOperator reduce sink class exception " + opClass.getSimpleName() +
           " exception " + e);
@@ -3277,7 +3277,7 @@ public class Vectorizer implements PhysicalPlanResolver {
         vContext.getVectorExpression(predicateExpr, VectorExpressionDescriptor.Mode.FILTER);
     vectorFilterDesc.setPredicateExpression(vectorPredicateExpr);
     return OperatorFactory.getVectorOperator(
-        filterOp.getCompilationOpContext(), filterDesc, vContext, filterOp);
+        filterOp.getCompilationOpContext(), filterDesc, vContext);
   }
 
   /*
@@ -3305,7 +3305,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     vectorGroupByDesc.setAggregators(vecAggregators);
     vectorGroupByDesc.setProjectedOutputColumns(projectedOutputColumns);
     return OperatorFactory.getVectorOperator(
-        groupByOp.getCompilationOpContext(), groupByDesc, vContext, groupByOp);
+        groupByOp.getCompilationOpContext(), groupByDesc, vContext);
   }
 
   public static Operator<? extends OperatorDesc> vectorizeSelectOperator(
@@ -3335,7 +3335,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     vectorSelectDesc.setSelectExpressions(vectorSelectExprs);
     vectorSelectDesc.setProjectedOutputColumns(projectedOutputColumns);
     return OperatorFactory.getVectorOperator(
-        selectOp.getCompilationOpContext(), selectDesc, vContext, selectOp);
+        selectOp.getCompilationOpContext(), selectDesc, vContext);
   }
 
   public Operator<? extends OperatorDesc> vectorizeOperator(Operator<? extends OperatorDesc> op,
@@ -3371,7 +3371,7 @@ public class Vectorizer implements PhysicalPlanResolver {
               }
   
               vectorOp = OperatorFactory.getVectorOperator(
-                  opClass, op.getCompilationOpContext(), op.getConf(), vContext, op);
+                  opClass, op.getCompilationOpContext(), op.getConf(), vContext);
               isNative = false;
             } else {
   
@@ -3397,7 +3397,7 @@ public class Vectorizer implements PhysicalPlanResolver {
             VectorSMBJoinDesc vectorSMBJoinDesc = new VectorSMBJoinDesc();
             smbJoinSinkDesc.setVectorDesc(vectorSMBJoinDesc);
             vectorOp = OperatorFactory.getVectorOperator(
-                op.getCompilationOpContext(), smbJoinSinkDesc, vContext, op);
+                op.getCompilationOpContext(), smbJoinSinkDesc, vContext);
             isNative = false;
           }
         }
@@ -3412,7 +3412,7 @@ public class Vectorizer implements PhysicalPlanResolver {
           if (!specialize) {
 
             vectorOp = OperatorFactory.getVectorOperator(
-                op.getCompilationOpContext(), op.getConf(), vContext, op);
+                op.getCompilationOpContext(), op.getConf(), vContext);
             isNative = false;
           } else {
 
@@ -3488,7 +3488,7 @@ public class Vectorizer implements PhysicalPlanResolver {
           VectorFileSinkDesc vectorFileSinkDesc = new VectorFileSinkDesc();
           fileSinkDesc.setVectorDesc(vectorFileSinkDesc);
           vectorOp = OperatorFactory.getVectorOperator(
-              op.getCompilationOpContext(), fileSinkDesc, vContext, op);
+              op.getCompilationOpContext(), fileSinkDesc, vContext);
           isNative = false;
         }
         break;
@@ -3498,7 +3498,7 @@ public class Vectorizer implements PhysicalPlanResolver {
           VectorLimitDesc vectorLimitDesc = new VectorLimitDesc();
           limitDesc.setVectorDesc(vectorLimitDesc);
           vectorOp = OperatorFactory.getVectorOperator(
-              op.getCompilationOpContext(), limitDesc, vContext, op);
+              op.getCompilationOpContext(), limitDesc, vContext);
           isNative = true;
         }
         break;
@@ -3508,7 +3508,7 @@ public class Vectorizer implements PhysicalPlanResolver {
           VectorAppMasterEventDesc vectorEventDesc = new VectorAppMasterEventDesc();
           eventDesc.setVectorDesc(vectorEventDesc);
           vectorOp = OperatorFactory.getVectorOperator(
-              op.getCompilationOpContext(), eventDesc, vContext, op);
+              op.getCompilationOpContext(), eventDesc, vContext);
           isNative = true;
         }
         break;
@@ -3518,7 +3518,7 @@ public class Vectorizer implements PhysicalPlanResolver {
           VectorSparkHashTableSinkDesc vectorSparkHashTableSinkDesc = new VectorSparkHashTableSinkDesc();
           sparkHashTableSinkDesc.setVectorDesc(vectorSparkHashTableSinkDesc);
           vectorOp = OperatorFactory.getVectorOperator(
-              op.getCompilationOpContext(), sparkHashTableSinkDesc, vContext, op);
+              op.getCompilationOpContext(), sparkHashTableSinkDesc, vContext);
           isNative = true;
         }
         break;
@@ -3528,7 +3528,7 @@ public class Vectorizer implements PhysicalPlanResolver {
           VectorSparkPartitionPruningSinkDesc vectorSparkPartitionPruningSinkDesc = new VectorSparkPartitionPruningSinkDesc();
           sparkPartitionPruningSinkDesc.setVectorDesc(vectorSparkPartitionPruningSinkDesc);
           vectorOp = OperatorFactory.getVectorOperator(
-              op.getCompilationOpContext(), sparkPartitionPruningSinkDesc, vContext, op);
+              op.getCompilationOpContext(), sparkPartitionPruningSinkDesc, vContext);
           isNative = true;
         }
         break;
