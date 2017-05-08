@@ -345,7 +345,7 @@ public class EximUtil {
     jgen.close(); // JsonGenerator owns the OutputStream, so it closes it when we call close.
   }
 
-  static MetaData readMetaData(FileSystem fs, Path metadataPath)
+  public static MetaData readMetaData(FileSystem fs, Path metadataPath)
       throws IOException, SemanticException {
     String message = readAsString(fs, metadataPath);
     try {
