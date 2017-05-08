@@ -3026,7 +3026,10 @@ public class Vectorizer implements PhysicalPlanResolver {
 
     String engine = HiveConf.getVar(hiveConf, HiveConf.ConfVars.HIVE_EXECUTION_ENGINE);
 
-    boolean hasTopN = (desc.getTopN() >= 0);
+    int limit = desc.getTopN();
+    float memUsage = desc.getTopNMemoryUsage();
+
+    boolean hasPTFTopN = (limit >= 0 && memUsage > 0 && desc.isPTFReduceSink());
 
     boolean hasDistinctColumns = (desc.getDistinctColumnIndices().size() > 0);
 
@@ -3203,7 +3206,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     // Remember the condition variables for EXPLAIN regardless.
     vectorDesc.setIsVectorizationReduceSinkNativeEnabled(isVectorizationReduceSinkNativeEnabled);
     vectorDesc.setEngine(engine);
-    vectorDesc.setHasTopN(hasTopN);
+    vectorDesc.setHasPTFTopN(hasPTFTopN);
     vectorDesc.setHasDistinctColumns(hasDistinctColumns);
     vectorDesc.setIsKeyBinarySortable(isKeyBinarySortable);
     vectorDesc.setIsValueLazyBinary(isValueLazyBinary);
@@ -3216,7 +3219,7 @@ public class Vectorizer implements PhysicalPlanResolver {
     if (!isVectorizationReduceSinkNativeEnabled ||
         !isTezOrSpark ||
         (useUniformHash && (hasEmptyBuckets || hasNoPartitions)) ||
-        hasTopN ||
+        hasPTFTopN ||
         hasDistinctColumns ||
         !isKeyBinarySortable ||
         !isValueLazyBinary ||
