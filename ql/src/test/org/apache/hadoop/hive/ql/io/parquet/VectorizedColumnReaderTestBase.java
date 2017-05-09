@@ -31,6 +31,7 @@ import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx;
 import org.apache.hadoop.hive.ql.io.IOConstants;
 import org.apache.hadoop.hive.ql.io.parquet.read.DataWritableReadSupport;
 import org.apache.hadoop.hive.ql.io.parquet.serde.ArrayWritableObjectInspector;
+import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetTableUtils;
 import org.apache.hadoop.hive.ql.io.parquet.vector.VectorizedParquetRecordReader;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.plan.MapWork;
@@ -56,6 +57,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.TimeZone;
 
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertFalse;
@@ -320,6 +322,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES,"int");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message test { required int32 int32_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
@@ -349,6 +352,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "bigint");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message test { required int64 int64_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
@@ -378,6 +382,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "double");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message test { required double double_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
@@ -408,6 +413,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "float");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message test { required float float_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
@@ -438,6 +444,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "boolean");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message test { required boolean boolean_field;}", conf);
     VectorizedRowBatch previous = reader.createValue();
@@ -467,6 +474,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "string");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message test { required binary binary_field_some_null;}", conf);
     VectorizedRowBatch previous = reader.createValue();
@@ -505,6 +513,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "struct<a:int,b:double>");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     String schema = "message hive_schema {\n"
       + "group struct_field {\n"
       + "  optional int32 a;\n"
@@ -543,6 +552,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "struct<nsf:struct<c:int,d:int>,e:double>");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     String schema = "message hive_schema {\n"
       + "group nested_struct_field {\n"
       + "  optional group nsf {\n"
@@ -586,6 +596,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "struct<nsf:struct<c:int>>");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     String schema = "message hive_schema {\n"
       + "group nested_struct_field {\n"
       + "  optional group nsf {\n"
@@ -623,6 +634,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "struct<f:int,g:double>");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     String schema = "message hive_schema {\n"
       + "group struct_field_some_null {\n"
       + "  optional int32 f;\n"
@@ -668,6 +680,7 @@ public class VectorizedColumnReaderTestBase {
     conf.set(IOConstants.COLUMNS_TYPES, "decimal(5,2)");
     conf.setBoolean(ColumnProjectionUtils.READ_ALL_COLUMNS, false);
     conf.set(ColumnProjectionUtils.READ_COLUMN_IDS_CONF_STR, "0");
+    conf.set(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, TimeZone.getDefault().getID());
     VectorizedParquetRecordReader reader =
       createParquetReader("message hive_schema { required value (DECIMAL(5,2));}", conf);
     VectorizedRowBatch previous = reader.createValue();

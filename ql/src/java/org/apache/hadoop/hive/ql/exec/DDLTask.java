@@ -119,6 +119,8 @@ import org.apache.hadoop.hive.ql.io.merge.MergeFileWork;
 import org.apache.hadoop.hive.ql.io.orc.OrcInputFormat;
 import org.apache.hadoop.hive.ql.io.orc.OrcSerde;
 import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe;
+import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetTableUtils;
+import org.apache.hadoop.hive.ql.io.parquet.timestamp.NanoTimeUtils;
 import org.apache.hadoop.hive.ql.io.rcfile.truncate.ColumnTruncateTask;
 import org.apache.hadoop.hive.ql.io.rcfile.truncate.ColumnTruncateWork;
 import org.apache.hadoop.hive.ql.lockmgr.DbLockManager;
@@ -4139,6 +4141,12 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   private List<Task<?>> alterTableAddProps(AlterTableDesc alterTbl, Table tbl,
       Partition part) throws HiveException {
     List<Task<?>> result = null;
+
+    if(alterTbl.getProps().containsKey(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY)) {
+      NanoTimeUtils.validateTimeZone(
+          alterTbl.getProps().get(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY));
+    }
+
     if (part != null) {
       part.getTPartition().getParameters().putAll(alterTbl.getProps());
     } else {
@@ -4506,6 +4514,20 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         } else {
           crtTbl.setReplaceMode(true); // we replace existing table.
         }
+      }
+    }
+
+    // If HIVE_PARQUET_INT96_DEFAULT_UTC_WRITE_ZONE is set to True, then set new Parquet tables timezone
+    // to UTC by default (only if the table property is not set)
+    if (ParquetHiveSerDe.isParquetTable(tbl)) {
+      SessionState ss = SessionState.get();
+      String parquetTimezone = tbl.getProperty(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY);
+      if (parquetTimezone == null || parquetTimezone.isEmpty()) {
+        if (ss.getConf().getBoolVar(ConfVars.HIVE_PARQUET_INT96_DEFAULT_UTC_WRITE_ZONE)) {
+          tbl.setProperty(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, ParquetTableUtils.PARQUET_INT96_NO_ADJUSTMENT_ZONE);
+        }
+      } else {
+        NanoTimeUtils.validateTimeZone(parquetTimezone);
       }
     }
 
