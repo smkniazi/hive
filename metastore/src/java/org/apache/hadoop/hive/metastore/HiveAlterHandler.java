@@ -288,13 +288,7 @@ public class HiveAlterHandler implements AlterHandler {
     EnvironmentContext environmentContext, HMSHandler handler)
       throws InvalidOperationException, InvalidObjectException, AlreadyExistsException, MetaException {
     boolean success = false;
-    Path srcPath = null;
-    Path destPath = null;
-    FileSystem srcFs = null;
-    FileSystem destFs;
     Partition oldPart = null;
-    String oldPartLoc = null;
-    String newPartLoc = null;
     List<MetaStoreEventListener> transactionalListeners = null;
     if (handler != null) {
       transactionalListeners = handler.getTransactionalListeners();
@@ -357,6 +351,13 @@ public class HiveAlterHandler implements AlterHandler {
     }
 
     //rename partition
+    String oldPartLoc = null;
+    String newPartLoc = null;
+    Path srcPath = null;
+    Path destPath = null;
+    FileSystem srcFs = null;
+    FileSystem destFs = null;
+    boolean dataWasMoved = false;
     try {
       msdb.openTransaction();
       try {
@@ -408,48 +409,21 @@ public class HiveAlterHandler implements AlterHandler {
       success = msdb.commitTransaction();
     } finally {
       if (!success) {
+        LOG.error("Failed to rename a partition. Rollback transaction");
         msdb.rollbackTransaction();
-      }
-
-      if (success && newPartLoc != null && newPartLoc.compareTo(oldPartLoc) != 0) {
-        //rename the data directory
-        try{
-          if (srcFs.exists(srcPath)) {
-            //if destPath's parent path doesn't exist, we should mkdir it
-            Path destParentPath = destPath.getParent();
-            if (!wh.mkdirs(destParentPath)) {
-                throw new IOException("Unable to create path " + destParentPath);
-            }
-
-            wh.renameDir(srcPath, destPath);
-            LOG.info("Partition directory rename from " + srcPath + " to " + destPath + " done.");
-          }
-        } catch (IOException ex) {
-          LOG.error("Cannot rename partition directory from " + srcPath + " to " +
-              destPath, ex);
-          boolean revertMetaDataTransaction = false;
+        if (dataWasMoved) {
+          LOG.error("Revert the data move in renaming a partition.");
           try {
-            msdb.openTransaction();
-            msdb.alterPartition(dbname, name, new_part.getValues(), oldPart);
-            if (transactionalListeners != null && !transactionalListeners.isEmpty()) {
-              MetaStoreListenerNotifier.notifyEvent(transactionalListeners,
-                                                    EventMessage.EventType.ALTER_PARTITION,
-                                                    new AlterPartitionEvent(new_part, oldPart, tbl, false, success, handler),
-                                                    environmentContext);
+            if (destFs.exists(destPath)) {
+              wh.renameDir(destPath, srcPath);
             }
-
-            revertMetaDataTransaction = msdb.commitTransaction();
-          } catch (Exception ex2) {
-            LOG.error("Attempt to revert partition metadata change failed. The revert was attempted " +
-                "because associated filesystem rename operation failed with exception " + ex.getMessage(), ex2);
-            if (!revertMetaDataTransaction) {
-              msdb.rollbackTransaction();
-            }
+          } catch (MetaException me) {
+            LOG.error("Failed to restore partition data from " + destPath + " to " + srcPath
+                +  " in alter partition failure. Manual restore is needed.");
+          } catch (IOException ioe) {
+            LOG.error("Failed to restore partition data from " + destPath + " to " + srcPath
+                +  " in alter partition failure. Manual restore is needed.");
           }
-
-          throw new InvalidOperationException("Unable to access old location "
-              + srcPath + " for partition " + tbl.getDbName() + "."
-              + tbl.getTableName() + " " + part_vals);
         }
       }
     }
