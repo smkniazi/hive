@@ -1539,6 +1539,9 @@ service ThriftHiveMetastore extends fb303.FacebookService
   FinalizeWriteIdResult finalize_write_id(1:FinalizeWriteIdRequest req)
   HeartbeatWriteIdResult heartbeat_write_id(1:HeartbeatWriteIdRequest req)
   GetValidWriteIdsResult get_valid_write_ids(1:GetValidWriteIdsRequest req)
+
+  // Metastore DB properties
+  string get_metastore_db_uuid() throws (1:MetaException o1)
 }
 
 // * Note about the DDL_TIME: When creating or altering a table or a partition,

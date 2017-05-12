@@ -133,6 +133,7 @@ import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.common.util.ShutdownHookManager;
+import org.apache.hive.service.rpc.thrift.TCLIService;
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -7146,7 +7147,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
               }
               long removed = watermarkId - oldWatermarkId;
               if (removed > 0) {
-                ids = ids.subList((int)removed, ids.size());
+                ids = ids.subList((int) removed, ids.size());
               }
               if (!ids.isEmpty()) {
                 result.setIds(ids);
@@ -7168,6 +7169,16 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       }
       return result;
     }
+
+    @Override
+    public String get_metastore_db_uuid() throws MetaException, TException {
+      try {
+        return getMS().getMetastoreDbUuid();
+      } catch (MetaException e) {
+        LOG.error("Exception thrown while querying metastore db uuid", e);
+        throw e;
+      }
+    }
   }
 
 
@@ -7181,7 +7192,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     return RetryingHMSHandler.getProxy(hiveConf, baseHandler, local);
   }
 
-  public static Iface newRetryingHMSHandler(String name, HiveConf conf, boolean local)
+  public static TCLIService.Iface newRetryingHMSHandler(String name, HiveConf conf, boolean local)
       throws MetaException {
     HMSHandler baseHandler = new HiveMetaStore.HMSHandler(name, conf, false);
     return RetryingHMSHandler.getProxy(conf, baseHandler, local);

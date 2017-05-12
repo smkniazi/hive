@@ -183,6 +183,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('  FinalizeWriteIdResult finalize_write_id(FinalizeWriteIdRequest req)')
   print('  HeartbeatWriteIdResult heartbeat_write_id(HeartbeatWriteIdRequest req)')
   print('  GetValidWriteIdsResult get_valid_write_ids(GetValidWriteIdsRequest req)')
+  print('  string get_metastore_db_uuid()')
   print('  string getName()')
   print('  string getVersion()')
   print('  fb_status getStatus()')
@@ -1205,6 +1206,12 @@ elif cmd == 'get_valid_write_ids':
     print('get_valid_write_ids requires 1 args')
     sys.exit(1)
   pp.pprint(client.get_valid_write_ids(eval(args[0]),))
+
+elif cmd == 'get_metastore_db_uuid':
+  if len(args) != 0:
+    print('get_metastore_db_uuid requires 0 args')
+    sys.exit(1)
+  pp.pprint(client.get_metastore_db_uuid())
 
 elif cmd == 'getName':
   if len(args) != 0:

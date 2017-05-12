@@ -2750,4 +2750,8 @@ public class HiveMetaStoreClient implements IMetaStoreClient {
       String dbName, String tableName) throws TException {
     return client.get_valid_write_ids(new GetValidWriteIdsRequest(dbName, tableName));
   }
+
+  public String getMetastoreDbUuid() throws TException {
+    return client.get_metastore_db_uuid();
+  }
 }

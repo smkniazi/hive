@@ -750,4 +750,11 @@ public interface RawStore extends Configurable {
   Collection<String> getAllPartitionLocations(String dbName, String tblName);
 
   void deleteTableWrites(String dbName, String tblName, long from, long to) throws MetaException;
+
+  /**
+   * Gets the unique id of the backing datastore for the metadata
+   * @return
+   * @throws MetaException
+   */
+  String getMetastoreDbUuid() throws MetaException;
 }
