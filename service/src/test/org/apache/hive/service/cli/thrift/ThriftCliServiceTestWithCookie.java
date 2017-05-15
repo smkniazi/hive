@@ -31,8 +31,13 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hive.service.Service;
-import org.apache.hive.service.auth.HiveAuthFactory.AuthTypes;
-import org.apache.hive.service.cli.*;
+import org.apache.hive.service.auth.HiveAuthConstants;
+import org.apache.hive.service.auth.HiveAuthConstants.AuthTypes;
+import org.apache.hive.service.cli.HiveSQLException;
+import org.apache.hive.service.cli.OperationHandle;
+import org.apache.hive.service.cli.OperationState;
+import org.apache.hive.service.cli.OperationStatus;
+import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.server.HiveServer2;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -82,7 +87,7 @@ public class ThriftCliServiceTestWithCookie {
     hiveConf.setBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS, true);
     hiveConf.setVar(ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST, host);
     hiveConf.setIntVar(ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT, port);
-    hiveConf.setVar(ConfVars.HIVE_SERVER2_AUTHENTICATION, AuthTypes.NOSASL.toString());
+    hiveConf.setVar(ConfVars.HIVE_SERVER2_AUTHENTICATION, HiveAuthConstants.AuthTypes.NOSASL.toString());
 
     startHiveServer2WithConf(hiveConf);
 

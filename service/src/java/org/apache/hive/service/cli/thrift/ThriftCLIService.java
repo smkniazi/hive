@@ -48,6 +48,7 @@ import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hive.service.AbstractService;
 import org.apache.hive.service.ServiceException;
 import org.apache.hive.service.ServiceUtils;
+import org.apache.hive.service.auth.HiveAuthConstants;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.auth.TSetIpAddressProcessor;
 import org.apache.hive.service.cli.CLIService;
@@ -965,8 +966,8 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       LOG.debug("Proxy user from query string: " + proxyUser);
     }
 
-    if (proxyUser == null && sessionConf != null && sessionConf.containsKey(HiveAuthFactory.HS2_PROXY_USER)) {
-      String proxyUserFromThriftBody = sessionConf.get(HiveAuthFactory.HS2_PROXY_USER);
+    if (proxyUser == null && sessionConf != null && sessionConf.containsKey(HiveAuthConstants.HS2_PROXY_USER)) {
+      String proxyUserFromThriftBody = sessionConf.get(HiveAuthConstants.HS2_PROXY_USER);
       LOG.debug("Proxy user from thrift body: " + proxyUserFromThriftBody);
       proxyUser = proxyUserFromThriftBody;
     }
@@ -981,7 +982,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     }
 
     // If there's no authentication, then directly substitute the user
-    if (HiveAuthFactory.AuthTypes.NONE.toString().
+    if (HiveAuthConstants.AuthTypes.NONE.toString().
         equalsIgnoreCase(hiveConf.getVar(ConfVars.HIVE_SERVER2_AUTHENTICATION))) {
       return proxyUser;
     }
