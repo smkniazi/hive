@@ -623,6 +623,8 @@ public class HiveConf extends Configuration {
     HOPSRANDOMPARTITIONINGMAXLEVEL("hops.random.partitioning.level", 1, "Number of levels of random partitioning"),
     METADATACONSISTENCY("hops.metadata.consistent", true, "enable hops metadata consistency. This option is meant to be disabled for" +
         "testing purposes"),
+    METASTOREDBTYPE("hive.metastore.db.type", "DERBY", new StringSet("DERBY", "ORACLE", "MYSQL", "MSSQL", "POSTGRES"),
+        "Type of database used by the metastore. Information schema & JDBCStorageHandler depend on it."),
     METASTOREWAREHOUSE("hive.metastore.warehouse.dir", "/user/hive/warehouse",
         "location of default database for the warehouse"),
     METASTOREURIS("hive.metastore.uris", "",
