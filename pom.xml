@@ -67,7 +67,7 @@
     <maven.repo.local>${settings.localRepository}</maven.repo.local>
     <hive.path.to.root>.</hive.path.to.root>
     <hive.jdbc.driver.classifier>standalone</hive.jdbc.driver.classifier>
-    <checkstyle.conf.dir>${hive.path.to.root}/checkstyle</checkstyle.conf.dir>
+    <checkstyle.conf.dir>${basedir}/${hive.path.to.root}/checkstyle</checkstyle.conf.dir>
 
     <!-- Test Properties -->
     <test.extra.path></test.extra.path>
@@ -1074,6 +1074,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <configLocation>${checkstyle.conf.dir}/checkstyle.xml</configLocation>
+          <propertyExpansion>basedir=${checkstyle.conf.dir}</propertyExpansion>
         </configuration>
       </plugin>
       <plugin>
