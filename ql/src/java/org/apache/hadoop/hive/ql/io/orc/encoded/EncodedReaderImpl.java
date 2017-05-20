@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+import com.google.protobuf.CodedInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.common.Pool;
@@ -62,7 +63,6 @@ import org.apache.hadoop.hive.ql.io.orc.encoded.Reader.PoolFactory;
 import org.apache.orc.OrcProto;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.CodedInputStream;
 
 import sun.misc.Cleaner;
 
@@ -1515,7 +1515,6 @@ class EncodedReaderImpl implements EncodedReader {
       }
     }
   }
-
 
   @VisibleForTesting
   static BufferChunk readLengthBytesFromSmallBuffers(BufferChunk first, long cbStartOffset,
