@@ -477,9 +477,10 @@ public class TezSessionState {
       }
     }
 
-    // these are local resources that are set through the mr "tmpjars" property
+    // these are local resources that are set through the mr "tmpjars" property; skip session files.
     List<LocalResource> handlerLr = utils.localizeTempFiles(dir, conf,
-      additionalFilesNotFromConf.toArray(new String[additionalFilesNotFromConf.size()]));
+      additionalFilesNotFromConf.toArray(new String[additionalFilesNotFromConf.size()]),
+      DagUtils.getTempFilesFromConf(conf));
 
     if (handlerLr != null) {
       for (LocalResource lr : handlerLr)
