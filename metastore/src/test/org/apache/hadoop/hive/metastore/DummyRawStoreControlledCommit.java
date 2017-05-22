@@ -921,7 +921,7 @@ public class DummyRawStoreControlledCommit implements RawStore, Configurable {
       long to) throws MetaException {
   }
 
-  public Map<String, ColumnStatisticsObj> getAggrColStatsForTablePartitions(String dbName,
+  public Map<String, List<ColumnStatisticsObj>> getColStatsForTablePartitions(String dbName,
       String tableName) throws MetaException, NoSuchObjectException {
     // TODO Auto-generated method stub
     return null;
