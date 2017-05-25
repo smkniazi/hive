@@ -26,12 +26,11 @@ public class InodeHelper {
 
   /**
    * STATIC VARIABLES FOR HOPS
-   * //TODO: SET THEM IN THE CONFIGURATION FILE.
    */
-  private static final int ROOT_DIR_PARTITION_KEY = 0;
-  private static final short ROOT_DIR_DEPTH = 0;
-  private static final int RANDOM_PARTITIONING_MAX_LEVEL = 1;
-  private static final int ROOT_INODE_ID = 1;
+  private int ROOT_DIR_PARTITION_KEY = 0;
+  private short ROOT_DIR_DEPTH = 0;
+  private int RANDOM_PARTITIONING_MAX_LEVEL = 1;
+  private int ROOT_INODE_ID = 1;
 
   private final Logger logger = LoggerFactory.getLogger(InodeHelper.class.getName());
 
@@ -50,6 +49,10 @@ public class InodeHelper {
 
   private InodeHelper() {
     hiveConf = new HiveConf(this.getClass());
+    ROOT_DIR_PARTITION_KEY = hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTDIRPARTITIONKEY);
+    ROOT_DIR_DEPTH = (short)hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTDIRDEPTH);
+    RANDOM_PARTITIONING_MAX_LEVEL = hiveConf.getIntVar(HiveConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL);
+    ROOT_INODE_ID = hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTINODEID);
   }
 
   private synchronized void initConnections() {
@@ -226,7 +229,8 @@ public class InodeHelper {
       }
     }
 
-    return new InodePK();
+    // The inode has been deleted before the of the query.
+    throw new MetaException("Cannot resolve inode with id = " + id);
   }
 
   private int calculatePartitionId(int parentId, String name, int depth) {

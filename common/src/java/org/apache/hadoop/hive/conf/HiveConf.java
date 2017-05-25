@@ -221,6 +221,10 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTOREPWD,
       HiveConf.ConfVars.METASTORECONNECTURLHOOK,
       HiveConf.ConfVars.HOPSDBURLKEY,
+      HiveConf.ConfVars.HOPSROOTDIRPARTITIONKEY,
+      HiveConf.ConfVars.HOPSROOTDIRDEPTH,
+      HiveConf.ConfVars.HOPSROOTINODEID,
+      HiveConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL,
       HiveConf.ConfVars.METADATACONSISTENCY,
       HiveConf.ConfVars.METASTORECONNECTURLKEY,
       HiveConf.ConfVars.METASTORESERVERMINTHREADS,
@@ -598,6 +602,10 @@ public class HiveConf extends Configuration {
         "JDBC connect string to connect to HOPS db.\n" +
         "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
         "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
+    HOPSROOTDIRPARTITIONKEY("hops.root.dir.partition_key", 0, "Partition Key of root inode"),
+    HOPSROOTDIRDEPTH("hops.root.dir.depth", 0, "Root dir depth"),
+    HOPSROOTINODEID("hops.root.inode.id", 1, "Id of the root inode"),
+    HOPSRANDOMPARTITIONINGMAXLEVEL("hops.random.partitioning.level", 1, "Number of levels of random partitioning"),
     METADATACONSISTENCY("hops.metadata.consistent", true, "enable hops metadata consistency. This option is meant to be disabled for" +
         "testing purposes"),
     METASTOREWAREHOUSE("hive.metastore.warehouse.dir", "/user/hive/warehouse",
