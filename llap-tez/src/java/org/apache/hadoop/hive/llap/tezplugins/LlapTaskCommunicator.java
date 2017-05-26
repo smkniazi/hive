@@ -102,7 +102,6 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
 
   private static final Logger LOG = LoggerFactory.getLogger(LlapTaskCommunicator.class);
 
-  private static final boolean isInfoEnabled = LOG.isInfoEnabled();
   private static final String RESOURCE_URI_STR = "/ws/v1/applicationhistory";
   private static final Joiner JOINER = Joiner.on("");
   private static final Joiner PATH_JOINER = Joiner.on("/");
@@ -606,7 +605,7 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
     Long old = knownNodeMap.putIfAbsent(nodeId,
         TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
     if (old == null) {
-      if (isInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("Added new known node: {}", nodeId);
       }
     }
@@ -617,7 +616,7 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
     PingingNodeInfo ni = new PingingNodeInfo(currentTs);
     PingingNodeInfo old = pingedNodeMap.put(nodeId, ni);
     if (old == null) {
-      if (isInfoEnabled) {
+      if (LOG.isInfoEnabled()) {
         LOG.info("Added new pinging node: [{}]", nodeId);
       }
     } else {
