@@ -44,6 +44,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.llap.DaemonId;
 import org.apache.hadoop.hive.llap.LlapDaemonInfo;
+import org.apache.hadoop.hive.llap.LlapOutputFormatService;
 import org.apache.hadoop.hive.llap.LlapUtil;
 import org.apache.hadoop.hive.llap.configuration.LlapDaemonConfiguration;
 import org.apache.hadoop.hive.llap.daemon.ContainerRunner;
@@ -96,7 +97,6 @@ import com.google.common.primitives.Ints;
 public class LlapDaemon extends CompositeService implements ContainerRunner, LlapDaemonMXBean {
 
   private static final Logger LOG = LoggerFactory.getLogger(LlapDaemon.class);
-
   private final Configuration shuffleHandlerConf;
   private final SecretManager secretManager;
   private final LlapProtocolServerImpl server;
@@ -250,7 +250,7 @@ public class LlapDaemon extends CompositeService implements ContainerRunner, Lla
     pauseMonitor.start();
     String displayNameJvm = "LlapDaemonJvmMetrics-" + hostName;
     String sessionId = MetricsUtils.getUUID();
-    LlapDaemonJvmMetrics.create(displayNameJvm, sessionId);
+    LlapDaemonJvmMetrics.create(displayNameJvm, sessionId, daemonConf);
     String displayName = "LlapDaemonExecutorMetrics-" + hostName;
     daemonConf.set("llap.daemon.metrics.sessionid", sessionId);
     String[] strIntervals = HiveConf.getTrimmedStringsVar(daemonConf,
@@ -560,7 +560,7 @@ public class LlapDaemon extends CompositeService implements ContainerRunner, Lla
 
       llapDaemon.init(daemonConf);
       llapDaemon.start();
-      LOG.info("Started LlapDaemon");
+      LOG.info("Started LlapDaemon with PID: {}", LlapDaemonInfo.INSTANCE.getPID());
       // Relying on the RPC threads to keep the service alive.
     } catch (Throwable t) {
       // TODO Replace this with a ExceptionHandler / ShutdownHook
