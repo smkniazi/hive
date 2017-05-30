@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Supplier;
 import org.mockito.Mockito;
+import com.google.common.collect.ImmutableList;
 
 import javax.jdo.Query;
 
@@ -253,6 +254,41 @@ public class TestObjectStore {
     Assert.assertEquals(1, tables.size());
     Assert.assertEquals("new" + TABLE1, tables.get(0));
 
+    objectStore.createTable(tbl1);
+    tables = objectStore.getAllTables(DB1);
+    Assert.assertEquals(2, tables.size());
+
+    List<SQLForeignKey> foreignKeys = objectStore.getForeignKeys(DB1, TABLE1, null, null);
+    Assert.assertEquals(0, foreignKeys.size());
+
+    SQLPrimaryKey pk = new SQLPrimaryKey(DB1, TABLE1, "pk_col", 1,
+            "pk_const_1", false, false, false);
+    objectStore.addPrimaryKeys(ImmutableList.of(pk));
+    SQLForeignKey fk = new SQLForeignKey(DB1, TABLE1, "pk_col",
+            DB1, "new" + TABLE1, "fk_col", 1,
+            0, 0, "fk_const_1", "pk_const_1", false, false, false);
+    objectStore.addForeignKeys(ImmutableList.of(fk));
+
+    // Retrieve from PK side
+    foreignKeys = objectStore.getForeignKeys(null, null, DB1, "new" + TABLE1);
+    Assert.assertEquals(1, foreignKeys.size());
+
+    List<SQLForeignKey> fks = objectStore.getForeignKeys(null, null, DB1, "new" + TABLE1);
+    if (fks != null) {
+      for (SQLForeignKey fkcol : fks) {
+        objectStore.dropConstraint(fkcol.getFktable_db(), fkcol.getFktable_name(), fkcol.getFk_name());
+      }
+    }
+    // Retrieve from FK side
+    foreignKeys = objectStore.getForeignKeys(DB1, TABLE1, null, null);
+    Assert.assertEquals(0, foreignKeys.size());
+    // Retrieve from PK side
+    foreignKeys = objectStore.getForeignKeys(null, null, DB1, "new" + TABLE1);
+    Assert.assertEquals(0, foreignKeys.size());
+
+    objectStore.dropTable(DB1, TABLE1);
+    tables = objectStore.getAllTables(DB1);
+    Assert.assertEquals(1, tables.size());
 
     objectStore.dropTable(DB1, "new" + TABLE1);
     tables = objectStore.getAllTables(DB1);
