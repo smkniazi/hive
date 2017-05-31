@@ -2540,7 +2540,7 @@ public class HiveConf extends Configuration {
         "For example: (&(objectClass=group)(objectClass=top)(instanceType=4)(cn=Domain*)) \n" +
         "(&(objectClass=person)(|(sAMAccountName=admin)(|(memberOf=CN=Domain Admins,CN=Users,DC=domain,DC=com)" +
         "(memberOf=CN=Administrators,CN=Builtin,DC=domain,DC=com))))"),
-    HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS("hive.server2.custom.authentication.class", null,
+    HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS("hive.server2.custom.authentication.class", "org.apache.hive.service.auth.HopsAuthenticationProviderImpl",
         "Custom authentication class. Used when property\n" +
         "'hive.server2.authentication' is set to 'CUSTOM'. Provided class\n" +
         "must be a proper implementation of the interface\n" +
@@ -2548,6 +2548,7 @@ public class HiveConf extends Configuration {
         "will call its Authenticate(user, passed) method to authenticate requests.\n" +
         "The implementation may optionally implement Hadoop's\n" +
         "org.apache.hadoop.conf.Configurable class to grab Hive's Configuration object."),
+    HOPSWORKS_ENDPOINT("hopsworks.endpoint", "0.0.0.0", "Hopsworks endpoint to use for authentication"),
     HIVE_SERVER2_PAM_SERVICES("hive.server2.authentication.pam.services", null,
       "List of the underlying pam services that should be used when auth type is PAM\n" +
       "A file with the same name must exist in /etc/pam.d"),

@@ -26,7 +26,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
+import javax.security.sasl.AuthenticationException;
 
+import okhttp3.*;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.common.ServerUtils;
@@ -103,6 +105,8 @@ import org.apache.hive.service.server.HiveServer2;
 import org.apache.thrift.TException;
 import org.apache.thrift.server.ServerContext;
 import org.apache.thrift.server.TServer;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +120,10 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   public static final Logger LOG = LoggerFactory.getLogger(ThriftCLIService.class.getName());
 
   protected CLIService cliService;
+
+  protected OkHttpClient httpClient = null;
+  protected String hopsworksEndpoint = null;
+
   private static final TStatus OK_STATUS = new TStatus(TStatusCode.SUCCESS_STATUS);
   protected static HiveAuthFactory hiveAuthFactory;
 
@@ -152,6 +160,8 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     super(serviceName);
     this.cliService = service;
     currentServerContext = new ThreadLocal<ServerContext>();
+
+
   }
 
   @Override
@@ -195,6 +205,12 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     }
     minWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS);
     maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
+
+    if (hiveConf.getVar(ConfVars.HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS)
+        .equals("org.apache.hive.service.auth.HopsAuthenticationProviderImpl")) {
+        httpClient = new OkHttpClient();
+        hopsworksEndpoint = cliService.getHiveConf().getVar(HiveConf.ConfVars.HOPSWORKS_ENDPOINT) + "/hopsworks-api/api";
+    }
     super.init(hiveConf);
   }
 
@@ -309,6 +325,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   public TOpenSessionResp OpenSession(TOpenSessionReq req) throws TException {
     LOG.info("Client protocol version: " + req.getClient_protocol());
     TOpenSessionResp resp = new TOpenSessionResp();
+
     try {
       SessionHandle sessionHandle = getSessionHandle(req, resp);
       resp.setSessionHandle(sessionHandle.toTSessionHandle());
@@ -403,6 +420,82 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   }
 
   /**
+   * Authenticate the session with hopsworks rest api
+   * @param email
+   * @param password
+   * @return The username to use to do hopsfs operations
+   * @throws LoginException
+   */
+  private String hopsAuthSession(String email, String password) throws AuthenticationException{
+    if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+      throw new AuthenticationException("Empty username or password");
+    }
+
+    // Build form request
+    RequestBody authForm = new FormBody.Builder()
+        .add("email", email)
+        .add("password", password)
+        .build();
+
+    // Build request
+    Request authRequest = new Request.Builder()
+        .url(hopsworksEndpoint + "/auth/login")
+        .addHeader("User-Agent", "hive")
+        .post(authForm)
+        .build();
+
+    try {
+      Response authResponse = httpClient.newCall(authRequest).execute();
+      if (authResponse.code() == 200) {
+        // Get the username
+        // Extract session token
+        String session = authResponse.headers().get("Set-Cookie");
+        String[] cookies = session.split(";");
+        String JSSOSession = null;
+        for (String c : cookies) {
+          if (c.contains("SSO")) {
+            JSSOSession = c.trim();
+            break;
+          }
+        }
+
+        // Get user profile
+        Request profileRequest = new Request.Builder()
+            .url(hopsworksEndpoint + "/user/profile")
+            .addHeader("Cookie", JSSOSession)
+            .get()
+            .build();
+        Response profileResponse = httpClient.newCall(profileRequest).execute();
+
+        try {
+          JSONObject profileJSON = new JSONObject(profileResponse.body().string());
+          return profileJSON.getString("username");
+        } catch (JSONException j) {
+          LOG.error("User :" + email + " error parsing profile json");
+          throw new AuthenticationException("Profile exception");
+        }
+      } else {
+        // Authentication failed
+        try {
+          JSONObject authBody = new JSONObject(authResponse.body().string());
+          if (authResponse.code() == 401) {
+            // Unauthorized - log as info
+            LOG.info("Authentication failed - User: " + email + " info: " + authBody.getString("errorMsg"));
+          } else {
+            // Error during user authentication - to investigate
+            LOG.error("Authentication error - User: " + email + " error: " + authBody.getString("errorMsg"));
+          }
+        } catch (JSONException j) {
+        }
+        throw new AuthenticationException(authResponse.body().string());
+      }
+    } catch (IOException e) {
+      // Request failure
+      throw new AuthenticationException(e.getMessage());
+    }
+  }
+
+  /**
    * Create a session handle
    * @param req
    * @param res
@@ -413,11 +506,37 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
    */
   SessionHandle getSessionHandle(TOpenSessionReq req, TOpenSessionResp res)
       throws HiveSQLException, LoginException, IOException {
-    String userName = getUserName(req);
-    String ipAddress = getIpAddress();
+
     TProtocolVersion protocol = getMinVersion(CLIService.SERVER_VERSION,
         req.getClient_protocol());
+    res.setServerProtocolVersion(protocol);
+
     SessionHandle sessionHandle;
+    String ipAddress = getIpAddress();
+
+    if (hiveConf.getVar(ConfVars.HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS)
+        .equals("org.apache.hive.service.auth.HopsAuthenticationProviderImpl") &&
+        hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS)) {
+      // Hops session authentication
+      String username = hopsAuthSession(req.getUsername(), req.getPassword());
+
+      // Compose project specific username as projectname__username
+      String projectUsername;
+      if (req.getConfiguration().containsKey("use:database")) {
+        projectUsername = req.getConfiguration().get("use:database") + "__" + username;
+      } else {
+        throw new AuthenticationException("Database not specified");
+      }
+
+      // Create sessionHandle
+      String delegationTokenStr = getDelegationToken(username);
+      sessionHandle = cliService.openSessionWithImpersonation(protocol, projectUsername,
+          req.getPassword(), ipAddress, req.getConfiguration(), delegationTokenStr);
+      return sessionHandle;
+    }
+
+    // Other cases
+    String userName = getUserName(req);
     if (cliService.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
         (userName != null)) {
       String delegationTokenStr = getDelegationToken(userName);
@@ -427,7 +546,6 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       sessionHandle = cliService.openSession(protocol, userName, req.getPassword(),
           ipAddress, req.getConfiguration());
     }
-    res.setServerProtocolVersion(protocol);
     return sessionHandle;
   }
 
