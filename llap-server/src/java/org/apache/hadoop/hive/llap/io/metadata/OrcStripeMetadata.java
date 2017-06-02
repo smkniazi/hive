@@ -42,67 +42,7 @@ public class OrcStripeMetadata implements ConsumerStripeMetadata {
     encodings = footer.getColumnsList();
     writerTimezone = footer.getWriterTimezone();
     rowCount = stripe.getNumberOfRows();
-<<<<<<< HEAD
     rowIndex = orcIndex;
-=======
-    rowIndex = mr.readRowIndex(stripe, schema, footer, true, includes, null,
-        sargColumns, writerVersion, null, null);
-
-    estimatedMemUsage = SIZE_ESTIMATOR.estimate(this, SIZE_ESTIMATORS);
-    this.writerVersion = writerVersion;
-  }
-
-  private OrcStripeMetadata(Object id) {
-    stripeKey = new OrcBatchKey(id, 0, 0);
-    encodings = new ArrayList<>();
-    streams = new ArrayList<>();
-    writerTimezone = "";
-    schema = TypeDescription.fromString("struct<x:int>");
-    rowCount = estimatedMemUsage = 0;
-  }
-
-  @VisibleForTesting
-  public static OrcStripeMetadata createDummy(Object id) {
-    OrcStripeMetadata dummy = new OrcStripeMetadata(id);
-    dummy.encodings.add(OrcProto.ColumnEncoding.getDefaultInstance());
-    dummy.streams.add(OrcProto.Stream.getDefaultInstance());
-    OrcProto.RowIndex ri = OrcProto.RowIndex.newBuilder().addEntry(
-        OrcProto.RowIndexEntry.newBuilder().addPositions(1).setStatistics(
-            OrcFileMetadata.createStatsDummy())).build();
-    OrcProto.BloomFilterIndex bfi = OrcProto.BloomFilterIndex.newBuilder().addBloomFilter(
-        OrcProto.BloomFilter.newBuilder().addBitset(0)).build();
-    dummy.rowIndex = new OrcIndex(
-        new OrcProto.RowIndex[] { ri },
-        new OrcProto.Stream.Kind[] { OrcProto.Stream.Kind.BLOOM_FILTER_UTF8 },
-        new OrcProto.BloomFilterIndex[] { bfi });
-    return dummy;
-  }
-
-  public boolean hasAllIndexes(boolean[] includes) {
-    for (int i = 0; i < includes.length; ++i) {
-      if (includes[i] && rowIndex.getRowGroupIndex()[i] == null) return false;
-    }
-    return true;
-  }
-
-  public void loadMissingIndexes(DataReader mr, StripeInformation stripe, boolean[] includes,
-      boolean[] sargColumns) throws IOException {
-    // Do not lose the old indexes. Create a super set includes
-    OrcProto.RowIndex[] existing = getRowIndexes();
-    boolean superset[] = new boolean[Math.max(existing.length, includes.length)];
-    for (int i = 0; i < includes.length; i++) {
-      superset[i] = includes[i];
-    }
-    for (int i = 0; i < existing.length; i++) {
-      superset[i] = superset[i] || (existing[i] != null);
-    }
-    // TODO: should we save footer to avoid a read here?
-    rowIndex = mr.readRowIndex(stripe, schema, null, true, superset,
-        rowIndex.getRowGroupIndex(),
-        sargColumns, writerVersion, rowIndex.getBloomFilterKinds(),
-        rowIndex.getBloomFilterIndex());
-    // TODO: theoretically, we should re-estimate memory usage here and update memory manager
->>>>>>> 7916965eaa... Revert "Revert "HIVE-16744 : LLAP index update may be broken after ORC switch (Sergey Shelukhin, reviewed by Prasanth Jayachandran)""
   }
 
   public int getStripeIx() {
