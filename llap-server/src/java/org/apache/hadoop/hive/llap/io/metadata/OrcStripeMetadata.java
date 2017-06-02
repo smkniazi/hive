@@ -42,7 +42,6 @@ public class OrcStripeMetadata implements ConsumerStripeMetadata {
     encodings = footer.getColumnsList();
     writerTimezone = footer.getWriterTimezone();
     rowCount = stripe.getNumberOfRows();
-
     rowIndex = orcIndex;
   }
 
