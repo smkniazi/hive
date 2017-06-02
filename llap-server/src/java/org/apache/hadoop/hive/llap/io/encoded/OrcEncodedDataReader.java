@@ -389,6 +389,21 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
               si, footer.getStreamsList(), globalIncludes, sargColumns);
           consumer.setStripeMetadata(stripeMetadata);
         }
+<<<<<<< HEAD
+=======
+        if (!stripeMetadata.hasAllIndexes(globalIncludes)) {
+          if (LlapIoImpl.ORC_LOGGER.isTraceEnabled()) {
+            LlapIoImpl.ORC_LOGGER.trace("Updating indexes in stripe {} metadata for includes: {}",
+                stripeKey.stripeIx, DebugUtils.toString(globalIncludes));
+          }
+          assert isFoundInCache; // If it's not fresh from the cache, indexes should be present.
+          counters.incrCounter(LlapIOCounters.METADATA_CACHE_MISS);
+          ensureMetadataReader();
+          updateLoadedIndexes(stripeMetadata, stripe, globalIncludes, sargColumns);
+        } else if (isFoundInCache) {
+          counters.incrCounter(LlapIOCounters.METADATA_CACHE_HIT);
+        }
+>>>>>>> 7916965eaa... Revert "Revert "HIVE-16744 : LLAP index update may be broken after ORC switch (Sergey Shelukhin, reviewed by Prasanth Jayachandran)""
       } catch (Throwable t) {
         handleReaderError(startTime, t);
         return null;
