@@ -112,8 +112,7 @@ public class InodeHelper {
       throw new MetaException(e.getMessage());
     }
 
-    int inodeId = getInodeID(dbConn, path);
-    InodePK pk = findInodePK(dbConn, inodeId);
+    InodePK pk = getInodePK(dbConn, path);
 
     try {
       dbConn.close();
@@ -124,7 +123,7 @@ public class InodeHelper {
     return pk;
   }
 
-  private int getInodeID(Connection dbConn, String path) throws MetaException{
+  private InodePK getInodePK(Connection dbConn, String path) throws MetaException{
     // Get the path components
     String[] p;
     if (path.charAt(0) == '/') {
@@ -134,7 +133,7 @@ public class InodeHelper {
     }
 
     if (p.length < 1) {
-      return -1;
+      throw new MetaException("Invalid Path");
     }
 
     //Get the right root node
@@ -146,9 +145,11 @@ public class InodeHelper {
       throw new MetaException("Could not resolve inode at path: " + path);
     }
 
+    int partitionId = -1;
+    int parentId = -1;
     //Move down the path
     for (int i = 1; i < p.length; i++) {
-      int partitionId = calculatePartitionId(curr, p[i], i+1);
+      partitionId = calculatePartitionId(curr, p[i], i+1);
       int next = findByInodePK(dbConn, curr, p[i], partitionId);
       if (next == -1) {
         try {
@@ -156,11 +157,12 @@ public class InodeHelper {
         } catch (SQLException e) { }
         throw new MetaException("Could not resolve inode at path: " + path);
       } else {
+        parentId = curr;
         curr = next;
       }
     }
 
-    return curr;
+    return new InodePK(partitionId, parentId, p[p.length-1]);
   }
 
   private int getRootNode(Connection conn, String name) throws MetaException{
@@ -199,38 +201,6 @@ public class InodeHelper {
     }
 
     return -1;
-  }
-
-  private InodePK findInodePK(Connection dbConn, int id) throws MetaException{
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-    try {
-      stmt = dbConn.prepareStatement(
-          "SELECT partition_id, parent_id, name FROM hdfs_inodes WHERE id = ?");
-      stmt.setInt(1, id);
-      rs = stmt.executeQuery();
-      if (rs.next()) {
-        return new InodePK(rs.getInt("partition_id"),
-            rs.getInt("parent_id"),
-            rs.getString("name"));
-      }
-    } catch (SQLException e) {
-      throw new MetaException(e.getMessage());
-    } finally {
-      try{
-        if (rs != null) {
-            rs.close();
-        }
-        if (stmt != null) {
-            stmt.close();
-        }
-      } catch (SQLException e) {
-        throw new MetaException(e.getMessage());
-      }
-    }
-
-    // The inode has been deleted before the of the query.
-    throw new MetaException("Cannot resolve inode with id = " + id);
   }
 
   private int calculatePartitionId(int parentId, String name, int depth) {
