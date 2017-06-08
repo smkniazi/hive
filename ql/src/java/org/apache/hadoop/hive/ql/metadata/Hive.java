@@ -90,6 +90,7 @@ import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.Warehouse;
 import org.apache.hadoop.hive.metastore.api.AggrStats;
 import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
+import org.apache.hadoop.hive.metastore.api.CmRecycleRequest;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.CompactionResponse;
 import org.apache.hadoop.hive.metastore.api.CompactionType;
@@ -3327,6 +3328,22 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
+  /**
+   * Recycles the files recursively from the input path to the cmroot directory either by copying or moving it.
+   *
+   * @param dataPath Path of the data files to be recycled to cmroot
+   * @param isPurge
+   *          When set to true files which needs to be recycled are not moved to Trash
+   */
+  public void recycleDirToCmPath(Path dataPath, boolean isPurge) throws HiveException {
+    try {
+      CmRecycleRequest request = new CmRecycleRequest(dataPath.toString(), isPurge);
+      getMSC().recycleDirToCmPath(request);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
   //it is assumed that parent directory of the destf should already exist when this
   //method is called. when the replace value is true, this method works a little different
   //from mv command if the destf is a directory, it replaces the destf instead of moving under
@@ -3607,7 +3624,6 @@ private void constructOneLBLocationMap(FileStatus fSta,
       }
     }
   }
-
 
   /**
    * Replaces files in the partition with new data set specified by srcf. Works
