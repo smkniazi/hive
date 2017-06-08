@@ -360,15 +360,15 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
       int stripeIx = stripeIxFrom + stripeIxMod;
       boolean[] rgs = null;
       OrcStripeMetadata stripeMetadata = null;
-      StripeInformation si;
+      StripeInformation stripe;
       try {
-        si = fileMetadata.getStripes().get(stripeIx);
-        LlapIoImpl.ORC_LOGGER.trace("Reading stripe {}: {}, {}", stripeIx, si.getOffset(),
-            si.getLength());
-        trace.logReadingStripe(stripeIx, si.getOffset(), si.getLength());
+        stripe = fileMetadata.getStripes().get(stripeIx);
+
+        LlapIoImpl.ORC_LOGGER.trace("Reading stripe {}: {}, {}", stripeIx, stripe.getOffset(),
+            stripe.getLength());
         rgs = stripeRgs[stripeIxMod];
         if (LlapIoImpl.ORC_LOGGER.isTraceEnabled()) {
-          LlapIoImpl.ORC_LOGGER.trace("stripeRgs[{}]: {}", stripeIxMod, Arrays.toString(rgs));
+          LlapIoImpl.ORC_LOGGER.trace("readState[{}]: {}", stripeIxMod, Arrays.toString(rgs));
         }
         // We assume that NO_RGS value is only set from SARG filter and for all columns;
         // intermediate changes for individual columns will unset values in the array.
@@ -383,10 +383,10 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
           stripeKey.stripeIx = stripeIx;
           OrcProto.StripeFooter footer = getStripeFooterFromCacheOrDisk(si, stripeKey);
           stripeMetadata = createOrcStripeMetadataObject(
-              stripeIx, si, footer, globalIncludes, sargColumns);
+              stripeIx, stripe, footer, globalIncludes, sargColumns);
           ensureDataReader();
           stripeReader.readIndexStreams(stripeMetadata.getIndex(),
-              si, footer.getStreamsList(), globalIncludes, sargColumns);
+              stripe, footer.getStreamsList(), globalIncludes, sargColumns);
           consumer.setStripeMetadata(stripeMetadata);
         }
       } catch (Throwable t) {
