@@ -467,6 +467,12 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
             .build();
         Response profileResponse = httpClient.newCall(profileRequest).execute();
 
+        if (profileResponse.code() != 200) {
+          // Error in getting the user profile, throw an exception
+          throw new AuthenticationException("Profile exception");
+        }
+
+        // User profile received correctly. Parse it
         try {
           JSONObject profileJSON = new JSONObject(profileResponse.body().string());
           return profileJSON.getString("username");
