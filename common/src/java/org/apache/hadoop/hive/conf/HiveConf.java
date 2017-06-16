@@ -3486,7 +3486,15 @@ public class HiveConf extends Configuration {
             "hive.server2.authentication.ldap.groupMembershipKey," +
             "hive.server2.authentication.ldap.userMembershipKey," +
             "hive.server2.authentication.ldap.groupClassKey," +
-            "hive.server2.authentication.ldap.customLDAPQuery",
+            "hive.server2.authentication.ldap.customLDAPQuery," +
+            "hive.spark.client.connect.timeout," +
+            "hive.spark.client.server.connect.timeout," +
+            "hive.spark.client.channel.log.level," +
+            "hive.spark.client.rpc.max.size," +
+            "hive.spark.client.rpc.threads," +
+            "hive.spark.client.secret.bits," +
+            "hive.spark.client.rpc.server.address," +
+            "hive.spark.client.rpc.server.port",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname
