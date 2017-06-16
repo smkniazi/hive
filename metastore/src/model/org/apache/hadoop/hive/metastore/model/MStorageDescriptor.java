@@ -299,7 +299,7 @@ public class MStorageDescriptor {
   }
 
   /**
-   * @param skewedColValueLocationMaps the skewedColValueLocationMaps to set
+   * @param listBucketColValuesMapping the skewedColValueLocationMaps to set
    */
   public void setSkewedColValueLocationMaps(Map<MStringList, String> listBucketColValuesMapping) {
     this.skewedColValueLocationMaps = listBucketColValuesMapping;
