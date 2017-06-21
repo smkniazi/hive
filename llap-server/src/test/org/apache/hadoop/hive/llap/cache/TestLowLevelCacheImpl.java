@@ -121,11 +121,7 @@ public class TestLowLevelCacheImpl {
     public void setParentDebugDumper(LlapOomDebugDump dumper) {
     }
 
-    @Override
-    public void debugDumpShort(StringBuilder sb) {
-    }
-
-    @Override
+   @Override
     public void debugDumpShort(StringBuilder sb) {
     }
   }
