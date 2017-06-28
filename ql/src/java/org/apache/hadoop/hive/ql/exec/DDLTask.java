@@ -120,7 +120,6 @@ import org.apache.hadoop.hive.ql.io.merge.MergeFileWork;
 import org.apache.hadoop.hive.ql.io.orc.OrcInputFormat;
 import org.apache.hadoop.hive.ql.io.orc.OrcSerde;
 import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe;
-import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetTableUtils;
 import org.apache.hadoop.hive.ql.io.rcfile.truncate.ColumnTruncateTask;
 import org.apache.hadoop.hive.ql.io.rcfile.truncate.ColumnTruncateWork;
 import org.apache.hadoop.hive.ql.lockmgr.DbLockManager;
@@ -4555,18 +4554,6 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           return 0; // no replacement, the existing table state is newer than our update.
         } else {
           crtTbl.setReplaceMode(true); // we replace existing table.
-        }
-      }
-    }
-
-    // If PARQUET_INT96_DEFAULT_UTC_WRITE_ZONE is set to True, then set new Parquet tables timezone
-    // to UTC by default (only if the table property is not set)
-    if (tbl.getSerializationLib().equals(ParquetHiveSerDe.class.getName())) {
-      SessionState ss = SessionState.get();
-      if (ss.getConf().getBoolVar(ConfVars.PARQUET_INT96_DEFAULT_UTC_WRITE_ZONE)) {
-        String parquetTimezone = tbl.getProperty(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY);
-        if (parquetTimezone == null || parquetTimezone.isEmpty()) {
-          tbl.setProperty(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY, ParquetTableUtils.PARQUET_INT96_NO_ADJUSTMENT_ZONE);
         }
       }
     }
