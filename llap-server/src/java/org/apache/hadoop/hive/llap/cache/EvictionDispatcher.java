@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.llap.cache;
 
+import org.apache.hadoop.hive.llap.cache.SerDeLowLevelCacheImpl.LlapSerDeDataBuffer;
 import org.apache.hadoop.hive.llap.io.metadata.OrcFileEstimateErrors;
 import org.apache.hadoop.hive.llap.io.metadata.MetadataCache;
 import org.apache.hadoop.hive.llap.io.metadata.MetadataCache.LlapMetadataBuffer;
@@ -49,12 +50,7 @@ public final class EvictionDispatcher implements EvictionListener, LlapOomDebugD
   }
 
   public void notifyEvicted(LlapDataBuffer buffer) {
-    // Note: we don't know which cache this is from, so we notify both. They can noop if they
-    //       want to find the buffer in their structures and can't.
     dataCache.notifyEvicted(buffer);
-    if (serdeCache != null) {
-      serdeCache.notifyEvicted(buffer);
-    }
     allocator.deallocateEvicted(buffer);
   }
 
