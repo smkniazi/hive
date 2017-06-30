@@ -144,7 +144,7 @@ public class EximUtil {
    * Initialize the URI where the exported data collection is
    * to created for export, or is present for import
    */
-  static URI getValidatedURI(HiveConf conf, String dcPath) throws SemanticException {
+  public static URI getValidatedURI(HiveConf conf, String dcPath) throws SemanticException {
     try {
       boolean testMode = conf.getBoolVar(HiveConf.ConfVars.HIVETESTMODE)
           || conf.getBoolVar(HiveConf.ConfVars.HIVEEXIMTESTMODE);
