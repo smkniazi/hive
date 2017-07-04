@@ -1,4 +1,4 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 
 set -x
 
@@ -27,7 +27,7 @@ set -x
 #   LLAP_DAEMON_LOGGER - default is console
 #   LLAP_DAEMON_LOG_DIR - defaults to /tmp
 #   LLAP_DAEMON_TMP_DIR - defaults to /tmp
-#   LLAP_DAEMON_LOG_FILE - 
+#   LLAP_DAEMON_LOG_FILE -
 #   LLAP_DAEMON_CONF_DIR
 
 function print_usage() {
@@ -54,13 +54,13 @@ LOGGER_DEFAULT="console"
 JAVA_OPTS_BASE="-server -Djava.net.preferIPv4Stack=true -XX:NewRatio=8 -XX:+UseNUMA -XX:+PrintGCDetails -verbose:gc -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=4 -XX:GCLogFileSize=100M"
 
 if [ ! -d "${LLAP_DAEMON_HOME}" ]; then
-  echo No LLAP_DAEMON_HOME set, or is not a directory. 
+  echo No LLAP_DAEMON_HOME set, or is not a directory.
   echo Please specify it in the environment.
   exit 1
 fi
 
 if [ ! -d "${LLAP_DAEMON_CONF_DIR}" ]; then
-  echo No LLAP_DAEMON_CONF_DIR set, or is not a directory. 
+  echo No LLAP_DAEMON_CONF_DIR set, or is not a directory.
   echo Please specify it in the environment.
   exit 1
 fi
@@ -75,7 +75,7 @@ if [ ! -n "${LLAP_DAEMON_LOG_LEVEL}" ]; then
   LLAP_DAEMON_LOG_LEVEL=${LOG_LEVEL_DEFAULT}
 fi
 
-CLASSPATH=${LLAP_DAEMON_CONF_DIR}:${LLAP_DAEMON_HOME}/lib/*:${LLAP_DAEMON_HOME}/lib/tez/*:${LLAP_DAEMON_HOME}/lib/udfs/*:.
+CLASSPATH=${LLAP_DAEMON_CONF_DIR}:${LLAP_DAEMON_HOME}/lib/*:`${HADOOP_HOME}/bin/hadoop classpath`:${LLAP_DAEMON_HOME}/lib/tez/*:${LLAP_DAEMON_HOME}/lib/udfs/*:.
 
 if [ -n "LLAP_DAEMON_USER_CLASSPATH" ]; then
   CLASSPATH=${CLASSPATH}:${LLAP_DAEMON_USER_CLASSPATH}
