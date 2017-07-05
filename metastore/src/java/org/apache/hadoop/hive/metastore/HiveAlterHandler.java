@@ -226,11 +226,6 @@ public class HiveAlterHandler implements AlterHandler {
       throw new InvalidOperationException(
           "Unable to change partition or table."
               + " Check metastore logs for detailed stack." + e.getMessage());
-    } catch (InvalidInputException e) {
-        LOG.debug("Accessing Metastore failed due to invalid input ", e);
-        throw new InvalidOperationException(
-            "Unable to change partition or table."
-                + " Check metastore logs for detailed stack." + e.getMessage());
     } catch (NoSuchObjectException e) {
       LOG.debug("Object not found in metastore ", e);
       throw new InvalidOperationException(
@@ -258,13 +253,13 @@ public class HiveAlterHandler implements AlterHandler {
   }
 
   /**
-   * RemoteExceptionS from hadoop RPC wrap the stack trace into e.getMessage() which makes
-   * logs/stack traces confusing.
+   * MetaException that encapsulates error message from RemoteException from hadoop RPC which wrap
+   * the stack trace into e.getMessage() which makes logs/stack traces confusing.
    * @param ex
    * @return
    */
-  String getSimpleMessage(IOException ex) {
-    if(ex instanceof RemoteException) {
+  String getSimpleMessage(Exception ex) {
+    if(ex instanceof MetaException) {
       String msg = ex.getMessage();
       if(msg == null || !msg.contains("\n")) {
         return msg;
@@ -415,7 +410,7 @@ public class HiveAlterHandler implements AlterHandler {
           LOG.error("Revert the data move in renaming a partition.");
           try {
             if (destFs.exists(destPath)) {
-              wh.renameDir(destPath, srcPath);
+              wh.renameDir(destPath, srcPath, false);
             }
           } catch (MetaException me) {
             LOG.error("Failed to restore partition data from " + destPath + " to " + srcPath
