@@ -406,7 +406,7 @@ public class ExplainTask extends Task<ExplainWork> implements Serializable {
             if (jsonParser != null) {
               jsonParser.print(jsonPlan, null);
               LOG.info("JsonPlan is augmented to " + jsonPlan.toString());
-            } 
+            }
             out.print(jsonPlan);
           }
         }
