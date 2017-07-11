@@ -2570,6 +2570,10 @@ public class HiveConf extends Configuration {
         "SSL certificate keystore location."),
     HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", "",
         "SSL certificate keystore password."),
+    HIVE_SERVER2_SSL_TRUSTSTORE_PATH("hive.server2.truststore.path", "",
+        "SSL certificate truststore location. If not set, one way ssl is used"),
+    HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD("hive.server2.truststore.password", "",
+        "SSL certificate truststore password."),
     HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE("hive.server2.map.fair.scheduler.queue", true,
         "If the YARN fair scheduler is configured and HiveServer2 is running in non-impersonation mode,\n" +
         "this setting determines the user for fair scheduler queue mapping.\n" +
@@ -3302,6 +3306,7 @@ public class HiveConf extends Configuration {
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname
+        + "," + HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD.varname
         // Adding the S3 credentials from Hadoop config to be hidden
         + ",fs.s3.awsAccessKeyId"
         + ",fs.s3.awsSecretAccessKey"

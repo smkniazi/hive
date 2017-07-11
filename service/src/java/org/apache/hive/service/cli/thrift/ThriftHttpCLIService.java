@@ -101,6 +101,10 @@ public class ThriftHttpCLIService extends ThriftCLIService {
           throw new IllegalArgumentException(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname
               + " Not configured for SSL connection");
         }
+        String trustStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PATH).trim();
+        String trustStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
+            HiveConf.ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD.varname);
+
         SslContextFactory sslContextFactory = new SslContextFactory();
         String[] excludedProtocols = hiveConf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",");
         LOG.info("HTTP Server SSL: adding excluded protocols: " + Arrays.toString(excludedProtocols));
@@ -109,6 +113,13 @@ public class ThriftHttpCLIService extends ThriftCLIService {
           Arrays.toString(sslContextFactory.getExcludeProtocols()));
         sslContextFactory.setKeyStorePath(keyStorePath);
         sslContextFactory.setKeyStorePassword(keyStorePassword);
+
+        if (!trustStorePath.isEmpty()) {
+          sslContextFactory.setNeedClientAuth(true);
+          sslContextFactory.setTrustStorePath(trustStorePath);
+          sslContextFactory.setTrustStorePassword(trustStorePassword);
+        }
+
         connector = new ServerConnector(httpServer, sslContextFactory, http);
       } else {
         connector = new ServerConnector(httpServer, http);
