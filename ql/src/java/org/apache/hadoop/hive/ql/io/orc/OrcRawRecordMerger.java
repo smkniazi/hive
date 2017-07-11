@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.ql.io.orc;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -203,13 +204,15 @@ public class OrcRawRecordMerger implements AcidInputFormat.RawReader<OrcStruct>{
    */
   @VisibleForTesting
   final static class ReaderPairAcid implements ReaderPair {
-    private OrcStruct nextRecord;
-    private final Reader reader;
-    private final RecordReader recordReader;
-    private final ReaderKey key;
-    private final RecordIdentifier minKey;
-    private final RecordIdentifier maxKey;
-    private final int statementId;
+    OrcStruct nextRecord;
+    final Reader reader;
+    final RecordReader recordReader;
+    final ReaderKey key;
+    final RecordIdentifier minKey;
+    final RecordIdentifier maxKey;
+    final int bucket;
+    final int statementId;
+    boolean advancedToMinKey = false;
 
     /**
      * Create a reader that reads from the first key larger than minKey to any
@@ -229,41 +232,34 @@ public class OrcRawRecordMerger implements AcidInputFormat.RawReader<OrcStruct>{
                    ReaderImpl.Options options, int statementId) throws IOException {
       this.reader = reader;
       this.key = key;
+      this.minKey = minKey;
+      this.maxKey = maxKey;
+      this.bucket = bucket;
       // TODO use stripe statistics to jump over stripes
       recordReader = reader.rowsOptions(options);
       this.statementId = statementId;
-      this.minKey = minKey;
-      this.maxKey = maxKey;
-      // advance the reader until we reach the minimum key
-      do {
-        next(nextRecord());
-      } while (nextRecord() != null &&
-        (minKey != null && key.compareRow(getMinKey()) <= 0));
-    }
-    @Override public final OrcStruct nextRecord() {
-      return nextRecord;
-    }
-    @Override
-    public final int getColumns() {
-      return getReader().getTypes().get(OrcRecordUpdater.ROW + 1).getSubtypesCount();
     }
 
-    @Override public RecordReader getRecordReader() {
+    @Override
+    public RecordReader getRecordReader() {
       return recordReader;
     }
-    @Override public Reader getReader() { return reader; }
-    @Override public RecordIdentifier getMinKey() {
-      return minKey;
-    }
-    @Override public RecordIdentifier getMaxKey() {
-      return maxKey;
-    }
-    @Override public ReaderKey getKey() {
-      return key;
+    /**
+     * This must be called right after the constructor but not in the constructor to make sure
+     * sub-classes are fully initialized before their {@link #next(OrcStruct)} is called
+     */
+    void advnaceToMinKey() throws IOException {
+      advancedToMinKey = true;
+      // advance the reader until we reach the minimum key
+      do {
+        next(nextRecord);
+      } while (nextRecord != null &&
+          (getMinKey() != null && key.compareRow(getMinKey()) <= 0));
     }
 
     @Override
     public void next(OrcStruct next) throws IOException {
+      assert advancedToMinKey : "advnaceToMinKey() was not called";
       if (getRecordReader().hasNext()) {
         nextRecord = (OrcStruct) getRecordReader().next(next);
         // set the key
@@ -274,8 +270,8 @@ public class OrcRawRecordMerger implements AcidInputFormat.RawReader<OrcStruct>{
             statementId);
 
         // if this record is larger than maxKey, we need to stop
-        if (getMaxKey() != null && getKey().compareRow(getMaxKey()) > 0) {
-          LOG.debug("key " + getKey() + " > maxkey " + getMaxKey());
+        if (getMaxKey() != null && key.compareRow(getMaxKey()) > 0) {
+          LOG.debug("key " + key + " > maxkey " + getMaxKey());
           nextRecord = null;
           getRecordReader().close();
         }
@@ -283,6 +279,21 @@ public class OrcRawRecordMerger implements AcidInputFormat.RawReader<OrcStruct>{
         nextRecord = null;
         getRecordReader().close();
       }
+    }
+
+    @Override
+    public RecordIdentifier getMinKey() {
+      return minKey;
+    }
+
+    @Override
+    public RecordIdentifier getMaxKey() {
+      return maxKey;
+    }
+
+    @Override
+    public int getColumns() {
+      return reader.getTypes().get(OrcRecordUpdater.ROW + 1).getSubtypesCount();
     }
   }
 
@@ -846,17 +857,11 @@ public class OrcRawRecordMerger implements AcidInputFormat.RawReader<OrcStruct>{
       ReaderKey key = new ReaderKey();
       if (isOriginal) {
         options = options.clone();
-        if(mergerOptions.isCompacting()) {
-          pair = new OriginalReaderPairToCompact(key, bucket, options, mergerOptions,
-            conf, validTxnList);
-        }
-        else {
-          pair = new OriginalReaderPairToRead(key, reader, bucket, keyInterval.getMinKey(),
-            keyInterval.getMaxKey(), options, mergerOptions, conf, validTxnList);
-        }
+        pair = new OriginalReaderPair(key, reader, bucket, keyInterval.getMinKey(), keyInterval.getMaxKey(),
+                                      options, mergerOptions, conf, validTxnList);
       } else {
-        pair = new ReaderPairAcid(key, reader, keyInterval.getMinKey(), keyInterval.getMaxKey(),
-          eventOptions, 0);
+        pair = new ReaderPair(key, reader, bucket, keyInterval.getMinKey(), keyInterval.getMaxKey(),
+                              eventOptions, 0);
       }
       minKey = pair.getMinKey();
       maxKey = pair.getMaxKey();
