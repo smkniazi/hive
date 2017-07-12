@@ -201,8 +201,8 @@ Table Parameters:
 	numFiles            	2                   
 	numRows             	0                   
 	rawDataSize         	0                   
-	totalSize           	1714                
-	transactional       	true                
+	totalSize           	1798
+	transactional       	true
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -244,8 +244,8 @@ Table Parameters:
 	numFiles            	4                   
 	numRows             	0                   
 	rawDataSize         	0                   
-	totalSize           	2719                
-	transactional       	true                
+	totalSize           	2909
+	transactional       	true
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 

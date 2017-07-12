@@ -171,7 +171,7 @@ Table Parameters:
 	numFiles            	1                   
 	numRows             	0                   
 	rawDataSize         	0                   
-	totalSize           	295426              
+	totalSize           	295483              
 	transactional       	true                
 #### A masked pattern was here ####
 	 	 
@@ -199,9 +199,9 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: acid_ivot
-            Statistics: Num rows: 1 Data size: 295426 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 295483 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
-              Statistics: Num rows: 1 Data size: 295426 Basic stats: COMPLETE Column stats: COMPLETE
+              Statistics: Num rows: 1 Data size: 295483 Basic stats: COMPLETE Column stats: COMPLETE
               Group By Operator
                 aggregations: count()
                 mode: hash
@@ -364,8 +364,8 @@ Table Parameters:
 	numFiles            	1                   
 	numRows             	0                   
 	rawDataSize         	0                   
-	totalSize           	1508                
-	transactional       	true                
+	totalSize           	1554
+	transactional       	true
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -392,9 +392,9 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: acid_ivot
-            Statistics: Num rows: 1 Data size: 1508 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 1554 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
-              Statistics: Num rows: 1 Data size: 1508 Basic stats: COMPLETE Column stats: COMPLETE
+              Statistics: Num rows: 1 Data size: 1554 Basic stats: COMPLETE Column stats: COMPLETE
               Group By Operator
                 aggregations: count()
                 mode: hash
@@ -486,8 +486,8 @@ Table Parameters:
 	numFiles            	2                   
 	numRows             	0                   
 	rawDataSize         	0                   
-	totalSize           	3016                
-	transactional       	true                
+	totalSize           	3109
+	transactional       	true
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -514,9 +514,9 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: acid_ivot
-            Statistics: Num rows: 1 Data size: 3016 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 3109 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
-              Statistics: Num rows: 1 Data size: 3016 Basic stats: COMPLETE Column stats: COMPLETE
+              Statistics: Num rows: 1 Data size: 3109 Basic stats: COMPLETE Column stats: COMPLETE
               Group By Operator
                 aggregations: count()
                 mode: hash
@@ -606,8 +606,8 @@ Table Parameters:
 	numFiles            	3                   
 	numRows             	0                   
 	rawDataSize         	0                   
-	totalSize           	298450
-	transactional       	true
+	totalSize           	298592
+	transactional       	true                
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -634,9 +634,9 @@ STAGE PLANS:
       Map Operator Tree:
           TableScan
             alias: acid_ivot
-            Statistics: Num rows: 1 Data size: 298450 Basic stats: COMPLETE Column stats: COMPLETE
+            Statistics: Num rows: 1 Data size: 298592 Basic stats: COMPLETE Column stats: COMPLETE
             Select Operator
-              Statistics: Num rows: 1 Data size: 298450 Basic stats: COMPLETE Column stats: COMPLETE
+              Statistics: Num rows: 1 Data size: 298592 Basic stats: COMPLETE Column stats: COMPLETE
               Group By Operator
                 aggregations: count()
                 mode: hash
