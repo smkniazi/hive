@@ -522,7 +522,8 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
 
     if (hiveConf.getVar(ConfVars.HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS)
         .equals("org.apache.hive.service.auth.HopsAuthenticationProviderImpl") &&
-        hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS)) {
+        hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
+        hiveConf.getVar(ConfVars.HIVE_SERVER2_TRANSPORT_MODE).equals("binary")) {
       // Hops session authentication
       String username = hopsAuthSession(req.getUsername(), req.getPassword());
 

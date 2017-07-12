@@ -21,7 +21,9 @@ package org.apache.hive.service.cli.thrift;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.security.Principal;
 import java.security.PrivilegedExceptionAction;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.security.auth.x500.X500Principal;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -65,6 +68,7 @@ import org.ietf.jgss.GSSName;
 import org.ietf.jgss.Oid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.security.x509.X509AttributeName;
 
 /**
  *
@@ -158,13 +162,14 @@ public class ThriftHttpServlet extends TServlet {
           } else {
             clientUserName = doKerberosAuth(request);
           }
-        }
-        // For password based authentication
-        else {
+        } else if (authType.equals("CERTIFICATE")) {
+          // Certificate based authentication
+          clientUserName = doCertAuth(request);
+        } else {
+          // For password based authentication
           clientUserName = doPasswdAuth(request, authType);
         }
       }
-      LOG.debug("Client username: " + clientUserName);
 
       // Set the thread local username to be used for doAs if true
       SessionManager.setUserName(clientUserName);
@@ -366,6 +371,25 @@ public class ThriftHttpServlet extends TServlet {
       }
     }
     return userName;
+  }
+
+  private String doCertAuth(HttpServletRequest request)
+      throws HttpAuthenticationException {
+    X509Certificate[] certChain = (X509Certificate[])
+        request.getAttribute("javax.servlet.request.X509Certificate");
+    if (certChain== null || certChain.length == 0) {
+      throw new HttpAuthenticationException("Cannot authenticate the user: missing the client certificate");
+    }
+
+    // Client certificate is always the first
+    String DN = certChain[0].getSubjectDN().getName();
+    String[] dnTokens= DN.split(",");
+    String[] cnTokens = dnTokens[0].split("=", 2);
+    if (cnTokens.length != 2) {
+      throw new HttpAuthenticationException("Cannot authenticate the user: Unrecognized CN format");
+    }
+
+    return cnTokens[1];
   }
 
   private String doTokenAuth(HttpServletRequest request, HttpServletResponse response)
