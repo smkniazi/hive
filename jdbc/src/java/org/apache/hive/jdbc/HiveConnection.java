@@ -492,8 +492,16 @@ public class HiveConnection implements java.sql.Connection {
       if (sslTrustStore == null || sslTrustStore.isEmpty()) {
         transport = HiveAuthUtils.getSSLSocket(host, port, loginTimeout);
       } else {
-        transport = HiveAuthUtils.getSSLSocket(host, port, loginTimeout,
-            sslTrustStore, sslTrustStorePassword);
+        String useTwoWaySSL = sessConfMap.get(JdbcConnectionParams.USE_TWO_WAY_SSL);
+        if (useTwoWaySSL != null && useTwoWaySSL.equalsIgnoreCase(JdbcConnectionParams.TRUE)) {
+          String sslKeyStore = sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE);
+          String sslKeyStorePassword = sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE_PASSWORD);
+          transport = HiveAuthUtils.get2WaySSLSocket(host, port, loginTimeout,
+              sslTrustStore, sslTrustStorePassword, sslKeyStore, sslKeyStorePassword);
+        } else {
+          transport = HiveAuthUtils.getSSLSocket(host, port, loginTimeout,
+              sslTrustStore, sslTrustStorePassword);
+        }
       }
     } else {
       // get non-SSL socket transport

@@ -65,6 +65,21 @@ public class HiveAuthUtils {
     return getSSLSocketWithHttps(tSSLSocket);
   }
 
+  public static TTransport get2WaySSLSocket(String host, int port, int loginTimeout,
+    String trustStorePath, String trustStorePassword, String keyStorePath,
+    String keyStorePassword) throws TTransportException {
+    TSSLTransportFactory.TSSLTransportParameters params =
+      new TSSLTransportFactory.TSSLTransportParameters();
+
+    params.setTrustStore(trustStorePath, trustStorePassword);
+    params.setKeyStore(keyStorePath, keyStorePassword);
+    params.requireClientAuth(true);
+    // The underlying SSLSocket object is bound to host:port with the given SO_TIMEOUT and
+    // SSLContext created with the given params
+    TSocket tSSLSocket = TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
+    return getSSLSocketWithHttps(tSSLSocket);
+  }
+
   // Using endpoint identification algorithm as HTTPS enables us to do
   // CNAMEs/subjectAltName verification
   private static TSocket getSSLSocketWithHttps(TSocket tSSLSocket) throws TTransportException {
@@ -100,6 +115,33 @@ public class HiveAuthUtils {
     } else {
       serverAddress = new InetSocketAddress(hiveHost, portNum);
     }
+
+    return getServerSSLSocketInternal(serverAddress, portNum, params, sslVersionBlacklist);
+  }
+
+
+  public static TServerSocket getServer2WaySSLSocket(String hiveHost, int portNum, String keyStorePath,
+      String keyStorePassword, String trustStorePath, String trustStorePassword,
+      List<String> sslVersionBlacklist) throws TTransportException, UnknownHostException {
+    TSSLTransportFactory.TSSLTransportParameters params =
+        new TSSLTransportFactory.TSSLTransportParameters();
+    params.setKeyStore(keyStorePath, keyStorePassword);
+    params.setTrustStore(trustStorePath, trustStorePassword);
+    params.requireClientAuth(true);
+    InetSocketAddress serverAddress;
+    if (hiveHost == null || hiveHost.isEmpty()) {
+      // Wildcard bind
+      serverAddress = new InetSocketAddress(portNum);
+    } else {
+      serverAddress = new InetSocketAddress(hiveHost, portNum);
+    }
+
+    return getServerSSLSocketInternal(serverAddress, portNum, params, sslVersionBlacklist);
+  }
+
+  private static TServerSocket getServerSSLSocketInternal(InetSocketAddress serverAddress, int portNum,
+      TSSLTransportFactory.TSSLTransportParameters params, List<String> sslVersionBlacklist) throws TTransportException,
+      UnknownHostException {
     TServerSocket thriftServerSocket =
         TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress.getAddress(), params);
     if (thriftServerSocket.getServerSocket() instanceof SSLServerSocket) {

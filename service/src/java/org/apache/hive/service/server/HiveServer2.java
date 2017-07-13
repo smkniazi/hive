@@ -72,6 +72,7 @@ import org.apache.hive.common.util.ShutdownHookManager;
 import org.apache.hive.http.HttpServer;
 import org.apache.hive.http.LlapServlet;
 import org.apache.hive.service.CompositeService;
+import org.apache.hive.service.Service;
 import org.apache.hive.service.ServiceException;
 import org.apache.hive.service.cli.CLIService;
 import org.apache.hive.service.cli.thrift.ThriftBinaryCLIService;
@@ -101,7 +102,7 @@ public class HiveServer2 extends CompositeService {
   private static CountDownLatch deleteSignal;
   private static final Logger LOG = LoggerFactory.getLogger(HiveServer2.class);
   private CLIService cliService;
-  private ThriftCLIService thriftCLIService;
+  private ArrayList<Service> thriftCLIServices;
   private PersistentEphemeralNode znode;
   private String znodePath;
   private CuratorFramework zooKeeperClient;
@@ -124,6 +125,9 @@ public class HiveServer2 extends CompositeService {
       LOG.warn("Could not initiate the HiveServer2 Metrics system.  Metrics may not be reported.", t);
     }
 
+    // init arraylist
+    thriftCLIServices = new ArrayList<>();
+
     cliService = new CLIService(this);
     addService(cliService);
     final HiveServer2 hiveServer2 = this;
@@ -134,15 +138,20 @@ public class HiveServer2 extends CompositeService {
       }
     };
     if (isHTTPTransportMode(hiveConf)) {
-      thriftCLIService = new ThriftHttpCLIService(cliService, oomHook);
+      thriftCLIServices.add(new ThriftHttpCLIService(cliService, oomHook));
     } else {
-      thriftCLIService = new ThriftBinaryCLIService(cliService, oomHook);
+      // Start Thrift service with, optionally, one way ssl.
+      thriftCLIServices.add(new ThriftBinaryCLIService(cliService, false,  oomHook));
+
+      if (hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT_2WSSL) > 0) {
+        thriftCLIServices.add(new ThriftBinaryCLIService(cliService, true,  oomHook));
+      }
     }
-    addService(thriftCLIService);
+    addServices(thriftCLIServices);
     super.init(hiveConf);
     // Set host name in hiveConf
     try {
-      hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST.varname, getServerHost());
+      hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST.varname, getServerHost().get(0));
     } catch (Throwable t) {
       throw new Error("Unable to intitialize HiveServer2", t);
     }
@@ -295,7 +304,7 @@ public class HiveServer2 extends CompositeService {
   private void addServerInstanceToZooKeeper(HiveConf hiveConf) throws Exception {
     String zooKeeperEnsemble = ZooKeeperHiveHelper.getQuorumServers(hiveConf);
     String rootNamespace = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_NAMESPACE);
-    String instanceURI = getServerInstanceURI();
+    List<String> instanceURIs = getServerInstanceURI();
     setUpZooKeeperAuth(hiveConf);
     int sessionTimeout =
         (int) hiveConf.getTimeVar(HiveConf.ConfVars.HIVE_ZOOKEEPER_SESSION_TIMEOUT,
@@ -322,48 +331,50 @@ public class HiveServer2 extends CompositeService {
         throw e;
       }
     }
-    // Create a znode under the rootNamespace parent for this instance of the server
-    // Znode name: serverUri=host:port;version=versionInfo;sequence=sequenceNumber
-    try {
-      String pathPrefix =
-          ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + rootNamespace
-              + ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + "serverUri=" + instanceURI + ";"
-              + "version=" + HiveVersionInfo.getVersion() + ";" + "sequence=";
-      String znodeData = "";
-      if (hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_PUBLISH_CONFIGS)) {
-        // HiveServer2 configs that this instance will publish to ZooKeeper,
-        // so that the clients can read these and configure themselves properly.
-        Map<String, String> confsToPublish = new HashMap<String, String>();
-        addConfsToPublish(hiveConf, confsToPublish);
-        // Publish configs for this instance as the data on the node
-        znodeData = Joiner.on(';').withKeyValueSeparator("=").join(confsToPublish);
-      } else {
-        znodeData = instanceURI;
+    for (String instanceURI : instanceURIs) {
+      // Create a znode under the rootNamespace parent for this instance of the server
+      // Znode name: serverUri=host:port;version=versionInfo;sequence=sequenceNumber
+      try {
+        String pathPrefix =
+            ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + rootNamespace
+                + ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + "serverUri=" + instanceURI + ";"
+                + "version=" + HiveVersionInfo.getVersion() + ";" + "sequence=";
+        String znodeData = "";
+        if (hiveConf.getBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_PUBLISH_CONFIGS)) {
+          // HiveServer2 configs that this instance will publish to ZooKeeper,
+          // so that the clients can read these and configure themselves properly.
+          Map<String, String> confsToPublish = new HashMap<String, String>();
+          addConfsToPublish(hiveConf, confsToPublish);
+          // Publish configs for this instance as the data on the node
+          znodeData = Joiner.on(';').withKeyValueSeparator("=").join(confsToPublish);
+        } else {
+          znodeData = instanceURI;
+        }
+        byte[] znodeDataUTF8 = znodeData.getBytes(Charset.forName("UTF-8"));
+        znode =
+            new PersistentEphemeralNode(zooKeeperClient,
+                PersistentEphemeralNode.Mode.EPHEMERAL_SEQUENTIAL, pathPrefix, znodeDataUTF8);
+        znode.start();
+        // We'll wait for 120s for node creation
+        long znodeCreationTimeout = 120;
+        if (!znode.waitForInitialCreate(znodeCreationTimeout, TimeUnit.SECONDS)) {
+          throw new Exception("Max znode creation wait time: " + znodeCreationTimeout + "s exhausted");
+        }
+        setDeregisteredWithZooKeeper(false);
+        znodePath = znode.getActualPath();
+        // Set a watch on the znode
+        if (zooKeeperClient.checkExists().usingWatcher(new DeRegisterWatcher()).forPath(znodePath) == null) {
+          // No node exists, throw exception
+          throw new Exception("Unable to create znode for this HiveServer2 instance on ZooKeeper.");
+        }
+        LOG.info("Created a znode on ZooKeeper for HiveServer2 uri: " + instanceURI);
+      } catch (Exception e) {
+        LOG.error("Unable to create a znode for this server instance", e);
+        if (znode != null) {
+          znode.close();
+        }
+        throw (e);
       }
-      byte[] znodeDataUTF8 = znodeData.getBytes(Charset.forName("UTF-8"));
-      znode =
-          new PersistentEphemeralNode(zooKeeperClient,
-              PersistentEphemeralNode.Mode.EPHEMERAL_SEQUENTIAL, pathPrefix, znodeDataUTF8);
-      znode.start();
-      // We'll wait for 120s for node creation
-      long znodeCreationTimeout = 120;
-      if (!znode.waitForInitialCreate(znodeCreationTimeout, TimeUnit.SECONDS)) {
-        throw new Exception("Max znode creation wait time: " + znodeCreationTimeout + "s exhausted");
-      }
-      setDeregisteredWithZooKeeper(false);
-      znodePath = znode.getActualPath();
-      // Set a watch on the znode
-      if (zooKeeperClient.checkExists().usingWatcher(new DeRegisterWatcher()).forPath(znodePath) == null) {
-        // No node exists, throw exception
-        throw new Exception("Unable to create znode for this HiveServer2 instance on ZooKeeper.");
-      }
-      LOG.info("Created a znode on ZooKeeper for HiveServer2 uri: " + instanceURI);
-    } catch (Exception e) {
-      LOG.error("Unable to create a znode for this server instance", e);
-      if (znode != null) {
-        znode.close();
-      }
-      throw (e);
     }
   }
 
@@ -473,19 +484,43 @@ public class HiveServer2 extends CompositeService {
     this.deregisteredWithZooKeeper = deregisteredWithZooKeeper;
   }
 
-  private String getServerInstanceURI() throws Exception {
-    if ((thriftCLIService == null) || (thriftCLIService.getServerIPAddress() == null)) {
+  private List<String> getServerInstanceURI() throws Exception {
+    List<String> serverInstanceURIS = new ArrayList<>();
+
+    for (Service service : thriftCLIServices) {
+      ThriftCLIService thriftCLIService = (ThriftCLIService) service;
+      if ((thriftCLIService == null) || (thriftCLIService.getServerIPAddress() == null)) {
+        throw new Exception("Unable to get the server address; it hasn't been initialized yet.");
+      }
+
+      serverInstanceURIS.add(thriftCLIService.getServerIPAddress().getHostName() + ":"
+        + thriftCLIService.getPortNumber());
+    }
+
+    if (serverInstanceURIS.size() == 0) {
       throw new Exception("Unable to get the server address; it hasn't been initialized yet.");
     }
-    return thriftCLIService.getServerIPAddress().getHostName() + ":"
-        + thriftCLIService.getPortNumber();
+
+    return serverInstanceURIS;
   }
 
-  private String getServerHost() throws Exception {
-    if ((thriftCLIService == null) || (thriftCLIService.getServerIPAddress() == null)) {
+  private List<String> getServerHost() throws Exception {
+    List<String> serverHosts = new ArrayList<>();
+
+    for (Service service : thriftCLIServices) {
+      ThriftCLIService thriftCLIService = (ThriftCLIService) service;
+      if ((thriftCLIService == null) || (thriftCLIService.getServerIPAddress() == null)) {
+        throw new Exception("Unable to get the server address; it hasn't been initialized yet.");
+      }
+
+      serverHosts.add(thriftCLIService.getServerIPAddress().getHostName());
+    }
+
+    if (serverHosts.size() == 0) {
       throw new Exception("Unable to get the server address; it hasn't been initialized yet.");
     }
-    return thriftCLIService.getServerIPAddress().getHostName();
+
+    return serverHosts;
   }
 
   @Override

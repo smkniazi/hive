@@ -127,10 +127,13 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   private static final TStatus OK_STATUS = new TStatus(TStatusCode.SUCCESS_STATUS);
   protected static HiveAuthFactory hiveAuthFactory;
 
+  protected boolean twoWaySSL = false;
   protected int portNum;
+  protected int portNum2WaySSL;
   protected InetAddress serverIPAddress;
   protected String hiveHost;
   protected TServer server;
+  protected TServer server2WaySSL;
   protected org.eclipse.jetty.server.Server httpServer;
 
   private boolean isStarted = false;
@@ -160,8 +163,6 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     super(serviceName);
     this.cliService = service;
     currentServerContext = new ThreadLocal<ServerContext>();
-
-
   }
 
   @Override
@@ -196,18 +197,20 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     else {
       workerKeepAliveTime =
           hiveConf.getTimeVar(ConfVars.HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME, TimeUnit.SECONDS);
-      portString = System.getenv("HIVE_SERVER2_THRIFT_PORT");
+
+      portString = twoWaySSL ? System.getenv("HIVE_SERVER2_THRIFT_PORT_SSL") : System.getenv("HIVE_SERVER2_THRIFT_PORT");
       if (portString != null) {
         portNum = Integer.parseInt(portString);
       } else {
-        portNum = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT);
+        portNum = twoWaySSL ? hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT_2WSSL) :
+            hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT);
       }
     }
     minWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS);
     maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
 
-    if (hiveConf.getVar(ConfVars.HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS)
-        .equals("org.apache.hive.service.auth.HopsAuthenticationProviderImpl")) {
+    if (hiveConf.getVar(
+        ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS")){
         httpClient = new OkHttpClient();
         hopsworksEndpoint = cliService.getHiveConf().getVar(HiveConf.ConfVars.HOPSWORKS_ENDPOINT) + "/hopsworks-api/api";
     }
@@ -229,6 +232,10 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       if(server != null) {
         server.stop();
         LOG.info("Thrift server has stopped");
+      }
+      if (server2WaySSL != null) {
+        server2WaySSL.stop();
+        LOG.info("Thrift 2 Way SSL server has stopped");
       }
       if((httpServer != null) && httpServer.isStarted()) {
         try {
@@ -375,22 +382,37 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
    * @return
    * @throws HiveSQLException
    */
-  private String getUserName(TOpenSessionReq req) throws HiveSQLException, IOException {
+  private String getUserName(TOpenSessionReq req) throws HiveSQLException, LoginException, IOException {
     String userName = null;
 
     if (hiveAuthFactory != null && hiveAuthFactory.isSASLWithKerberizedHadoop()) {
       userName = hiveAuthFactory.getRemoteUser();
     }
-    // NOSASL
-    if (userName == null) {
-      userName = TSetIpAddressProcessor.getUserName();
-    }
-    // Http transport mode.
+
+     // Http transport mode.
     // We set the thread local username, in ThriftHttpServlet.
     if (cliService.getHiveConf().getVar(
         ConfVars.HIVE_SERVER2_TRANSPORT_MODE).equalsIgnoreCase("http")) {
       userName = SessionManager.getUserName();
     }
+
+    // NOSASL
+    if (userName == null) {
+      userName = TSetIpAddressProcessor.getUserName();
+    }
+
+    // HOPS auth - No username from client certificate
+    if (cliService.getHiveConf().getVar(
+        ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS") &&
+        userName == null) {
+      if (req.getConfiguration().containsKey("use:database")) {
+        userName = hopsAuthSession(req.getUsername(), req.getPassword());
+        userName = req.getConfiguration().get("use:database") + "__" + userName;
+      } else {
+        throw new AuthenticationException("Database not specified");
+      }
+    }
+
     if (userName == null) {
       userName = req.getUsername();
     }
@@ -520,29 +542,6 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     SessionHandle sessionHandle;
     String ipAddress = getIpAddress();
 
-    if (hiveConf.getVar(ConfVars.HIVE_SERVER2_CUSTOM_AUTHENTICATION_CLASS)
-        .equals("org.apache.hive.service.auth.HopsAuthenticationProviderImpl") &&
-        hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
-        hiveConf.getVar(ConfVars.HIVE_SERVER2_TRANSPORT_MODE).equals("binary")) {
-      // Hops session authentication
-      String username = hopsAuthSession(req.getUsername(), req.getPassword());
-
-      // Compose project specific username as projectname__username
-      String projectUsername;
-      if (req.getConfiguration().containsKey("use:database")) {
-        projectUsername = req.getConfiguration().get("use:database") + "__" + username;
-      } else {
-        throw new AuthenticationException("Database not specified");
-      }
-
-      // Create sessionHandle
-      String delegationTokenStr = getDelegationToken(username);
-      sessionHandle = cliService.openSessionWithImpersonation(protocol, projectUsername,
-          req.getPassword(), ipAddress, req.getConfiguration(), delegationTokenStr);
-      return sessionHandle;
-    }
-
-    // Other cases
     String userName = getUserName(req);
     if (cliService.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
         (userName != null)) {

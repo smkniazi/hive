@@ -49,6 +49,10 @@ public class CompositeService extends AbstractService {
     serviceList.add(service);
   }
 
+  protected synchronized void addServices(List<Service> services) {
+    serviceList.addAll(services);
+  }
+
   protected synchronized boolean removeService(Service service) {
     return serviceList.remove(service);
   }

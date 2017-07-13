@@ -44,7 +44,7 @@ public class TestPlainSaslHelper extends TestCase {
 
     CLIService cliService = new CLIService(null);
     cliService.init(hconf);
-    ThriftCLIService tcliService = new ThriftBinaryCLIService(cliService, null);
+    ThriftCLIService tcliService = new ThriftBinaryCLIService(cliService, false, null);
     tcliService.init(hconf);
     TProcessorFactory procFactory = PlainSaslHelper.getPlainProcessorFactory(tcliService);
     assertEquals("doAs enabled processor for unsecure mode",

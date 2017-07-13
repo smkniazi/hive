@@ -2414,6 +2414,9 @@ public class HiveConf extends Configuration {
     // binary transport settings
     HIVE_SERVER2_THRIFT_PORT("hive.server2.thrift.port", 10000,
         "Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'."),
+    HIVE_SERVER2_THRIFT_PORT_2WSSL("hive.server2.thrift.port.ssl", 9999,
+        "Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary' and SSL two way." +
+        " Set to negative to not activate this second port."),
     HIVE_SERVER2_THRIFT_SASL_QOP("hive.server2.thrift.sasl.qop", "auth",
         new StringSet("auth", "auth-int", "auth-conf"),
         "Sasl QOP value; set it to one of following values to enable higher levels of\n" +
@@ -2465,7 +2468,7 @@ public class HiveConf extends Configuration {
 
     // HiveServer2 auth configuration
     HIVE_SERVER2_AUTHENTICATION("hive.server2.authentication", "NONE",
-      new StringSet("NOSASL", "NONE", "LDAP", "KERBEROS", "PAM", "CERTIFICATE", "CUSTOM"),
+      new StringSet("NOSASL", "NONE", "LDAP", "KERBEROS", "PAM", "CERTIFICATE", "HOPS","CUSTOM"),
         "Client authentication types.\n" +
         "  NONE: no authentication check\n" +
         "  LDAP: LDAP/AD based authentication\n" +
@@ -2474,6 +2477,7 @@ public class HiveConf extends Configuration {
         "          (Use with property hive.server2.custom.authentication.class)\n" +
         "  PAM: Pluggable authentication module\n" +
         "  CERTIFICATE: Authenticate using the CN of the client X.509 certificate\n" +
+        "  HOPS: Certificate + Password authentication\n" +
         "  NOSASL:  Raw transport"),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true,
         "Allow alternate user to be specified as part of HiveServer2 open connection request."),

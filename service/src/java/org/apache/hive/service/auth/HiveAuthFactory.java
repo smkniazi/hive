@@ -63,6 +63,7 @@ public class HiveAuthFactory {
     LDAP("LDAP"),
     KERBEROS("KERBEROS"),
     CUSTOM("CUSTOM"),
+    HOPS("HOPS"),
     PAM("PAM");
 
     private final String authType;
@@ -178,7 +179,8 @@ public class HiveAuthFactory {
           authTypeStr.equalsIgnoreCase(AuthTypes.PAM.getAuthName()) ||
           authTypeStr.equalsIgnoreCase(AuthTypes.CUSTOM.getAuthName())) {
        transportFactory = PlainSaslHelper.getPlainTransportFactory(authTypeStr);
-    } else if (authTypeStr.equalsIgnoreCase(AuthTypes.NOSASL.getAuthName())) {
+    } else if (authTypeStr.equalsIgnoreCase(AuthTypes.NOSASL.getAuthName()) ||
+          authTypeStr.equalsIgnoreCase(AuthTypes.HOPS.getAuthName())) {
       transportFactory = new TTransportFactory();
     } else {
       throw new LoginException("Unsupported authentication type " + authTypeStr);
