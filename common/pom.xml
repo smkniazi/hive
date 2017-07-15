@@ -286,6 +286,11 @@
       <version>1.46</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javolution</groupId>
+      <artifactId>javolution</artifactId>
+      <version>${javolution.version}</version>
+    </dependency>
   </dependencies>
 
   <profiles>
