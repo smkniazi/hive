@@ -106,6 +106,8 @@ public class FileSinkDesc extends AbstractOperatorDesc {
    */
   private boolean isUsingThriftJDBCBinarySerDe = false;
 
+  private boolean isInsertOverwrite = false;
+
   public FileSinkDesc() {
   }
 
@@ -525,5 +527,13 @@ public class FileSinkDesc extends AbstractOperatorDesc {
 
   public boolean isMmCtas() {
     return isMmCtas;
+  }
+
+  public void setInsertOverwrite(boolean isInsertOverwrite) {
+    this.isInsertOverwrite = isInsertOverwrite;
+  }
+
+  public boolean getInsertOverwrite() {
+    return isInsertOverwrite;
   }
 }

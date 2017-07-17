@@ -1501,7 +1501,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
                 && ast.getChild(0).getType() == HiveParser.TOK_TAB) {
               String fullTableName = getUnescapedName((ASTNode) ast.getChild(0).getChild(0),
                   SessionState.get().getCurrentDatabase());
-              qbp.getInsertOverwriteTables().put(fullTableName, ast);
+              qbp.getInsertOverwriteTables().put(fullTableName.toLowerCase(), ast);
             }
           }
         }
@@ -2155,7 +2155,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           boolean isTableWrittenTo = qb.getParseInfo().isInsertIntoTable(ts.tableHandle.getDbName(),
             ts.tableHandle.getTableName());
           isTableWrittenTo |= (qb.getParseInfo().getInsertOverwriteTables().
-            get(getUnescapedName((ASTNode) ast.getChild(0), ts.tableHandle.getDbName())) != null);
+            get(getUnescapedName((ASTNode) ast.getChild(0), ts.tableHandle.getDbName()).toLowerCase()) != null);
           assert isTableWrittenTo :
             "Inconsistent data structure detected: we are writing to " + ts.tableHandle  + " in " +
               name + " but it's not in isInsertIntoTable() or getInsertOverwriteTables()";
@@ -6924,7 +6924,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
       ltd = new LoadTableDesc(queryTmpdir, table_desc, dest_part.getSpec(), acidOp, mmWriteId);
       ltd.setReplace(!qb.getParseInfo().isInsertIntoTable(dest_tab.getDbName(),
-          dest_tab.getTableName()));
+          dest_tab.getTableName()) && !destTableIsAcid);
       ltd.setLbCtx(lbCtx);
 
       loadTableWork.add(ltd);
@@ -7217,6 +7217,12 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       AcidUtils.Operation wt = updating(dest) ? AcidUtils.Operation.UPDATE :
           (deleting(dest) ? AcidUtils.Operation.DELETE : AcidUtils.Operation.INSERT);
       fileSinkDesc.setWriteType(wt);
+
+      String destTableFullName = dest_tab.getCompleteName().replace('@', '.');
+      Map<String, ASTNode> iowMap = qb.getParseInfo().getInsertOverwriteTables();
+      if (iowMap.containsKey(destTableFullName)) {
+        fileSinkDesc.setInsertOverwrite(true);
+      }
       acidFileSinks.add(fileSinkDesc);
     }
 

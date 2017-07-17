@@ -264,11 +264,19 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
       Table t = null;
       switch (output.getWriteType()) {
         case DDL_EXCLUSIVE:
-        case INSERT_OVERWRITE:
           compBuilder.setExclusive();
           compBuilder.setOperationType(DataOperationType.NO_TXN);
           break;
-
+        case INSERT_OVERWRITE:
+          t = getTable(output);
+          if (AcidUtils.isAcidTable(t)) {
+            compBuilder.setSemiShared();
+            compBuilder.setOperationType(DataOperationType.UPDATE);
+          } else {
+            compBuilder.setExclusive();
+            compBuilder.setOperationType(DataOperationType.NO_TXN);
+          }
+          break;
         case INSERT:
           t = getTable(output);
           if(AcidUtils.isFullAcidTable(t)) {
