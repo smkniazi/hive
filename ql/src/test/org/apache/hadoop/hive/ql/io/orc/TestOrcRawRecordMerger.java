@@ -298,27 +298,26 @@ public class TestOrcRawRecordMerger {
     int BUCKET = 10;
     ReaderKey key = new ReaderKey();
     Configuration conf = new Configuration();
-    int bucketProperty = OrcRawRecordMerger.encodeBucketId(conf, BUCKET);
     Reader reader = createMockOriginalReader();
-    RecordIdentifier minKey = new RecordIdentifier(0, bucketProperty, 1);
-    RecordIdentifier maxKey = new RecordIdentifier(0, bucketProperty, 3);
+    RecordIdentifier minKey = new RecordIdentifier(0, 10, 1);
+    RecordIdentifier maxKey = new RecordIdentifier(0, 10, 3);
     boolean[] includes = new boolean[]{true, true};
     FileSystem fs = FileSystem.getLocal(conf);
     Path root = new Path(tmpDir, "testOriginalReaderPair");
     fs.makeQualified(root);
     fs.create(root);
-    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, BUCKET, minKey, maxKey,
+    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, 10, minKey, maxKey,
         new Reader.Options().include(includes), new OrcRawRecordMerger.Options().rootPath(root), conf, new ValidReadTxnList());
     RecordReader recordReader = pair.getRecordReader();
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(2, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
     assertEquals("third", value(pair.nextRecord()));
 
     pair.next(pair.nextRecord());
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(3, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
     assertEquals("fourth", value(pair.nextRecord()));
@@ -338,44 +337,43 @@ public class TestOrcRawRecordMerger {
     ReaderKey key = new ReaderKey();
     Reader reader = createMockOriginalReader();
     Configuration conf = new Configuration();
-    int bucketProperty = OrcRawRecordMerger.encodeBucketId(conf, BUCKET);
     FileSystem fs = FileSystem.getLocal(conf);
     Path root = new Path(tmpDir, "testOriginalReaderPairNoMin");
     fs.makeQualified(root);
     fs.create(root);
-    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, BUCKET, null, null,
+    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, 10, null, null,
         new Reader.Options(), new OrcRawRecordMerger.Options().rootPath(root), conf, new ValidReadTxnList());
     assertEquals("first", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(0, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("second", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(1, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("third", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(2, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("fourth", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(3, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("fifth", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(bucketProperty, key.getBucketProperty());
+    assertEquals(10, key.getBucketProperty());
     assertEquals(4, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
