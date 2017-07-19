@@ -41,6 +41,7 @@ import org.apache.hadoop.hive.metastore.api.Order;
 import org.apache.hadoop.hive.metastore.model.MMasterKey;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.DriverContext;
+import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.exec.mr.MapRedTask;
 import org.apache.hadoop.hive.ql.exec.mr.MapredLocalTask;
 import org.apache.hadoop.hive.ql.hooks.LineageInfo.DataContainer;
@@ -355,10 +356,38 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
 
         checkFileFormats(db, tbd, table);
 
-        boolean isAcid = work.getLoadTableWork().getWriteType() != AcidUtils.Operation.NOT_ACID &&
-            work.getLoadTableWork().getWriteType() != AcidUtils.Operation.INSERT_ONLY;
-        if (tbd.isMmTable() && isAcid) {
-           throw new HiveException("ACID and MM are not supported");
+        // handle file format check for table level
+        if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVECHECKFILEFORMAT)) {
+          boolean flag = true;
+          // work.checkFileFormat is set to true only for Load Task, so assumption here is
+          // dynamic partition context is null
+          if (tbd.getDPCtx() == null) {
+            if (tbd.getPartitionSpec() == null || tbd.getPartitionSpec().isEmpty()) {
+              // Check if the file format of the file matches that of the table.
+              flag = HiveFileFormatUtils.checkInputFormat(
+                  srcFs, conf, tbd.getTable().getInputFileFormatClass(), files);
+            } else {
+              // Check if the file format of the file matches that of the partition
+              Partition oldPart = db.getPartition(table, tbd.getPartitionSpec(), false);
+              if (oldPart == null) {
+                // this means we have just created a table and are specifying partition in the
+                // load statement (without pre-creating the partition), in which case lets use
+                // table input format class. inheritTableSpecs defaults to true so when a new
+                // partition is created later it will automatically inherit input format
+                // from table object
+                flag = HiveFileFormatUtils.checkInputFormat(
+                    srcFs, conf, tbd.getTable().getInputFileFormatClass(), files);
+              } else {
+                flag = HiveFileFormatUtils.checkInputFormat(
+                    srcFs, conf, oldPart.getInputFormatClass(), files);
+              }
+            }
+            if (!flag) {
+              throw new HiveException(ErrorMsg.WRONG_FILE_FORMAT);
+            }
+          } else {
+            LOG.warn("Skipping file format check as dpCtx is not null");
+          }
         }
 
         // Create a data container
@@ -415,6 +444,23 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
       }
 
       return 0;
+    } catch (HiveException he) {
+      int errorCode = 1;
+
+      if (he.getCanonicalErrorMsg() != ErrorMsg.GENERIC_ERROR) {
+        errorCode = he.getCanonicalErrorMsg().getErrorCode();
+        if (he.getCanonicalErrorMsg() == ErrorMsg.UNRESOLVED_RT_EXCEPTION) {
+          console.printError("Failed with exception " + he.getMessage(), "\n"
+              + StringUtils.stringifyException(he));
+        } else {
+          console.printError("Failed with exception " + he.getMessage()
+              + "\nRemote Exception: " + he.getRemoteErrorMsg());
+          console.printInfo("\n", StringUtils.stringifyException(he),false);
+        }
+      }
+
+      setException(he);
+      return errorCode;
     } catch (Exception e) {
       console.printError("Failed with exception " + e.getMessage(), "\n"
           + StringUtils.stringifyException(e));
