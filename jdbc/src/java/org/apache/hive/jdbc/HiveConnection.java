@@ -45,6 +45,7 @@ import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -62,9 +63,8 @@ import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
+import javax.security.cert.X509Certificate;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
 
@@ -77,8 +77,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.Socket;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -496,10 +498,10 @@ public class HiveConnection implements java.sql.Connection {
         if (useTwoWaySSL != null && useTwoWaySSL.equalsIgnoreCase(JdbcConnectionParams.TRUE)) {
           String sslKeyStore = sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE);
           String sslKeyStorePassword = sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE_PASSWORD);
-          transport = HiveAuthUtils.get2WaySSLSocket(host, port, loginTimeout,
+          transport = HiveAuthUtils.getHopsJDBC2WaySSLSocket(host, port, loginTimeout,
               sslTrustStore, sslTrustStorePassword, sslKeyStore, sslKeyStorePassword);
         } else {
-          transport = HiveAuthUtils.getSSLSocket(host, port, loginTimeout,
+          transport = HiveAuthUtils.getHopsJDBCSSLSocket(host, port, loginTimeout,
               sslTrustStore, sslTrustStorePassword);
         }
       }
@@ -611,7 +613,13 @@ public class HiveConnection implements java.sql.Connection {
       SSLContext context = SSLContext.getInstance("TLS");
       context.init(keyManagerFactory.getKeyManagers(),
         trustManagerFactory.getTrustManagers(), new SecureRandom());
-      socketFactory = new SSLConnectionSocketFactory(context);
+      socketFactory = new SSLConnectionSocketFactory(context, new HostnameVerifier() {
+        @Override
+        public boolean verify(String s, SSLSession sslSession) {
+          // Disable hostname verification for HopsHadoop certificates
+          return true;
+        }
+      });
     } catch (Exception e) {
       throw new SQLException("Error while initializing 2 way ssl socket factory ", e);
     }

@@ -65,7 +65,16 @@ public class HiveAuthUtils {
     return getSSLSocketWithHttps(tSSLSocket);
   }
 
-  public static TTransport get2WaySSLSocket(String host, int port, int loginTimeout,
+   public static TTransport getHopsJDBCSSLSocket(String host, int port, int loginTimeout,
+    String trustStorePath, String trustStorePassWord) throws TTransportException {
+    TSSLTransportFactory.TSSLTransportParameters params =
+      new TSSLTransportFactory.TSSLTransportParameters();
+    params.setTrustStore(trustStorePath, trustStorePassWord);
+    params.requireClientAuth(true);
+    return TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
+  }
+
+  public static TTransport getHopsJDBC2WaySSLSocket(String host, int port, int loginTimeout,
     String trustStorePath, String trustStorePassword, String keyStorePath,
     String keyStorePassword) throws TTransportException {
     TSSLTransportFactory.TSSLTransportParameters params =
@@ -74,10 +83,7 @@ public class HiveAuthUtils {
     params.setTrustStore(trustStorePath, trustStorePassword);
     params.setKeyStore(keyStorePath, keyStorePassword);
     params.requireClientAuth(true);
-    // The underlying SSLSocket object is bound to host:port with the given SO_TIMEOUT and
-    // SSLContext created with the given params
-    TSocket tSSLSocket = TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
-    return getSSLSocketWithHttps(tSSLSocket);
+    return TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
   }
 
   // Using endpoint identification algorithm as HTTPS enables us to do
