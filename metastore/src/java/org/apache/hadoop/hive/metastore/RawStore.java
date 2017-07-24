@@ -98,6 +98,8 @@ public interface RawStore extends Configurable {
   @CanNotRetry
   public abstract boolean commitTransaction();
 
+  public boolean isActiveTransaction();
+
   /**
    * Commits transaction and detects if the failure to do so is a deadlock or not.
    * Must be called on the top level with regard to openTransaction calls; attempting to
