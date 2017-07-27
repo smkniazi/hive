@@ -54,6 +54,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.ObjectPair;
+import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidTxnList;
 import org.apache.hadoop.hive.common.auth.HiveAuthUtils;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
@@ -367,6 +368,16 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   public void alter_table(String dbname, String tbl_name, Table new_tbl)
       throws InvalidOperationException, MetaException, TException {
     alter_table_with_environmentContext(dbname, tbl_name, new_tbl, null);
+  }
+
+  @Override
+  public void alter_table(String defaultDatabaseName, String tblName, Table table,
+      boolean cascade) throws InvalidOperationException, MetaException, TException {
+    EnvironmentContext environmentContext = new EnvironmentContext();
+    if (cascade) {
+      environmentContext.putToProperties(StatsSetupConst.CASCADE, StatsSetupConst.TRUE);
+    }
+    alter_table_with_environmentContext(defaultDatabaseName, tblName, table, environmentContext);
   }
 
   @Override
@@ -1727,9 +1738,21 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   }
 
   @Override
+  public void alter_partition(String dbName, String tblName, Partition newPart)
+      throws InvalidOperationException, MetaException, TException {
+    client.alter_partition_with_environment_context(dbName, tblName, newPart, null);
+  }
+
+  @Override
   public void alter_partition(String dbName, String tblName, Partition newPart, EnvironmentContext environmentContext)
       throws InvalidOperationException, MetaException, TException {
     client.alter_partition_with_environment_context(dbName, tblName, newPart, environmentContext);
+  }
+
+  @Override
+  public void alter_partitions(String dbName, String tblName, List<Partition> newParts)
+      throws InvalidOperationException, MetaException, TException {
+    client.alter_partitions_with_environment_context(dbName, tblName, newParts, null);
   }
 
   @Override
