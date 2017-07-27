@@ -54,6 +54,7 @@
     <module>storage-api</module>
     <module>testutils</module>
     <module>packaging</module>
+    <module>standalone-metastore</module>
   </modules>
 
   <properties>
