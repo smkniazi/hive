@@ -862,14 +862,13 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         LOG.info(toString() + ": records written - " + numRows);
       }
 
-      int writerOffset = findWriterOffset(row);
+      int writerOffset;
       // This if/else chain looks ugly in the inner loop, but given that it will be 100% the same
       // for a given operator branch prediction should work quite nicely on it.
       // RecordUpdateer expects to get the actual row, not a serialized version of it.  Thus we
       // pass the row rather than recordValue.
-      if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID ||
-          conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY) {
-        rowOutWriters[writerOffset].write(recordValue);
+      if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID) {
+        rowOutWriters[findWriterOffset(row)].write(recordValue);
       } else if (conf.getWriteType() == AcidUtils.Operation.INSERT) {
         fpaths.updaters[findWriterOffset(row)].insert(conf.getTransactionId(), row);
       } else {
