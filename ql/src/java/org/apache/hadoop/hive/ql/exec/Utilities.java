@@ -1169,6 +1169,51 @@ public final class Utilities {
   }
 
   /**
+   * Moves files from src to dst if it is within the specified set of paths
+   * @param fs
+   * @param src
+   * @param dst
+   * @param filesToMove
+   * @throws IOException
+   * @throws HiveException
+   */
+  private static void moveSpecifiedFiles(FileSystem fs, Path src, Path dst, Set<Path> filesToMove)
+      throws IOException, HiveException {
+    if (!fs.exists(dst)) {
+      fs.mkdirs(dst);
+    }
+
+    FileStatus[] files = fs.listStatus(src);
+    for (FileStatus file : files) {
+      if (filesToMove.contains(file.getPath())) {
+        Utilities.moveFile(fs, file, dst);
+      }
+    }
+  }
+
+  private static void moveFile(FileSystem fs, FileStatus file, Path dst) throws IOException,
+      HiveException {
+    Path srcFilePath = file.getPath();
+    String fileName = srcFilePath.getName();
+    Path dstFilePath = new Path(dst, fileName);
+    if (file.isDir()) {
+      renameOrMoveFiles(fs, srcFilePath, dstFilePath);
+    } else {
+      if (fs.exists(dstFilePath)) {
+        int suffix = 0;
+        do {
+          suffix++;
+          dstFilePath = new Path(dst, fileName + "_" + suffix);
+        } while (fs.exists(dstFilePath));
+      }
+
+      if (!fs.rename(srcFilePath, dstFilePath)) {
+        throw new HiveException("Unable to move: " + srcFilePath + " to: " + dst);
+      }
+    }
+  }
+
+  /**
    * Rename src to dst, or in the case dst already exists, move files in src to dst. If there is an
    * existing file with the same name, the new file's name will be appended with "_1", "_2", etc.
    *
@@ -1190,26 +1235,7 @@ public final class Utilities {
       // move file by file
       FileStatus[] files = fs.listStatus(src);
       for (FileStatus file : files) {
-
-        Path srcFilePath = file.getPath();
-        String fileName = srcFilePath.getName();
-        Path dstFilePath = new Path(dst, fileName);
-        if (file.isDir()) {
-          renameOrMoveFiles(fs, srcFilePath, dstFilePath);
-        }
-        else {
-          if (fs.exists(dstFilePath)) {
-            int suffix = 0;
-            do {
-              suffix++;
-              dstFilePath = new Path(dst, fileName + "_" + suffix);
-            } while (fs.exists(dstFilePath));
-          }
-
-          if (!fs.rename(srcFilePath, dstFilePath)) {
-            throw new HiveException("Unable to move: " + src + " to: " + dst);
-          }
-        }
+        Utilities.moveFile(fs, file, dst);
       }
     }
   }
@@ -1440,10 +1466,10 @@ public final class Utilities {
           tmpPath, ((dpCtx == null) ? 1 : dpCtx.getNumDPCols()), fs);
       if(statuses != null && statuses.length > 0) {
         PerfLogger perfLogger = SessionState.getPerfLogger();
+        Set<Path> filesKept = new HashSet<Path>();
         perfLogger.PerfLogBegin("FileSinkOperator", "RemoveTempOrDuplicateFiles");
         // remove any tmp file or double-committed output files
-        List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(
-            fs, statuses, dpCtx, conf, hconf);
+        List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(fs, statuses, dpCtx, conf, hconf, filesKept);
         perfLogger.PerfLogEnd("FileSinkOperator", "RemoveTempOrDuplicateFiles");
         // create empty buckets if necessary
         if (emptyBuckets.size() > 0) {
@@ -1453,8 +1479,15 @@ public final class Utilities {
           perfLogger.PerfLogEnd("FileSinkOperator", "CreateEmptyBuckets");
         }
         // move to the file destination
-        Utilities.LOG14535.info("Moving tmp dir: " + tmpPath + " to: " + specPath);
-        Utilities.renameOrMoveFiles(fs, tmpPath, specPath);
+        log.info("Moving tmp dir: " + tmpPath + " to: " + specPath);
+        perfLogger.PerfLogBegin("FileSinkOperator", "RenameOrMoveFiles");
+        if (HiveConf.getBoolVar(hconf, HiveConf.ConfVars.HIVE_EXEC_MOVE_FILES_FROM_SOURCE_DIR)) {
+          // HIVE-17113 - avoid copying files that may have been written to the temp dir by runaway tasks,
+          // by moving just the files we've tracked from removeTempOrDuplicateFiles().
+          Utilities.moveSpecifiedFiles(fs, tmpPath, specPath, filesKept);
+        } else {
+          Utilities.renameOrMoveFiles(fs, tmpPath, specPath);
+        }
         perfLogger.PerfLogEnd("FileSinkOperator", "RenameOrMoveFiles");
       }
     } else {
@@ -1513,6 +1546,12 @@ public final class Utilities {
     }
   }
 
+  private static void addFilesToPathSet(Collection<FileStatus> files, Set<Path> fileSet) {
+    for (FileStatus file : files) {
+      fileSet.add(file.getPath());
+    }
+  }
+
   /**
    * Remove all temporary files and duplicate (double-committed) files from a given directory.
    */
@@ -1530,33 +1569,15 @@ public final class Utilities {
     return removeTempOrDuplicateFiles(fs, stats, dpCtx, conf, hconf);
   }
 
-  /**
-   * Remove all temporary files and duplicate (double-committed) files from a given directory.
-   *
-   * @return a list of path names corresponding to should-be-created empty buckets.
-   */
   public static List<Path> removeTempOrDuplicateFiles(FileSystem fs, FileStatus[] fileStats,
       DynamicPartitionCtx dpCtx, FileSinkDesc conf, Configuration hconf) throws IOException {
-    int dpLevels = dpCtx == null ? 0 : dpCtx.getNumDPCols(),
-        numBuckets = (conf != null && conf.getTable() != null)
-          ? conf.getTable().getNumBuckets() : 0;
-    return removeTempOrDuplicateFiles(fs, fileStats, dpLevels, numBuckets, hconf, null);
-  }
-  
-  private static boolean removeEmptyDpDirectory(FileSystem fs, Path path) throws IOException {
-    FileStatus[] items = fs.listStatus(path);
-    // remove empty directory since DP insert should not generate empty partitions.
-    // empty directories could be generated by crashed Task/ScriptOperator
-    if (items.length != 0) return false;
-    if (!fs.delete(path, true)) {
-      LOG.error("Cannot delete empty directory " + path);
-      throw new IOException("Cannot delete empty directory " + path);
-    }
-    return true;
+    return removeTempOrDuplicateFiles(fs, fileStats, dpCtx, conf, hconf, null);
   }
 
+
+
   public static List<Path> removeTempOrDuplicateFiles(FileSystem fs, FileStatus[] fileStats,
-      int dpLevels, int numBuckets, Configuration hconf, Long mmWriteId) throws IOException {
+      DynamicPartitionCtx dpCtx, FileSinkDesc conf, Configuration hconf, Set<Path> filesKept) throws IOException {
     if (fileStats == null) {
       return null;
     }
@@ -1575,10 +1596,25 @@ public final class Utilities {
         }
         FileStatus[] items = fs.listStatus(path);
 
-        if (mmWriteId != null) {
-          Path mmDir = parts[i].getPath();
-          if (!mmDir.getName().equals(ValidWriteIds.getMmFilePrefix(mmWriteId))) {
-            throw new IOException("Unexpected non-MM directory name " + mmDir);
+        taskIDToFile = removeTempOrDuplicateFiles(items, fs);
+        if (filesKept != null && taskIDToFile != null) {
+          addFilesToPathSet(taskIDToFile.values(), filesKept);
+        }
+        // if the table is bucketed and enforce bucketing, we should check and generate all buckets
+        if (dpCtx.getNumBuckets() > 0 && taskIDToFile != null && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
+          // refresh the file list
+          items = fs.listStatus(parts[i].getPath());
+          // get the missing buckets and generate empty buckets
+          String taskID1 = taskIDToFile.keySet().iterator().next();
+          Path bucketPath = taskIDToFile.values().iterator().next().getPath();
+          for (int j = 0; j < dpCtx.getNumBuckets(); ++j) {
+            String taskID2 = replaceTaskId(taskID1, j);
+            if (!taskIDToFile.containsKey(taskID2)) {
+              // create empty bucket, file name should be derived from taskID2
+              URI bucketUri = bucketPath.toUri();
+              String path2 = replaceTaskIdFromFilename(bucketUri.getPath().toString(), j);
+              result.add(new Path(bucketUri.getScheme(), bucketUri.getAuthority(), path2));
+            }
           }
           Utilities.LOG14535.info("removeTempOrDuplicateFiles processing files in MM directory " + mmDir);
         }
@@ -1592,15 +1628,23 @@ public final class Utilities {
       if (items.length == 0) {
         return result;
       }
-      if (mmWriteId == null) {
-        taskIDToFile = removeTempOrDuplicateFilesNonMm(items, fs);
-      } else {
-        if (items.length > 1) {
-          throw new IOException("Unexpected directories for non-DP MM: " + Arrays.toString(items));
-        }
-        Path mmDir = items[0].getPath();
-        if (!mmDir.getName().equals(ValidWriteIds.getMmFilePrefix(mmWriteId))) {
-          throw new IOException("Unexpected non-MM directory " + mmDir);
+      taskIDToFile = removeTempOrDuplicateFiles(items, fs);
+      if (filesKept != null && taskIDToFile != null) {
+        addFilesToPathSet(taskIDToFile.values(), filesKept);
+      }
+      if(taskIDToFile != null && taskIDToFile.size() > 0 && conf != null && conf.getTable() != null
+          && (conf.getTable().getNumBuckets() > taskIDToFile.size()) && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
+          // get the missing buckets and generate empty buckets for non-dynamic partition
+        String taskID1 = taskIDToFile.keySet().iterator().next();
+        Path bucketPath = taskIDToFile.values().iterator().next().getPath();
+        for (int j = 0; j < conf.getTable().getNumBuckets(); ++j) {
+          String taskID2 = replaceTaskId(taskID1, j);
+          if (!taskIDToFile.containsKey(taskID2)) {
+            // create empty bucket, file name should be derived from taskID2
+            URI bucketUri = bucketPath.toUri();
+            String path2 = replaceTaskIdFromFilename(bucketUri.getPath().toString(), j);
+            result.add(new Path(bucketUri.getScheme(), bucketUri.getAuthority(), path2));
+          }
         }
         Utilities.LOG14535.info(
             "removeTempOrDuplicateFiles processing files in MM directory "  + mmDir);
@@ -1611,6 +1655,23 @@ public final class Utilities {
     }
 
     return result;
+  }
+
+  /**
+   * Remove all temporary files and duplicate (double-committed) files from a given directory.
+   *
+   * @return a list of path names corresponding to should-be-created empty buckets.
+   */
+  private static boolean removeEmptyDpDirectory(FileSystem fs, Path path) throws IOException {
+    FileStatus[] items = fs.listStatus(path);
+    // remove empty directory since DP insert should not generate empty partitions.
+    // empty directories could be generated by crashed Task/ScriptOperator
+    if (items.length != 0) return false;
+    if (!fs.delete(path, true)) {
+      LOG.error("Cannot delete empty directory " + path);
+      throw new IOException("Cannot delete empty directory " + path);
+    }
+    return true;
   }
 
   // TODO: not clear why two if conditions are different. Preserve the existing logic for now.
