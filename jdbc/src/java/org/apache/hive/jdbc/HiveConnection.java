@@ -204,7 +204,7 @@ public class HiveConnection implements java.sql.Connection {
         } catch (Exception e) {
           LOG.warn("Failed to connect to " + connParams.getHost() + ":" + connParams.getPort());
           String errMsg = null;
-          String warnMsg = "Could not open client transport with JDBC Uri: " + jdbcUriString + ": ";
+          String warnMsg = "Could not open client transport to: " + host + ":" + String.valueOf(port) + " : ";
           if (isZkDynamicDiscoveryMode()) {
             errMsg = "Could not open client transport for any of the Server URI's in ZooKeeper: ";
             // Try next available server in zookeeper, or retry all the servers again if retry is enabled
@@ -465,7 +465,7 @@ public class HiveConnection implements java.sql.Connection {
         httpClientBuilder.setConnectionManager(new BasicHttpClientConnectionManager(registry));
       } catch (Exception e) {
         String msg =
-            "Could not create an https connection to " + jdbcUriString + ". " + e.getMessage();
+            "Could not create an https connection to " + host + ":" + String.valueOf(port) + ". " + e.getMessage();
         throw new SQLException(msg, " 08S01", e);
       }
     }
@@ -570,7 +570,7 @@ public class HiveConnection implements java.sql.Connection {
       }
     } catch (SaslException e) {
       throw new SQLException("Could not create secure connection to "
-          + jdbcUriString + ": " + e.getMessage(), " 08S01", e);
+          + host + ":" + String.valueOf(port) + ": " + e.getMessage(), " 08S01", e);
     }
     return transport;
   }
@@ -683,7 +683,7 @@ public class HiveConnection implements java.sql.Connection {
     } catch (TException e) {
       LOG.error("Error opening session", e);
       throw new SQLException("Could not establish connection to "
-          + jdbcUriString + ": " + e.getMessage(), " 08S01", e);
+          + host + ":" + String.valueOf(port) + ": " + e.getMessage(), " 08S01", e);
     }
     isClosed = false;
   }
