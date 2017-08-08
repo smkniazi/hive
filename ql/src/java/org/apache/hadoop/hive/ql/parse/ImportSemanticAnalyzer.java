@@ -73,6 +73,7 @@ import org.apache.hadoop.hive.ql.plan.MoveWork;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.mapred.OutputFormat;
+import org.slf4j.Logger;
 
 import static org.apache.hadoop.hive.ql.parse.EximUtil.METADATA_NAME;
 
@@ -400,13 +401,8 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     return loadTableTask;
   }
 
-
-  private static Task<?> createTableTask(CreateTableDesc tableDesc, EximUtil.SemanticAnalyzerWrapperContext x){
-    return TaskFactory.get(new DDLWork(
-        x.getInputs(),
-        x.getOutputs(),
-        tableDesc
-    ), x.getConf());
+  private static Task<?> createTableTask(ImportTableDesc tableDesc, EximUtil.SemanticAnalyzerWrapperContext x){
+    return tableDesc.getCreateTableTask(x.getInputs(), x.getOutputs(), x.getConf());
   }
 
   private static Task<?> dropTableTask(Table table, EximUtil.SemanticAnalyzerWrapperContext x){
@@ -417,14 +413,13 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     ), x.getConf());
   }
 
-  private static Task<? extends Serializable> alterTableTask(CreateTableDesc tableDesc,
-    EximUtil.SemanticAnalyzerWrapperContext x) {
+  private static Task<? extends Serializable> alterTableTask(ImportTableDesc tableDesc,
+    EximUtil.SemanticAnalyzerWrapperContext x, ReplicationSpec replicationSpec) {
     tableDesc.setReplaceMode(true);
-    return TaskFactory.get(new DDLWork(
-        x.getInputs(),
-        x.getOutputs(),
-        tableDesc
-    ), x.getConf());
+    if ((replicationSpec != null) && (replicationSpec.isInReplicationScope())){
+      tableDesc.setReplicationSpec(replicationSpec);
+    }
+    return tableDesc.getCreateTableTask(x.getInputs(), x.getOutputs(), x.getConf());
   }
 
   private static Task<? extends Serializable> alterSinglePartition(
@@ -514,29 +509,29 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
           Warehouse.makePartPath(partSpec.getPartSpec()));
     }
     FileSystem tgtFs = FileSystem.get(tgtPath.toUri(), x.getConf());
-    checkTargetLocationEmpty(tgtFs, tgtPath, replicationSpec, x);
+    checkTargetLocationEmpty(tgtFs, tgtPath, replicationSpec, x.getLOG());
     partSpec.setLocation(tgtPath.toString());
   }
 
-  private static void checkTargetLocationEmpty(FileSystem fs, Path targetPath, ReplicationSpec replicationSpec,
-                                        EximUtil.SemanticAnalyzerWrapperContext x)
+  public static void checkTargetLocationEmpty(FileSystem fs, Path targetPath, ReplicationSpec replicationSpec,
+      Logger logger)
       throws IOException, SemanticException {
     if (replicationSpec.isInReplicationScope()){
       // replication scope allows replacement, and does not require empty directories
       return;
     }
-    x.getLOG().debug("checking emptiness of " + targetPath.toString());
+    logger.debug("checking emptiness of " + targetPath.toString());
     if (fs.exists(targetPath)) {
       FileStatus[] status = fs.listStatus(targetPath, FileUtils.HIDDEN_FILES_PATH_FILTER);
       if (status.length > 0) {
-        x.getLOG().debug("Files inc. " + status[0].getPath().toString()
+        logger.debug("Files inc. " + status[0].getPath().toString()
             + " found in path : " + targetPath.toString());
         throw new SemanticException(ErrorMsg.TABLE_DATA_EXISTS.getMsg());
       }
     }
   }
 
-  private static String partSpecToString(Map<String, String> partSpec) {
+  public static String partSpecToString(Map<String, String> partSpec) {
     StringBuilder sb = new StringBuilder();
     boolean firstTime = true;
     for (Map.Entry<String, String> entry : partSpec.entrySet()) {
@@ -551,7 +546,8 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     return sb.toString();
   }
 
-  private static void checkTable(Table table, CreateTableDesc tableDesc, ReplicationSpec replicationSpec, HiveConf conf)
+  public static void checkTable(Table table, ImportTableDesc tableDesc,
+      ReplicationSpec replicationSpec, HiveConf conf)
       throws SemanticException, URISyntaxException {
     // This method gets called only in the scope that a destination table already exists, so
     // we're validating if the table is an appropriate destination to import into
@@ -797,7 +793,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
         // ensure if destination is not empty only for regular import
         Path tgtPath = new Path(table.getDataLocation().toString());
         FileSystem tgtFs = FileSystem.get(tgtPath.toUri(), x.getConf());
-        checkTargetLocationEmpty(tgtFs, tgtPath, replicationSpec, x);
+        checkTargetLocationEmpty(tgtFs, tgtPath, replicationSpec, x.getLOG());
         loadTable(fromURI, table, false, tgtPath, replicationSpec, x, mmWriteId, isSourceMm);
       }
       // Set this to read because we can't overwrite any existing partitions
@@ -835,7 +831,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
             tablePath = wh.getDefaultTablePath(parentDb, tblDesc.getTableName());
           }
           FileSystem tgtFs = FileSystem.get(tablePath.toUri(), x.getConf());
-          checkTargetLocationEmpty(tgtFs, tablePath, replicationSpec, x);
+          checkTargetLocationEmpty(tgtFs, tablePath, replicationSpec,x.getLOG());
           t.addDependentTask(loadTable(fromURI, table, false, tablePath, replicationSpec, x, mmWriteId, isSourceMm));
         }
       }
@@ -1004,7 +1000,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
   }
 
-  private static boolean isPartitioned(CreateTableDesc tblDesc) {
+  public static boolean isPartitioned(ImportTableDesc tblDesc) {
     return !(tblDesc.getPartCols() == null || tblDesc.getPartCols().isEmpty());
   }
 
@@ -1012,7 +1008,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
    * Utility method that returns a table if one corresponding to the destination
    * tblDesc is found. Returns null if no such table is found.
    */
-   private static Table tableIfExists(CreateTableDesc tblDesc, Hive db) throws HiveException {
+  public static Table tableIfExists(ImportTableDesc tblDesc, Hive db) throws HiveException {
     try {
       return db.getTable(tblDesc.getDatabaseName(),tblDesc.getTableName());
     } catch (InvalidTableException e) {

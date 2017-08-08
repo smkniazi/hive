@@ -953,7 +953,7 @@
                   <include>io.hops.hive:hive-llap-common</include>
                   <include>io.hops.hive:hive-llap-client</include>
                   <include>io.hops.hive:hive-metastore</include>
-                  <include>org.apache.hive:hive-standalone-metastore</include>
+                  <include>io.hops.hive:hive-standalone-metastore</include>
                   <include>io.hops.hive:hive-service-rpc</include>
                   <include>com.esotericsoftware:kryo-shaded</include>
                   <include>com.esotericsoftware:minlog</include>
