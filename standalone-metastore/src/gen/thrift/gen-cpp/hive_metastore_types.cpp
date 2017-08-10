@@ -6556,7 +6556,7 @@ uint32_t BooleanColumnStatsData::read(::apache::thrift::protocol::TProtocol* ipr
         break;
       case 4:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -6599,7 +6599,7 @@ uint32_t BooleanColumnStatsData::write(::apache::thrift::protocol::TProtocol* op
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 4);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -6726,7 +6726,7 @@ uint32_t DoubleColumnStatsData::read(::apache::thrift::protocol::TProtocol* ipro
         break;
       case 5:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -6773,7 +6773,7 @@ uint32_t DoubleColumnStatsData::write(::apache::thrift::protocol::TProtocol* opr
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 5);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -6904,7 +6904,7 @@ uint32_t LongColumnStatsData::read(::apache::thrift::protocol::TProtocol* iprot)
         break;
       case 5:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -6951,7 +6951,7 @@ uint32_t LongColumnStatsData::write(::apache::thrift::protocol::TProtocol* oprot
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 5);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -7082,7 +7082,7 @@ uint32_t StringColumnStatsData::read(::apache::thrift::protocol::TProtocol* ipro
         break;
       case 5:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -7131,7 +7131,7 @@ uint32_t StringColumnStatsData::write(::apache::thrift::protocol::TProtocol* opr
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 5);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -7249,7 +7249,7 @@ uint32_t BinaryColumnStatsData::read(::apache::thrift::protocol::TProtocol* ipro
         break;
       case 4:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -7292,7 +7292,7 @@ uint32_t BinaryColumnStatsData::write(::apache::thrift::protocol::TProtocol* opr
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 4);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -7528,7 +7528,7 @@ uint32_t DecimalColumnStatsData::read(::apache::thrift::protocol::TProtocol* ipr
         break;
       case 5:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -7575,7 +7575,7 @@ uint32_t DecimalColumnStatsData::write(::apache::thrift::protocol::TProtocol* op
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 5);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
@@ -7792,7 +7792,7 @@ uint32_t DateColumnStatsData::read(::apache::thrift::protocol::TProtocol* iprot)
         break;
       case 5:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->bitVectors);
+          xfer += iprot->readBinary(this->bitVectors);
           this->__isset.bitVectors = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -7839,7 +7839,7 @@ uint32_t DateColumnStatsData::write(::apache::thrift::protocol::TProtocol* oprot
 
   if (this->__isset.bitVectors) {
     xfer += oprot->writeFieldBegin("bitVectors", ::apache::thrift::protocol::T_STRING, 5);
-    xfer += oprot->writeString(this->bitVectors);
+    xfer += oprot->writeBinary(this->bitVectors);
     xfer += oprot->writeFieldEnd();
   }
   xfer += oprot->writeFieldStop();
