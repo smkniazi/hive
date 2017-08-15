@@ -40,6 +40,7 @@ import javax.security.auth.Subject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.crypto.CipherSuite;
 import org.apache.hadoop.crypto.key.KeyProvider;
 import org.apache.hadoop.crypto.key.KeyProvider.Options;
 import org.apache.hadoop.crypto.key.KeyProviderCryptoExtension;
@@ -1191,6 +1192,14 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   //         ((HdfsEncryptionShim)encryptionShim2).hdfsAdmin.getEncryptionZoneForPath(path2));
   //   }
 
+  //   /**
+  //    * Compares two encryption key strengths.
+  //    *
+  //    * @param path1 First  path to compare
+  //    * @param path2 Second path to compare
+  //    * @return 1 if path1 is stronger; 0 if paths are equals; -1 if path1 is weaker.
+  //    * @throws IOException If an error occurred attempting to get key metadata
+  //    */
   //   @Override
   //   public int comparePathKeyStrength(Path path1, Path path2) throws IOException {
   //     EncryptionZone zone1, zone2;
@@ -1206,7 +1215,7 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   //       return 1;
   //     }
 
-  //     return compareKeyStrength(zone1.getKeyName(), zone2.getKeyName());
+  //     return compareKeyStrength(zone1, zone2);
   //   }
 
   //   @Override
@@ -1249,39 +1258,39 @@ public class Hadoop23Shims extends HadoopShimsSecure {
   //     return keyProvider.getKeys();
   //   }
 
-  //   private void checkKeyProvider() throws IOException {
-  //     if (keyProvider == null) {
-  //       throw new IOException("HDFS security key provider is not configured on your server.");
-  //     }
-  //   }
+  //  private void checkKeyProvider() throws IOException {
+  //    if (keyProvider == null) {
+  //      throw new IOException("HDFS security key provider is not configured on your server.");
+  //    }
+  //  }
 
-  //   /**
-  //    * Compares two encryption key strengths.
-  //    *
-  //    * @param keyname1 Keyname to compare
-  //    * @param keyname2 Keyname to compare
-  //    * @return 1 if path1 is stronger; 0 if paths are equals; -1 if path1 is weaker.
-  //    * @throws IOException If an error occurred attempting to get key metadata
-  //    */
-  //   private int compareKeyStrength(String keyname1, String keyname2) throws IOException {
-  //     KeyProvider.Metadata meta1, meta2;
+  //  /**
+  //   * Compares two encryption key strengths.
+  //   *
+  //   * @param zone1 First  EncryptionZone to compare
+  //   * @param zone2 Second EncryptionZone to compare
+  //   * @return 1 if zone1 is stronger; 0 if zones are equal; -1 if zone1 is weaker.
+  //   * @throws IOException If an error occurred attempting to get key metadata
+  //   */
+  //  private int compareKeyStrength(EncryptionZone zone1, EncryptionZone zone2) throws IOException {
 
-  //     if (keyProvider == null) {
-  //       throw new IOException("HDFS security key provider is not configured on your server.");
-  //     }
+  //    // zone1, zone2 should already have been checked for nulls.
+  //    assert zone1 != null && zone2 != null : "Neither EncryptionZone under comparison can be null.";
 
-  //     meta1 = keyProvider.getMetadata(keyname1);
-  //     meta2 = keyProvider.getMetadata(keyname2);
+  //    CipherSuite suite1 = zone1.getSuite();
+  //    CipherSuite suite2 = zone2.getSuite();
 
-  //     if (meta1.getBitLength() < meta2.getBitLength()) {
-  //       return -1;
-  //     } else if (meta1.getBitLength() == meta2.getBitLength()) {
-  //       return 0;
-  //     } else {
-  //       return 1;
-  //     }
-  //   }
-  // }
+  //    if (suite1 == null && suite2 == null) {
+  //      return 0;
+  //    } else if (suite1 == null) {
+  //      return -1;
+  //    } else if (suite2 == null) {
+  //      return 1;
+  //    }
+
+  //    return Integer.compare(suite1.getAlgorithmBlockSize(), suite2.getAlgorithmBlockSize());
+  //  }
+  //}
 
   @Override
   public HadoopShims.HdfsEncryptionShim createHdfsEncryptionShim(FileSystem fs, Configuration conf) throws IOException {
