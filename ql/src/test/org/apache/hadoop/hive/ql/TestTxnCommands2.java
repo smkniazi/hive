@@ -70,12 +70,6 @@ import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.AssertTrue;
-
-/**
- * TODO: this should be merged with TestTxnCommands once that is checked in
- * specifically the tests; the supporting code here is just a clone of TestTxnCommands
- */
 public class TestTxnCommands2 {
   static final private Logger LOG = LoggerFactory.getLogger(TestTxnCommands2.class);
   protected static final String TEST_DATA_DIR = new File(System.getProperty("java.io.tmpdir") +
@@ -766,9 +760,17 @@ public class TestTxnCommands2 {
           Assert.assertEquals("bucket_00001", buckets[0].getPath().getName());
         } else if (numDelta == 2) {
           Assert.assertEquals("delta_0000023_0000023_0000", status[i].getPath().getName());
-          Assert.assertEquals(BUCKET_COUNT, buckets.length);
-          Assert.assertEquals("bucket_00000", buckets[0].getPath().getName());
-          Assert.assertEquals("bucket_00001", buckets[1].getPath().getName());
+          Assert.assertEquals(1, buckets.length);
+          Assert.assertEquals("bucket_00001", buckets[0].getPath().getName());
+        }
+      } else if (status[i].getPath().getName().matches("delete_delta_.*")) {
+        numDeleteDelta++;
+        FileStatus[] buckets = fs.listStatus(status[i].getPath(), FileUtils.STAGING_DIR_PATH_FILTER);
+        Arrays.sort(buckets);
+        if (numDeleteDelta == 1) {
+          Assert.assertEquals("delete_delta_0000022_0000022_0000", status[i].getPath().getName());
+          Assert.assertEquals(BUCKET_COUNT - 1, buckets.length);
+          Assert.assertEquals("bucket_00001", buckets[0].getPath().getName());
         }
       } else if (status[i].getPath().getName().matches("base_.*")) {
         Assert.assertEquals("base_-9223372036854775808", status[i].getPath().getName());
@@ -814,9 +816,8 @@ public class TestTxnCommands2 {
         } else if (numBase == 2) {
           // The new base dir now has two bucket files, since the delta dir has two bucket files
           Assert.assertEquals("base_0000023", status[i].getPath().getName());
-          Assert.assertEquals(BUCKET_COUNT, buckets.length);
-          Assert.assertEquals("bucket_00000", buckets[0].getPath().getName());
-          Assert.assertEquals("bucket_00001", buckets[1].getPath().getName());
+          Assert.assertEquals(1, buckets.length);
+          Assert.assertEquals("bucket_00001", buckets[0].getPath().getName());
         }
       }
     }

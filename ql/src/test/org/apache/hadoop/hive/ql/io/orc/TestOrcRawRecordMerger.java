@@ -298,26 +298,27 @@ public class TestOrcRawRecordMerger {
     int BUCKET = 10;
     ReaderKey key = new ReaderKey();
     Configuration conf = new Configuration();
+    int bucketProperty = OrcRawRecordMerger.encodeBucketId(conf, BUCKET);
     Reader reader = createMockOriginalReader();
-    RecordIdentifier minKey = new RecordIdentifier(0, 10, 1);
-    RecordIdentifier maxKey = new RecordIdentifier(0, 10, 3);
+    RecordIdentifier minKey = new RecordIdentifier(0, bucketProperty, 1);
+    RecordIdentifier maxKey = new RecordIdentifier(0, bucketProperty, 3);
     boolean[] includes = new boolean[]{true, true};
     FileSystem fs = FileSystem.getLocal(conf);
     Path root = new Path(tmpDir, "testOriginalReaderPair");
     fs.makeQualified(root);
     fs.create(root);
-    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, 10, minKey, maxKey,
+    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, BUCKET, minKey, maxKey,
         new Reader.Options().include(includes), new OrcRawRecordMerger.Options().rootPath(root), conf, new ValidReadTxnList());
     RecordReader recordReader = pair.getRecordReader();
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(2, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
     assertEquals("third", value(pair.nextRecord()));
 
     pair.next(pair.nextRecord());
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(3, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
     assertEquals("fourth", value(pair.nextRecord()));
@@ -337,43 +338,44 @@ public class TestOrcRawRecordMerger {
     ReaderKey key = new ReaderKey();
     Reader reader = createMockOriginalReader();
     Configuration conf = new Configuration();
+    int bucketProperty = OrcRawRecordMerger.encodeBucketId(conf, BUCKET);
     FileSystem fs = FileSystem.getLocal(conf);
     Path root = new Path(tmpDir, "testOriginalReaderPairNoMin");
     fs.makeQualified(root);
     fs.create(root);
-    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, 10, null, null,
+    ReaderPair pair = new OrcRawRecordMerger.OriginalReaderPairToRead(key, reader, BUCKET, null, null,
         new Reader.Options(), new OrcRawRecordMerger.Options().rootPath(root), conf, new ValidReadTxnList());
     assertEquals("first", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(0, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("second", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(1, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("third", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(2, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("fourth", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(3, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
     pair.next(pair.nextRecord());
     assertEquals("fifth", value(pair.nextRecord()));
     assertEquals(0, key.getTransactionId());
-    assertEquals(10, key.getBucketProperty());
+    assertEquals(bucketProperty, key.getBucketProperty());
     assertEquals(4, key.getRowId());
     assertEquals(0, key.getCurrentTransactionId());
 
@@ -553,20 +555,19 @@ public class TestOrcRawRecordMerger {
     ru.close(false);
 
     FileStatus bucket0File = fs.getFileStatus(bucket0);
-    // TODO(Fabio) Commented out as getLogicalLength is not yet available
-    //AcidUtils.getLogicalLength(fs, bucket0File);
+    AcidUtils.getLogicalLength(fs, bucket0File);
     Assert.assertTrue("no " + bucket0, fs.exists(bucket0));
     Assert.assertFalse("unexpected " + bucket0SideFile, fs.exists(bucket0SideFile));
     //test getLogicalLength() w/o side file
-    //Assert.assertEquals("closed file size mismatch", bucket0File.getLen(),
-    //  AcidUtils.getLogicalLength(fs, bucket0File));
+    Assert.assertEquals("closed file size mismatch", bucket0File.getLen(),
+      AcidUtils.getLogicalLength(fs, bucket0File));
 
     //create an empty (invalid) side file - make sure getLogicalLength() throws
     FSDataOutputStream flushLengths = fs.create(bucket0SideFile, true, 8);
     flushLengths.close();
-    //expectedException.expect(IOException.class);
-    //expectedException.expectMessage(bucket0SideFile.getName() + " found but is not readable");
-    //AcidUtils.getLogicalLength(fs, bucket0File);
+    expectedException.expect(IOException.class);
+    expectedException.expectMessage(bucket0SideFile.getName() + " found but is not readable");
+    AcidUtils.getLogicalLength(fs, bucket0File);
   }
   @Test
   public void testEmpty() throws Exception {

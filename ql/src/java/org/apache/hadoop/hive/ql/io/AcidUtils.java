@@ -389,16 +389,9 @@ public class AcidUtils {
     public static final int INSERT_ONLY_BIT = 0x03;
     public static final String INSERT_ONLY_STRING = "insert_only";
     public static final String DEFAULT_VALUE_STRING = TransactionalValidationListener.DEFAULT_TRANSACTIONAL_PROPERTY;
-    public static final String LEGACY_VALUE_STRING = TransactionalValidationListener.LEGACY_TRANSACTIONAL_PROPERTY;
     public static final String INSERTONLY_VALUE_STRING = TransactionalValidationListener.INSERTONLY_TRANSACTIONAL_PROPERTY;
 
     private AcidOperationalProperties() {
-    }
-
-    public static AcidOperationalProperties getLegacy() {
-      AcidOperationalProperties obj = new AcidOperationalProperties();
-      // In legacy mode, none of these properties are turned on.
-      return obj;
     }
 
     /**
@@ -435,9 +428,6 @@ public class AcidUtils {
       }
       if (propertiesStr.equalsIgnoreCase(DEFAULT_VALUE_STRING)) {
         return AcidOperationalProperties.getDefault();
-      }
-      if (propertiesStr.equalsIgnoreCase(LEGACY_VALUE_STRING)) {
-        return AcidOperationalProperties.getLegacy();
       }
       if (propertiesStr.equalsIgnoreCase(INSERTONLY_VALUE_STRING)) {
         return AcidOperationalProperties.getInsertOnly();
@@ -1266,5 +1256,40 @@ public class AcidUtils {
       return AcidOperationalProperties.getDefault();
     }
     return AcidOperationalProperties.parseString(resultStr);
+  }
+  /**
+   * See comments at {@link AcidUtils#DELTA_SIDE_FILE_SUFFIX}.
+   *
+   * Returns the logical end of file for an acid data file.
+   *
+   * This relies on the fact that if delta_x_y has no committed transactions it wil be filtered out
+   * by {@link #getAcidState(Path, Configuration, ValidTxnList)} and so won't be read at all.
+   * @param file - data file to read/compute splits on
+   */
+  public static long getLogicalLength(FileSystem fs, FileStatus file) throws IOException {
+    Path lengths = OrcAcidUtils.getSideFile(file.getPath());
+    if(!fs.exists(lengths)) {
+      /**
+       * if here for delta_x_y that means txn y is resolved and all files in this delta are closed so
+       * they should all have a valid ORC footer and info from NameNode about length is good
+       */
+      return file.getLen();
+    }
+    long len = OrcAcidUtils.getLastFlushLength(fs, file.getPath());
+    if(len >= 0) {
+      /**
+       * if here something is still writing to delta_x_y so  read only as far as the last commit,
+       * i.e. where last footer was written.  The file may contain more data after 'len' position
+       * belonging to an open txn.
+       */
+      return len;
+    }
+    /**
+     * if here, side file is there but we couldn't read it.  We want to avoid a read where
+     * (file.getLen() < 'value from side file' which may happen if file is not closed) because this
+     * means some committed data from 'file' would be skipped.
+     * This should be very unusual.
+     */
+    throw new IOException(lengths + " found but is not readable.  Consider waiting or orcfiledump --recover");
   }
 }

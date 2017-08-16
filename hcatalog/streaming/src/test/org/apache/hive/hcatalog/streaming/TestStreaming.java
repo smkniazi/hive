@@ -1143,10 +1143,9 @@ public class TestStreaming {
         long lengthFileSize = fs.getFileStatus(lengthFile).getLen();
         Assert.assertTrue("Expected " + lengthFile + " to be non empty. lengh=" +
           lengthFileSize, lengthFileSize > 0);
-        // TODO(Fabio): commented out to let compilation finish
-        //long logicalLength = AcidUtils.getLogicalLength(fs, stat);
-        //long actualLength = stat.getLen();
-        //Assert.assertTrue("", logicalLength == actualLength);
+        long logicalLength = AcidUtils.getLogicalLength(fs, stat);
+        long actualLength = stat.getLen();
+        Assert.assertTrue("", logicalLength == actualLength);
       }
     }
     checkDataWritten2(partLoc, 14, 33, 2,
@@ -1157,7 +1156,6 @@ public class TestStreaming {
 
     txnBatch2.beginNextTransaction();
     txnBatch2.write("4,Welcome to streaming - once again".getBytes());
-
     //here each batch has written data and committed (to bucket0 since table only has 1 bucket)
     //so each of 2 deltas has 1 bucket0 and 1 bucket0_flush_length.  Furthermore, each bucket0
     //has now received more data(logically - it's buffered) but it is not yet committed.
@@ -1170,10 +1168,9 @@ public class TestStreaming {
         long lengthFileSize = fs.getFileStatus(lengthFile).getLen();
         Assert.assertTrue("Expected " + lengthFile + " to be non empty. lengh=" +
           lengthFileSize, lengthFileSize > 0);
-        // TODO(Fabio): commented out to let compilation finish
-        // long logicalLength = AcidUtils.getLogicalLength(fs, stat);
-        // long actualLength = stat.getLen();
-        // Assert.assertTrue("", logicalLength <= actualLength);
+        long logicalLength = AcidUtils.getLogicalLength(fs, stat);
+        long actualLength = stat.getLen();
+        Assert.assertTrue("", logicalLength <= actualLength);
       }
     }
     checkDataWritten2(partLoc, 14, 33, 2,
