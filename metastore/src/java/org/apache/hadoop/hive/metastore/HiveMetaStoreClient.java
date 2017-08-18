@@ -64,11 +64,11 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.conf.HiveConfUtil;
 import org.apache.hadoop.hive.metastore.api.*;
+import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
+import org.apache.hadoop.hive.metastore.security.HadoopThriftAuthBridge;
 import org.apache.hadoop.hive.metastore.txn.TxnUtils;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.Utils;
-import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hadoop.security.ssl.X509SecurityMaterial;
@@ -205,7 +205,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
           metastoreUris[i++] = new URI(
               tmpUri.getScheme(),
               tmpUri.getUserInfo(),
-              ShimLoader.getHadoopThriftAuthBridge().getCanonicalHostName(tmpUri.getHost()),
+              HadoopThriftAuthBridge.getBridge().getCanonicalHostName(tmpUri.getHost()),
               tmpUri.getPort(),
               tmpUri.getPath(),
               tmpUri.getQuery(),
@@ -435,12 +435,11 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
           // Moreover, the information regarding truststore location and password are written
           // in a different file. We removed the properties from HiveConf to avoid confusion.
           // Hence, here the upstream branch of the if (useSSL) is missing.
-
           if (useSasl) {
             // Wrap thrift connection with SASL for secure connection.
             try {
               HadoopThriftAuthBridge.Client authBridge =
-                ShimLoader.getHadoopThriftAuthBridge().createClient();
+                HadoopThriftAuthBridge.getBridge().createClient();
 
               // check if we should use delegation tokens to authenticate
               // the call below gets hold of the tokens if they are set up by hadoop

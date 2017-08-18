@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hive.metastore.utils.HdfsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -53,7 +54,6 @@ import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.util.ReflectionUtils;
 
 /**
@@ -260,7 +260,7 @@ public class Warehouse {
     try {
       fs = getFs(path);
       stat = fs.getFileStatus(path);
-      ShimLoader.getHadoopShims().checkFileAccess(fs, stat, FsAction.WRITE);
+      HdfsUtils.checkFileAccess(fs, stat, FsAction.WRITE);
       return true;
     } catch (FileNotFoundException fnfe){
       // File named by path doesn't exist; nothing to validate.
