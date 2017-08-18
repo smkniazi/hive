@@ -498,7 +498,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     private AlterHandler alterHandler;
     private List<MetaStorePreEventListener> preListeners;
     private List<MetaStoreEventListener> listeners;
-    private List<MetaStoreEventListener> transactionalListeners;
+    private List<TransactionalMetaStoreEventListener> transactionalListeners;
     private List<MetaStoreEndFunctionListener> endFunctionListeners;
     private List<MetaStoreInitListener> initListeners;
     private Pattern partitionValidationPattern;
@@ -511,7 +511,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       }
     }
 
-    List<MetaStoreEventListener> getTransactionalListeners() {
+    List<TransactionalMetaStoreEventListener> getTransactionalListeners() {
       return transactionalListeners;
     }
 
@@ -585,7 +585,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           hiveConf.getVar(HiveConf.ConfVars.METASTORE_EVENT_LISTENERS));
       listeners.add(new SessionPropertiesListener(hiveConf));
       listeners.add(new AcidEventListener(hiveConf));
-      transactionalListeners = MetaStoreUtils.getMetaStoreListeners(MetaStoreEventListener.class,hiveConf,
+      transactionalListeners = MetaStoreUtils.getMetaStoreListeners(TransactionalMetaStoreEventListener.class,hiveConf,
               hiveConf.getVar(ConfVars.METASTORE_TRANSACTIONAL_EVENT_LISTENERS));
       if (metrics != null) {
         listeners.add(new HMSMetricsListener(hiveConf, metrics));
