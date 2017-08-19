@@ -134,7 +134,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   // for client app certificates
   private Thread clientCertUpdaterThread = null;
 
-  static final protected Logger LOG = LoggerFactory.getLogger("hive.metastore");
+  static final protected Logger LOG = LoggerFactory.getLogger(HiveMetaStoreClient.class);
 
   public HiveMetaStoreClient(HiveConf conf) throws MetaException {
     this(conf, null, true);
