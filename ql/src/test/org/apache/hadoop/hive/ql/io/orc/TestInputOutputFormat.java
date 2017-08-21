@@ -1558,7 +1558,7 @@ public class TestInputOutputFormat {
     OrcInputFormat.SplitGenerator splitter =
         new OrcInputFormat.SplitGenerator(new OrcInputFormat.SplitInfo(context, fs,
             fs.getFileStatus(new Path("/a/file")), null, null, true,
-            new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true);
+            new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true, true);
     OrcSplit result = splitter.createSplit(0, 200, null);
     assertEquals(0, result.getStart());
     assertEquals(200, result.getLength());
@@ -1599,7 +1599,7 @@ public class TestInputOutputFormat {
     OrcInputFormat.SplitGenerator splitter =
         new OrcInputFormat.SplitGenerator(new OrcInputFormat.SplitInfo(context, fs,
             fs.getFileStatus(new Path("/a/file")), null, null, true,
-            new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true);
+            new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true, true);
     List<OrcSplit> results = splitter.call();
     OrcSplit result = results.get(0);
     assertEquals(3, result.getStart());
@@ -1622,7 +1622,7 @@ public class TestInputOutputFormat {
     context = new OrcInputFormat.Context(conf);
     splitter = new OrcInputFormat.SplitGenerator(new OrcInputFormat.SplitInfo(context, fs,
       fs.getFileStatus(new Path("/a/file")), null, null, true,
-        new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true);
+        new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true, true);
     results = splitter.call();
     for(int i=0; i < stripeSizes.length; ++i) {
       assertEquals("checking stripe " + i + " size",
@@ -1650,7 +1650,7 @@ public class TestInputOutputFormat {
     OrcInputFormat.SplitGenerator splitter =
         new OrcInputFormat.SplitGenerator(new OrcInputFormat.SplitInfo(context, fs,
             fs.getFileStatus(new Path("/a/file")), null, null, true,
-            new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true);
+            new ArrayList<AcidInputFormat.DeltaMetaData>(), true, null, null), null, true, true);
     List<OrcSplit> results = splitter.call();
     OrcSplit result = results.get(0);
     assertEquals(3, results.size());
@@ -1673,7 +1673,7 @@ public class TestInputOutputFormat {
     splitter = new OrcInputFormat.SplitGenerator(new OrcInputFormat.SplitInfo(context, fs,
         fs.getFileStatus(new Path("/a/file")), null, null, true,
         new ArrayList<AcidInputFormat.DeltaMetaData>(),
-        true, null, null), null, true);
+        true, null, null), null, true, true);
     results = splitter.call();
     assertEquals(5, results.size());
     for (int i = 0; i < stripeSizes.length; ++i) {
@@ -1693,7 +1693,7 @@ public class TestInputOutputFormat {
     splitter = new OrcInputFormat.SplitGenerator(new OrcInputFormat.SplitInfo(context, fs,
         fs.getFileStatus(new Path("/a/file")), null, null, true,
         new ArrayList<AcidInputFormat.DeltaMetaData>(),
-        true, null, null), null, true);
+        true, null, null), null, true, true);
     results = splitter.call();
     assertEquals(1, results.size());
     result = results.get(0);
