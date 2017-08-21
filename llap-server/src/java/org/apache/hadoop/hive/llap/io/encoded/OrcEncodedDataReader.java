@@ -182,11 +182,7 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
   @SuppressWarnings("unused")
   private volatile boolean isPaused = false;
 
-<<<<<<< HEAD
   boolean[] globalIncludes = null, sargColumns = null;
-=======
-  boolean[] globalIncludes = null;
->>>>>>> 20276d2113... HIVE-16954 : LLAP IO: better debugging (Sergey Shelukhin, reviewed by Gopal Vijayaraghavan)
   private final IoTrace trace;
   private Pool<IoTrace> tracePool;
 
@@ -346,15 +342,7 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
 
     // 4. Create encoded data reader.
     try {
-<<<<<<< HEAD
       ensureDataReader();
-=======
-      ensureOrcReader();
-      // Reader creating updates HDFS counters, don't do it here.
-      DataWrapperForOrc dw = new DataWrapperForOrc();
-      stripeReader = orcReader.encodedReader(fileKey, dw, dw, POOL_FACTORY, trace);
-      stripeReader.setTracing(LlapIoImpl.ORC_LOGGER.isTraceEnabled());
->>>>>>> 20276d2113... HIVE-16954 : LLAP IO: better debugging (Sergey Shelukhin, reviewed by Gopal Vijayaraghavan)
     } catch (Throwable t) {
       handleReaderError(startTime, t);
       return null;

@@ -18,8 +18,6 @@
 
 package org.apache.hadoop.hive.ql.io.orc;
 
-import org.apache.hadoop.hive.ql.plan.DynamicValue.NoDynamicValuesException;
-
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.io.IOException;
@@ -999,7 +997,7 @@ public class OrcInputFormat implements InputFormat<NullWritable, OrcStruct>,
         FileStatus fileStatus = file.getFileStatus();
         long logicalLen = AcidUtils.getLogicalLength(fs, fileStatus);
         if (logicalLen != 0) {
-          Object fileKey = file.getFileId();
+          Object fileKey = isDefaultFs ? file.getFileId() : null;
           if (fileKey == null && allowSyntheticFileIds) {
             fileKey = new SyntheticFileId(fileStatus);
           }
