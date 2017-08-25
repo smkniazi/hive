@@ -3505,7 +3505,8 @@ public class HiveConf extends Configuration {
             "hive.spark.client.secret.bits," +
             "hive.spark.client.rpc.server.address," +
             "hive.spark.client.rpc.server.port," +
-            "bonecp.",
+            "bonecp.,"+
+            "hikari.",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname
