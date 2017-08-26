@@ -98,11 +98,24 @@ public final class TransactionalValidationListener extends MetaStorePreEventList
         // that will use it down below.
       }
     }
+    Table oldTable = context.getOldTable();
+    String oldTransactionalValue = null;
+    String oldTransactionalPropertiesValue = null;
+    for (String key : oldTable.getParameters().keySet()) {
+      if (hive_metastoreConstants.TABLE_IS_TRANSACTIONAL.equalsIgnoreCase(key)) {
+        oldTransactionalValue = oldTable.getParameters().get(key);
+      }
+      if (hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES.equalsIgnoreCase(key)) {
+        oldTransactionalPropertiesValue = oldTable.getParameters().get(key);
+      }
+    }
+
     if (transactionalValuePresent) {
       //normalize prop name
       parameters.put(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, transactionalValue);
     }
-    if ("true".equalsIgnoreCase(transactionalValue)) {
+    if ("true".equalsIgnoreCase(transactionalValue) && !"true".equalsIgnoreCase(oldTransactionalValue)) {
+      //only need to check conformance if alter table enabled aicd
       if (!conformToAcid(newTable)) {
         // INSERT_ONLY tables don't have to conform to ACID requirement like ORC or bucketing
         if (transactionalPropertiesValue == null || !"insert_only".equalsIgnoreCase(transactionalPropertiesValue)) {
@@ -118,17 +131,6 @@ public final class TransactionalValidationListener extends MetaStorePreEventList
       hasValidTransactionalValue = true;
     }
 
-    Table oldTable = context.getOldTable();
-    String oldTransactionalValue = null;
-    String oldTransactionalPropertiesValue = null;
-    for (String key : oldTable.getParameters().keySet()) {
-      if (hive_metastoreConstants.TABLE_IS_TRANSACTIONAL.equalsIgnoreCase(key)) {
-        oldTransactionalValue = oldTable.getParameters().get(key);
-      }
-      if (hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES.equalsIgnoreCase(key)) {
-        oldTransactionalPropertiesValue = oldTable.getParameters().get(key);
-      }
-    }
 
 
     if (oldTransactionalValue == null ? transactionalValue == null
@@ -226,14 +228,12 @@ public final class TransactionalValidationListener extends MetaStorePreEventList
     throw new MetaException("'transactional' property of TBLPROPERTIES may only have value 'true'");
   }
 
-  // Check if table is bucketed and InputFormatClass/OutputFormatClass should implement
-  // AcidInputFormat/AcidOutputFormat
+  /**
+   * Check that InputFormatClass/OutputFormatClass should implement
+   * AcidInputFormat/AcidOutputFormat
+   */
   private boolean conformToAcid(Table table) throws MetaException {
     StorageDescriptor sd = table.getSd();
-    if (sd.getBucketColsSize() < 1) {
-      return false;
-    }
-
     try {
       Class inputFormatClass = Class.forName(sd.getInputFormat());
       Class outputFormatClass = Class.forName(sd.getOutputFormat());

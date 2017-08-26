@@ -7410,9 +7410,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   // Check constraints on acid tables.  This includes
-  // * no insert overwrites
-  // * no use of vectorization
-  // * turns off reduce deduplication optimization, as that sometimes breaks acid
   // * Check that the table is bucketed
   // * Check that the table is not sorted
   // This method assumes you have already decided that this is an Acid write.  Don't call it if
