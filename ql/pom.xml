@@ -202,7 +202,7 @@
       <version>${libfb303.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <exclusions>
@@ -222,19 +222,19 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-archives</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-common</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -251,7 +251,7 @@
         </exclusions>
    </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${hadoop.version}</version>
       <exclusions>
@@ -263,13 +263,13 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-yarn-common</artifactId>
       <version>${hadoop.version}</version>
       <exclusions>
@@ -281,7 +281,7 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-yarn-client</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -290,6 +290,12 @@
       <groupId>org.apache.orc</groupId>
       <artifactId>orc-tools</artifactId>
       <version>${orc.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -470,28 +476,8 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-common</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-hdfs</artifactId>
-        </exclusion>
-       <exclusion>
-         <groupId>org.apache.hadoop</groupId>
-         <artifactId>hadoop-yarn-client</artifactId>
-       </exclusion>
        <exclusion>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
@@ -506,28 +492,8 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-common</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-hdfs</artifactId>
-        </exclusion>
-       <exclusion>
-         <groupId>org.apache.hadoop</groupId>
-         <artifactId>hadoop-yarn-client</artifactId>
-       </exclusion>
                <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -544,6 +510,10 @@
       <version>${tez.version}</version>
       <optional>true</optional>
       <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
               <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -594,28 +564,8 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-common</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-hdfs</artifactId>
-        </exclusion>
-       <exclusion>
-         <groupId>org.apache.hadoop</groupId>
-         <artifactId>hadoop-yarn-client</artifactId>
-       </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -635,27 +585,7 @@
         </exclusion>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-hdfs</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-yarn-client</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -673,6 +603,10 @@
       <version>${spark.version}</version>
       <optional>true</optional>
       <exclusions>
+       <exclusion>
+           <groupId>org.apache.hadoop</groupId>
+           <artifactId>*</artifactId>
+       </exclusion>
        <exclusion>
          <groupId>com.esotericsoftware.kryo</groupId>
          <artifactId>kryo</artifactId>

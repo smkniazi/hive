@@ -104,7 +104,7 @@
       <version>${curator.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -180,12 +180,12 @@
                 <excludes>
                   <exclude>org.apache.commons:commons-compress</exclude>
                   <exclude>commons-configuration:commons-configuration</exclude>
-                  <exclude>org.apache.hadoop:hadoop-yarn*</exclude>
-                  <exclude>org.apache.hadoop:hadoop-mapreduce*</exclude>
-                  <exclude>org.apache.hadoop:hadoop-hdfs</exclude>
-                  <exclude>org.apache.hadoop:hadoop-client</exclude>
-                  <exclude>org.apache.hadoop:hadoop-annotations</exclude>
-                  <exclude>org.apache.hadoop:hadoop-auth</exclude>
+                  <exclude>io.hops:hadoop-yarn*</exclude>
+                  <exclude>io.hops:hadoop-mapreduce*</exclude>
+                  <exclude>io.hops:hadoop-hdfs</exclude>
+                  <exclude>io.hops:hadoop-client</exclude>
+                  <exclude>io.hops:hadoop-annotations</exclude>
+                  <exclude>io.hops:hadoop-auth</exclude>
                   <exclude>org.apache.hive:hive-vector-code-gen</exclude>
                   <exclude>org.apache.ant:*</exclude>
                   <exclude>junit:*</exclude>
@@ -287,8 +287,8 @@
                   <shadedPattern>org.apache.hive.com.facebook</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>org.apache.hadoop</pattern>
-                  <shadedPattern>org.apache.hive.org.apache.hadoop</shadedPattern>
+                  <pattern>io.hops</pattern>
+                  <shadedPattern>org.apache.hive.io.hops</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>com.beust</pattern>

@@ -150,6 +150,10 @@
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -163,7 +167,7 @@
       <version>${druid.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <scope>provided</scope>
       <version>${hadoop.version}</version>
@@ -184,7 +188,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <scope>provided</scope>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>

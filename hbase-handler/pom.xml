@@ -46,7 +46,7 @@
       <version>${commons-lang.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -62,7 +62,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -71,11 +71,23 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-hadoop2-compat</artifactId>
       <version>${hbase.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-client</artifactId>
       <version>${hbase.version}</version>
+        <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -90,22 +102,38 @@
             <groupId>commmons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-common</artifactId>
       <version>${hbase.version}</version>
+        <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-hadoop-compat</artifactId>
       <version>${hbase.version}</version>
+        <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- test inter-project -->
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${hadoop.version}</version>
       <classifier>tests</classifier>
@@ -123,6 +151,12 @@
       <version>${hbase.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
+      <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
@@ -139,6 +173,10 @@
             <groupId>commmons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
       </exclusions>
    </dependency>
     <dependency>
@@ -147,6 +185,12 @@
       <version>${hbase.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
+      <exclusions>
+          <exclusion>
+              <groupId>org.apache.hadoop</groupId>
+              <artifactId>*</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
@@ -155,7 +199,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <classifier>tests</classifier>

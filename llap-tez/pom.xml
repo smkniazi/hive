@@ -51,7 +51,7 @@
       <version>${commons-lang3.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -73,6 +73,10 @@
       <optional>true</optional>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
@@ -88,6 +92,10 @@
       <version>${tez.version}</version>
       <optional>true</optional>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
@@ -105,6 +113,10 @@
       <optional>true</optional>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
@@ -120,6 +132,10 @@
       <version>${tez.version}</version>
       <optional>true</optional>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
@@ -153,7 +169,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <classifier>tests</classifier>

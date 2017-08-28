@@ -119,7 +119,7 @@
       <version>${ant.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -155,7 +155,7 @@
       </exclusions>
    </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>
       <optional>true</optional>
@@ -226,6 +226,12 @@
       <groupId>com.github.joshelser</groupId>
       <artifactId>dropwizard-metrics-hadoop-metrics2-reporter</artifactId>
       <version>${dropwizard-metrics-hadoop-metrics2-reporter.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

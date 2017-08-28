@@ -68,13 +68,13 @@
       <version>3.3.2</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <optional>true</optional>
       <version>${hadoop.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <optional>true</optional>
       <version>${hadoop.version}</version>
@@ -99,7 +99,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
+      <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-common</artifactId>
       <scope>test</scope>
       <version>${hadoop.version}</version>
