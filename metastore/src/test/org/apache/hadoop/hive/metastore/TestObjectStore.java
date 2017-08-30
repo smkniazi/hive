@@ -25,12 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
-import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
-import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
-import org.apache.hadoop.hive.common.metrics.metrics2.MetricsReporting;
-import org.apache.hadoop.hive.common.metrics.MetricsTestUtils;
+import com.codahale.metrics.Counter;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
@@ -56,7 +51,8 @@ import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage;
-import org.apache.hadoop.hive.metastore.model.MTableWrite;
+import org.apache.hadoop.hive.metastore.metrics.Metrics;
+import org.apache.hadoop.hive.metastore.metrics.MetricsConstants;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
@@ -562,11 +558,12 @@ public class TestObjectStore {
   public void testDirectSqlErrorMetrics() throws Exception {
     HiveConf conf = new HiveConf();
     conf.setBoolVar(HiveConf.ConfVars.HIVE_SERVER2_METRICS_ENABLED, true);
-    conf.setVar(HiveConf.ConfVars.HIVE_METRICS_REPORTER, MetricsReporting.JSON_FILE.name()
-        + "," + MetricsReporting.JMX.name());
+    Metrics.initialize(conf);
 
-    MetricsFactory.init(conf);
-    CodahaleMetrics metrics = (CodahaleMetrics) MetricsFactory.getInstance();
+    // recall setup so that we get an object store with the metrics initalized
+    setUp();
+    Counter directSqlErrors =
+        Metrics.getRegistry().getCounters().get(MetricsConstants.DIRECTSQL_ERRORS);
 
     objectStore.new GetDbHelper("foo", true, true) {
       @Override
@@ -581,9 +578,7 @@ public class TestObjectStore {
       }
     }.run(false);
 
-    String json = metrics.dumpJson();
-    MetricsTestUtils.verifyMetricsJson(json, MetricsTestUtils.COUNTER,
-        MetricsConstant.DIRECTSQL_ERRORS, "");
+    Assert.assertEquals(0, directSqlErrors.getCount());
 
     objectStore.new GetDbHelper("foo", true, true) {
       @Override
@@ -598,9 +593,7 @@ public class TestObjectStore {
       }
     }.run(false);
 
-    json = metrics.dumpJson();
-    MetricsTestUtils.verifyMetricsJson(json, MetricsTestUtils.COUNTER,
-        MetricsConstant.DIRECTSQL_ERRORS, 1);
+    Assert.assertEquals(1, directSqlErrors.getCount());
   }
 
   public static void dropAllStoreObjects(RawStore store) throws MetaException, InvalidObjectException, InvalidInputException {

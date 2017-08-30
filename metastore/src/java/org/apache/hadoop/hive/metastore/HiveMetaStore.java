@@ -1,5 +1,4 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one
+/** * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -33,7 +32,6 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,6 +51,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -65,6 +64,7 @@ import com.facebook.fb303.fb_status;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+import com.codahale.metrics.Counter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
@@ -78,7 +78,6 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.FileUtils;
-import org.apache.hadoop.hive.common.JvmPauseMonitor;
 import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.common.LogUtils.LogInitializationException;
 import org.apache.hadoop.hive.common.StatsSetupConst;
@@ -86,10 +85,6 @@ import org.apache.hadoop.hive.common.auth.TServerSocketFactory;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.common.cli.CommonCliOptions;
-import org.apache.hadoop.hive.common.metrics.common.Metrics;
-import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
-import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
-import org.apache.hadoop.hive.common.metrics.common.MetricsVariable;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.io.HdfsUtils;
@@ -138,6 +133,10 @@ import org.apache.hadoop.hive.metastore.filemeta.OrcFileMetadataHandler;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage.EventType;
 import org.apache.hadoop.hive.metastore.model.MTableWrite;
+import org.apache.hadoop.hive.metastore.metrics.JvmPauseMonitor;
+import org.apache.hadoop.hive.metastore.metrics.Metrics;
+import org.apache.hadoop.hive.metastore.metrics.MetricsConstants;
+import org.apache.hadoop.hive.metastore.metrics.PerfLogger;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.security.HadoopThriftAuthBridge;
 import org.apache.hadoop.hive.metastore.security.MetastoreDelegationTokenManager;
@@ -292,8 +291,9 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     private FileMetadataManager fileMetadataManager;
     private PartitionExpressionProxy expressionProxy;
 
-    //For Metrics
-    private int initDatabaseCount, initTableCount, initPartCount;
+    // Variables for metrics
+    // Package visible so that HMSMetricsListener can see them.
+    static AtomicInteger databaseCount, tableCount, partCount;
 
     private Warehouse wh; // hdfs warehouse
     private static final ThreadLocal<RawStore> threadLocalMS =
@@ -306,6 +306,14 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       @Override
       protected TxnStore initialValue() {
         return null;
+      }
+    };
+
+    private static final ThreadLocal<Map<String, com.codahale.metrics.Timer.Context>> timerContexts =
+        new ThreadLocal<Map<String, com.codahale.metrics.Timer.Context>>() {
+      @Override
+      protected Map<String, com.codahale.metrics.Timer.Context> initialValue() {
+        return new HashMap<>();
       }
     };
 
@@ -539,41 +547,14 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         }
       }
 
-      //Start Metrics for Embedded mode
+      //Start Metrics
       if (hiveConf.getBoolVar(ConfVars.METASTORE_METRICS)) {
-        try {
-          MetricsFactory.init(hiveConf);
-        } catch (Exception e) {
-          // log exception, but ignore inability to start
-          LOG.error("error in Metrics init: " + e.getClass().getName() + " "
-              + e.getMessage(), e);
-        }
-      }
-
-      Metrics metrics = MetricsFactory.getInstance();
-      if (metrics != null && hiveConf.getBoolVar(ConfVars.METASTORE_INIT_METADATA_COUNT_ENABLED)) {
         LOG.info("Begin calculating metadata count metrics.");
+        Metrics.initialize(hiveConf);
+        databaseCount = Metrics.getOrCreateGauge(MetricsConstants.TOTAL_DATABASES);
+        tableCount = Metrics.getOrCreateGauge(MetricsConstants.TOTAL_TABLES);
+        partCount = Metrics.getOrCreateGauge(MetricsConstants.TOTAL_PARTITIONS);
         updateMetrics();
-        LOG.info("Finished metadata count metrics: " + initDatabaseCount + " databases, " + initTableCount +
-          " tables, " + initPartCount + " partitions.");
-        metrics.addGauge(MetricsConstant.INIT_TOTAL_DATABASES, new MetricsVariable<Object>() {
-          @Override
-          public Object getValue() {
-            return initDatabaseCount;
-          }
-        });
-        metrics.addGauge(MetricsConstant.INIT_TOTAL_TABLES, new MetricsVariable<Object>() {
-          @Override
-          public Object getValue() {
-            return initTableCount;
-          }
-        });
-        metrics.addGauge(MetricsConstant.INIT_TOTAL_PARTITIONS, new MetricsVariable<Object>() {
-          @Override
-          public Object getValue() {
-            return initPartCount;
-          }
-        });
       }
 
       preListeners = MetaStoreUtils.getMetaStoreListeners(MetaStorePreEventListener.class,
@@ -586,8 +567,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       listeners.add(new AcidEventListener(hiveConf));
       transactionalListeners = MetaStoreUtils.getMetaStoreListeners(TransactionalMetaStoreEventListener.class,hiveConf,
               hiveConf.getVar(ConfVars.METASTORE_TRANSACTIONAL_EVENT_LISTENERS));
-      if (metrics != null) {
-        listeners.add(new HMSMetricsListener(hiveConf, metrics));
+      if (Metrics.getRegistry() != null) {
+        listeners.add(new HMSMetricsListener(hiveConf));
       }
 
       endFunctionListeners = MetaStoreUtils.getMetaStoreListeners(
@@ -903,9 +884,14 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       incrementCounter(function);
       logInfo((getThreadLocalIpAddress() == null ? "" : "source:" + getThreadLocalIpAddress() + " ") +
           function + extraLogInfo);
-      if (MetricsFactory.getInstance() != null) {
-        MetricsFactory.getInstance().startStoredScope(MetricsConstant.API_PREFIX + function);
+      com.codahale.metrics.Timer timer =
+          Metrics.getOrCreateTimer(MetricsConstants.API_PREFIX + function);
+      if (timer != null) {
+        // Timer will be null we aren't using the metrics
+        timerContexts.get().put(function, timer.time());
       }
+      Counter counter = Metrics.getOrCreateCounter(MetricsConstants.ACTIVE_CALLS + function);
+      if (counter != null) counter.inc();
       return function;
     }
 
@@ -942,9 +928,12 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     }
 
     private void endFunction(String function, MetaStoreEndFunctionContext context) {
-      if (MetricsFactory.getInstance() != null) {
-        MetricsFactory.getInstance().endStoredScope(MetricsConstant.API_PREFIX + function);
+      com.codahale.metrics.Timer.Context timerContext = timerContexts.get().remove(function);
+      if (timerContext != null) {
+        timerContext.close();
       }
+      Counter counter = Metrics.getOrCreateCounter(MetricsConstants.ACTIVE_CALLS + function);
+      if (counter != null) counter.dec();
 
       for (MetaStoreEndFunctionListener listener : endFunctionListeners) {
         listener.onEndFunction(function, context);
@@ -959,6 +948,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     @Override
     public void shutdown() {
       cleanupRawStore();
+      PerfLogger.getPerfLogger(false).cleanupPerfLogMetrics();
     }
 
     @Override
@@ -7259,9 +7249,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
     @VisibleForTesting
     public void updateMetrics() throws MetaException {
-      initTableCount = getMS().getTableCount();
-      initPartCount = getMS().getPartitionCount();
-      initDatabaseCount = getMS().getDatabaseCount();
+      if (databaseCount != null) {
+        tableCount.set(getMS().getTableCount());
+        partCount.set(getMS().getPartitionCount());
+        databaseCount.set(getMS().getDatabaseCount());
+      }
     }
 
     @Override
@@ -7752,7 +7744,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           }
           if (conf.getBoolVar(ConfVars.METASTORE_METRICS)) {
             try {
-              MetricsFactory.close();
+              Metrics.shutdown();
             } catch (Exception e) {
               LOG.error("error in Metrics deinit: " + e.getClass().getName() + " "
                 + e.getMessage(), e);
@@ -7764,7 +7756,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       //Start Metrics for Standalone (Remote) Mode
       if (conf.getBoolVar(ConfVars.METASTORE_METRICS)) {
         try {
-          MetricsFactory.init(conf);
+          Metrics.initialize(conf);
         } catch (Exception e) {
           // log exception, but ignore inability to start
           LOG.error("error in Metrics init: " + e.getClass().getName() + " "
@@ -7785,6 +7777,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       throw t;
     }
   }
+
+  private static AtomicInteger openConnections;
 
   /**
    * Start Metastore based on a passed {@link HadoopThriftAuthBridge}
@@ -7931,6 +7925,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         serverSocket = new TServerSocketKeepAlive(serverSocket);
       }
 
+      // Metrics will have already been initialized if we're using them since HMSHandler
+      // initializes them.
+      openConnections = Metrics.getOrCreateGauge(MetricsConstants.OPEN_CONNECTIONS);
+
       TThreadPoolServer.Args args = new TThreadPoolServer.Args(serverSocket)
           .processor(processor)
           .transportFactory(transFactory)
@@ -7947,28 +7945,13 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
         @Override
         public ServerContext createContext(TProtocol tProtocol, TProtocol tProtocol1) {
-          try {
-            Metrics metrics = MetricsFactory.getInstance();
-            if (metrics != null) {
-              metrics.incrementCounter(MetricsConstant.OPEN_CONNECTIONS);
-            }
-          } catch (Exception e) {
-            LOG.warn("Error Reporting Metastore open connection to Metrics system", e);
-          }
+          openConnections.incrementAndGet();
           return null;
         }
 
         @Override
-        public void deleteContext(ServerContext serverContext, TProtocol tProtocol, TProtocol tProtocol1)
-        {
-          try {
-            Metrics metrics = MetricsFactory.getInstance();
-            if (metrics != null) {
-              metrics.decrementCounter(MetricsConstant.OPEN_CONNECTIONS);
-            }
-          } catch (Exception e) {
-            LOG.warn("Error Reporting Metastore close connection to Metrics system", e);
-          }
+        public void deleteContext(ServerContext serverContext, TProtocol tProtocol, TProtocol tProtocol1) {
+          openConnections.decrementAndGet();
           // If the IMetaStoreClient#close was called, HMSHandler#shutdown would have already
           // cleaned up thread local RawStore. Otherwise, do it now.
           cleanupRawStore();
