@@ -220,17 +220,17 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
   {
     this();
     this.cols = cols;
-    this.location = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(location);
-    this.inputFormat = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(inputFormat);
-    this.outputFormat = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(outputFormat);
+    this.location = location;
+    this.inputFormat = inputFormat;
+    this.outputFormat = outputFormat;
     this.compressed = compressed;
     setCompressedIsSet(true);
     this.numBuckets = numBuckets;
     setNumBucketsIsSet(true);
     this.serdeInfo = serdeInfo;
-    this.bucketCols = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(bucketCols);
+    this.bucketCols = bucketCols;
     this.sortCols = sortCols;
-    this.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(parameters);
+    this.parameters = parameters;
   }
 
   /**
@@ -246,13 +246,13 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
       this.cols = __this__cols;
     }
     if (other.isSetLocation()) {
-      this.location = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(other.location);
+      this.location = other.location;
     }
     if (other.isSetInputFormat()) {
-      this.inputFormat = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(other.inputFormat);
+      this.inputFormat = other.inputFormat;
     }
     if (other.isSetOutputFormat()) {
-      this.outputFormat = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(other.outputFormat);
+      this.outputFormat = other.outputFormat;
     }
     this.compressed = other.compressed;
     this.numBuckets = other.numBuckets;
@@ -346,7 +346,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
   }
 
   public void setLocation(String location) {
-    this.location = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(location);
+    this.location = location;
   }
 
   public void unsetLocation() {
@@ -369,7 +369,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
   }
 
   public void setInputFormat(String inputFormat) {
-    this.inputFormat = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(inputFormat);
+    this.inputFormat = inputFormat;
   }
 
   public void unsetInputFormat() {
@@ -392,7 +392,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
   }
 
   public void setOutputFormat(String outputFormat) {
-    this.outputFormat = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(outputFormat);
+    this.outputFormat = outputFormat;
   }
 
   public void unsetOutputFormat() {
@@ -497,7 +497,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
   }
 
   public void setBucketCols(List<String> bucketCols) {
-    this.bucketCols = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(bucketCols);
+    this.bucketCols = bucketCols;
   }
 
   public void unsetBucketCols() {
@@ -561,7 +561,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
     if (this.parameters == null) {
       this.parameters = new HashMap<String,String>();
     }
-    this.parameters.put(org.apache.hadoop.hive.metastore.utils.StringUtils.intern(key), org.apache.hadoop.hive.metastore.utils.StringUtils.intern(val));
+    this.parameters.put(key, val);
   }
 
   public Map<String,String> getParameters() {
@@ -569,7 +569,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
   }
 
   public void setParameters(Map<String,String> parameters) {
-    this.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(parameters);
+    this.parameters = parameters;
   }
 
   public void unsetParameters() {
@@ -1407,7 +1407,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
                 }
                 iprot.readMapEnd();
               }
-              struct.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
+              struct.setParametersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1730,7 +1730,7 @@ public class StorageDescriptor implements org.apache.thrift.TBase<StorageDescrip
             struct.parameters.put(_key187, _val188);
           }
         }
-        struct.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
+        struct.setParametersIsSet(true);
       }
       if (incoming.get(10)) {
         struct.skewedInfo = new SkewedInfo();

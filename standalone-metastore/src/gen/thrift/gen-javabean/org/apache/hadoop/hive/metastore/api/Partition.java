@@ -186,14 +186,14 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
   {
     this();
     this.values = values;
-    this.dbName = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(dbName);
-    this.tableName = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(tableName);
+    this.dbName = dbName;
+    this.tableName = tableName;
     this.createTime = createTime;
     setCreateTimeIsSet(true);
     this.lastAccessTime = lastAccessTime;
     setLastAccessTimeIsSet(true);
     this.sd = sd;
-    this.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(parameters);
+    this.parameters = parameters;
   }
 
   /**
@@ -206,10 +206,10 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
       this.values = __this__values;
     }
     if (other.isSetDbName()) {
-      this.dbName = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(other.dbName);
+      this.dbName = other.dbName;
     }
     if (other.isSetTableName()) {
-      this.tableName = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(other.tableName);
+      this.tableName = other.tableName;
     }
     this.createTime = other.createTime;
     this.lastAccessTime = other.lastAccessTime;
@@ -286,7 +286,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
   }
 
   public void setDbName(String dbName) {
-    this.dbName = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(dbName);
+    this.dbName = dbName;
   }
 
   public void unsetDbName() {
@@ -309,7 +309,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
   }
 
   public void setTableName(String tableName) {
-    this.tableName = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(tableName);
+    this.tableName = tableName;
   }
 
   public void unsetTableName() {
@@ -402,7 +402,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
     if (this.parameters == null) {
       this.parameters = new HashMap<String,String>();
     }
-    this.parameters.put(org.apache.hadoop.hive.metastore.utils.StringUtils.intern(key), org.apache.hadoop.hive.metastore.utils.StringUtils.intern(val));
+    this.parameters.put(key, val);
   }
 
   public Map<String,String> getParameters() {
@@ -410,7 +410,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
   }
 
   public void setParameters(Map<String,String> parameters) {
-    this.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(parameters);
+    this.parameters = parameters;
   }
 
   public void unsetParameters() {
@@ -1002,7 +1002,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
                 }
                 iprot.readMapEnd();
               }
-              struct.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
+              struct.setParametersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1215,7 +1215,7 @@ public class Partition implements org.apache.thrift.TBase<Partition, Partition._
             struct.parameters.put(_key223, _val224);
           }
         }
-        struct.parameters = org.apache.hadoop.hive.metastore.utils.StringUtils.intern(struct.parameters); struct.setParametersIsSet(true);
+        struct.setParametersIsSet(true);
       }
       if (incoming.get(7)) {
         struct.privileges = new PrincipalPrivilegeSet();
