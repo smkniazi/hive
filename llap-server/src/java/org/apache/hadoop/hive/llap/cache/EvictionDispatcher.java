@@ -18,9 +18,11 @@
 package org.apache.hadoop.hive.llap.cache;
 
 import org.apache.hadoop.hive.llap.cache.SerDeLowLevelCacheImpl.LlapSerDeDataBuffer;
-import org.apache.hadoop.hive.llap.io.metadata.OrcFileEstimateErrors;
 import org.apache.hadoop.hive.llap.io.metadata.MetadataCache;
-import org.apache.hadoop.hive.llap.io.metadata.MetadataCache.LlapMetadataBuffer;
+import org.apache.hadoop.hive.llap.io.metadata.OrcFileEstimateErrors;
+import org.apache.hadoop.hive.llap.io.metadata.OrcMetadataCache;
+import org.apache.hadoop.hive.llap.io.metadata.ParquetMetadataCacheImpl;
+import org.apache.hadoop.hive.llap.io.metadata.ParquetMetadataCacheImpl.LlapFileMetadataBuffer;
 
 /**
  * Eviction dispatcher - uses double dispatch to route eviction notifications to correct caches.
@@ -44,7 +46,7 @@ public final class EvictionDispatcher implements EvictionListener, LlapOomDebugD
     buffer.notifyEvicted(this); // This will call one of the specific notifyEvicted overloads.
   }
 
-  public void notifyEvicted(SerDeLowLevelCacheImpl.LlapSerDeDataBuffer buffer) {
+  public void notifyEvicted(LlapSerDeDataBuffer buffer) {
     serdeCache.notifyEvicted(buffer);
     allocator.deallocateEvicted(buffer);
   }
@@ -54,7 +56,7 @@ public final class EvictionDispatcher implements EvictionListener, LlapOomDebugD
     allocator.deallocateEvicted(buffer);
   }
 
-  public void notifyEvicted(LlapMetadataBuffer<?> buffer) {
+  public void notifyEvicted(MetadataCache.LlapMetadataBuffer<?> buffer) {
     metadataCache.notifyEvicted(buffer);
     // Note: the metadata cache may deallocate additional buffers, but not this one.
     allocator.deallocateEvicted(buffer);
@@ -62,29 +64,6 @@ public final class EvictionDispatcher implements EvictionListener, LlapOomDebugD
 
   public void notifyEvicted(OrcFileEstimateErrors buffer) {
     metadataCache.notifyEvicted(buffer);
-  }
-
-  @Override
-  public String debugDumpForOom() {
-    StringBuilder sb = new StringBuilder(dataCache.debugDumpForOom());
-    if (serdeCache != null) {
-      sb.append(serdeCache.debugDumpForOom());
-    }
-    if (metadataCache != null) {
-      sb.append(metadataCache.debugDumpForOom());
-    }
-    return sb.toString();
-  }
-
-  @Override
-  public void debugDumpShort(StringBuilder sb) {
-    dataCache.debugDumpShort(sb);
-    if (serdeCache != null) {
-      serdeCache.debugDumpShort(sb);
-    }
-    if (metadataCache != null) {
-      metadataCache.debugDumpShort(sb);
-    }
   }
 
   @Override
