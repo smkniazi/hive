@@ -467,4 +467,33 @@ public class EximUtil {
     };
   }
 
+  /**
+   * Verify if a table should be exported or not
+   */
+  public static Boolean shouldExportTable(ReplicationSpec replicationSpec, Table tableHandle) throws SemanticException {
+    if (replicationSpec == null)
+    {
+      replicationSpec = new ReplicationSpec();
+    }
+
+    if (replicationSpec.isNoop())
+    {
+      return false;
+    }
+
+    if (tableHandle == null)
+    {
+      return false;
+    }
+
+    if (replicationSpec.isInReplicationScope()) {
+      return !(tableHandle == null || tableHandle.isTemporary() || tableHandle.isNonNative());
+    }
+
+    if (tableHandle.isNonNative()) {
+      throw new SemanticException(ErrorMsg.EXIM_FOR_NON_NATIVE.getMsg());
+    }
+
+    return true;
+  }
 }
