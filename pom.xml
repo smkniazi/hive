@@ -1250,6 +1250,8 @@
 	    <exclude>**/*.html</exclude>
 	    <exclude>**/sit</exclude>
       <exclude>**/test/queries/**/*.sql</exclude>
+        <exclude>**/patchprocess/**</exclude>
+        <exclude>**/metastore_db/**</exclude>
 	  </excludes>
 	</configuration>
       </plugin>
