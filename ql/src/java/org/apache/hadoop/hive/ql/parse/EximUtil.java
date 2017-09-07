@@ -42,6 +42,9 @@ import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TJSONProtocol;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
+import org.apache.hadoop.hive.ql.parse.repl.dump.Utils;
+import org.apache.hadoop.hive.ql.parse.repl.dump.io.DBSerializer;
+import org.apache.hadoop.hive.ql.parse.repl.dump.io.JsonWriter;
 import org.apache.hadoop.hive.ql.parse.repl.load.MetaData;
 import org.apache.hadoop.hive.ql.parse.repl.load.MetadataJson;
 import org.json.JSONException;
@@ -53,6 +56,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -240,26 +244,21 @@ public class EximUtil {
     // If we later make this work for non-repl cases, analysis of this logic might become necessary. Also, this is using
     // Replv2 semantics, i.e. with listFiles laziness (no copy at export time)
 
-    OutputStream out = fs.create(metadataPath);
-    JsonGenerator jgen = (new JsonFactory()).createJsonGenerator(out);
-    jgen.writeStartObject();
-    jgen.writeStringField("version",METADATA_FORMAT_VERSION);
-    dbObj.putToParameters(ReplicationSpec.KEY.CURR_STATE_ID.toString(), replicationSpec.getCurrentReplicationState());
-
-    if (METADATA_FORMAT_FORWARD_COMPATIBLE_VERSION != null) {
-      jgen.writeStringField("fcversion",METADATA_FORMAT_FORWARD_COMPATIBLE_VERSION);
+    // Remove all the entries from the parameters which are added for bootstrap dump progress
+    Map<String, String> parameters = dbObj.getParameters();
+    Map<String, String> tmpParameters = new HashMap<>();
+    if (parameters != null) {
+      tmpParameters.putAll(parameters);
+      tmpParameters.entrySet()
+                .removeIf(e -> e.getKey().startsWith(Utils.BOOTSTRAP_DUMP_STATE_KEY_PREFIX));
+      dbObj.setParameters(tmpParameters);
     }
-    TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
-    try {
-      jgen.writeStringField("db", serializer.toString(dbObj, "UTF-8"));
-    } catch (TException e) {
-      throw new SemanticException(
-          ErrorMsg.ERROR_SERIALIZE_METASTORE
-              .getMsg(), e);
+    try (JsonWriter jsonWriter = new JsonWriter(fs, metadataPath)) {
+      new DBSerializer(dbObj).writeTo(jsonWriter, replicationSpec);
     }
-
-    jgen.writeEndObject();
-    jgen.close(); // JsonGenerator owns the OutputStream, so it closes it when we call close.
+    if (parameters != null) {
+      dbObj.setParameters(parameters);
+    }
   }
 
   public static void createExportDump(FileSystem fs, Path metadataPath,
