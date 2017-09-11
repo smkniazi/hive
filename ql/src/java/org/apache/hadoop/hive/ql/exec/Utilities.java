@@ -4381,4 +4381,8 @@ public final class Utilities {
     return aclConf.toAclString();
   }
 
+  public static boolean isHiveManagedFile(Path path) {
+    return AcidUtils.ORIGINAL_PATTERN.matcher(path.getName()).matches() ||
+      AcidUtils.ORIGINAL_PATTERN_COPY.matcher(path.getName()).matches();
+  }
 }

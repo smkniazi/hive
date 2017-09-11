@@ -17,7 +17,6 @@
  */
 package org.apache.hadoop.hive.metastore;
 
-import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import java.util.Set;
 import com.codahale.metrics.Counter;
 import org.apache.hadoop.fs.Path;
 
-import com.codahale.metrics.Counter;
 import com.google.common.collect.ImmutableList;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
@@ -61,29 +59,20 @@ import org.apache.hadoop.hive.metastore.model.MTableWrite;
 import org.apache.hadoop.hive.metastore.model.MNotificationLog;
 import org.apache.hadoop.hive.metastore.model.MNotificationNextId;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
-import org.apache.hadoop.hive.serde.serdeConstants;
-import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hive.common.util.MockFileSystem;
 import org.apache.hive.common.util.MockFileSystem.MockFile;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jdo.Query;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
