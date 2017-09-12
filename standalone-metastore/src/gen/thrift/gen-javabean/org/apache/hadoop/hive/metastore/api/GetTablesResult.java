@@ -354,14 +354,14 @@ public class GetTablesResult implements org.apache.thrift.TBase<GetTablesResult,
           case 1: // TABLES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list706 = iprot.readListBegin();
-                struct.tables = new ArrayList<Table>(_list706.size);
-                Table _elem707;
-                for (int _i708 = 0; _i708 < _list706.size; ++_i708)
+                org.apache.thrift.protocol.TList _list738 = iprot.readListBegin();
+                struct.tables = new ArrayList<Table>(_list738.size);
+                Table _elem739;
+                for (int _i740 = 0; _i740 < _list738.size; ++_i740)
                 {
-                  _elem707 = new Table();
-                  _elem707.read(iprot);
-                  struct.tables.add(_elem707);
+                  _elem739 = new Table();
+                  _elem739.read(iprot);
+                  struct.tables.add(_elem739);
                 }
                 iprot.readListEnd();
               }
@@ -387,9 +387,9 @@ public class GetTablesResult implements org.apache.thrift.TBase<GetTablesResult,
         oprot.writeFieldBegin(TABLES_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.tables.size()));
-          for (Table _iter709 : struct.tables)
+          for (Table _iter741 : struct.tables)
           {
-            _iter709.write(oprot);
+            _iter741.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -414,9 +414,9 @@ public class GetTablesResult implements org.apache.thrift.TBase<GetTablesResult,
       TTupleProtocol oprot = (TTupleProtocol) prot;
       {
         oprot.writeI32(struct.tables.size());
-        for (Table _iter710 : struct.tables)
+        for (Table _iter742 : struct.tables)
         {
-          _iter710.write(oprot);
+          _iter742.write(oprot);
         }
       }
     }
@@ -425,14 +425,14 @@ public class GetTablesResult implements org.apache.thrift.TBase<GetTablesResult,
     public void read(org.apache.thrift.protocol.TProtocol prot, GetTablesResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       {
-        org.apache.thrift.protocol.TList _list711 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.tables = new ArrayList<Table>(_list711.size);
-        Table _elem712;
-        for (int _i713 = 0; _i713 < _list711.size; ++_i713)
+        org.apache.thrift.protocol.TList _list743 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.tables = new ArrayList<Table>(_list743.size);
+        Table _elem744;
+        for (int _i745 = 0; _i745 < _list743.size; ++_i745)
         {
-          _elem712 = new Table();
-          _elem712.read(iprot);
-          struct.tables.add(_elem712);
+          _elem744 = new Table();
+          _elem744.read(iprot);
+          struct.tables.add(_elem744);
         }
       }
       struct.setTablesIsSet(true);

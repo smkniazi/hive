@@ -525,13 +525,13 @@ public class GetTablesRequest implements org.apache.thrift.TBase<GetTablesReques
           case 2: // TBL_NAMES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list698 = iprot.readListBegin();
-                struct.tblNames = new ArrayList<String>(_list698.size);
-                String _elem699;
-                for (int _i700 = 0; _i700 < _list698.size; ++_i700)
+                org.apache.thrift.protocol.TList _list730 = iprot.readListBegin();
+                struct.tblNames = new ArrayList<String>(_list730.size);
+                String _elem731;
+                for (int _i732 = 0; _i732 < _list730.size; ++_i732)
                 {
-                  _elem699 = iprot.readString();
-                  struct.tblNames.add(_elem699);
+                  _elem731 = iprot.readString();
+                  struct.tblNames.add(_elem731);
                 }
                 iprot.readListEnd();
               }
@@ -572,9 +572,9 @@ public class GetTablesRequest implements org.apache.thrift.TBase<GetTablesReques
           oprot.writeFieldBegin(TBL_NAMES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.tblNames.size()));
-            for (String _iter701 : struct.tblNames)
+            for (String _iter733 : struct.tblNames)
             {
-              oprot.writeString(_iter701);
+              oprot.writeString(_iter733);
             }
             oprot.writeListEnd();
           }
@@ -617,9 +617,9 @@ public class GetTablesRequest implements org.apache.thrift.TBase<GetTablesReques
       if (struct.isSetTblNames()) {
         {
           oprot.writeI32(struct.tblNames.size());
-          for (String _iter702 : struct.tblNames)
+          for (String _iter734 : struct.tblNames)
           {
-            oprot.writeString(_iter702);
+            oprot.writeString(_iter734);
           }
         }
       }
@@ -636,13 +636,13 @@ public class GetTablesRequest implements org.apache.thrift.TBase<GetTablesReques
       BitSet incoming = iprot.readBitSet(2);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list703 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.tblNames = new ArrayList<String>(_list703.size);
-          String _elem704;
-          for (int _i705 = 0; _i705 < _list703.size; ++_i705)
+          org.apache.thrift.protocol.TList _list735 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.tblNames = new ArrayList<String>(_list735.size);
+          String _elem736;
+          for (int _i737 = 0; _i737 < _list735.size; ++_i737)
           {
-            _elem704 = iprot.readString();
-            struct.tblNames.add(_elem704);
+            _elem736 = iprot.readString();
+            struct.tblNames.add(_elem736);
           }
         }
         struct.setTblNamesIsSet(true);
