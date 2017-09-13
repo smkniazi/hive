@@ -35,7 +35,8 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
   // list of columns, comma separated
   private String columns;
   private String columnTypes;
-  private String destinationCreateTable;
+  private transient CreateTableDesc ctasCreateTableDesc;
+  private transient CreateViewDesc createViewDesc;
   private boolean isMmCtas;
 
   public LoadFileDesc(final LoadFileDesc o) {
@@ -45,8 +46,9 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
     this.isDfsDir = o.isDfsDir;
     this.columns = o.columns;
     this.columnTypes = o.columnTypes;
-    this.destinationCreateTable = o.destinationCreateTable;
     this.isMmCtas = o.isMmCtas;
+    this.ctasCreateTableDesc = o.ctasCreateTableDesc;
+    this.createViewDesc = o.createViewDesc;
   }
 
   public LoadFileDesc(final CreateTableDesc createTableDesc, final CreateViewDesc  createViewDesc,
@@ -55,13 +57,9 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
       this(sourcePath, targetDir, isDfsDir, columns, columnTypes, writeType, isMmCtas);
     if (createTableDesc != null && createTableDesc.getDatabaseName() != null
         && createTableDesc.getTableName() != null) {
-      destinationCreateTable = (createTableDesc.getTableName().contains(".") ? "" : createTableDesc
-          .getDatabaseName() + ".")
-          + createTableDesc.getTableName();
+      this.ctasCreateTableDesc = createTableDesc;
     } else if (createViewDesc != null) {
-      // The work is already done in analyzeCreateView to assure that the view name is fully
-      // qualified.
-      destinationCreateTable = createViewDesc.getViewName();
+      this.createViewDesc = createViewDesc;
     }
   }
 
@@ -134,11 +132,8 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
     this.columnTypes = columnTypes;
   }
 
-  /**
-   * @return the destinationCreateTable
-   */
-  public String getDestinationCreateTable(){
-    return destinationCreateTable;
+  public CreateTableDesc getCtasCreateTableDesc() {
+    return ctasCreateTableDesc;
   }
 
   public boolean isMmCtas() {
