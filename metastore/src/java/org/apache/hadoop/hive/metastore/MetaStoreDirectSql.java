@@ -1315,7 +1315,7 @@ class MetaStoreDirectSql {
       AggrColStats colStatsAggrCached;
       List<ColumnStatisticsObj> colStatsAggrFromDB;
       int maxPartsPerCacheNode = aggrStatsCache.getMaxPartsPerCacheNode();
-      float fpp = aggrStatsCache.getFalsePositiveProbability();
+      double fpp = aggrStatsCache.getFalsePositiveProbability();
       colStatsList = new ArrayList<ColumnStatisticsObj>();
       // Bloom filter for the new node that we will eventually add to the cache
       BloomFilter bloomFilter = createPartsBloomFilter(maxPartsPerCacheNode, fpp, partNames);
@@ -1357,7 +1357,7 @@ class MetaStoreDirectSql {
     return new AggrStats(colStatsList, partsFound);
   }
 
-  private BloomFilter createPartsBloomFilter(int maxPartsPerCacheNode, float fpp,
+  private BloomFilter createPartsBloomFilter(int maxPartsPerCacheNode, double fpp,
       List<String> partNames) {
     BloomFilter bloomFilter = new BloomFilter(maxPartsPerCacheNode, fpp);
     for (String partName : partNames) {
