@@ -20,9 +20,7 @@ package org.apache.hadoop.hive.llap.cache;
 import org.apache.hadoop.hive.llap.cache.SerDeLowLevelCacheImpl.LlapSerDeDataBuffer;
 import org.apache.hadoop.hive.llap.io.metadata.MetadataCache;
 import org.apache.hadoop.hive.llap.io.metadata.OrcFileEstimateErrors;
-import org.apache.hadoop.hive.llap.io.metadata.OrcMetadataCache;
-import org.apache.hadoop.hive.llap.io.metadata.ParquetMetadataCacheImpl;
-import org.apache.hadoop.hive.llap.io.metadata.ParquetMetadataCacheImpl.LlapFileMetadataBuffer;
+import org.apache.hadoop.hive.llap.io.metadata.MetadataCache.LlapMetadataBuffer;
 
 /**
  * Eviction dispatcher - uses double dispatch to route eviction notifications to correct caches.
@@ -56,7 +54,7 @@ public final class EvictionDispatcher implements EvictionListener, LlapOomDebugD
     allocator.deallocateEvicted(buffer);
   }
 
-  public void notifyEvicted(MetadataCache.LlapMetadataBuffer<?> buffer) {
+  public void notifyEvicted(LlapMetadataBuffer<?> buffer) {
     metadataCache.notifyEvicted(buffer);
     // Note: the metadata cache may deallocate additional buffers, but not this one.
     allocator.deallocateEvicted(buffer);

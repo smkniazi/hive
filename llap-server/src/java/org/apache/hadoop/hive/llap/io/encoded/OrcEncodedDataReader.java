@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.hadoop.hive.llap.counters.LlapIOCounters;
-import org.apache.hadoop.hive.ql.exec.DDLTask;
-import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.orc.CompressionCodec;
 import org.apache.orc.OrcProto.BloomFilterIndex;
 import org.apache.orc.OrcProto.FileTail;
@@ -360,16 +358,15 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
       int stripeIx = stripeIxFrom + stripeIxMod;
       boolean[] rgs = null;
       OrcStripeMetadata stripeMetadata = null;
-      StripeInformation stripe;
+      StripeInformation si;
       try {
-        stripe = fileMetadata.getStripes().get(stripeIx);
-
-        LlapIoImpl.ORC_LOGGER.trace("Reading stripe {}: {}, {}", stripeIx, stripe.getOffset(),
-            stripe.getLength());
-        trace.logReadingStripe(stripeIx, stripe.getOffset(), stripe.getLength());
+        si = fileMetadata.getStripes().get(stripeIx);
+        LlapIoImpl.ORC_LOGGER.trace("Reading stripe {}: {}, {}", stripeIx, si.getOffset(),
+            si.getLength());
+        trace.logReadingStripe(stripeIx, si.getOffset(), si.getLength());
         rgs = stripeRgs[stripeIxMod];
         if (LlapIoImpl.ORC_LOGGER.isTraceEnabled()) {
-          LlapIoImpl.ORC_LOGGER.trace("readState[{}]: {}", stripeIxMod, Arrays.toString(rgs));
+          LlapIoImpl.ORC_LOGGER.trace("stripeRgs[{}]: {}", stripeIxMod, Arrays.toString(rgs));
         }
         // We assume that NO_RGS value is only set from SARG filter and for all columns;
         // intermediate changes for individual columns will unset values in the array.
@@ -384,10 +381,10 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
           stripeKey.stripeIx = stripeIx;
           OrcProto.StripeFooter footer = getStripeFooterFromCacheOrDisk(si, stripeKey);
           stripeMetadata = createOrcStripeMetadataObject(
-              stripeIx, stripe, footer, globalIncludes, sargColumns);
+              stripeIx, si, footer, globalIncludes, sargColumns);
           ensureDataReader();
           stripeReader.readIndexStreams(stripeMetadata.getIndex(),
-              stripe, footer.getStreamsList(), globalIncludes, sargColumns);
+              si, footer.getStreamsList(), globalIncludes, sargColumns);
           consumer.setStripeMetadata(stripeMetadata);
         }
       } catch (Throwable t) {
@@ -432,6 +429,14 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
     trace.dumpLog(LOG);
     cleanupReaders();
     tracePool.offer(trace);
+  }
+
+  private void ensureDataReader() throws IOException {
+    ensureOrcReader();
+    // Reader creation updates HDFS counters, don't do it here.
+    DataWrapperForOrc dw = new DataWrapperForOrc();
+    stripeReader = orcReader.encodedReader(fileKey, dw, dw, POOL_FACTORY, trace);
+    stripeReader.setTracing(LlapIoImpl.ORC_LOGGER.isTraceEnabled());
   }
 
   private void recordReaderTime(long startTime) {

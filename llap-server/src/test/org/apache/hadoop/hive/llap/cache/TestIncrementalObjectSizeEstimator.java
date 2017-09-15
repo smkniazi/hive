@@ -166,6 +166,7 @@ public class TestIncrementalObjectSizeEstimator {
       return null;
     }
   }
+
 /*
   @Test
   public void testMetadata() throws IOException {
