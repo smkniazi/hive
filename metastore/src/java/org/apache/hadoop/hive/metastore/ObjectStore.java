@@ -7814,7 +7814,7 @@ public class ObjectStore implements RawStore, Configurable {
     boolean ret = false;
     Query query = null;
     if (dbName == null) {
-      dbName = MetaStoreUtils.DEFAULT_DATABASE_NAME;
+      dbName = Warehouse.DEFAULT_DATABASE_NAME;
     }
     if (tableName == null) {
       throw new InvalidInputException("Table name is null.");
@@ -7892,7 +7892,7 @@ public class ObjectStore implements RawStore, Configurable {
     boolean ret = false;
     Query query = null;
     if (dbName == null) {
-      dbName = MetaStoreUtils.DEFAULT_DATABASE_NAME;
+      dbName = Warehouse.DEFAULT_DATABASE_NAME;
     }
     if (tableName == null) {
       throw new InvalidInputException("Table name is null.");
