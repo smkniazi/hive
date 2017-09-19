@@ -39,7 +39,10 @@
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <excludes>
-        <exclude>org.apache.hadoop:*</exclude>
+        <exclude>io.hops:*</exclude>
+        <exclude>io.hops.metadata:*</exclude>
+        <exclude>io.hops.gpu:*</exclude>
+        <exclude>io.hops.streaming:*</exclude>
         <exclude>org.apache.hive.hcatalog:*</exclude>
         <exclude>org.slf4j:*</exclude>
         <exclude>log4j:*</exclude>
@@ -90,7 +93,7 @@
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <excludes>
-        <exclude>org.apache.hadoop:*</exclude>
+        <exclude>io.hops:*</exclude>
       </excludes>
       <includes>
         <include>org.apache.hive.hcatalog:hive-webhcat:*</include>

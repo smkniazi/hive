@@ -41,6 +41,7 @@ import org.apache.hive.service.rpc.thrift.TSessionHandle;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -108,6 +109,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * HiveConnection.
@@ -387,9 +389,9 @@ public class HiveConnection implements java.sql.Connection {
        * Add an interceptor to pass username/password in the header.
        * In https mode, the entire information is encrypted
        */
-      requestInterceptor = new HttpBasicAuthInterceptor(getUserName(), getPassword(),
-                                                        cookieStore, cookieName, useSsl,
-                                                        additionalHttpHeaders);
+        requestInterceptor =
+            new HttpBasicAuthInterceptor(getUserName(), getPassword(), cookieStore, cookieName,
+                useSsl, additionalHttpHeaders);
       }
     }
     // Configure http client for cookie based authentication
@@ -422,6 +424,23 @@ public class HiveConnection implements java.sql.Connection {
     } else {
       httpClientBuilder = HttpClientBuilder.create();
     }
+    // In case the server's idletimeout is set to a lower value, it might close it's side of
+    // connection. However we retry one more time on NoHttpResponseException
+    httpClientBuilder.setRetryHandler(new HttpRequestRetryHandler() {
+      @Override
+      public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+        if (executionCount > 1) {
+          LOG.info("Retry attempts to connect to server exceeded.");
+          return false;
+        }
+        if (exception instanceof org.apache.http.NoHttpResponseException) {
+          LOG.info("Could not connect to the server. Retrying one more time.");
+          return true;
+        }
+        return false;
+      }
+    });
+
     // Add the request interceptor to the client builder
     httpClientBuilder.addInterceptorFirst(requestInterceptor);
 
@@ -655,6 +674,9 @@ public class HiveConnection implements java.sql.Connection {
     }
     // switch the database
     openConf.put("use:database", connParams.getDbName());
+    // set the fetchSize
+    openConf.put("set:hiveconf:hive.server2.thrift.resultset.default.fetch.size",
+      Integer.toString(fetchSize));
 
     // set the session configuration
     Map<String, String> sessVars = connParams.getSessionVars();
@@ -680,6 +702,13 @@ public class HiveConnection implements java.sql.Connection {
       }
       protocol = openResp.getServerProtocolVersion();
       sessHandle = openResp.getSessionHandle();
+
+      // Update fetchSize if modified by server
+      String serverFetchSize =
+        openResp.getConfiguration().get("hive.server2.thrift.resultset.default.fetch.size");
+      if (serverFetchSize != null) {
+        fetchSize = Integer.parseInt(serverFetchSize);
+      }
     } catch (TException e) {
       LOG.error("Error opening session", e);
       throw new SQLException("Could not establish connection to "
@@ -1497,6 +1526,7 @@ public class HiveConnection implements java.sql.Connection {
 
   private static class SynchronizedHandler implements InvocationHandler {
     private final TCLIService.Iface client;
+    private final ReentrantLock lock = new ReentrantLock(true);
 
     SynchronizedHandler(TCLIService.Iface client) {
       this.client = client;
@@ -1506,9 +1536,8 @@ public class HiveConnection implements java.sql.Connection {
     public Object invoke(Object proxy, Method method, Object [] args)
         throws Throwable {
       try {
-        synchronized (client) {
-          return method.invoke(client, args);
-        }
+        lock.lock();
+        return method.invoke(client, args);
       } catch (InvocationTargetException e) {
         // all IFace APIs throw TException
         if (e.getTargetException() instanceof TException) {
@@ -1520,6 +1549,8 @@ public class HiveConnection implements java.sql.Connection {
         }
       } catch (Exception e) {
         throw new TException("Error in calling method " + method.getName(), e);
+      } finally {
+        lock.unlock();
       }
     }
   }

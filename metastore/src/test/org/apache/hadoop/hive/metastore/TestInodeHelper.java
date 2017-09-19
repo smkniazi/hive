@@ -1,5 +1,24 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.hadoop.hive.metastore;
 
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
@@ -7,52 +26,31 @@ import org.apache.hadoop.hive.metastore.model.helper.InodePK;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.sql.*;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Executor;
 
 public class TestInodeHelper {
 
-  private HiveConf hiveConf = null;
   private InodeHelper inodeHelper = null;
-  private Connection conn = null;
+  private HiveConf hiveConf = null;
 
   @Before
   public void setUp() throws Exception {
     hiveConf = new HiveConf(this.getClass());
-
-    // Insert fake data into the database
-    conn = DriverManager.getConnection(hiveConf.getVar(HiveConf.ConfVars.HOPSDBURLKEY),
-        hiveConf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME),
-        hiveConf.getVar(HiveConf.ConfVars.METASTOREPWD));
-    Statement stmt = conn.createStatement();
-    stmt.execute("insert into hdfs_inodes(partition_id, parent_id, name, id, size, quota_enabled, is_dir, under_construction) " +
-                    "values (0,0,\"\", 1, 0, 0, 1, 0)," +
-                    "(3564026, 1, \"tmp\", 2, 0, 0, 1, 0),"+
-                    "(111578566, 1, \"user\", 3, 0, 0, 1, 0),"+
-                    "(3, 3, \"glassfish\", 4, 0, 0, 1, 0)," +
-                    "(4, 4, \"warehouse\", 12, 0, 0, 1, 0)");
-    stmt.close();
     inodeHelper = InodeHelper.getInstance();
   }
 
   @After
   public void tearDown() throws Exception{
-    Statement stmt = conn.createStatement();
-    stmt.execute("delete from hdfs_inodes");
-    stmt.close();
-    conn.close();
+
   }
 
   @Test
   public void TestTmp() throws MetaException{
-    InodePK inodePk = inodeHelper.getInodePK("hdfs://10.0.2.15:8020/tmp");
-    Assert.assertEquals(inodePk, new InodePK(3564026, 1, "tmp"));
+    InodePK inodePk = inodeHelper.getInodePK("hdfs://0.0.0.0:0/tmp");
+    Assert.assertEquals("tmp", inodePk.name)
+    Assert.assertEquals(new Integer(1), inodePk.parentId);
   }
 
   @Test
@@ -62,9 +60,34 @@ public class TestInodeHelper {
   }
 
   @Test
-  public void TestRandom() throws MetaException{
-    String path = "hdfs://10.0.2.15/user/glassfish/warehouse/";
-    InodePK inodePk = inodeHelper.getInodePK(path);
-    Assert.assertEquals(inodePk, new InodePK(4,4,"warehouse"));
+  public void TestRandom() throws MetaException, SQLException {
+    Warehouse wh = new Warehouse(hiveConf);
+    // Create directory in the warehouse
+    Path path = new Path(wh.getWhRoot(), "testdir");
+    wh.mkdirs(path, true);
+
+    // Resolve the inode
+    InodePK inodePk = inodeHelper.getInodePK(path.toString());
+
+    // Assert the dir is correct and that the parent is the warehouse dir
+    Assert.assertEquals("testdir", inodePk.name);
+
+    Connection conn = DriverManager.getConnection(hiveConf.getVar(HiveConf.ConfVars.HOPSDBURLKEY),
+        hiveConf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME),
+        hiveConf.getVar(HiveConf.ConfVars.METASTOREPWD));
+
+    PreparedStatement stmt = conn.prepareStatement(
+          "SELECT id FROM hdfs_inodes WHERE id = ?" +
+              " and name = ?");
+    stmt.setInt(1, inodePk.parentId);
+    stmt.setString(2, wh.getWhRoot().getName());
+    ResultSet rs = stmt.executeQuery();
+
+    if (!rs.next()) {
+      throw new MetaException("Parent inode not found");
+    }
+
+    rs.close();
+    stmt.close();
   }
 }

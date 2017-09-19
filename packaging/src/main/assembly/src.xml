@@ -69,6 +69,7 @@
         <include>dev-support/**/*</include>
         <include>docs/**/*</include>
         <include>druid-handler/**/*</include>
+        <include>jdbc-handler/**/*</include>
         <include>find-bugs/**/*</include>
         <include>hbase-handler/**/*</include>
         <include>hcatalog/**/*</include>
@@ -96,6 +97,7 @@
         <include>spark-client/**/*</include>
         <include>storage-api/**/*</include>
         <include>testutils/**/*</include>
+        <include>vector-code-gen/**/*</include>
       </includes>
       <outputDirectory>/</outputDirectory>
     </fileSet>

@@ -18,7 +18,6 @@
 
 package org.apache.hadoop.hive.llap.cli;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -48,18 +47,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hive.llap.LlapUtil;
 import org.apache.hadoop.hive.llap.configuration.LlapDaemonConfiguration;
 import org.apache.hadoop.hive.llap.daemon.impl.LlapConstants;
-import org.apache.hadoop.hive.llap.daemon.impl.LlapDaemon;
 import org.apache.hadoop.hive.llap.daemon.impl.StaticPermanentFunctionChecker;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos;
 import org.apache.hadoop.hive.llap.tezplugins.LlapTezUtils;
 import org.apache.hadoop.registry.client.binding.RegistryUtils;
-import org.apache.slider.client.SliderClient;
-import org.apache.slider.common.params.ActionCreateArgs;
-import org.apache.slider.common.params.ActionDestroyArgs;
-import org.apache.slider.common.params.ActionFreezeArgs;
-import org.apache.slider.common.params.ActionInstallPackageArgs;
-import org.apache.slider.core.exceptions.UnknownApplicationInstanceException;
 import org.apache.tez.dag.api.TezConfiguration;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -87,8 +81,6 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.eclipse.jetty.rewrite.handler.Rule;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.joda.time.DateTime;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -111,7 +103,7 @@ public class LlapServiceDriver {
    * This is a working configuration for the instance to merge various variables.
    * It is not written out for llap server usage
    */
-  private final Configuration conf;
+  private final HiveConf conf;
 
   public LlapServiceDriver() {
     SessionState ss = SessionState.get();
@@ -244,6 +236,7 @@ public class LlapServiceDriver {
         HiveConf.setVar(conf, ConfVars.LLAP_DAEMON_LOGGER, options.getLogger());
         propsDirectOptions.setProperty(ConfVars.LLAP_DAEMON_LOGGER.varname, options.getLogger());
       }
+      boolean isDirect = HiveConf.getBoolVar(conf, HiveConf.ConfVars.LLAP_ALLOCATOR_DIRECT);
 
       if (options.getSize() != -1) {
         if (options.getCache() != -1) {
@@ -263,8 +256,7 @@ public class LlapServiceDriver {
               + " smaller than the container sizing (" + LlapUtil.humanReadableByteCount(options.getSize())
               + ")");
         }
-        if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.LLAP_ALLOCATOR_DIRECT)
-            && false == HiveConf.getBoolVar(conf, HiveConf.ConfVars.LLAP_ALLOCATOR_MAPPED)) {
+        if (isDirect && !HiveConf.getBoolVar(conf, HiveConf.ConfVars.LLAP_ALLOCATOR_MAPPED)) {
           // direct and not memory mapped
           Preconditions.checkArgument(options.getXmx() + options.getCache() <= options.getSize(),
             "Working memory (Xmx=" + LlapUtil.humanReadableByteCount(options.getXmx()) + ") + cache size ("
@@ -273,19 +265,6 @@ public class LlapServiceDriver {
         }
       }
 
-      // This parameter is read in package.py - and nowhere else. Does not need to be part of
-      // HiveConf - that's just confusing.
-      final long minAlloc = conf.getInt(YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_MB, -1);
-      long containerSize = -1;
-      if (options.getSize() != -1) {
-        containerSize = options.getSize() / (1024 * 1024);
-        Preconditions.checkArgument(containerSize >= minAlloc, "Container size ("
-            + LlapUtil.humanReadableByteCount(options.getSize()) + ") should be greater"
-            + " than minimum allocation(" + LlapUtil.humanReadableByteCount(minAlloc * 1024L * 1024L) + ")");
-        conf.setLong(ConfVars.LLAP_DAEMON_YARN_CONTAINER_MB.varname, containerSize);
-        propsDirectOptions.setProperty(ConfVars.LLAP_DAEMON_YARN_CONTAINER_MB.varname,
-            String.valueOf(containerSize));
-      }
 
       if (options.getExecutors() != -1) {
         conf.setLong(ConfVars.LLAP_DAEMON_NUM_EXECUTORS.varname, options.getExecutors());
@@ -319,17 +298,30 @@ public class LlapServiceDriver {
             String.valueOf(xmxMb));
       }
 
-      final long currentHeadRoom = options.getSize() - options.getXmx() - options.getCache();
-      final long minHeadRoom = (long) (options.getXmx() * LlapDaemon.MIN_HEADROOM_PERCENT);
-      final long headRoom = currentHeadRoom < minHeadRoom ? minHeadRoom : currentHeadRoom;
-      final long headRoomMb = headRoom / (1024L * 1024L);
-      conf.setLong(ConfVars.LLAP_DAEMON_HEADROOM_MEMORY_PER_INSTANCE_MB.varname, headRoomMb);
-      propsDirectOptions.setProperty(ConfVars.LLAP_DAEMON_HEADROOM_MEMORY_PER_INSTANCE_MB.varname,
-        String.valueOf(headRoomMb));
+      long size = options.getSize();
+      if (size == -1) {
+        long heapSize = xmx;
+        if (!isDirect) {
+          heapSize += cache;
+        }
+        size = Math.min((long)(heapSize * 1.2), heapSize + 1024L*1024*1024);
+        if (isDirect) {
+          size += cache;
+        }
+      }
+      long containerSize = size / (1024 * 1024);
+      final long minAlloc = conf.getInt(YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_MB, -1);
+      Preconditions.checkArgument(containerSize >= minAlloc, "Container size ("
+          + LlapUtil.humanReadableByteCount(options.getSize()) + ") should be greater"
+          + " than minimum allocation(" + LlapUtil.humanReadableByteCount(minAlloc * 1024L * 1024L) + ")");
+      conf.setLong(ConfVars.LLAP_DAEMON_YARN_CONTAINER_MB.varname, containerSize);
+      propsDirectOptions.setProperty(ConfVars.LLAP_DAEMON_YARN_CONTAINER_MB.varname,
+          String.valueOf(containerSize));
 
-      LOG.info("Memory settings: container memory: {} executor memory: {} cache memory: {} headroom memory: {}",
-        LlapUtil.humanReadableByteCount(options.getSize()), LlapUtil.humanReadableByteCount(options.getXmx()),
-        LlapUtil.humanReadableByteCount(options.getCache()), LlapUtil.humanReadableByteCount(headRoom));
+      LOG.info("Memory settings: container memory: {} executor memory: {} cache memory: {}",
+        LlapUtil.humanReadableByteCount(options.getSize()),
+        LlapUtil.humanReadableByteCount(options.getXmx()),
+        LlapUtil.humanReadableByteCount(options.getCache()));
 
       if (options.getLlapQueueName() != null && !options.getLlapQueueName().isEmpty()) {
         conf.set(ConfVars.LLAP_DAEMON_QUEUE_NAME.varname, options.getLlapQueueName());
@@ -445,17 +437,33 @@ public class LlapServiceDriver {
             }
           }
 
-          String auxJars = options.getAuxJars();
+          HashSet<String> auxJars = new HashSet<>();
+          // There are many ways to have AUX jars in Hive... sigh
+          if (options.getIsHiveAux()) {
+            // Note: we don't add ADDED jars, RELOADABLE jars, etc. That is by design; there are too many ways
+            // to add jars in Hive, some of which are session/etc. specific. Env + conf + arg should be enough.
+            addAuxJarsToSet(auxJars, conf.getAuxJars());
+            addAuxJarsToSet(auxJars, System.getenv("HIVE_AUX_JARS_PATH"));
+            LOG.info("Adding the following aux jars from the environment and configs: " + auxJars);
+          }
+
+          addAuxJarsToSet(auxJars, options.getAuxJars());
+          for (String jarPath : auxJars) {
+            lfs.copyFromLocalFile(new Path(jarPath), libDir);
+          }
+          return null;
+        }
+
+        private void addAuxJarsToSet(HashSet<String> auxJarSet, String auxJars) {
           if (auxJars != null && !auxJars.isEmpty()) {
             // TODO: transitive dependencies warning?
             String[] jarPaths = auxJars.split(",");
             for (String jarPath : jarPaths) {
               if (!jarPath.isEmpty()) {
-                lfs.copyFromLocalFile(new Path(jarPath), libDir);
+                auxJarSet.add(jarPath);
               }
             }
           }
-          return null;
         }
       };
 
@@ -624,7 +632,7 @@ public class LlapServiceDriver {
   }
 
   private JSONObject createConfigJson(long containerSize, long cache, long xmx,
-      String java_home) throws JSONException {
+                                      String java_home) throws JSONException {
     // extract configs for processing by the python fragments in Slider
     JSONObject configs = new JSONObject();
 
@@ -642,9 +650,6 @@ public class LlapServiceDriver {
 
     configs.put(ConfVars.LLAP_DAEMON_MEMORY_PER_INSTANCE_MB.varname,
         HiveConf.getIntVar(conf, ConfVars.LLAP_DAEMON_MEMORY_PER_INSTANCE_MB));
-
-    configs.put(ConfVars.LLAP_DAEMON_HEADROOM_MEMORY_PER_INSTANCE_MB.varname,
-      HiveConf.getIntVar(conf, ConfVars.LLAP_DAEMON_HEADROOM_MEMORY_PER_INSTANCE_MB));
 
     configs.put(ConfVars.LLAP_DAEMON_VCPUS_PER_INSTANCE.varname,
         HiveConf.getIntVar(conf, ConfVars.LLAP_DAEMON_VCPUS_PER_INSTANCE));

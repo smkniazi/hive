@@ -56,10 +56,7 @@ import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.fs.TrashPolicy;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.hdfs.DFSClient;
-import org.apache.hadoop.hdfs.DistributedFileSystem;
-import org.apache.hadoop.hdfs.MiniDFSCluster;
-import org.apache.hadoop.hdfs.MiniDFSNNTopology;
+import org.apache.hadoop.hdfs.*;
 import org.apache.hadoop.hdfs.client.HdfsAdmin;
 import org.apache.hadoop.hdfs.protocol.DirectoryListing;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
@@ -541,54 +538,15 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       String[] racks,
       boolean isHA) throws IOException {
     configureImpersonation(conf);
-    MiniDFSCluster miniDFSCluster;
-    if (isHA) {
-      MiniDFSNNTopology topo = new MiniDFSNNTopology()
-        .addNameservice(new MiniDFSNNTopology.NSConf("minidfs").addNN(
-          new MiniDFSNNTopology.NNConf("nn1")).addNN(
-          new MiniDFSNNTopology.NNConf("nn2")));
-      miniDFSCluster = new MiniDFSCluster.Builder(conf)
-        .numDataNodes(numDataNodes).format(format)
-        .racks(racks).nnTopology(topo).build();
-      miniDFSCluster.waitActive();
-      miniDFSCluster.transitionToActive(0);
-    } else {
-      miniDFSCluster = new MiniDFSCluster.Builder(conf)
+
+    MiniDFSCluster miniDFSCluster = new MiniDFSCluster
+        .Builder(conf)
         .numDataNodes(numDataNodes).format(format)
         .racks(racks).build();
-    }
 
-    // Need to set the client's KeyProvider to the NN's for JKS,
-    // else the updates do not get flushed properly
-    KeyProviderCryptoExtension keyProvider =  miniDFSCluster.getNameNode(0).getNamesystem().getProvider();
-    if (keyProvider != null) {
-      try {
-        setKeyProvider(miniDFSCluster.getFileSystem(0).getClient(), keyProvider);
-      } catch (Exception err) {
-        throw new IOException(err);
-      }
-    }
-
-    cluster = new MiniDFSShim(miniDFSCluster);
-    return cluster;
+    return new MiniDFSShim(miniDFSCluster);
   }
 
-  private static void setKeyProvider(DFSClient dfsClient, KeyProviderCryptoExtension provider)
-      throws Exception {
-    Method setKeyProviderHadoop27Method = null;
-    try {
-      setKeyProviderHadoop27Method = DFSClient.class.getMethod("setKeyProvider", KeyProvider.class);
-    } catch (NoSuchMethodException err) {
-      // We can just use setKeyProvider() as it is
-    }
-
-    if (setKeyProviderHadoop27Method != null) {
-      // Method signature changed in Hadoop 2.7. Cast provider to KeyProvider
-      setKeyProviderHadoop27Method.invoke(dfsClient, (KeyProvider) provider);
-    } else {
-      dfsClient.setKeyProvider(provider);
-    }
-  }
 
   /**
    * MiniDFSShim.
@@ -758,7 +716,9 @@ public class Hadoop23Shims extends HadoopShimsSecure {
           Path filterPath = next.getFullPath(p).makeQualified(fsUri, null);
           if (!filter.accept(filterPath)) continue;
         }
-        LocatedFileStatus lfs = next.makeQualifiedLocated(fsUri, p);
+        Path qualifiedPath = fs.makeQualified(p);
+        LocatedFileStatus lfs = new LocatedFileStatus(fs.getFileStatus(qualifiedPath),
+            DFSUtil.locatedBlocks2Locations(next.getBlockLocations()));
         result.add(new HdfsFileStatusWithIdImpl(lfs, next.getFileId()));
       }
       current = current.hasMore() ? dfsc.listPaths(src, current.getLastName(), true) : null;
@@ -1039,24 +999,13 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   public static class StoragePolicyShim implements HadoopShims.StoragePolicyShim {
 
-    private final DistributedFileSystem dfs;
-
     public StoragePolicyShim(DistributedFileSystem fs) {
-      this.dfs = fs;
     }
 
     @Override
     public void setStoragePolicy(Path path, StoragePolicyValue policy)
         throws IOException {
       switch (policy) {
-      case MEMORY: {
-        dfs.setStoragePolicy(path, HdfsConstants.MEMORY_STORAGE_POLICY_NAME);
-        break;
-      }
-      case SSD: {
-        dfs.setStoragePolicy(path, HdfsConstants.ALLSSD_STORAGE_POLICY_NAME);
-        break;
-      }
       case DEFAULT: {
         /* do nothing */
         break;

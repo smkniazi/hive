@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,7 @@ import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.Partition;
+import org.apache.hadoop.hive.ql.metadata.PartitionIterable;
 import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.parse.PrunedPartitionList;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
@@ -73,6 +75,7 @@ import org.apache.hadoop.hive.ql.util.JavaDataModel;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
 import org.apache.hadoop.hive.serde2.objectinspector.StandardConstantListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StandardConstantMapObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StandardConstantStructObjectInspector;
@@ -98,6 +101,8 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableShortObje
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableStringObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableTimestampObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.CharTypeInfo;
+import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
 import org.apache.hadoop.io.BytesWritable;
@@ -391,7 +396,7 @@ public class StatsUtils {
     return scaledSelectivity;
   }
 
-  private static long getRangeDelta(ColStatistics.Range range) {
+  public static long getRangeDelta(ColStatistics.Range range) {
     if (range.minValue != null && range.maxValue != null) {
       return (range.maxValue.longValue() - range.minValue.longValue());
     }
@@ -424,34 +429,37 @@ public class StatsUtils {
           // conditions for being partition column
           if (col.equals(ci.getInternalName()) && ci.getIsVirtualCol() &&
               !ci.isHiddenVirtualCol()) {
-            // currently metastore does not store column stats for
-            // partition column, so we calculate the NDV from pruned
-            // partition list
-            ColStatistics partCS = new ColStatistics(ci.getInternalName(), ci.getType()
-                .getTypeName());
-            long numPartitions = getNDVPartitionColumn(partList.getPartitions(),
-                ci.getInternalName());
-            partCS.setCountDistint(numPartitions);
-            partCS.setAvgColLen(StatsUtils.getAvgColLenOf(conf,
-                ci.getObjectInspector(), partCS.getColumnType()));
-            partCS.setRange(getRangePartitionColumn(partList.getPartitions(), ci.getInternalName(),
-                ci.getType().getTypeName(), conf.getVar(ConfVars.DEFAULTPARTITIONNAME)));
-            colStats.add(partCS);
+            colStats.add(getColStatsForPartCol(ci, new PartitionIterable(partList.getPartitions()), conf));
           }
         }
       }
     }
   }
 
-  public static int getNDVPartitionColumn(Set<Partition> partitions, String partColName) {
-    Set<String> distinctVals = new HashSet<String>(partitions.size());
+  public static ColStatistics getColStatsForPartCol(ColumnInfo ci,PartitionIterable partList, HiveConf conf) {
+    // currently metastore does not store column stats for
+    // partition column, so we calculate the NDV from partition list
+    ColStatistics partCS = new ColStatistics(ci.getInternalName(), ci.getType()
+        .getTypeName());
+    long numPartitions = getNDVPartitionColumn(partList,
+        ci.getInternalName());
+    partCS.setCountDistint(numPartitions);
+    partCS.setAvgColLen(StatsUtils.getAvgColLenOf(conf,
+        ci.getObjectInspector(), partCS.getColumnType()));
+    partCS.setRange(getRangePartitionColumn(partList, ci.getInternalName(),
+        ci.getType().getTypeName(), conf.getVar(ConfVars.DEFAULTPARTITIONNAME)));
+    return partCS;
+  }
+
+  public static int getNDVPartitionColumn(PartitionIterable partitions, String partColName) {
+    Set<String> distinctVals = new HashSet<String>();
     for (Partition partition : partitions) {
       distinctVals.add(partition.getSpec().get(partColName));
     }
     return distinctVals.size();
   }
 
-  private static Range getRangePartitionColumn(Set<Partition> partitions, String partColName,
+  private static Range getRangePartitionColumn(PartitionIterable partitions, String partColName,
       String colType, String defaultPartName) {
     Range range = null;
     String partVal;
@@ -1278,7 +1286,11 @@ public class StatsUtils {
         ColStatistics colStats = parentStats.getColumnStatisticsFromColName(colName);
         if (colStats != null) {
           /* If statistics for the column already exist use it. */
-          return colStats;
+          try {
+            return colStats.clone();
+          } catch (CloneNotSupportedException e) {
+            return null;
+          }
         }
 
         // virtual columns
@@ -1674,5 +1686,47 @@ public class StatsUtils {
       LOG.info("Choosing 2 bit vectors..");
     }
     return numBitVectors;
+  }
+
+  public static boolean hasDiscreteRange(ColStatistics colStat) {
+    if (colStat.getRange() != null) {
+      TypeInfo colType = TypeInfoUtils.getTypeInfoFromTypeString(colStat.getColumnType());
+      if (colType.getCategory() == Category.PRIMITIVE) {
+        PrimitiveTypeInfo pti = (PrimitiveTypeInfo) colType;
+        switch (pti.getPrimitiveCategory()) {
+          case BOOLEAN:
+          case BYTE:
+          case SHORT:
+          case INT:
+          case LONG:
+            return true;
+          default:
+            break;
+        }
+      }
+    }
+    return false;
+  }
+
+  public static Range combineRange(Range range1, Range range2) {
+    if (   range1.minValue != null && range1.maxValue != null
+        && range2.minValue != null && range2.maxValue != null) {
+      long min1 = range1.minValue.longValue();
+      long max1 = range1.maxValue.longValue();
+      long min2 = range2.minValue.longValue();
+      long max2 = range2.maxValue.longValue();
+
+      if (   (min1 < min2 && max1 < max2)
+          || (min1 > min2 && max1 > max2)) {
+        // No overlap between the two ranges
+        return null;
+      } else {
+        // There is an overlap of ranges - create combined range.
+        return new ColStatistics.Range(
+            Math.min(min1, min2),
+            Math.max(max1,  max2));
+      }
+    }
+    return null;
   }
 }

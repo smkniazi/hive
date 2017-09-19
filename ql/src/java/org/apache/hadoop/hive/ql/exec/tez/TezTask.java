@@ -18,6 +18,10 @@
 
 package org.apache.hadoop.hive.ql.exec.tez;
 
+import java.io.Serializable;
+import org.apache.hadoop.hive.ql.exec.ConditionalTask;
+import org.apache.hadoop.hive.ql.exec.FileSinkOperator;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +37,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import org.apache.hadoop.classification.InterfaceAudience.Private;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
@@ -57,6 +62,7 @@ import org.apache.hadoop.hive.ql.plan.UnionWork;
 import org.apache.hadoop.hive.ql.plan.api.StageType;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.api.records.LocalResource;
@@ -71,6 +77,7 @@ import org.apache.tez.dag.api.DAG;
 import org.apache.tez.dag.api.Edge;
 import org.apache.tez.dag.api.GroupInputEdge;
 import org.apache.tez.dag.api.SessionNotRunning;
+import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.Vertex;
 import org.apache.tez.dag.api.VertexGroup;
@@ -134,6 +141,9 @@ public class TezTask extends Task<TezWork> {
       // Need to remove this static hack. But this is the way currently to get a session.
       SessionState ss = SessionState.get();
       session = ss.getTezSession();
+      if (session != null && !session.isOpen()) {
+        LOG.warn("The session: " + session + " has not been opened");
+      }
       session = TezSessionPoolManager.getInstance().getSession(
           session, conf, false, getWork().getLlapMode());
       ss.setTezSession(session);
@@ -318,6 +328,14 @@ public class TezTask extends Task<TezWork> {
     }
   }
 
+  void checkOutputSpec(BaseWork work, JobConf jc) throws IOException {
+    for (Operator<?> op : work.getAllOperators()) {
+      if (op instanceof FileSinkOperator) {
+        ((FileSinkOperator) op).checkOutputSpecs(null, jc);
+      }
+    }
+  }
+
   DAG build(JobConf conf, TezWork work, Path scratchDir,
       LocalResource appJarLr, List<LocalResource> additionalLr, Context ctx)
       throws Exception {
@@ -348,10 +366,9 @@ public class TezTask extends Task<TezWork> {
     dag.setDAGInfo(dagInfo);
 
     dag.setCredentials(conf.getCredentials());
-    setAccessControlsForCurrentUser(dag);
+    setAccessControlsForCurrentUser(dag, queryPlan.getQueryId(), conf);
 
     for (BaseWork w: ws) {
-
       boolean isFinal = work.getLeaves().contains(w);
 
       // translate work to vertex
@@ -373,6 +390,8 @@ public class TezTask extends Task<TezWork> {
             children.add(v);
           }
         }
+        JobConf parentConf = workToConf.get(unionWorkItems.get(0));
+        checkOutputSpec(w, parentConf);
 
         // create VertexGroup
         Vertex[] vertexArray = new Vertex[unionWorkItems.size()];
@@ -385,7 +404,7 @@ public class TezTask extends Task<TezWork> {
 
         // For a vertex group, all Outputs use the same Key-class, Val-class and partitioner.
         // Pick any one source vertex to figure out the Edge configuration.
-        JobConf parentConf = workToConf.get(unionWorkItems.get(0));
+       
 
         // now hook up the children
         for (BaseWork v: children) {
@@ -398,6 +417,7 @@ public class TezTask extends Task<TezWork> {
       } else {
         // Regular vertices
         JobConf wxConf = utils.initializeVertexConf(conf, ctx, w);
+        checkOutputSpec(w, wxConf);
         Vertex wx =
             utils.createVertex(wxConf, w, scratchDir, appJarLr, additionalLr, fs, ctx, !isFinal,
                 work, work.getVertexType(w));
@@ -431,14 +451,31 @@ public class TezTask extends Task<TezWork> {
     return dag;
   }
 
-  public static void setAccessControlsForCurrentUser(DAG dag) {
-    // get current user
-    String currentUser = SessionState.getUserFromAuthenticator();
-    if(LOG.isDebugEnabled()) {
-      LOG.debug("Setting Tez DAG access for " + currentUser);
+  private static void setAccessControlsForCurrentUser(DAG dag, String queryId,
+                                                     Configuration conf) throws
+      IOException {
+    String user = SessionState.getUserFromAuthenticator();
+    UserGroupInformation loginUserUgi = UserGroupInformation.getLoginUser();
+    String loginUser =
+        loginUserUgi == null ? null : loginUserUgi.getShortUserName();
+    boolean addHs2User =
+        HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVETEZHS2USERACCESS);
+
+    // Temporarily re-using the TEZ AM View ACLs property for individual dag access control.
+    // Hive may want to setup it's own parameters if it wants to control per dag access.
+    // Setting the tez-property per dag should work for now.
+
+    String viewStr = Utilities.getAclStringWithHiveModification(conf,
+            TezConfiguration.TEZ_AM_VIEW_ACLS, addHs2User, user, loginUser);
+    String modifyStr = Utilities.getAclStringWithHiveModification(conf,
+            TezConfiguration.TEZ_AM_MODIFY_ACLS, addHs2User, user, loginUser);
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Setting Tez DAG access for queryId={} with viewAclString={}, modifyStr={}",
+          queryId, viewStr, modifyStr);
     }
     // set permissions for current user on DAG
-    DAGAccessControls ac = new DAGAccessControls(currentUser, currentUser);
+    DAGAccessControls ac = new DAGAccessControls(viewStr, modifyStr);
     dag.setAccessControls(ac);
   }
 
@@ -626,6 +663,17 @@ public class TezTask extends Task<TezWork> {
     public void close() throws IOException {
       dagClient.close(); // Don't sync.
     }
+
+    public String getDagIdentifierString() {
+      // TODO: Implement this when tez is upgraded. TEZ-3550
+      return null;
+    }
+
+    public String getSessionIdentifierString() {
+      // TODO: Implement this when tez is upgraded. TEZ-3550
+      return null;
+    }
+
 
     @Override
     public String getExecutionContext() {

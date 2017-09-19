@@ -120,6 +120,7 @@ STAGE PLANS:
                   Statistics: Num rows: 2 Data size: 24 Basic stats: COMPLETE Column stats: NONE
                   File Output Operator
                     compressed: false
+                    Dp Sort State: PARTITION_SORTED
                     Statistics: Num rows: 2 Data size: 24 Basic stats: COMPLETE Column stats: NONE
                     table:
                         input format: org.apache.hadoop.mapred.TextInputFormat
@@ -357,6 +358,7 @@ STAGE PLANS:
                 Statistics: Num rows: 5 Data size: 60 Basic stats: COMPLETE Column stats: NONE
                 File Output Operator
                   compressed: false
+                  Dp Sort State: PARTITION_SORTED
                   Statistics: Num rows: 5 Data size: 60 Basic stats: COMPLETE Column stats: NONE
                   table:
                       input format: org.apache.hadoop.mapred.TextInputFormat
@@ -1629,7 +1631,7 @@ STAGE PLANS:
                         Map-reduce partition columns: _col0 (type: string)
                         Statistics: Num rows: 205 Data size: 19475 Basic stats: COMPLETE Column stats: COMPLETE
                         value expressions: _col1 (type: bigint)
-            Execution mode: llap
+            Execution mode: vectorized, llap
             LLAP IO: no inputs
         Reducer 2 
             Execution mode: vectorized, llap
@@ -1759,7 +1761,7 @@ STAGE PLANS:
                         Map-reduce partition columns: _col0 (type: string)
                         Statistics: Num rows: 205 Data size: 19475 Basic stats: COMPLETE Column stats: COMPLETE
                         value expressions: _col1 (type: bigint)
-            Execution mode: llap
+            Execution mode: vectorized, llap
             LLAP IO: no inputs
         Reducer 2 
             Execution mode: vectorized, llap

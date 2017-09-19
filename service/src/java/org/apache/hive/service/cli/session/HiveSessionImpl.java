@@ -177,6 +177,9 @@ public class HiveSessionImpl implements HiveSession {
     }
     // Process global init file: .hiverc
     processGlobalInitFile();
+    // Set fetch size in session conf map
+    sessionConfMap = setFetchSize(sessionConfMap);
+
     if (sessionConfMap != null) {
       configureSession(sessionConfMap);
     }
@@ -245,6 +248,22 @@ public class HiveSessionImpl implements HiveSession {
     }
   }
 
+  private Map<String, String> setFetchSize(Map<String, String> sessionConfMap) {
+    int maxFetchSize =
+      sessionConf.getIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_MAX_FETCH_SIZE);
+    String confFetchSize = sessionConfMap != null ?
+      sessionConfMap.get(
+        "set:hiveconf:" + HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_DEFAULT_FETCH_SIZE.varname) :
+        null;
+    if (confFetchSize != null && !confFetchSize.isEmpty()) {
+        int fetchSize = Integer.parseInt(confFetchSize);
+        sessionConfMap.put(
+          "set:hiveconf:" + HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_DEFAULT_FETCH_SIZE.varname,
+          Integer.toString(fetchSize > maxFetchSize ? maxFetchSize : fetchSize));
+    }
+    return sessionConfMap;
+  }
+
   private void configureSession(Map<String, String> sessionConfMap) throws HiveSQLException {
     SessionState.setCurrentSessionState(sessionState);
     for (Map.Entry<String, String> entry : sessionConfMap.entrySet()) {
@@ -256,6 +275,13 @@ public class HiveSessionImpl implements HiveSession {
           throw new HiveSQLException(e);
         }
       } else if (key.startsWith("use:")) {
+        try {
+          if (sessionHive.getDatabase(entry.getValue()) == null) {
+            throw new HiveSQLException("Database " + entry.getValue() + " does not exist");
+          }
+        } catch (HiveException e) {
+          throw new HiveSQLException(e);
+        }
         SessionState.get().setCurrentDatabase(entry.getValue());
       } else {
         sessionConf.verifyAndSet(key, entry.getValue());
@@ -462,6 +488,11 @@ public class HiveSessionImpl implements HiveSession {
     } finally {
       release(true, true);
     }
+  }
+
+  @Override
+  public HiveConf getSessionConf() throws HiveSQLException {
+	  return this.sessionConf;
   }
 
   @Override

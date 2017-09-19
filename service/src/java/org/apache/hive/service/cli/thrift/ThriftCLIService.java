@@ -18,6 +18,8 @@
 
 package org.apache.hive.service.cli.thrift;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,10 +30,16 @@ import java.util.concurrent.TimeUnit;
 import javax.security.auth.login.LoginException;
 import javax.security.sasl.AuthenticationException;
 
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.apache.hadoop.hive.common.ServerUtils;
+import org.apache.hadoop.hive.common.log.ProgressMonitor;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.hadoop.hive.common.ServerUtils;
+import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.shims.HadoopShims.KerberosNameShim;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.AbstractService;
@@ -48,11 +56,13 @@ import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.JobProgressUpdate;
 import org.apache.hive.service.cli.OperationHandle;
 import org.apache.hive.service.cli.OperationStatus;
+import org.apache.hive.service.cli.OperationType;
 import org.apache.hive.service.cli.ProgressMonitorStatusMapper;
 import org.apache.hive.service.cli.RowSet;
 import org.apache.hive.service.cli.SessionHandle;
 import org.apache.hive.service.cli.TableSchema;
 import org.apache.hive.service.cli.TezProgressMonitorStatusMapper;
+import org.apache.hive.service.cli.operation.Operation;
 import org.apache.hive.service.cli.session.SessionManager;
 import org.apache.hive.service.rpc.thrift.TCLIService;
 import org.apache.hive.service.rpc.thrift.TCancelDelegationTokenReq;
@@ -93,6 +103,7 @@ import org.apache.hive.service.rpc.thrift.TGetTablesReq;
 import org.apache.hive.service.rpc.thrift.TGetTablesResp;
 import org.apache.hive.service.rpc.thrift.TGetTypeInfoReq;
 import org.apache.hive.service.rpc.thrift.TGetTypeInfoResp;
+import org.apache.hive.service.rpc.thrift.TJobExecutionStatus;
 import org.apache.hive.service.rpc.thrift.TOpenSessionReq;
 import org.apache.hive.service.rpc.thrift.TOpenSessionResp;
 import org.apache.hive.service.rpc.thrift.TProgressUpdateResp;
@@ -334,10 +345,19 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     TOpenSessionResp resp = new TOpenSessionResp();
 
     try {
+      Map<String, String> openConf = req.getConfiguration();
+
       SessionHandle sessionHandle = getSessionHandle(req, resp);
       resp.setSessionHandle(sessionHandle.toTSessionHandle());
-      // TODO: set real configuration map
-      resp.setConfiguration(new HashMap<String, String>());
+      Map<String, String> configurationMap = new HashMap<String, String>();
+      // Set the updated fetch size from the server into the configuration map for the client
+      HiveConf sessionConf = cliService.getSessionConf(sessionHandle);
+      configurationMap.put(
+        HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_DEFAULT_FETCH_SIZE.varname,
+        Integer.toString(sessionConf != null ?
+          sessionConf.getIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_DEFAULT_FETCH_SIZE) :
+          hiveConf.getIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_DEFAULT_FETCH_SIZE)));
+      resp.setConfiguration(configurationMap);
       resp.setStatus(OK_STATUS);
       ThriftCLIServerContext context =
         (ThriftCLIServerContext)currentServerContext.get();
@@ -555,6 +575,13 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     return sessionHandle;
   }
 
+  private double getProgressedPercentage(OperationHandle opHandle) throws HiveSQLException {
+    checkArgument(OperationType.EXECUTE_STATEMENT.equals(opHandle.getOperationType()));
+    Operation operation = cliService.getSessionManager().getOperationManager().getOperation(opHandle);
+    SessionState state = operation.getParentSession().getSessionState();
+    ProgressMonitor monitor = state.getProgressMonitor();
+    return monitor == null ? 0.0 : monitor.progressedPercentage();
+  }
 
   private String getDelegationToken(String userName)
       throws HiveSQLException, LoginException, IOException {
@@ -770,11 +797,13 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
         mapper = new TezProgressMonitorStatusMapper();
       }
 
+      TJobExecutionStatus executionStatus =
+          mapper.forStatus(progressUpdate.status);
       resp.setProgressUpdateResponse(new TProgressUpdateResp(
           progressUpdate.headers(),
           progressUpdate.rows(),
           progressUpdate.progressedPercentage,
-          mapper.forStatus(progressUpdate.status),
+          executionStatus,
           progressUpdate.footerSummary,
           progressUpdate.startTimeMillis
       ));
@@ -783,6 +812,10 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
         resp.setErrorCode(opException.getErrorCode());
         resp.setErrorMessage(org.apache.hadoop.util.StringUtils.
             stringifyException(opException));
+      } else if (executionStatus == TJobExecutionStatus.NOT_AVAILABLE
+          && OperationType.EXECUTE_STATEMENT.equals(operationHandle.getOperationType())) {
+        resp.getProgressUpdateResponse().setProgressedPercentage(
+            getProgressedPercentage(operationHandle));
       }
       resp.setStatus(OK_STATUS);
     } catch (Exception e) {
@@ -837,6 +870,12 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   public TFetchResultsResp FetchResults(TFetchResultsReq req) throws TException {
     TFetchResultsResp resp = new TFetchResultsResp();
     try {
+      // Set fetch size
+      int maxFetchSize =
+        hiveConf.getIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_MAX_FETCH_SIZE);
+      if (req.getMaxRows() > maxFetchSize) {
+        req.setMaxRows(maxFetchSize);
+      }
       RowSet rowSet = cliService.fetchResults(
           new OperationHandle(req.getOperationHandle()),
           FetchOrientation.getFetchOrientation(req.getOrientation()),

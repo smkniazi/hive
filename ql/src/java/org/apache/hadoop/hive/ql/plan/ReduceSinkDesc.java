@@ -21,13 +21,11 @@ package org.apache.hadoop.hive.ql.plan;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.plan.Explain.Level;
 import org.apache.hadoop.hive.ql.plan.Explain.Vectorization;
 import org.apache.hadoop.hive.ql.plan.VectorReduceSinkDesc.ReduceSinkKeyType;
@@ -80,6 +78,12 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
   private String outputName;
 
   /**
+   * Holds the name of the output operators
+   * that this reduce sink is outputing to.
+   */
+  private List<String> outputOperators;
+
+  /**
    * The partition columns (CLUSTER BY or DISTRIBUTE BY in Hive language).
    * Partition columns decide the reducer that the current row goes to.
    * Partition columns are not passed to reducer.
@@ -117,9 +121,6 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
   // Is reducer auto-parallelism unset (FIXED, UNIFORM, PARALLEL)
   private EnumSet<ReducerTraits> reduceTraits = EnumSet.of(ReducerTraits.UNSET);
 
-  // Write type, since this needs to calculate buckets differently for updates and deletes
-  private AcidUtils.Operation writeType;
-
   // whether this RS is deduplicated
   private transient boolean isDeduplicated = false;
 
@@ -138,8 +139,7 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
       List<List<Integer>> distinctColumnIndices,
       ArrayList<String> outputValueColumnNames, int tag,
       ArrayList<ExprNodeDesc> partitionCols, int numReducers,
-      final TableDesc keySerializeInfo, final TableDesc valueSerializeInfo,
-      AcidUtils.Operation writeType) {
+      final TableDesc keySerializeInfo, final TableDesc valueSerializeInfo) {
     this.keyCols = keyCols;
     this.numDistributionKeys = numDistributionKeys;
     this.valueCols = valueCols;
@@ -153,7 +153,6 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
     this.distinctColumnIndices = distinctColumnIndices;
     this.setNumBuckets(-1);
     this.setBucketCols(null);
-    this.writeType = writeType;
     this.vectorDesc = null;
   }
 
@@ -466,10 +465,6 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
     }
   }
 
-  public AcidUtils.Operation getWriteType() {
-    return writeType;
-  }
-
   public boolean isDeduplicated() {
     return isDeduplicated;
   }
@@ -487,7 +482,7 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
   }
 
   // Use LinkedHashSet to give predictable display order.
-  private static Set<String> vectorizableReduceSinkNativeEngines =
+  private static final Set<String> vectorizableReduceSinkNativeEngines =
       new LinkedHashSet<String>(Arrays.asList("tez", "spark"));
 
   public class ReduceSinkOperatorExplainVectorization extends OperatorExplainVectorization {
@@ -539,17 +534,8 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
               engineInSupported,
               engineInSupportedCondName),
           new VectorizationCondition(
-              !vectorReduceSinkDesc.getAcidChange(),
-              "Not ACID UPDATE or DELETE"),
-          new VectorizationCondition(
-              !vectorReduceSinkDesc.getHasBuckets(),
-              "No buckets"),
-          new VectorizationCondition(
               !vectorReduceSinkDesc.getHasTopN(),
               "No TopN"),
-          new VectorizationCondition(
-              vectorReduceSinkDesc.getUseUniformHash(),
-              "Uniform Hash"),
           new VectorizationCondition(
               !vectorReduceSinkDesc.getHasDistinctColumns(),
               "No DISTINCT columns"),
@@ -560,6 +546,15 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
               vectorReduceSinkDesc.getIsValueLazyBinary(),
               "LazyBinarySerDe for values")
       };
+      if (vectorReduceSinkDesc.getIsUnexpectedCondition()) {
+        VectorizationCondition[] newConditions = new VectorizationCondition[conditions.length + 1];
+        System.arraycopy(conditions, 0, newConditions, 0, conditions.length);
+        newConditions[conditions.length] =
+            new VectorizationCondition(
+                false,
+                "NOT UnexpectedCondition");
+        conditions = newConditions;
+      }
       return conditions;
     }
 
@@ -586,5 +581,13 @@ public class ReduceSinkDesc extends AbstractOperatorDesc {
       return null;
     }
     return new ReduceSinkOperatorExplainVectorization(this, vectorDesc);
+  }
+
+  public List<String> getOutputOperators() {
+    return outputOperators;
+  }
+
+  public void setOutputOperators(List<String> outputOperators) {
+    this.outputOperators = outputOperators;
   }
 }

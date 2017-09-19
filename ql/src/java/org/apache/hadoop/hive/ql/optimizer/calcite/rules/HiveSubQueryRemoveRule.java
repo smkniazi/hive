@@ -26,6 +26,7 @@ import org.apache.calcite.rel.core.Aggregate;
 import org.apache.calcite.rel.core.CorrelationId;
 import org.apache.calcite.rel.core.Filter;
 import org.apache.calcite.rel.core.JoinRelType;
+import org.apache.calcite.rel.core.Project;
 import org.apache.calcite.rex.LogicVisitor;
 import org.apache.calcite.rex.RexInputRef;
 import org.apache.calcite.rex.RexNode;
@@ -44,6 +45,7 @@ import org.apache.calcite.tools.RelBuilderFactory;
 import org.apache.calcite.util.Pair;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,32 @@ import org.apache.hadoop.hive.ql.optimizer.calcite.reloperators.HiveFilter;
  */
 public abstract class HiveSubQueryRemoveRule extends RelOptRule{
 
+    public static final HiveSubQueryRemoveRule PROJECT =
+            new HiveSubQueryRemoveRule(
+                    operand(Project.class, null, RexUtil.SubQueryFinder.PROJECT_PREDICATE,
+                            any()),
+                    HiveRelFactories.HIVE_BUILDER, "SubQueryRemoveRule:Project") {
+                public void onMatch(RelOptRuleCall call) {
+                    final Project project = call.rel(0);
+                    //TODO: replace HiveSubQRemoveRelBuilder with calcite's once calcite 1.11.0 is released
+                    final HiveSubQRemoveRelBuilder builder = new HiveSubQRemoveRelBuilder(null, call.rel(0).getCluster(), null);
+                    final RexSubQuery e =
+                            RexUtil.SubQueryFinder.find(project.getProjects());
+                    assert e != null;
+                    final RelOptUtil.Logic logic =
+                            LogicVisitor.find(RelOptUtil.Logic.TRUE_FALSE_UNKNOWN,
+                                    project.getProjects(), e);
+                    builder.push(project.getInput());
+                    final int fieldCount = builder.peek().getRowType().getFieldCount();
+                    final RexNode target = apply(e, HiveFilter.getVariablesSet(e),
+                            logic, builder, 1, fieldCount, false);
+                    final RexShuttle shuttle = new ReplaceSubQueryShuttle(e, target);
+                    builder.project(shuttle.apply(project.getProjects()),
+                            project.getRowType().getFieldNames());
+                    call.transformTo(builder.build());
+                }
+            };
+
     public static final HiveSubQueryRemoveRule FILTER =
             new HiveSubQueryRemoveRule(
                     operand(Filter.class, null, RexUtil.SubQueryFinder.FILTER_PREDICATE,
@@ -94,7 +122,7 @@ public abstract class HiveSubQueryRemoveRule extends RelOptRule{
                     Set<RelNode> corrScalarQueries = filter.getCluster().getPlanner().getContext().unwrap(Set.class);
                     boolean isCorrScalarQuery = corrScalarQueries.contains(e.rel);
 
-                    final RexNode target = apply(e, ((HiveFilter)filter).getVariablesSet(e), logic,
+                    final RexNode target = apply(e, HiveFilter.getVariablesSet(e), logic,
                             builder, 1, fieldCount, isCorrScalarQuery);
                     final RexShuttle shuttle = new ReplaceSubQueryShuttle(e, target);
                     builder.filter(shuttle.apply(filter.getCondition()));
@@ -136,6 +164,25 @@ public abstract class HiveSubQueryRemoveRule extends RelOptRule{
                             boolean isCorrScalarAgg) {
         switch (e.getKind()) {
             case SCALAR_QUERY:
+                builder.push(e.rel);
+                // returns single row/column
+                builder.aggregate(builder.groupKey(),
+                        builder.count(false, "cnt"));
+
+                SqlFunction countCheck = new SqlFunction("sq_count_check", SqlKind.OTHER_FUNCTION, ReturnTypes.BIGINT,
+                        InferTypes.RETURN_TYPE, OperandTypes.NUMERIC, SqlFunctionCategory.USER_DEFINED_FUNCTION);
+
+                // we create FILTER (sq_count_check(count()) <= 1) instead of PROJECT because RelFieldTrimmer
+                //  ends up getting rid of Project since it is not used further up the tree
+                builder.filter(builder.call(SqlStdOperatorTable.LESS_THAN_OR_EQUAL,
+                        builder.call(countCheck, builder.field("cnt")),
+                        builder.literal(1)));
+                if( !variablesSet.isEmpty())
+                {
+                    builder.join(JoinRelType.LEFT, builder.literal(true), variablesSet);
+                }
+                else
+                    builder.join(JoinRelType.INNER, builder.literal(true), variablesSet);
                 if(isCorrScalarAgg) {
                     // Transformation :
                     // Outer Query Left Join (inner query) on correlated predicate and preserve rows only from left side.
@@ -165,26 +212,7 @@ public abstract class HiveSubQueryRemoveRule extends RelOptRule{
 
                 //Transformation is to left join for correlated predicates and inner join otherwise,
                 // but do a count on inner side before that to make sure it generates atmost 1 row.
-                builder.push(e.rel);
-                // returns single row/column
-                builder.aggregate(builder.groupKey(),
-                        builder.count(false, "cnt"));
 
-                SqlFunction countCheck = new SqlFunction("sq_count_check", SqlKind.OTHER_FUNCTION, ReturnTypes.BIGINT,
-                        InferTypes.RETURN_TYPE, OperandTypes.NUMERIC, SqlFunctionCategory.USER_DEFINED_FUNCTION);
-
-                // we create FILTER (sq_count_check(count()) <= 1) instead of PROJECT because RelFieldTrimmer
-                //  ends up getting rid of Project since it is not used further up the tree
-                builder.filter(builder.call(SqlStdOperatorTable.LESS_THAN_OR_EQUAL,
-                        builder.call(countCheck, builder.field("cnt")),
-                        builder.literal(1)));
-
-                if( !variablesSet.isEmpty())
-                {
-                    builder.join(JoinRelType.LEFT, builder.literal(true), variablesSet);
-                }
-                else
-                    builder.join(JoinRelType.INNER, builder.literal(true), variablesSet);
                 builder.push(e.rel);
                 builder.join(JoinRelType.LEFT, builder.literal(true), variablesSet);
                 offset++;
@@ -368,16 +396,16 @@ public abstract class HiveSubQueryRemoveRule extends RelOptRule{
                     // we are creating filter here so should not be returning NULL. Not sure why Calcite return NULL
                     //operands.add(builder.or(keyIsNulls), builder.literal(false));
                 }
-                Boolean b = true;
+                RexNode b = builder.literal(true);
                 switch (logic) {
                     case TRUE_FALSE_UNKNOWN:
-                        b = null;
+                        b = e.rel.getCluster().getRexBuilder().makeNullLiteral(SqlTypeName.BOOLEAN);
                         // fall through
                     case UNKNOWN_AS_TRUE:
                         operands.add(
                                 builder.call(SqlStdOperatorTable.LESS_THAN,
                                         builder.field("ct", "ck"), builder.field("ct", "c")),
-                                builder.literal(b));
+                                b);
                         break;
                 }
                 operands.add(builder.literal(false));

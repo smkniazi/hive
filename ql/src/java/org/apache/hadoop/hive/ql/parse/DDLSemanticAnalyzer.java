@@ -48,6 +48,7 @@ import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.exec.ArchiveUtils;
 import org.apache.hadoop.hive.ql.exec.ColumnStatsUpdateTask;
+import org.apache.hadoop.hive.ql.exec.FunctionInfo;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.exec.TaskFactory;
@@ -98,7 +99,6 @@ import org.apache.hadoop.hive.ql.plan.DropIndexDesc;
 import org.apache.hadoop.hive.ql.plan.DropTableDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeColumnDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDesc;
-import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDefaultDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 import org.apache.hadoop.hive.ql.plan.HiveOperation;
@@ -134,6 +134,7 @@ import org.apache.hadoop.hive.ql.plan.TruncateTableDesc;
 import org.apache.hadoop.hive.ql.plan.UnlockDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.UnlockTableDesc;
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters.Converter;
@@ -516,7 +517,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
      analyzeCacheMetadata(ast);
      break;
    default:
-      throw new SemanticException("Unsupported command.");
+      throw new SemanticException("Unsupported command: " + ast);
     }
     if (fetchTask != null && !rootTasks.isEmpty()) {
       rootTasks.get(rootTasks.size() - 1).setFetchSource(true);
@@ -1748,13 +1749,22 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     LinkedHashMap<String, String> newPartSpec = null;
     if (partSpec != null) newPartSpec = new LinkedHashMap<String, String>(partSpec);
 
-    AlterTableSimpleDesc desc = new AlterTableSimpleDesc(
-        tableName, newPartSpec, type);
+    HashMap<String, String> mapProp = null;
+    boolean isBlocking = false;
 
-    if (ast.getChildCount() > 1) {
-      HashMap<String, String> mapProp = getProps((ASTNode) (ast.getChild(1)).getChild(0));
-      desc.setProps(mapProp);
+    for(int i = 0; i < ast.getChildCount(); i++) {
+      switch(ast.getChild(i).getType()) {
+        case HiveParser.TOK_TABLEPROPERTIES:
+          mapProp = getProps((ASTNode) (ast.getChild(i)).getChild(0));
+          break;
+        case HiveParser.TOK_BLOCKING:
+          isBlocking = true;
+          break;
+      }
     }
+    AlterTableSimpleDesc desc = new AlterTableSimpleDesc(
+      tableName, newPartSpec, type, isBlocking);
+    desc.setProps(mapProp);
 
     rootTasks.add(TaskFactory.get(new DDLWork(getInputs(), getOutputs(), desc), conf));
   }
@@ -1799,7 +1809,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
   static class QualifiedNameUtil {
 
     // delimiter to check DOT delimited qualified names
-    static String delimiter = "\\.";
+    static final String delimiter = "\\.";
 
     /**
      * Get the fully qualified name in the ast. e.g. the ast of the form ^(DOT
@@ -3114,8 +3124,22 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
         }
 
         ExprNodeColumnDesc column = new ExprNodeColumnDesc(pti, key, null, true);
-        ExprNodeGenericFuncDesc op = makeBinaryPredicate(operator, column,
-            isDefaultPartitionName ? new ExprNodeConstantDefaultDesc(pti, defaultPartitionName) : new ExprNodeConstantDesc(pti, val));
+        ExprNodeGenericFuncDesc op;
+        if (!isDefaultPartitionName) {
+          op = makeBinaryPredicate(operator, column, new ExprNodeConstantDesc(pti, val));
+        } else {
+          GenericUDF originalOp = FunctionRegistry.getFunctionInfo(operator).getGenericUDF();
+          String fnName;
+          if (FunctionRegistry.isEq(originalOp)) {
+            fnName = "isnull";
+          } else if (FunctionRegistry.isNeq(originalOp)) {
+            fnName = "isnotnull";
+          } else {
+            throw new SemanticException("Cannot use " + operator
+                + " in a default partition spec; only '=' and '!=' are allowed.");
+          }
+          op = makeUnaryPredicate(fnName, column);
+        }
         // If it's multi-expr filter (e.g. a='5', b='2012-01-02'), AND with previous exprs.
         expr = (expr == null) ? op : makeBinaryPredicate("and", expr, op);
         names.add(key);
@@ -3143,7 +3167,11 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
       return new ExprNodeGenericFuncDesc(TypeInfoFactory.booleanTypeInfo,
           FunctionRegistry.getFunctionInfo(fn).getGenericUDF(), Lists.newArrayList(left, right));
   }
-
+  public static ExprNodeGenericFuncDesc makeUnaryPredicate(
+      String fn, ExprNodeDesc arg) throws SemanticException {
+      return new ExprNodeGenericFuncDesc(TypeInfoFactory.booleanTypeInfo,
+          FunctionRegistry.getFunctionInfo(fn).getGenericUDF(), Lists.newArrayList(arg));
+  }
   /**
    * Calculates the partition prefix length based on the drop spec.
    * This is used to avoid deleting archived partitions with lower level.

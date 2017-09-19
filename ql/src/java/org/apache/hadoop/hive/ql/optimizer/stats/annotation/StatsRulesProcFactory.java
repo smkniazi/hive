@@ -51,10 +51,43 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.parse.PrunedPartitionList;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
-import org.apache.hadoop.hive.ql.plan.*;
+import org.apache.hadoop.hive.ql.plan.AggregationDesc;
+import org.apache.hadoop.hive.ql.plan.ColStatistics;
+import org.apache.hadoop.hive.ql.plan.ExprNodeColumnDesc;
+import org.apache.hadoop.hive.ql.plan.ExprNodeColumnListDesc;
+import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDesc;
+import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc.ExprNodeDescEqualityWrapper;
+import org.apache.hadoop.hive.ql.plan.ExprNodeDescUtils;
+import org.apache.hadoop.hive.ql.plan.ExprNodeDynamicListDesc;
+import org.apache.hadoop.hive.ql.plan.ExprNodeDynamicValueDesc;
+import org.apache.hadoop.hive.ql.plan.ExprNodeFieldDesc;
+import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
+import org.apache.hadoop.hive.ql.plan.GroupByDesc;
+import org.apache.hadoop.hive.ql.plan.JoinCondDesc;
+import org.apache.hadoop.hive.ql.plan.JoinDesc;
+import org.apache.hadoop.hive.ql.plan.MapJoinDesc;
+import org.apache.hadoop.hive.ql.plan.OperatorDesc;
+import org.apache.hadoop.hive.ql.plan.Statistics;
 import org.apache.hadoop.hive.ql.stats.StatsUtils;
-import org.apache.hadoop.hive.ql.udf.generic.*;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFBetween;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFIn;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFInBloomFilter;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPAnd;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqual;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqualNS;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqualOrGreaterThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqualOrLessThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPGreaterThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPLessThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNot;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNotEqual;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNotNull;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNull;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPOr;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFStruct;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils;
 import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
@@ -287,8 +320,13 @@ public class StatsRulesProcFactory {
       long newNumRows = 0;
       Statistics andStats = null;
 
-      if (stats.getNumRows() <= 1 || stats.getDataSize() <= 0)
+      if (stats.getNumRows() <= 1 || stats.getDataSize() <= 0) {
+        if (isDebugEnabled) {
+          LOG.debug("Estimating row count for " + pred + " Original num rows: " + stats.getNumRows() +
+              " Original data size: " + stats.getDataSize() + " New num rows: 1");
+        }
         return 1;
+      }
 
       if (pred instanceof ExprNodeGenericFuncDesc) {
         ExprNodeGenericFuncDesc genFunc = (ExprNodeGenericFuncDesc) pred;
@@ -345,21 +383,29 @@ public class StatsRulesProcFactory {
         if (colType.equalsIgnoreCase(serdeConstants.BOOLEAN_TYPE_NAME)) {
           ColStatistics cs = stats.getColumnStatisticsFromColName(colName);
           if (cs != null) {
-            return cs.getNumTrues();
+            newNumRows = cs.getNumTrues();
+          } else {
+            // default
+            newNumRows = stats.getNumRows() / 2;
           }
+        } else {
+          // if not boolean column return half the number of rows
+          newNumRows = stats.getNumRows() / 2;
         }
-
-        // if not boolean column return half the number of rows
-        return stats.getNumRows() / 2;
       } else if (pred instanceof ExprNodeConstantDesc) {
 
         // special case for handling false constants
         ExprNodeConstantDesc encd = (ExprNodeConstantDesc) pred;
         if (Boolean.FALSE.equals(encd.getValue())) {
-          return 0;
+          newNumRows = 0;
         } else {
-          return stats.getNumRows();
+          newNumRows = stats.getNumRows();
         }
+      }
+
+      if (isDebugEnabled) {
+        LOG.debug("Estimating row count for " + pred + " Original num rows: " + stats.getNumRows() +
+            " New num rows: " + newNumRows);
       }
 
       return newNumRows;
@@ -443,15 +489,16 @@ public class StatsRulesProcFactory {
       }
 
       // 3. Calculate IN selectivity
-      float factor = 1;
+      double factor = 1d;
       for (int i = 0; i < columnStats.size(); i++) {
         long dvs = columnStats.get(i) == null ? 0 : columnStats.get(i).getCountDistint();
-        // ( num of distinct vals for col / num of rows ) * num of distinct vals for col in IN clause
-        float columnFactor = dvs == 0 ? 0.5f : ((float)dvs / numRows) * values.get(i).size();
-        factor *= columnFactor;
+        // (num of distinct vals for col in IN clause  / num of distinct vals for col )
+        double columnFactor = dvs == 0 ? 0.5d : ((double) values.get(i).size() / dvs);
+        // max can be 1, even when ndv is larger in IN clause than in column stats
+        factor *= columnFactor > 1d ? 1d : columnFactor;
       }
       float inFactor = HiveConf.getFloatVar(aspCtx.getConf(), HiveConf.ConfVars.HIVE_STATS_IN_CLAUSE_FACTOR);
-      return Math.round( (double)numRows * factor * inFactor);
+      return Math.round( (double) numRows * factor * inFactor);
     }
 
     private long evaluateBetweenExpr(Statistics stats, ExprNodeDesc pred, AnnotateStatsProcCtx aspCtx,
@@ -1409,7 +1456,12 @@ public class StatsRulesProcFactory {
         // get the join keys from parent ReduceSink operators
         for (int pos = 0; pos < parents.size(); pos++) {
           ReduceSinkOperator parent = (ReduceSinkOperator) jop.getParentOperators().get(pos);
-          Statistics parentStats = parent.getStatistics();
+          Statistics parentStats;
+          try {
+            parentStats = parent.getStatistics().clone();
+          } catch (CloneNotSupportedException e) {
+            throw new SemanticException(ErrorMsg.STATISTICS_CLONING_FAILED.getMsg());
+          }
           keyExprs = StatsUtils.getQualifedReducerKeyNames(parent.getConf()
               .getOutputKeyColumnNames());
 
@@ -1790,11 +1842,11 @@ public class StatsRulesProcFactory {
         Map<Integer, Long> rowCountParents) {
 
       if (newNumRows < 0) {
-        LOG.info("STATS-" + jop.toString() + ": Overflow in number of rows."
+        LOG.debug("STATS-" + jop.toString() + ": Overflow in number of rows. "
           + newNumRows + " rows will be set to Long.MAX_VALUE");
       }
       if (newNumRows == 0) {
-        LOG.info("STATS-" + jop.toString() + ": Equals 0 in number of rows."
+        LOG.debug("STATS-" + jop.toString() + ": Equals 0 in number of rows. "
             + newNumRows + " rows will be set to 1");
         newNumRows = 1;
       }
@@ -2214,12 +2266,12 @@ public class StatsRulesProcFactory {
       boolean updateNDV) {
 
     if (newNumRows < 0) {
-      LOG.info("STATS-" + op.toString() + ": Overflow in number of rows."
+      LOG.debug("STATS-" + op.toString() + ": Overflow in number of rows. "
           + newNumRows + " rows will be set to Long.MAX_VALUE");
       newNumRows = StatsUtils.getMaxIfOverflow(newNumRows);
     }
     if (newNumRows == 0) {
-      LOG.info("STATS-" + op.toString() + ": Equals 0 in number of rows."
+      LOG.debug("STATS-" + op.toString() + ": Equals 0 in number of rows. "
           + newNumRows + " rows will be set to 1");
       newNumRows = 1;
     }

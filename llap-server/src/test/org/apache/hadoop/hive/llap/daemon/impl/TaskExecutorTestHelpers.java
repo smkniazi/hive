@@ -44,6 +44,8 @@ import org.apache.tez.runtime.task.TaskRunner2Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.SocketFactory;
+
 public class TaskExecutorTestHelpers {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestTaskExecutorService.class);
@@ -52,7 +54,7 @@ public class TaskExecutorTestHelpers {
     long currentAttemptStartTime, boolean canFinish, long workTime) {
     SubmitWorkRequestProto
         request = createSubmitWorkRequestProto(fragmentNum, parallelism, firstAttemptStartTime, currentAttemptStartTime);
-    return createMockRequest(canFinish, workTime, request);
+    return createMockRequest(canFinish, canFinish, workTime, request);
   }
 
   public static MockRequest createMockRequest(int fragmentNum, int parallelism,
@@ -64,20 +66,25 @@ public class TaskExecutorTestHelpers {
     SubmitWorkRequestProto
         request = createSubmitWorkRequestProto(fragmentNum, parallelism, 0,
         firstAttemptStartTime, currentAttemptStartTime, withinDagPriority);
-    return createMockRequest(canFinish, workTime, request);
+    return createMockRequest(canFinish, canFinish, workTime, request);
   }
 
-  private static MockRequest createMockRequest(boolean canFinish,
+  private static MockRequest createMockRequest(boolean canFinish, boolean canFinishQueue,
       long workTime, SubmitWorkRequestProto request) {
     QueryFragmentInfo queryFragmentInfo = createQueryFragmentInfo(
         request.getWorkSpec().getVertex(), request.getFragmentNumber());
-    return new MockRequest(request, queryFragmentInfo, canFinish, workTime, null);
+    return new MockRequest(request, queryFragmentInfo, canFinish, canFinishQueue, workTime, null);
   }
 
   public static TaskExecutorService.TaskWrapper createTaskWrapper(
-      SubmitWorkRequestProto request, boolean canFinish, int workTime) {
+      SubmitWorkRequestProto request, boolean canFinish, boolean canFinishQueue, int workTime) {
     return new TaskExecutorService.TaskWrapper(
-        createMockRequest(canFinish, workTime, request), null);
+        createMockRequest(canFinish, canFinishQueue, workTime, request), null);
+  }
+  
+  public static TaskExecutorService.TaskWrapper createTaskWrapper(
+      SubmitWorkRequestProto request, boolean canFinish, int workTime) {
+    return createTaskWrapper(request, canFinish, canFinish, workTime);
   }
 
   public static QueryFragmentInfo createQueryFragmentInfo(
@@ -91,7 +98,7 @@ public class TaskExecutorTestHelpers {
         new QueryInfo(queryIdentifier, "fake_app_id_string", "fake_dag_id_string", "fake_dag_name",
             "fakeHiveQueryId", 1, "fakeUser",
             new ConcurrentHashMap<String, LlapDaemonProtocolProtos.SourceStateProto>(),
-            new String[0], null, "fakeUser", null);
+            new String[0], null, "fakeUser", null, null);
     return queryInfo;
   }
 
@@ -132,6 +139,7 @@ public class TaskExecutorTestHelpers {
             VertexOrBinary.newBuilder().setVertex(
             SignableVertexSpec.newBuilder()
                 .setDagName(dagName)
+                .setHiveQueryId(dagName)
                 .setUser("MockUser")
                 .setTokenIdentifier("MockToken_1")
                 .setQueryIdentifier(
@@ -163,7 +171,7 @@ public class TaskExecutorTestHelpers {
 
   public static class MockRequest extends TaskRunnerCallable {
     private final long workTime;
-    private final boolean canFinish;
+    private final boolean canFinish, canFinishQueue;
 
     private final AtomicBoolean isStarted = new AtomicBoolean(false);
     private final AtomicBoolean isFinished = new AtomicBoolean(false);
@@ -175,18 +183,22 @@ public class TaskExecutorTestHelpers {
     private final Condition sleepCondition = lock.newCondition();
     private boolean shouldSleep = true;
     private final Condition finishedCondition = lock.newCondition();
+    private final Object killDelay = new Object();
+    private boolean isOkToFinish = true;
 
     public MockRequest(SubmitWorkRequestProto requestProto, QueryFragmentInfo fragmentInfo,
-                       boolean canFinish, long workTime, TezEvent initialEvent) {
+                       boolean canFinish, boolean canFinishQueue, long workTime,
+                       TezEvent initialEvent) {
       super(requestProto, fragmentInfo, new Configuration(),
           new ExecutionContextImpl("localhost"), null, new Credentials(), 0, mock(AMReporter.class), null, mock(
               LlapDaemonExecutorMetrics.class),
           mock(KilledTaskHandler.class), mock(
               FragmentCompletionHandler.class), new DefaultHadoopShim(), null,
               requestProto.getWorkSpec().getVertex(), initialEvent, null, mock(
-              SchedulerFragmentCompletingListener.class));
+              SchedulerFragmentCompletingListener.class), mock(SocketFactory.class));
       this.workTime = workTime;
       this.canFinish = canFinish;
+      this.canFinishQueue = canFinishQueue;
     }
 
     @Override
@@ -204,17 +216,19 @@ public class TaskExecutorTestHelpers {
         lock.lock();
         try {
           if (shouldSleep) {
+            logInfo(super.getRequestId() + " is sleeping for " + workTime, null);
             sleepCondition.await(workTime, TimeUnit.MILLISECONDS);
           }
         } catch (InterruptedException e) {
           wasInterrupted.set(true);
-          return new TaskRunner2Result(EndReason.KILL_REQUESTED, null, null, false);
+          return handleKill();
         } finally {
           lock.unlock();
         }
         if (wasKilled.get()) {
-          return new TaskRunner2Result(EndReason.KILL_REQUESTED, null, null, false);
+          return handleKill();
         } else {
+          logInfo(super.getRequestId() + " succeeded", null);
           return new TaskRunner2Result(EndReason.SUCCESS, null, null, false);
         }
       } finally {
@@ -225,6 +239,33 @@ public class TaskExecutorTestHelpers {
         } finally {
           lock.unlock();
         }
+      }
+    }
+
+    private TaskRunner2Result handleKill() {
+      boolean hasLogged = false;
+      while (true) {
+        synchronized (killDelay) {
+          if (isOkToFinish) break;
+          if (!hasLogged) {
+            logInfo("Waiting after the kill: " + getRequestId());
+            hasLogged = true;
+          }
+          try {
+            killDelay.wait(100);
+          } catch (InterruptedException e) {
+          }
+        }
+      }
+      logInfo("Finished with the kill: " + getRequestId());
+      return new TaskRunner2Result(EndReason.KILL_REQUESTED, null, null, false);
+    }
+
+    public void unblockKill() {
+      synchronized (killDelay) {
+        logInfo("Unblocking the kill: " + getRequestId());
+        isOkToFinish = true;
+        killDelay.notifyAll();
       }
     }
 
@@ -288,6 +329,15 @@ public class TaskExecutorTestHelpers {
     @Override
     public boolean canFinish() {
       return canFinish;
+    }
+
+    @Override
+    public boolean canFinishForPriority() {
+      return canFinishQueue;
+    }
+
+    public void setSleepAfterKill() {
+      isOkToFinish = false;
     }
   }
 

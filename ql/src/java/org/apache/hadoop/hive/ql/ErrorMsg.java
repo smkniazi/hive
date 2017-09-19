@@ -277,8 +277,8 @@ public enum ErrorMsg {
     "Grouping sets aggregations (with rollups or cubes) are not allowed if aggregation function " +
     "parameters overlap with the aggregation functions columns"),
 
-  HIVE_GROUPING_SETS_AGGR_NOFUNC(10211,
-    "Grouping sets aggregations are not allowed if no aggregation function is presented"),
+  HIVE_GROUPING_SETS_EMPTY(10211,
+    "Empty grouping sets not allowed"),
 
   HIVE_UNION_REMOVE_OPTIMIZATION_NEEDS_SUBDIRECTORIES(10212,
     "In order to use hive.optimize.union.remove, the hadoop version that you are using " +
@@ -398,6 +398,9 @@ public enum ErrorMsg {
       "time."),
   DISTINCT_NOT_SUPPORTED(10285, "Distinct keyword is not support in current context"),
   NONACID_COMPACTION_NOT_SUPPORTED(10286, "Compaction is not allowed on non-ACID table {0}.{1}", true),
+  MASKING_FILTERING_ON_ACID_NOT_SUPPORTED(10287,
+      "Detected {0}.{1} has row masking/column filtering enabled, " +
+      "which is not supported for query involving ACID operations", true),
 
   UPDATEDELETE_PARSE_ERROR(10290, "Encountered parse error while parsing rewritten merge/update or " +
       "delete query"),

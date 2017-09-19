@@ -157,9 +157,13 @@ import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.thrift.TException;
 import org.datanucleus.AbstractNucleusContext;
 import org.datanucleus.ClassLoaderResolver;
+import org.datanucleus.ClassLoaderResolverImpl;
 import org.datanucleus.NucleusContext;
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.store.rdbms.exceptions.MissingTableException;
+import org.datanucleus.store.scostore.Store;
+import org.datanucleus.util.WeakValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,6 +196,7 @@ public class ObjectStore implements RawStore, Configurable {
   private static final Map<String, Class> PINCLASSMAP;
   private static final String HOSTNAME;
   private static final String USER;
+  private static final String JDO_PARAM = ":param";
   static {
     Map<String, Class> map = new HashMap<String, Class>();
     map.put("table", MTable.class);
@@ -280,6 +285,9 @@ public class ObjectStore implements RawStore, Configurable {
       boolean propsChanged = !propsFromConf.equals(prop);
 
       if (propsChanged) {
+        if (pmf != null){
+          clearOutPmfClassLoaderCache(pmf);
+        }
         pmf = null;
         prop = null;
       }
@@ -842,21 +850,13 @@ public class ObjectStore implements RawStore, Configurable {
       // Take the pattern and split it on the | to get all the composing
       // patterns
       String[] subpatterns = pattern.trim().split("\\|");
-      String queryStr = "select name from org.apache.hadoop.hive.metastore.model.MDatabase where (";
-      boolean first = true;
-      for (String subpattern : subpatterns) {
-        subpattern = "(?i)" + subpattern.replaceAll("\\*", ".*");
-        if (!first) {
-          queryStr = queryStr + " || ";
-        }
-        queryStr = queryStr + " name.matches(\"" + subpattern + "\")";
-        first = false;
-      }
-      queryStr = queryStr + ")";
-      query = pm.newQuery(queryStr);
+      StringBuilder filterBuilder = new StringBuilder();
+      List<String> parameterVals = new ArrayList<>(subpatterns.length);
+      appendPatternCondition(filterBuilder, "name", subpatterns, parameterVals);
+      query = pm.newQuery(MDatabase.class, filterBuilder.toString());
       query.setResult("name");
       query.setOrdering("name ascending");
-      Collection names = (Collection) query.execute();
+      Collection names = (Collection) query.executeWithArray(parameterVals.toArray(new String[parameterVals.size()]));
       databases = new ArrayList<String>();
       for (Iterator i = names.iterator(); i.hasNext();) {
         databases.add((String) i.next());
@@ -1215,28 +1215,21 @@ public class ObjectStore implements RawStore, Configurable {
       dbName = HiveStringUtils.normalizeIdentifier(dbName);
       // Take the pattern and split it on the | to get all the composing
       // patterns
-      String[] subpatterns = pattern.trim().split("\\|");
-      String queryStr =
-          "select tableName from org.apache.hadoop.hive.metastore.model.MTable "
-              + "where database.name == dbName && (";
-      boolean first = true;
-      for (String subpattern : subpatterns) {
-        subpattern = "(?i)" + subpattern.replaceAll("\\*", ".*");
-        if (!first) {
-          queryStr = queryStr + " || ";
-        }
-        queryStr = queryStr + " tableName.matches(\"" + subpattern + "\")";
-        first = false;
+      List<String> parameterVals = new ArrayList<>();
+      StringBuilder filterBuilder = new StringBuilder();
+      //adds database.name == dbName to the filter
+      appendSimpleCondition(filterBuilder, "database.name", new String[] {dbName}, parameterVals);
+      if(pattern != null) {
+        appendPatternCondition(filterBuilder, "tableName", pattern, parameterVals);
       }
-      queryStr = queryStr + ")";
-      if (tableType != null) {
-        queryStr = queryStr + " && tableType.matches(\"" + tableType.toString() + "\")";
+      if(tableType != null) {
+        appendPatternCondition(filterBuilder, "tableType", new String[] {tableType.toString()}, parameterVals);
       }
-      query = pm.newQuery(queryStr);
-      query.declareParameters("java.lang.String dbName");
+
+      query = pm.newQuery(MTable.class, filterBuilder.toString());
       query.setResult("tableName");
       query.setOrdering("tableName ascending");
-      Collection names = (Collection) query.execute(dbName);
+      Collection names = (Collection) query.executeWithArray(parameterVals.toArray(new String[parameterVals.size()]));
       tbls = new ArrayList<String>();
       for (Iterator i = names.iterator(); i.hasNext();) {
         tbls.add((String) i.next());
@@ -1301,19 +1294,20 @@ public class ObjectStore implements RawStore, Configurable {
       openTransaction();
       // Take the pattern and split it on the | to get all the composing
       // patterns
-      StringBuilder builder = new StringBuilder();
+      StringBuilder filterBuilder = new StringBuilder();
+      List<String> parameterVals = new ArrayList<>();
       if (dbNames != null && !dbNames.equals("*")) {
-        appendPatternCondition(builder, "database.name", dbNames);
+        appendPatternCondition(filterBuilder, "database.name", dbNames, parameterVals);
       }
       if (tableNames != null && !tableNames.equals("*")) {
-        appendPatternCondition(builder, "tableName", tableNames);
+        appendPatternCondition(filterBuilder, "tableName", tableNames, parameterVals);
       }
       if (tableTypes != null && !tableTypes.isEmpty()) {
-        appendSimpleCondition(builder, "tableType", tableTypes.toArray(new String[0]));
+        appendSimpleCondition(filterBuilder, "tableType", tableTypes.toArray(new String[0]), parameterVals);
       }
 
-      query = pm.newQuery(MTable.class, builder.toString());
-      Collection<MTable> tables = (Collection<MTable>) query.execute();
+      query = pm.newQuery(MTable.class, filterBuilder.toString());
+      Collection<MTable> tables = (Collection<MTable>) query.executeWithArray(parameterVals.toArray(new String[parameterVals.size()]));
       for (MTable table : tables) {
         TableMeta metaData = new TableMeta(
             table.getDatabase().getName(), table.getTableName(), table.getTableType());
@@ -1332,19 +1326,24 @@ public class ObjectStore implements RawStore, Configurable {
     return metas;
   }
 
+  private StringBuilder appendPatternCondition(StringBuilder filterBuilder, String fieldName,
+      String[] elements, List<String> parameterVals) {
+    return appendCondition(filterBuilder, fieldName, elements, true, parameterVals);
+  }
+
   private StringBuilder appendPatternCondition(StringBuilder builder,
-      String fieldName, String elements) {
+      String fieldName, String elements, List<String> parameters) {
       elements = HiveStringUtils.normalizeIdentifier(elements);
-    return appendCondition(builder, fieldName, elements.split("\\|"), true);
+    return appendCondition(builder, fieldName, elements.split("\\|"), true, parameters);
   }
 
   private StringBuilder appendSimpleCondition(StringBuilder builder,
-      String fieldName, String[] elements) {
-    return appendCondition(builder, fieldName, elements, false);
+      String fieldName, String[] elements, List<String> parameters) {
+    return appendCondition(builder, fieldName, elements, false, parameters);
   }
 
   private StringBuilder appendCondition(StringBuilder builder,
-      String fieldName, String[] elements, boolean pattern) {
+      String fieldName, String[] elements, boolean pattern, List<String> parameters) {
     if (builder.length() > 0) {
       builder.append(" && ");
     }
@@ -1354,14 +1353,15 @@ public class ObjectStore implements RawStore, Configurable {
       if (pattern) {
         element = "(?i)" + element.replaceAll("\\*", ".*");
       }
+      parameters.add(element);
       if (builder.length() > length) {
         builder.append(" || ");
       }
       builder.append(fieldName);
       if (pattern) {
-        builder.append(".matches(\"").append(element).append("\")");
+        builder.append(".matches(").append(JDO_PARAM).append(parameters.size()).append(")");
       } else {
-        builder.append(" == \"").append(element).append("\"");
+        builder.append(" == ").append(JDO_PARAM).append(parameters.size());
       }
     }
     builder.append(" )");
@@ -7234,7 +7234,7 @@ public class ObjectStore implements RawStore, Configurable {
     for (String colName : colNames) {
       boolean foundCol = false;
       for (FieldSchema mCol : colList) {
-        if (mCol.getName().equals(colName.trim())) {
+        if (mCol.getName().equals(colName)) {
           foundCol = true;
           break;
         }
@@ -7346,13 +7346,16 @@ public class ObjectStore implements RawStore, Configurable {
   @Override
   public AggrStats get_aggr_stats_for(String dbName, String tblName,
       final List<String> partNames, final List<String> colNames) throws MetaException, NoSuchObjectException {
-    final boolean  useDensityFunctionForNDVEstimation = HiveConf.getBoolVar(getConf(), HiveConf.ConfVars.HIVE_METASTORE_STATS_NDV_DENSITY_FUNCTION);
+    final boolean useDensityFunctionForNDVEstimation = HiveConf.getBoolVar(getConf(),
+        HiveConf.ConfVars.HIVE_METASTORE_STATS_NDV_DENSITY_FUNCTION);
+    final double ndvTuner = HiveConf.getFloatVar(getConf(),
+        HiveConf.ConfVars.HIVE_METASTORE_STATS_NDV_TUNER);
     return new GetHelper<AggrStats>(dbName, tblName, true, false) {
       @Override
       protected AggrStats getSqlResult(GetHelper<AggrStats> ctx)
           throws MetaException {
         return directSql.aggrColStatsForPartitions(dbName, tblName, partNames,
-            colNames, useDensityFunctionForNDVEstimation);
+            colNames, useDensityFunctionForNDVEstimation, ndvTuner);
       }
       @Override
       protected AggrStats getJdoResult(GetHelper<AggrStats> ctx)
@@ -8233,25 +8236,16 @@ public class ObjectStore implements RawStore, Configurable {
       dbName = HiveStringUtils.normalizeIdentifier(dbName);
       // Take the pattern and split it on the | to get all the composing
       // patterns
-      String[] subpatterns = pattern.trim().split("\\|");
-      String queryStr =
-          "select functionName from org.apache.hadoop.hive.metastore.model.MFunction "
-              + "where database.name == dbName && (";
-      boolean first = true;
-      for (String subpattern : subpatterns) {
-        subpattern = "(?i)" + subpattern.replaceAll("\\*", ".*");
-        if (!first) {
-          queryStr = queryStr + " || ";
-        }
-        queryStr = queryStr + " functionName.matches(\"" + subpattern + "\")";
-        first = false;
+      List<String> parameterVals = new ArrayList<>();
+      StringBuilder filterBuilder = new StringBuilder();
+      appendSimpleCondition(filterBuilder, "database.name", new String[] { dbName }, parameterVals);
+      if(pattern != null) {
+        appendPatternCondition(filterBuilder, "functionName", pattern, parameterVals);
       }
-      queryStr = queryStr + ")";
-      query = pm.newQuery(queryStr);
-      query.declareParameters("java.lang.String dbName");
+      query = pm.newQuery(MFunction.class, filterBuilder.toString());
       query.setResult("functionName");
       query.setOrdering("functionName ascending");
-      Collection names = (Collection) query.execute(dbName);
+      Collection names = (Collection) query.executeWithArray(parameterVals.toArray(new String[parameterVals.size()]));
       funcs = new ArrayList<String>();
       for (Iterator i = names.iterator(); i.hasNext();) {
         funcs.add((String) i.next());
@@ -8449,20 +8443,99 @@ public class ObjectStore implements RawStore, Configurable {
    */
   public static void unCacheDataNucleusClassLoaders() {
     PersistenceManagerFactory pmf = ObjectStore.getPMF();
-    if ((pmf != null) && (pmf instanceof JDOPersistenceManagerFactory)) {
-      JDOPersistenceManagerFactory jdoPmf = (JDOPersistenceManagerFactory) pmf;
-      NucleusContext nc = jdoPmf.getNucleusContext();
-      try {
-        Field classLoaderResolverMap = AbstractNucleusContext.class.getDeclaredField(
-            "classLoaderResolverMap");
-        classLoaderResolverMap.setAccessible(true);
-        classLoaderResolverMap.set(nc, new HashMap<String, ClassLoaderResolver>());
-        LOG.debug("Removed cached classloaders from DataNucleus NucleusContext");
-      } catch (Exception e) {
-        LOG.warn("Failed to remove cached classloaders from DataNucleus NucleusContext ", e);
+    clearOutPmfClassLoaderCache(pmf);
+  }
+
+  private static void clearOutPmfClassLoaderCache(PersistenceManagerFactory pmf) {
+    if ((pmf == null) || (!(pmf instanceof JDOPersistenceManagerFactory))) {
+      return;
+    }
+    // NOTE : This is hacky, and this section of code is fragile depending on DN code varnames
+    // so it's likely to stop working at some time in the future, especially if we upgrade DN
+    // versions, so we actively need to find a better way to make sure the leak doesn't happen
+    // instead of just clearing out the cache after every call.
+    JDOPersistenceManagerFactory jdoPmf = (JDOPersistenceManagerFactory) pmf;
+    NucleusContext nc = jdoPmf.getNucleusContext();
+    try {
+      Field pmCache = pmf.getClass().getDeclaredField("pmCache");
+      pmCache.setAccessible(true);
+      Set<JDOPersistenceManager> pmSet = (Set<JDOPersistenceManager>)pmCache.get(pmf);
+      for (JDOPersistenceManager pm : pmSet) {
+        org.datanucleus.ExecutionContext ec = (org.datanucleus.ExecutionContext)pm.getExecutionContext();
+        if (ec instanceof org.datanucleus.ExecutionContextThreadedImpl) {
+          ClassLoaderResolver clr = ((org.datanucleus.ExecutionContextThreadedImpl)ec).getClassLoaderResolver();
+          clearClr(clr);
+        }
+      }
+      org.datanucleus.plugin.PluginManager pluginManager = jdoPmf.getNucleusContext().getPluginManager();
+      Field registryField = pluginManager.getClass().getDeclaredField("registry");
+      registryField.setAccessible(true);
+      org.datanucleus.plugin.PluginRegistry registry = (org.datanucleus.plugin.PluginRegistry)registryField.get(pluginManager);
+      if (registry instanceof org.datanucleus.plugin.NonManagedPluginRegistry) {
+        org.datanucleus.plugin.NonManagedPluginRegistry nRegistry = (org.datanucleus.plugin.NonManagedPluginRegistry)registry;
+        Field clrField = nRegistry.getClass().getDeclaredField("clr");
+        clrField.setAccessible(true);
+        ClassLoaderResolver clr = (ClassLoaderResolver)clrField.get(nRegistry);
+        clearClr(clr);
+      }
+      if (nc instanceof org.datanucleus.PersistenceNucleusContextImpl) {
+        org.datanucleus.PersistenceNucleusContextImpl pnc = (org.datanucleus.PersistenceNucleusContextImpl)nc;
+        org.datanucleus.store.types.TypeManagerImpl tm = (org.datanucleus.store.types.TypeManagerImpl)pnc.getTypeManager();
+        Field clrField = tm.getClass().getDeclaredField("clr");
+        clrField.setAccessible(true);
+        ClassLoaderResolver clr = (ClassLoaderResolver)clrField.get(tm);
+        clearClr(clr);
+        Field storeMgrField = pnc.getClass().getDeclaredField("storeMgr");
+        storeMgrField.setAccessible(true);
+        org.datanucleus.store.rdbms.RDBMSStoreManager storeMgr = (org.datanucleus.store.rdbms.RDBMSStoreManager)storeMgrField.get(pnc);
+        Field backingStoreField = storeMgr.getClass().getDeclaredField("backingStoreByMemberName");
+        backingStoreField.setAccessible(true);
+        Map<String, Store> backingStoreByMemberName = (Map<String, Store>)backingStoreField.get(storeMgr);
+        for (Store store : backingStoreByMemberName.values()) {
+          org.datanucleus.store.rdbms.scostore.BaseContainerStore baseStore = (org.datanucleus.store.rdbms.scostore.BaseContainerStore)store;
+          clrField = org.datanucleus.store.rdbms.scostore.BaseContainerStore.class.getDeclaredField("clr");
+          clrField.setAccessible(true);
+          clr = (ClassLoaderResolver)clrField.get(baseStore);
+          clearClr(clr);
+        }
+      }
+      Field classLoaderResolverMap = AbstractNucleusContext.class.getDeclaredField(
+          "classLoaderResolverMap");
+      classLoaderResolverMap.setAccessible(true);
+      Map<String,ClassLoaderResolver> loaderMap =
+          (Map<String, ClassLoaderResolver>) classLoaderResolverMap.get(nc);
+      for (ClassLoaderResolver clr : loaderMap.values()){
+        clearClr(clr);
+      }
+      classLoaderResolverMap.set(nc, new HashMap<String, ClassLoaderResolver>());
+      LOG.debug("Removed cached classloaders from DataNucleus NucleusContext");
+    } catch (Exception e) {
+      LOG.warn("Failed to remove cached classloaders from DataNucleus NucleusContext ", e);
+    }
+  }
+
+  private static void clearClr(ClassLoaderResolver clr) throws Exception {
+    if (clr != null){
+      if (clr instanceof ClassLoaderResolverImpl){
+        ClassLoaderResolverImpl clri = (ClassLoaderResolverImpl) clr;
+        long resourcesCleared = clearFieldMap(clri,"resources");
+        long loadedClassesCleared = clearFieldMap(clri,"loadedClasses");
+        long unloadedClassesCleared = clearFieldMap(clri, "unloadedClasses");
+        LOG.debug("Cleared ClassLoaderResolverImpl: " +
+            resourcesCleared + "," + loadedClassesCleared + "," + unloadedClassesCleared);
       }
     }
   }
+  private static long clearFieldMap(ClassLoaderResolverImpl clri, String mapFieldName) throws Exception {
+    Field mapField = ClassLoaderResolverImpl.class.getDeclaredField(mapFieldName);
+    mapField.setAccessible(true);
+
+    Map<String,Class> map = (Map<String, Class>) mapField.get(clri);
+    long sz = map.size();
+    mapField.set(clri, Collections.synchronizedMap(new WeakValueMap()));
+    return sz;
+  }
+
 
   @Override
   public List<SQLPrimaryKey> getPrimaryKeys(String db_name, String tbl_name) throws MetaException {

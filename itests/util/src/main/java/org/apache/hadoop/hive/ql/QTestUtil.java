@@ -1382,6 +1382,10 @@ public class QTestUtil {
     commandArgs = commandArgs.replaceAll("\\$\\{hiveconf:hive\\.metastore\\.warehouse\\.dir\\}",
       wareHouseDir);
 
+    if (SessionState.get() != null) {
+      SessionState.get().setLastCommand(commandName + " " + commandArgs.trim());
+    }
+
     enableTestOnlyCmd(SessionState.get().getConf());
 
     try {
@@ -2174,7 +2178,7 @@ public class QTestUtil {
   public void failed(int ecode, String fname, String debugHint) {
     String command = SessionState.get() != null ? SessionState.get().getLastCommand() : null;
     String message = "Client execution failed with error code = " + ecode +
-        (command != null ? " running " + command : "") + "fname=" + fname +
+        (command != null ? " running \"" + command : "") + "\" fname=" + fname + " " +
         (debugHint != null ? debugHint : "");
     LOG.error(message);
     Assert.fail(message);
@@ -2322,6 +2326,7 @@ public class QTestUtil {
           LOG.debug("Resultset : " +  tblName + " | " + tblId);
         }
       }
+
       for (Map.Entry<String, Integer> entry : tableNameToID.entrySet()) {
         String toReplace1 = ",_" + entry.getKey() + "_" ;
         String replacementString1 = ","+entry.getValue();
@@ -2340,10 +2345,10 @@ public class QTestUtil {
       }
 
       // Load the column stats and table params with 30 TB scale
-      String importStatement1 =  "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE_LOBS_FROM_EXTFILE(null, '" + "TAB_COL_STATS" +
+      String importStatement1 =  "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE(null, '" + "TAB_COL_STATS" +
         "', '" + tmpFileLoc1.getAbsolutePath() +
         "', ',', null, 'UTF-8', 1)";
-      String importStatement2 =  "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE_LOBS_FROM_EXTFILE(null, '" + "TABLE_PARAMS" +
+      String importStatement2 =  "CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE(null, '" + "TABLE_PARAMS" +
         "', '" + tmpFileLoc2.getAbsolutePath() +
         "', '@', null, 'UTF-8', 1)";
       try {

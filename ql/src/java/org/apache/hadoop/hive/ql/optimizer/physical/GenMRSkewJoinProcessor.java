@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.ColumnInfo;
 import org.apache.hadoop.hive.ql.exec.ConditionalTask;
@@ -261,7 +262,7 @@ public final class GenMRSkewJoinProcessor {
       Operator<? extends OperatorDesc> tblScan_op = parentOps[i];
 
       ArrayList<String> aliases = new ArrayList<String>();
-      String alias = src.toString();
+      String alias = src.toString().intern();
       aliases.add(alias);
       Path bigKeyDirPath = bigKeysDirMap.get(src);
       newPlan.addPathToAlias(bigKeyDirPath, aliases);
@@ -382,25 +383,28 @@ public final class GenMRSkewJoinProcessor {
     return true;
   }
 
-  private static String skewJoinPrefix = "hive_skew_join";
-  private static String UNDERLINE = "_";
-  private static String BIGKEYS = "bigkeys";
-  private static String SMALLKEYS = "smallkeys";
-  private static String RESULTS = "results";
+  private static final String skewJoinPrefix = "hive_skew_join";
+  private static final String UNDERLINE = "_";
+  private static final String BIGKEYS = "bigkeys";
+  private static final String SMALLKEYS = "smallkeys";
+  private static final String RESULTS = "results";
 
   static Path getBigKeysDir(Path baseDir, Byte srcTbl) {
-    return new Path(baseDir, skewJoinPrefix + UNDERLINE + BIGKEYS + UNDERLINE + srcTbl);
+    return StringInternUtils.internUriStringsInPath(
+        new Path(baseDir, skewJoinPrefix + UNDERLINE + BIGKEYS + UNDERLINE + srcTbl));
   }
 
   static Path getBigKeysSkewJoinResultDir(Path baseDir, Byte srcTbl) {
-    return new Path(baseDir, skewJoinPrefix + UNDERLINE + BIGKEYS
-        + UNDERLINE + RESULTS + UNDERLINE + srcTbl);
+    return StringInternUtils.internUriStringsInPath(
+        new Path(baseDir, skewJoinPrefix + UNDERLINE + BIGKEYS
+        + UNDERLINE + RESULTS + UNDERLINE + srcTbl));
   }
 
   static Path getSmallKeysDir(Path baseDir, Byte srcTblBigTbl,
       Byte srcTblSmallTbl) {
-    return new Path(baseDir, skewJoinPrefix + UNDERLINE + SMALLKEYS
-        + UNDERLINE + srcTblBigTbl + UNDERLINE + srcTblSmallTbl);
+    return StringInternUtils.internUriStringsInPath(
+        new Path(baseDir, skewJoinPrefix + UNDERLINE + SMALLKEYS
+        + UNDERLINE + srcTblBigTbl + UNDERLINE + srcTblSmallTbl));
   }
 
 }

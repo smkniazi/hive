@@ -315,9 +315,11 @@ public class HiveStatement implements java.sql.Statement {
       isExecuteStatementFailed = false;
     } catch (SQLException eS) {
       isExecuteStatementFailed = true;
+      isLogBeingGenerated = false;
       throw eS;
     } catch (Exception ex) {
       isExecuteStatementFailed = true;
+      isLogBeingGenerated = false;
       throw new SQLException(ex.toString(), "08S01", ex);
     }
   }
@@ -345,7 +347,14 @@ public class HiveStatement implements java.sql.Statement {
 
   TGetOperationStatusResp waitForOperationToComplete() throws SQLException {
     TGetOperationStatusReq statusReq = new TGetOperationStatusReq(stmtHandle);
-    statusReq.setGetProgressUpdate(inPlaceUpdateStream != InPlaceUpdateStream.NO_OP);
+    boolean shouldGetProgressUpdate = inPlaceUpdateStream != InPlaceUpdateStream.NO_OP;
+    statusReq.setGetProgressUpdate(shouldGetProgressUpdate);
+    if (!shouldGetProgressUpdate) {
+      /**
+       * progress bar is completed if there is nothing we want to request in the first place.
+       */
+      inPlaceUpdateStream.getEventNotifier().progressBarCompleted();
+    }
     TGetOperationStatusResp statusResp = null;
 
     // Poll on the operation status, till the operation is complete
@@ -391,6 +400,10 @@ public class HiveStatement implements java.sql.Statement {
       }
     }
 
+    /*
+      we set progress bar to be completed when hive query execution has completed
+    */
+    inPlaceUpdateStream.getEventNotifier().progressBarCompleted();
     return statusResp;
   }
 
@@ -903,10 +916,6 @@ public class HiveStatement implements java.sql.Statement {
         if (isQueryClosed) {
           throw new ClosedOrCancelledStatementException("Method getQueryLog() failed. The " +
               "statement has been closed or cancelled.");
-        }
-        if (isExecuteStatementFailed) {
-          throw new SQLException("Method getQueryLog() failed. Because the stmtHandle in " +
-              "HiveStatement is null and the statement execution might fail.");
         } else {
           return logs;
         }

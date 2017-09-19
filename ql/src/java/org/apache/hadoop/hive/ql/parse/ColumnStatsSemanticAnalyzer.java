@@ -109,7 +109,7 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
     }
   }
 
-  private void handlePartialPartitionSpec(Map<String,String> partSpec) throws
+  private void handlePartialPartitionSpec(Map<String,String> partSpec, ColumnStatsAutoGatherContext context) throws
     SemanticException {
 
     // If user has fully specified partition, validate that partition exists
@@ -120,7 +120,7 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
     try {
       // for static partition, it may not exist when HIVESTATSCOLAUTOGATHER is
       // set to true
-      if (!conf.getBoolVar(ConfVars.HIVESTATSCOLAUTOGATHER)) {
+      if (context == null) {
         if ((partValsSpecified == tbl.getPartitionKeys().size())
             && (db.getPartition(tbl, partSpec, false, null, false) == null)) {
           throw new SemanticException(ErrorMsg.COLUMNSTATSCOLLECTOR_INVALID_PARTITION.getMsg()
@@ -242,6 +242,10 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
     return colTypes;
   }
 
+  private String escapeBackTicks(String colName) {
+    return colName.replaceAll("`", "``");
+  }
+
   private String genRewrittenQuery(List<String> colNames, int numBitVectors, Map<String,String> partSpec,
     boolean isPartitionStats) throws SemanticException{
     StringBuilder rewrittenQueryBuilder = new StringBuilder("select ");
@@ -252,7 +256,7 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
         rewrittenQueryBuilder.append(" , ");
       }
       rewrittenQueryBuilder.append("compute_stats(`");
-      rewrittenQueryBuilder.append(colNames.get(i));
+      rewrittenQueryBuilder.append(escapeBackTicks(colNames.get(i)));
       rewrittenQueryBuilder.append("` , ");
       rewrittenQueryBuilder.append(numBitVectors);
       rewrittenQueryBuilder.append(" )");
@@ -294,14 +298,12 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
       throw new SemanticException(ErrorMsg.COLUMNSTATSCOLLECTOR_IO_ERROR.getMsg());
     }
     ctx.setCmd(rewrittenQuery);
-    ParseDriver pd = new ParseDriver();
 
     try {
-      rewrittenTree = pd.parse(rewrittenQuery, ctx);
+      rewrittenTree = ParseUtils.parse(rewrittenQuery, ctx);
     } catch (ParseException e) {
       throw new SemanticException(ErrorMsg.COLUMNSTATSCOLLECTOR_PARSE_ERROR.getMsg());
     }
-    rewrittenTree = ParseUtils.findRootNonNullToken(rewrittenTree);
     return rewrittenTree;
   }
 
@@ -375,7 +377,7 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
       if (isPartitionStats) {
         isTableLevel = false;
         partSpec = AnalyzeCommandUtils.getPartKeyValuePairsFromAST(tbl, ast, conf);
-        handlePartialPartitionSpec(partSpec);
+        handlePartialPartitionSpec(partSpec, null);
       } else {
         isTableLevel = true;
       }
@@ -445,7 +447,7 @@ public class ColumnStatsSemanticAnalyzer extends SemanticAnalyzer {
     if (isPartitionStats) {
       isTableLevel = false;
       partSpec = AnalyzeCommandUtils.getPartKeyValuePairsFromAST(tbl, ast, conf);
-      handlePartialPartitionSpec(partSpec);
+      handlePartialPartitionSpec(partSpec, context);
     } else {
       isTableLevel = true;
     }

@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.2.0-SNAPSHOT</version>
+    <version>2.3.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -39,6 +39,12 @@
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-common</artifactId>
       <version>${project.version}</version>
+       <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
@@ -49,27 +55,55 @@
           <groupId>org.apache.hive</groupId>
             <artifactId>hive-exec</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-serde</artifactId>
       <version>${project.version}</version>
+       <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-metastore</artifactId>
       <version>${project.version}</version>
+         <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-shims</artifactId>
       <version>${project.version}</version>
+       <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-service-rpc</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- inter-project -->
     <dependency>
@@ -93,6 +127,10 @@
       <version>${zookeeper.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
         </exclusion>
@@ -107,7 +145,6 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
-      <optional>true</optional>
     </dependency>
     <!-- test inter-project -->
     <dependency>
@@ -127,7 +164,7 @@
    <profile>
       <id>dist</id>
       <properties>
-        <packaging.minimizeJar>true</packaging.minimizeJar>
+        <packaging.minimizeJar>false</packaging.minimizeJar>
       </properties>
     </profile>
   </profiles>
@@ -173,6 +210,7 @@
                     <exclude>META-INF/*.SF</exclude>
                     <exclude>META-INF/*.DSA</exclude>
                     <exclude>META-INF/*.RSA</exclude>
+                    <exclude>core-default.xml</exclude>
                   </excludes>
                 </filter>
               </filters>
@@ -180,12 +218,10 @@
                 <excludes>
                   <exclude>org.apache.commons:commons-compress</exclude>
                   <exclude>commons-configuration:commons-configuration</exclude>
-                  <exclude>io.hops:hadoop-yarn*</exclude>
-                  <exclude>io.hops:hadoop-mapreduce*</exclude>
-                  <exclude>io.hops:hadoop-hdfs</exclude>
-                  <exclude>io.hops:hadoop-client</exclude>
-                  <exclude>io.hops:hadoop-annotations</exclude>
-                  <exclude>io.hops:hadoop-auth</exclude>
+                  <exclude>io.hops:*</exclude>
+                  <exclude>io.hops.gpu:*</exclude>
+                  <exclude>io.hops.metadata:*</exclude>
+                  <exclude>io.hops.streaming:*</exclude>
                   <exclude>org.apache.hive:hive-vector-code-gen</exclude>
                   <exclude>org.apache.ant:*</exclude>
                   <exclude>junit:*</exclude>
@@ -197,6 +233,7 @@
                   <exclude>org.eclipse.jetty.aggregate:*</exclude>
                   <exclude>org.tukaani:*</exclude>
                   <exclude>io.airlift:*</exclude>
+                  <exclude>io.dropwizard.metrics:*</exclude>
                   <exclude>org.apache.velocity:*</exclude>
                   <exclude>net.sf.jpam:*</exclude>
                   <exclude>org.apache.avro:*</exclude>
@@ -228,6 +265,7 @@
                   <exclude>com.sun.xml.bind:*</exclude>
                   <exclude>com.thoughtworks.paranamer:*</exclude>
                   <exclude>com.twitter:*</exclude>
+                  <exclude>com.zaxxer:*</exclude>
                   <exclude>io.netty:*</exclude>
                   <exclude>javax.activation:*</exclude>
                   <exclude>javax.inject:*</exclude>
@@ -236,8 +274,7 @@
                   <exclude>javax.servlet:*</exclude>
                   <exclude>javax.servlet.jsp:*</exclude>
                   <exclude>javax.transaction:*</exclude>
-                  <exclude>javax.xml.bind:*</exclude>
-                  <exclude>javax.xml.stream:*</exclude>
+                  <exclude>javax.xml.*:*</exclude>
                   <exclude>jline:*</exclude>
                   <exclude>joda-time:*</exclude>
                   <exclude>net.java.dev.jets3t:*</exclude>
@@ -246,6 +283,8 @@
                   <exclude>org.apache.directory.api:*</exclude>
                   <exclude>org.apache.directory.server:*</exclude>
                   <exclude>org.apache.geronimo.specs:*</exclude>
+                  <exclude>org.apache.htrace:*</exclude>
+                  <exclude>org.apache.slider:*</exclude>
                   <exclude>org.codehaus.jackson:*</exclude>
                   <exclude>org.codehaus.jettison:*</exclude>
                   <exclude>org.datanucleus:*</exclude>
@@ -253,8 +292,11 @@
                   <exclude>org.htrace:*</exclude>
                   <exclude>org.mortbay.jetty:*</exclude>
                   <exclude>org.xerial.snappy:*</exclude>
+                  <exclude>com.tdunning:*</exclude>
                   <exclude>tomcat:*</exclude>
                   <exclude>xmlenc:*</exclude>
+                  <exclude>xerces:*</exclude>
+                  <exclude>xml-apis:*</exclude>
                 </excludes>
               </artifactSet>
               <relocations>
@@ -287,8 +329,12 @@
                   <shadedPattern>org.apache.hive.com.facebook</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>io.hops</pattern>
-                  <shadedPattern>org.apache.hive.io.hops</shadedPattern>
+                  <pattern>org.apache.zookeeper</pattern>
+                  <shadedPattern>org.apache.hive.org.apache.zookeeper</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.curator</pattern>
+                  <shadedPattern>org.apache.hive.org.apache.curator</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>com.beust</pattern>

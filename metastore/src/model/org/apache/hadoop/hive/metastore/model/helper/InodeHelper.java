@@ -1,18 +1,33 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.hadoop.hive.metastore.model.helper;
 
 import org.apache.hadoop.hive.conf.HiveConf;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.apache.hadoop.hive.metastore.api.MetaException;
-import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,8 +151,11 @@ public class InodeHelper {
       throw new MetaException("Invalid Path");
     }
 
+    int partitionId = calculatePartitionId(ROOT_INODE_ID, p[0], ROOT_DIR_DEPTH + 1);
+    int parentId = ROOT_INODE_ID;
+
     //Get the right root node
-    int curr = getRootNode(dbConn, p[0]);
+    int curr = findByInodePK(dbConn, parentId, p[0], partitionId);
     if (curr == -1) {
       try {
         dbConn.close();
@@ -145,8 +163,6 @@ public class InodeHelper {
       throw new MetaException("Could not resolve inode at path: " + path);
     }
 
-    int partitionId = -1;
-    int parentId = -1;
     //Move down the path
     for (int i = 1; i < p.length; i++) {
       partitionId = calculatePartitionId(curr, p[i], i+1);
@@ -163,11 +179,6 @@ public class InodeHelper {
     }
 
     return new InodePK(partitionId, parentId, p[p.length-1]);
-  }
-
-  private int getRootNode(Connection conn, String name) throws MetaException{
-    int partitionId = calculatePartitionId(ROOT_INODE_ID, name, ROOT_DIR_DEPTH + 1);
-    return findByInodePK(conn, ROOT_INODE_ID, name, partitionId);
   }
 
   private int findByInodePK(Connection conn, int parentId, String name, int partitionId) throws MetaException{

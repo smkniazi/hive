@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.2.0-SNAPSHOT</version>
+    <version>2.3.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -50,7 +50,7 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-common</artifactId>
       <version>${hadoop.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
          <exclusions>
             <exclusion>
             <groupId>org.slf4j</groupId>
@@ -66,20 +66,19 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${hadoop.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <version>${hadoop.version}</version>
       <type>test-jar</type>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-core</artifactId>
       <version>${hadoop.version}</version>
-      <optional>true</optional>
+      <scope>provided</scope>
           <exclusions>
             <exclusion>
             <groupId>org.slf4j</groupId>
@@ -95,44 +94,66 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-common</artifactId>
       <version>${hadoop.version}</version>
-      <optional>true</optional>
-          <exclusions>
-            <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commmons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commmons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
    </dependency>
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
       <version>${hadoop.version}</version>
       <type>test-jar</type>
-      <optional>true</optional>
-           <exclusions>
-            <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commmons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commmons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
   </dependency>
     <dependency>
       <groupId>org.apache.tez</groupId>
       <artifactId>tez-api</artifactId>
       <version>${tez.version}</version>
-      <optional>true</optional>
       <exclusions>
         <exclusion>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
+            <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-client</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -141,30 +162,97 @@
       <artifactId>tez-runtime-library</artifactId>
       <version>${tez.version}</version>
       <optional>true</optional>
-        <exclusions>
+      <exclusions>
         <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
-        </exclusion>
-          <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
+        </exclusion>
+        <exclusion>
             <groupId>commmons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-runtime-internals</artifactId>
+        </exclusion>
+      </exclusions>
    </dependency>
     <dependency>
       <groupId>org.apache.tez</groupId>
       <artifactId>tez-mapreduce</artifactId>
       <version>${tez.version}</version>
-      <optional>true</optional>
-        <exclusions>
+      <exclusions>
         <exclusion>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
+            <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-client</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-runtime-library</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-runtime-internals</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -172,19 +260,16 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-yarn-api</artifactId>
       <version>${hadoop.version}</version>
-      <optional>true</optional>
    </dependency>
    <dependency>
      <groupId>io.hops</groupId>
      <artifactId>hadoop-yarn-common</artifactId>
      <version>${hadoop.version}</version>
-     <optional>true</optional>
    </dependency>
    <dependency>
      <groupId>io.hops</groupId>
      <artifactId>hadoop-yarn-client</artifactId>
      <version>${hadoop.version}</version>
-     <optional>true</optional>
    </dependency>
    <dependency>
      <groupId>io.hops</groupId>
@@ -201,11 +286,59 @@
      <groupId>org.apache.tez</groupId>
      <artifactId>tez-tests</artifactId>
      <version>${tez.version}</version>
-      <optional>true</optional>
-       <exclusions>
+     <optional>true</optional>
+     <exclusions>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-runtime-library</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-mapreduce</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-examples</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.tez</groupId>
+            <artifactId>tez-dag</artifactId>
+        </exclusion>
         <exclusion>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>*</artifactId>
+            <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-common</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-client</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-common</artifactId>
         </exclusion>
       </exclusions>
      <type>test-jar</type>
@@ -214,7 +347,6 @@
      <groupId>io.hops</groupId>
      <artifactId>hadoop-yarn-server-tests</artifactId>
      <version>${hadoop.version}</version>
-      <optional>true</optional>
      <type>test-jar</type>
    </dependency>
    <dependency>
@@ -224,5 +356,4 @@
      <scope>provided</scope>
    </dependency>
   </dependencies>
-
 </project>

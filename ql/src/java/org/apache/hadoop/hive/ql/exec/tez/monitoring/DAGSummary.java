@@ -1,3 +1,20 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.hadoop.hive.ql.exec.tez.monitoring;
 
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -11,6 +28,7 @@ import org.apache.tez.common.counters.TaskCounter;
 import org.apache.tez.common.counters.TezCounter;
 import org.apache.tez.common.counters.TezCounters;
 import org.apache.tez.dag.api.DAG;
+import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.Vertex;
 import org.apache.tez.dag.api.client.DAGClient;
@@ -26,16 +44,11 @@ import java.util.*;
 
 class DAGSummary implements PrintSummary {
 
-  private static final int FILE_HEADER_SEPARATOR_WIDTH = InPlaceUpdate.MIN_TERMINAL_WIDTH + 34;
-  private static final String FILE_HEADER_SEPARATOR = new String(new char[FILE_HEADER_SEPARATOR_WIDTH]).replace("\0", "-");
-
-  private static final String FORMATTING_PATTERN = "%10s %12s %16s %13s %14s %13s %12s %14s %15s";
+  private static final String FILE_HEADER_SEPARATOR = new String(new char[InPlaceUpdate.MIN_TERMINAL_WIDTH]).replace("\0", "-");
+  private static final String FORMATTING_PATTERN = "%10s %17s %14s %14s %15s %16s";
   private static final String FILE_HEADER = String.format(
       FORMATTING_PATTERN,
       "VERTICES",
-      "TOTAL_TASKS",
-      "FAILED_ATTEMPTS",
-      "KILLED_TASKS",
       "DURATION(ms)",
       "CPU_TIME(ms)",
       "GC_TIME(ms)",
@@ -64,22 +77,56 @@ class DAGSummary implements PrintSummary {
     this.hiveCounters = hiveCounters(dagClient);
   }
 
+  private long hiveInputRecordsFromTezCounters(String vertexName, String inputVertexName) {
+    // Get the counters for the input vertex.
+    Set<StatusGetOpts> statusOptions = new HashSet<>(1);
+    statusOptions.add(StatusGetOpts.GET_COUNTERS);
+    VertexStatus inputVertexStatus = vertexStatus(statusOptions, inputVertexName);
+    final TezCounters inputVertexCounters = inputVertexStatus.getVertexCounters();
+
+    // eg, group name TaskCounter_Map_7_OUTPUT_Reducer_8, counter name OUTPUT_RECORDS
+    String groupName = formattedName("TaskCounter", inputVertexName, vertexName);
+    String counterName = "OUTPUT_RECORDS";
+
+    // Do not create counter if it does not exist -
+    // instead fall back to default behavior for determining input records.
+    TezCounter tezCounter = inputVertexCounters.getGroup(groupName).findCounter(counterName, false);
+    if (tezCounter == null) {
+      return -1;
+    } else {
+      return tezCounter.getValue();
+    }
+  }
+
+  private long hiveInputRecordsFromHiveCounters(String inputVertexName) {
+    // The record count from these counters may not be correct if the input vertex has
+    // edges to more than one vertex, since this value counts the records going to all
+    // destination vertices.
+
+    String intermediateRecordsCounterName = formattedName(
+        ReduceSinkOperator.Counter.RECORDS_OUT_INTERMEDIATE.toString(),
+        inputVertexName
+    );
+    String recordsOutCounterName = formattedName(FileSinkOperator.Counter.RECORDS_OUT.toString(),
+        inputVertexName);
+    return hiveCounterValue(intermediateRecordsCounterName) + hiveCounterValue(recordsOutCounterName);
+  }
+
   private long hiveInputRecordsFromOtherVertices(String vertexName) {
     List<Vertex> inputVerticesList = dag.getVertex(vertexName).getInputVertices();
     long result = 0;
     for (Vertex inputVertex : inputVerticesList) {
-      String intermediateRecordsCounterName = formattedName(
-          ReduceSinkOperator.Counter.RECORDS_OUT_INTERMEDIATE.toString(),
-          inputVertex.getName()
-      );
-      String recordsOutCounterName = formattedName(FileSinkOperator.Counter.RECORDS_OUT.toString(),
-          inputVertex.getName());
-      result += (
-          hiveCounterValue(intermediateRecordsCounterName)
-              + hiveCounterValue(recordsOutCounterName)
-      );
+      long inputVertexRecords = hiveInputRecordsFromTezCounters(vertexName, inputVertex.getName());
+      if (inputVertexRecords < 0) {
+        inputVertexRecords = hiveInputRecordsFromHiveCounters(inputVertex.getName());
+      }
+      result += inputVertexRecords;
     }
     return result;
+  }
+
+  private String formattedName(String counterName, String srcVertexName, String destVertexName) {
+    return String.format("%s_", counterName) + srcVertexName.replace(" ", "_") + "_OUTPUT_" + destVertexName.replace(" ", "_");
   }
 
   private String formattedName(String counterName, String vertexName) {
@@ -170,9 +217,6 @@ class DAGSummary implements PrintSummary {
 
     return String.format(FORMATTING_PATTERN,
         vertexName,
-        progress.getTotalTaskCount(),
-        progress.getFailedTaskAttemptCount(),
-        progress.getKilledTaskAttemptCount(),
         secondsFormatter.format((duration)),
         commaFormatter.format(cpuTimeMillis),
         commaFormatter.format(gcTimeMillis),

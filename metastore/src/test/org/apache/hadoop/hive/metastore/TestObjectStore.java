@@ -23,12 +23,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics;
 import org.apache.hadoop.hive.common.metrics.metrics2.MetricsReporting;
 import org.apache.hadoop.hive.common.metrics.MetricsTestUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FileMetadataExprType;
@@ -37,6 +39,9 @@ import org.apache.hadoop.hive.metastore.api.Index;
 import org.apache.hadoop.hive.metastore.api.InvalidInputException;
 import org.apache.hadoop.hive.metastore.api.InvalidObjectException;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.api.NotificationEvent;
+import org.apache.hadoop.hive.metastore.api.NotificationEventRequest;
+import org.apache.hadoop.hive.metastore.api.NotificationEventResponse;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.PrincipalType;
@@ -46,6 +51,7 @@ import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.messaging.EventMessage;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
@@ -71,7 +77,7 @@ public class TestObjectStore {
   private static final String ROLE1 = "testobjectstorerole1";
   private static final String ROLE2 = "testobjectstorerole2";
   private static final Logger LOG = LoggerFactory.getLogger(TestObjectStore.class.getName());
-  private Connection conn = null;
+  private Warehouse wh;
 
   public static class MockPartitionExpressionProxy implements PartitionExpressionProxy {
     @Override
@@ -111,25 +117,53 @@ public class TestObjectStore {
     objectStore = new ObjectStore();
     objectStore.setConf(conf);
     dropAllStoreObjects(objectStore);
-    // Insert fake data into the database
-    conn = DriverManager.getConnection(conf.getVar(HiveConf.ConfVars.HOPSDBURLKEY),
-        conf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME),
-        conf.getVar(HiveConf.ConfVars.METASTOREPWD));
-    Statement stmt = conn.createStatement();
-    stmt.execute("insert into hdfs_inodes(partition_id, parent_id, name, id, size, quota_enabled, is_dir, under_construction) " +
-                    "values (0, 0,\"\", 1, 0, 0, 1, 0)," +
-                    "(3564026, 1, \"tmp\", 2, 0, 0, 1, 0),"+
-                    "(111578566, 1, \"user\", 3, 0, 0, 1, 0),"+
-                    "(-57301545, 1, \"locationurl\", 4, 0, 0, 1, 0)");
-    stmt.close();
+
+    wh = new Warehouse(conf);
   }
 
-  @After
-  public void tearDown() throws Exception{
-    Statement stmt = conn.createStatement();
-    stmt.execute("delete from hdfs_inodes");
-    stmt.close();
-    conn.close();
+  /**
+   * Test notification operations
+   */
+  @Test
+  public void testNotificationOps() throws InterruptedException {
+    final int NO_EVENT_ID = 0;
+    final int FIRST_EVENT_ID = 1;
+    final int SECOND_EVENT_ID = 2;
+
+    NotificationEvent event =
+        new NotificationEvent(0, 0, EventMessage.EventType.CREATE_DATABASE.toString(), "");
+    NotificationEventResponse eventResponse;
+    CurrentNotificationEventId eventId;
+
+    // Verify that there is no notifications available yet
+    eventId = objectStore.getCurrentNotificationEventId();
+    Assert.assertEquals(NO_EVENT_ID, eventId.getEventId());
+
+    // Verify that addNotificationEvent() updates the NotificationEvent with the new event ID
+    objectStore.addNotificationEvent(event);
+    Assert.assertEquals(FIRST_EVENT_ID, event.getEventId());
+    objectStore.addNotificationEvent(event);
+    Assert.assertEquals(SECOND_EVENT_ID, event.getEventId());
+
+    // Verify that objectStore fetches the latest notification event ID
+    eventId = objectStore.getCurrentNotificationEventId();
+    Assert.assertEquals(SECOND_EVENT_ID, eventId.getEventId());
+
+    // Verify that getNextNotification() returns all events
+    eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
+    Assert.assertEquals(2, eventResponse.getEventsSize());
+    Assert.assertEquals(FIRST_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
+    Assert.assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(1).getEventId());
+    // Verify that getNextNotification(last) returns events after a specified event
+    eventResponse = objectStore.getNextNotification(new NotificationEventRequest(FIRST_EVENT_ID));
+    Assert.assertEquals(1, eventResponse.getEventsSize());
+    Assert.assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
+
+    // Verify that cleanNotificationEvents() cleans up all old notifications
+    Thread.sleep(1);
+    objectStore.cleanNotificationEvents(1);
+    eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
+    Assert.assertEquals(0, eventResponse.getEventsSize());
   }
 
   /**
@@ -137,8 +171,13 @@ public class TestObjectStore {
    */
   @Test
   public void testDatabaseOps() throws MetaException, InvalidObjectException, NoSuchObjectException {
-    Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
-    Database db2 = new Database(DB2, "description", "hdfs://0.0.0.0:0/locationurl", null);
+    Path db1Path = new Path(wh.getWhRoot(), DB1);
+    wh.mkdirs(db1Path, true);
+    Path db2Path = new Path(wh.getWhRoot(), DB2);
+    wh.mkdirs(db2Path, true);
+
+    Database db1 = new Database(DB1, "description", db1Path.toString(), null);
+    Database db2 = new Database(DB2, "description", db2Path.toString(), null);
     objectStore.createDatabase(db1);
     objectStore.createDatabase(db2);
 
@@ -154,6 +193,9 @@ public class TestObjectStore {
     Assert.assertEquals(DB2, databases.get(0));
 
     objectStore.dropDatabase(DB2);
+
+    wh.deleteDir(db1Path, true);
+    wh.deleteDir(db2Path, true);
   }
 
   /**
@@ -161,9 +203,14 @@ public class TestObjectStore {
    */
   @Test
   public void testTableOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
-    Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
+    Path db1Path = new Path(wh.getWhRoot(), DB1);
+    wh.mkdirs(db1Path, true);
+    Database db1 = new Database(DB1, "description", db1Path.toString(), null);
     objectStore.createDatabase(db1);
-    StorageDescriptor sd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/tmp", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+
+    Path tbl1Path = new Path(db1Path, TABLE1);
+    wh.mkdirs(tbl1Path, true);
+    StorageDescriptor sd = new StorageDescriptor(null, tbl1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> params = new HashMap<String,String>();
     params.put("EXTERNAL", "false");
     Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
@@ -173,7 +220,9 @@ public class TestObjectStore {
     Assert.assertEquals(1, tables.size());
     Assert.assertEquals(TABLE1, tables.get(0));
 
-    StorageDescriptor newSd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/user", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+    Path tbl2Path = new Path(db1Path, "new" + TABLE1);
+    wh.mkdirs(tbl2Path, true);
+    StorageDescriptor newSd = new StorageDescriptor(null, tbl2Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, newSd, null, params, null, null, "MANAGED_TABLE");
     objectStore.alterTable(DB1, TABLE1, newTbl1);
     tables = objectStore.getTables(DB1, "new*");
@@ -186,6 +235,9 @@ public class TestObjectStore {
     Assert.assertEquals(0, tables.size());
 
     objectStore.dropDatabase(DB1);
+
+    // cleanup
+    wh.deleteDir(db1Path, true);
   }
 
   /**
@@ -193,9 +245,14 @@ public class TestObjectStore {
    */
   @Test
   public void testPartitionOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
-    Database db1 = new Database(DB1, "description", "hdfs://0.0.0.0:0/locationurl", null);
+    Path db1Path = new Path(wh.getWhRoot(), DB1);
+    wh.mkdirs(db1Path, true);
+    Database db1 = new Database(DB1, "description", db1Path.toString(), null);
     objectStore.createDatabase(db1);
-    StorageDescriptor sd = new StorageDescriptor(null, "hdfs://0.0.0.0:0/locationurl", null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
+
+    Path tbl1Path = new Path(db1Path, TABLE1);
+    wh.mkdirs(tbl1Path, true);
+    StorageDescriptor sd = new StorageDescriptor(null, tbl1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     HashMap<String,String> tableParams = new HashMap<String,String>();
     tableParams.put("EXTERNAL", "false");
     FieldSchema partitionKey1 = new FieldSchema("Country", serdeConstants.STRING_TYPE_NAME, "");
@@ -205,8 +262,17 @@ public class TestObjectStore {
     HashMap<String, String> partitionParams = new HashMap<String, String>();
     partitionParams.put("PARTITION_LEVEL_PRIVILEGE", "true");
     List<String> value1 = Arrays.asList("US", "CA");
+
+    Path part1Path = new Path(tbl1Path, "US/CA/");
+    wh.mkdirs(part1Path, true);
+    sd = new StorageDescriptor(null, part1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     Partition part1 = new Partition(value1, DB1, TABLE1, 111, 111, sd, partitionParams);
     objectStore.addPartition(part1);
+
+
+    Path part2Path = new Path(tbl1Path, "US/MA");
+    wh.mkdirs(part2Path, true);
+    sd = new StorageDescriptor(null, part2Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     List<String> value2 = Arrays.asList("US", "MA");
     Partition part2 = new Partition(value2, DB1, TABLE1, 222, 222, sd, partitionParams);
     objectStore.addPartition(part2);
@@ -231,6 +297,8 @@ public class TestObjectStore {
     objectStore.dropPartition(DB1, TABLE1, value2);
     objectStore.dropTable(DB1, TABLE1);
     objectStore.dropDatabase(DB1);
+
+    wh.deleteDir(db1Path, true);
   }
 
   /**

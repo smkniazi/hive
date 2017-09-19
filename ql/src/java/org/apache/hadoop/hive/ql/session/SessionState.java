@@ -51,6 +51,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.JavaUtils;
+import org.apache.hadoop.hive.common.log.ProgressMonitor;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.ObjectStore;
@@ -69,7 +70,6 @@ import org.apache.hadoop.hive.ql.lockmgr.HiveTxnManager;
 import org.apache.hadoop.hive.ql.lockmgr.LockException;
 import org.apache.hadoop.hive.ql.lockmgr.TxnManagerFactory;
 import org.apache.hadoop.hive.ql.log.PerfLogger;
-import org.apache.hadoop.hive.common.log.ProgressMonitor;
 import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.HiveUtils;
@@ -282,6 +282,8 @@ public class SessionState {
   private final ResourceDownloader resourceDownloader;
 
   private List<String> forwardedAddresses;
+
+  private String atsDomainId;
 
   /**
    * Get the lineage state stored in this session.
@@ -1094,8 +1096,16 @@ public class SessionState {
       printInfo(info, null);
     }
 
+    public void printInfo(String info, boolean isSilent) {
+      printInfo(info, null, isSilent);
+    }
+
     public void printInfo(String info, String detail) {
-      if (!getIsSilent()) {
+      printInfo(info, detail, getIsSilent());
+    }
+
+    public void printInfo(String info, String detail, boolean isSilent) {
+      if (!isSilent) {
         getInfoStream().println(info);
       }
       LOG.info(info + StringUtils.defaultString(detail));
@@ -1241,6 +1251,14 @@ public class SessionState {
               + org.apache.hadoop.util.StringUtils.stringifyException(e));
       return false;
     }
+  }
+
+  public String getATSDomainId() {
+    return atsDomainId;
+  }
+
+  public void setATSDomainId(String domainId) {
+    this.atsDomainId = domainId;
   }
 
   /**
@@ -1746,6 +1764,40 @@ public class SessionState {
    */
   public String getReloadableAuxJars() {
     return StringUtils.join(preReloadableAuxJars, ',');
+  }
+
+  public void updateProgressedPercentage(final double percentage) {
+    this.progressMonitor = new ProgressMonitor() {
+      @Override
+      public List<String> headers() {
+        return null;
+      }
+
+      @Override
+      public List<List<String>> rows() {
+        return null;
+      }
+
+      @Override
+      public String footerSummary() {
+        return null;
+      }
+
+      @Override
+      public long startTime() {
+        return 0;
+      }
+
+      @Override
+      public String executionStatus() {
+        return null;
+      }
+
+      @Override
+      public double progressedPercentage() {
+        return percentage;
+      }
+    };
   }
 
   public void updateProgressMonitor(ProgressMonitor progressMonitor) {
