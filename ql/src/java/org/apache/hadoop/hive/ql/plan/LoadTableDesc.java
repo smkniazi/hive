@@ -63,6 +63,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     super(sourcePath, writeType);
     Utilities.LOG14535.info("creating part LTD from " + sourcePath + " to " +
         ((table.getProperties() == null) ? "null" : table.getTableName()));
+    init(table, partitionSpec, replace, mmWriteId);
   }
 
   /**
@@ -108,9 +109,9 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     Utilities.LOG14535.info("creating LTD from " + sourcePath + " to " + table.getTableName()/*, new Exception()*/);
     this.dpCtx = dpCtx;
     if (dpCtx != null && dpCtx.getPartSpec() != null && partitionSpec == null) {
-      init(table, dpCtx.getPartSpec(), isReplace, writeType, mmWriteId);
+      init(table, dpCtx.getPartSpec(), isReplace, mmWriteId);
     } else {
-      init(table, new LinkedHashMap<String, String>(), isReplace, writeType, mmWriteId);
+      init(table, new LinkedHashMap<String, String>(), isReplace, mmWriteId);
     }
   }
 
