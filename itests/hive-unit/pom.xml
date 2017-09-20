@@ -136,6 +136,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+        <groupId>io.hops</groupId>
+        <artifactId>hadoop-distcp</artifactId>
+        <version>${hadoop.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>io.hops.hive</groupId>
       <artifactId>hive-cli</artifactId>
       <version>${project.version}</version>
