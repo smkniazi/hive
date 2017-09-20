@@ -2020,6 +2020,9 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
 
       if (tab == null) {
+        if(tabName.equals(DUMMY_DATABASE + "." + DUMMY_TABLE)) {
+          continue;
+        }
         ASTNode src = qb.getParseInfo().getSrcForAlias(alias);
         if (null != src) {
           throw new SemanticException(ErrorMsg.INVALID_TABLE.getMsg(src));
@@ -10651,6 +10654,9 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     // Recurse over all the source tables
     for (String alias : qb.getTabAliases()) {
+      if(alias.equals(DUMMY_TABLE)) {
+        continue;
+      }
       Operator op = genTablePlan(alias, qb);
       aliasToOpInfo.put(alias, op);
     }
@@ -10778,7 +10784,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     opParseCtx.get(operator).setRowResolver(newRR);
   }
 
-  private Table getDummyTable() throws SemanticException {
+  protected Table getDummyTable() throws SemanticException {
     Path dummyPath = createDummyFile();
     Table desc = new Table(DUMMY_DATABASE, DUMMY_TABLE);
     desc.getTTable().getSd().setLocation(dummyPath.toString());
