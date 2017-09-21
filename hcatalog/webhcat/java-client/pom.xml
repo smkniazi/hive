@@ -75,7 +75,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.hops.hive.hcatalog</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-hcatalog-core</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
