@@ -33,7 +33,6 @@ drop table part_mm;
 drop table simple_mm;
 create table simple_mm(key int) stored as orc tblproperties ("transactional"="true", "transactional_properties"="insert_only");
 insert into table simple_mm select key from intermediate;
-insert overwrite table simple_mm select key from intermediate;
 select * from simple_mm order by key;
 insert into table simple_mm select key from intermediate;
 select * from simple_mm order by key;
@@ -205,165 +204,6 @@ select * from ctas1_mm;
 drop table ctas1_mm;
 
 
-
-drop table iow0_mm;
-create table iow0_mm(key int) tblproperties("transactional"="true", "transactional_properties"="insert_only");
-insert overwrite table iow0_mm select key from intermediate;
-insert into table iow0_mm select key + 1 from intermediate;
-select * from iow0_mm order by key;
-insert overwrite table iow0_mm select key + 2 from intermediate;
-select * from iow0_mm order by key;
-drop table iow0_mm;
-
-
-drop table iow1_mm; 
-create table iow1_mm(key int) partitioned by (key2 int)  tblproperties("transactional"="true", "transactional_properties"="insert_only");
-insert overwrite table iow1_mm partition (key2)
-select key as k1, key from intermediate union all select key as k1, key from intermediate;
-insert into table iow1_mm partition (key2)
-select key + 1 as k1, key from intermediate union all select key as k1, key from intermediate;
-select * from iow1_mm order by key, key2;
-insert overwrite table iow1_mm partition (key2)
-select key + 3 as k1, key from intermediate union all select key + 4 as k1, key from intermediate;
-select * from iow1_mm order by key, key2;
-insert overwrite table iow1_mm partition (key2)
-select key + 3 as k1, key + 3 from intermediate union all select key + 2 as k1, key + 2 from intermediate;
-select * from iow1_mm order by key, key2;
-drop table iow1_mm;
-
-
-
-
-drop table load0_mm;
-create table load0_mm (key string, value string) stored as textfile tblproperties("transactional"="true", "transactional_properties"="insert_only");
-load data local inpath '../../data/files/kv1.txt' into table load0_mm;
-select count(1) from load0_mm;
-load data local inpath '../../data/files/kv2.txt' into table load0_mm;
-select count(1) from load0_mm;
-load data local inpath '../../data/files/kv2.txt' overwrite into table load0_mm;
-select count(1) from load0_mm;
-drop table load0_mm;
-
-
-drop table intermediate2;
-create table intermediate2 (key string, value string) stored as textfile
-location 'file:${system:test.tmp.dir}/intermediate2';
-load data local inpath '../../data/files/kv1.txt' into table intermediate2;
-load data local inpath '../../data/files/kv2.txt' into table intermediate2;
-load data local inpath '../../data/files/kv3.txt' into table intermediate2;
-
-drop table load1_mm;
-create table load1_mm (key string, value string) stored as textfile tblproperties("transactional"="true", "transactional_properties"="insert_only");
-load data inpath 'file:${system:test.tmp.dir}/intermediate2/kv2.txt' into table load1_mm;
-load data inpath 'file:${system:test.tmp.dir}/intermediate2/kv1.txt' into table load1_mm;
-select count(1) from load1_mm;
-load data local inpath '../../data/files/kv1.txt' into table intermediate2;
-load data local inpath '../../data/files/kv2.txt' into table intermediate2;
-load data local inpath '../../data/files/kv3.txt' into table intermediate2;
-load data inpath 'file:${system:test.tmp.dir}/intermediate2/kv*.txt' overwrite into table load1_mm;
-select count(1) from load1_mm;
-load data local inpath '../../data/files/kv2.txt' into table intermediate2;
-load data inpath 'file:${system:test.tmp.dir}/intermediate2/kv2.txt' overwrite into table load1_mm;
-select count(1) from load1_mm;
-drop table load1_mm;
-
-drop table load2_mm;
-create table load2_mm (key string, value string)
-  partitioned by (k int, l int) stored as textfile tblproperties("transactional"="true", "transactional_properties"="insert_only");
-load data local inpath '../../data/files/kv1.txt' into table intermediate2;
-load data local inpath '../../data/files/kv2.txt' into table intermediate2;
-load data local inpath '../../data/files/kv3.txt' into table intermediate2;
-load data inpath 'file:${system:test.tmp.dir}/intermediate2/kv*.txt' into table load2_mm partition(k=5, l=5);
-select count(1) from load2_mm;
-drop table load2_mm;
-drop table intermediate2;
-
-
-drop table intermediate_nonpart;
-drop table intermmediate_part;
-drop table intermmediate_nonpart;
-create table intermediate_nonpart(key int, p int);
-insert into intermediate_nonpart select * from intermediate;
-create table intermmediate_nonpart(key int, p int) tblproperties("transactional"="true", "transactional_properties"="insert_only");
-insert into intermmediate_nonpart select * from intermediate;
-create table intermmediate(key int) partitioned by (p int) tblproperties("transactional"="true", "transactional_properties"="insert_only");
-insert into table intermmediate partition(p) select key, p from intermediate;
-
-set hive.exim.test.mode=true;
-
-export table intermediate_nonpart to 'ql/test/data/exports/intermediate_nonpart';
-export table intermmediate_nonpart to 'ql/test/data/exports/intermmediate_nonpart';
-export table intermediate to 'ql/test/data/exports/intermediate_part';
-export table intermmediate to 'ql/test/data/exports/intermmediate_part';
-
-drop table intermediate_nonpart;
-drop table intermmediate_part;
-drop table intermmediate_nonpart;
-
--- non-MM export to MM table, with and without partitions
-
-drop table import0_mm;
-create table import0_mm(key int, p int) tblproperties("transactional"="true", "transactional_properties"="insert_only");
-import table import0_mm from 'ql/test/data/exports/intermediate_nonpart';
-select * from import0_mm order by key, p;
-drop table import0_mm;
-
-
-
-drop table import1_mm;
-create table import1_mm(key int) partitioned by (p int)
-  stored as orc tblproperties("transactional"="true", "transactional_properties"="insert_only");
-import table import1_mm from 'ql/test/data/exports/intermediate_part';
-select * from import1_mm order by key, p;
-drop table import1_mm;
-
-
--- MM export into new MM table, non-part and part
-
-drop table import2_mm;
-import table import2_mm from 'ql/test/data/exports/intermmediate_nonpart';
-desc import2_mm;
-select * from import2_mm order by key, p;
-drop table import2_mm;
-
-drop table import3_mm;
-import table import3_mm from 'ql/test/data/exports/intermmediate_part';
-desc import3_mm;
-select * from import3_mm order by key, p;
-drop table import3_mm;
-
--- MM export into existing MM table, non-part and partial part
-
-drop table import4_mm;
-create table import4_mm(key int, p int) tblproperties("transactional"="true", "transactional_properties"="insert_only");
-import table import4_mm from 'ql/test/data/exports/intermmediate_nonpart';
-select * from import4_mm order by key, p;
-drop table import4_mm;
-
-drop table import5_mm;
-create table import5_mm(key int) partitioned by (p int) tblproperties("transactional"="true", "transactional_properties"="insert_only");
-import table import5_mm partition(p=455) from 'ql/test/data/exports/intermmediate_part';
-select * from import5_mm order by key, p;
-drop table import5_mm;
-
--- MM export into existing non-MM table, non-part and part
-
-drop table import6_mm;
-create table import6_mm(key int, p int);
-import table import6_mm from 'ql/test/data/exports/intermmediate_nonpart';
-select * from import6_mm order by key, p;
-drop table import6_mm;
-
-drop table import7_mm;
-create table import7_mm(key int) partitioned by (p int);
-import table import7_mm from 'ql/test/data/exports/intermmediate_part';
-select * from import7_mm order by key, p;
-drop table import7_mm;
-
-set hive.exim.test.mode=false;
-
-
-
 drop table multi0_1_mm;
 drop table multi0_2_mm;
 create table multi0_1_mm (key int, key2 int)  tblproperties("transactional"="true", "transactional_properties"="insert_only");
@@ -383,6 +223,7 @@ set hive.merge.tezfiles=true;
 from intermediate
 insert into table multi0_1_mm select p, key
 insert overwrite table multi0_2_mm select key, p;
+
 select * from multi0_1_mm order by key, key2;
 select * from multi0_2_mm order by key, key2;
 
@@ -399,21 +240,27 @@ create table multi1_mm (key int, key2 int) partitioned by (p int) tblproperties(
 from intermediate
 insert into table multi1_mm partition(p=1) select p, key
 insert into table multi1_mm partition(p=2) select key, p;
+
 select * from multi1_mm order by key, key2, p;
+
 from intermediate
 insert into table multi1_mm partition(p=2) select p, key
 insert overwrite table multi1_mm partition(p=1) select key, p;
+
 select * from multi1_mm order by key, key2, p;
 
 from intermediate
 insert into table multi1_mm partition(p) select p, key, p
 insert into table multi1_mm partition(p=1) select key, p;
+
 select key, key2, p from multi1_mm order by key, key2, p;
 
 from intermediate
 insert into table multi1_mm partition(p) select p, key, 1
 insert into table multi1_mm partition(p=1) select key, p;
+
 select key, key2, p from multi1_mm order by key, key2, p;
+
 drop table multi1_mm;
 
 
@@ -424,7 +271,8 @@ set hive.stats.autogather=true;
 
 drop table stats_mm;
 create table stats_mm(key int)  tblproperties("transactional"="true", "transactional_properties"="insert_only");
-insert overwrite table stats_mm  select key from intermediate;
+--insert overwrite table stats_mm  select key from intermediate;
+insert into table stats_mm  select key from intermediate;
 desc formatted stats_mm;
 
 insert into table stats_mm  select key from intermediate;
@@ -442,7 +290,7 @@ set hive.skewjoin.key=2;
 set hive.optimize.metadataonly=false;
 
 CREATE TABLE skewjoin_mm(key INT, value STRING) STORED AS TEXTFILE tblproperties ("transactional"="true", "transactional_properties"="insert_only");
-FROM src src1 JOIN src src2 ON (src1.key = src2.key) INSERT OVERWRITE TABLE skewjoin_mm SELECT src1.key, src2.value;
+FROM src src1 JOIN src src2 ON (src1.key = src2.key) INSERT into TABLE skewjoin_mm SELECT src1.key, src2.value;
 select count(distinct key) from skewjoin_mm;
 drop table skewjoin_mm;
 
@@ -463,6 +311,14 @@ drop table parquet1_mm;
 drop table parquet2_mm;
 
 set hive.auto.convert.join=true;
+
+
+DROP TABLE IF EXISTS temp1;
+CREATE TEMPORARY TABLE temp1 (a int) TBLPROPERTIES ("transactional"="true", "transactional_properties"="insert_only");
+INSERT INTO temp1 SELECT key FROM intermediate;
+DESC EXTENDED temp1;
+SELECT * FROM temp1;
+
 
 drop table intermediate;
 
