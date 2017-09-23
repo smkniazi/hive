@@ -198,4 +198,8 @@ public class FetchTask extends Task<FetchWork> implements Serializable {
     return fetch.getJobConf();
   }
 
+  @Override
+  public boolean canExecuteInParallel() {
+    return false;
+  }
 }

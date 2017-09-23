@@ -18,14 +18,14 @@
 
 package org.apache.hadoop.hive.ql.plan;
 
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.plan.Explain.Level;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * LoadTableDesc.
@@ -38,6 +38,10 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   private ListBucketingCtx lbCtx;
   private boolean inheritTableSpecs = true; //For partitions, flag controlling whether the current
                                             //table specs are to be used
+  /*
+  if the writeType above is NOT_ACID then the currentTransactionId will be null
+   */
+  private final Long currentTransactionId;
 
   // TODO: the below seems like they should just be combined into partitionDesc
   private org.apache.hadoop.hive.ql.plan.TableDesc table;
@@ -51,6 +55,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     this.dpCtx = o.dpCtx;
     this.lbCtx = o.lbCtx;
     this.inheritTableSpecs = o.inheritTableSpecs;
+    this.currentTransactionId = o.currentTransactionId;
     this.table = o.table;
     this.partitionSpec = o.partitionSpec;
   }
@@ -82,7 +87,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   }
 
   public LoadTableDesc(final Path sourcePath,
-      final org.apache.hadoop.hive.ql.plan.TableDesc table,
+      final TableDesc table,
       final Map<String, String> partitionSpec,
       final AcidUtils.Operation writeType, Long mmWriteId) {
     this(sourcePath, table, partitionSpec, true, writeType, mmWriteId);
@@ -101,7 +106,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   }
 
   public LoadTableDesc(final Path sourcePath,
-      final org.apache.hadoop.hive.ql.plan.TableDesc table,
+      final TableDesc table,
       final DynamicPartitionCtx dpCtx,
       final AcidUtils.Operation writeType,
       boolean isReplace, Long mmWriteId) {
@@ -123,7 +128,6 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     this.table = table;
     this.partitionSpec = partitionSpec;
     this.replace = replace;
-    this.currentWriteId = writeId;
   }
 
   @Explain(displayName = "table", explainLevels = { Level.USER, Level.DEFAULT, Level.EXTENDED })
@@ -206,5 +210,8 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
 
   public boolean isCommitMmWrite() {
     return commitMmWriteId;
+
+  public long getCurrentTransactionId() {
+    return writeType == AcidUtils.Operation.NOT_ACID ? 0L : currentTransactionId;
   }
 }

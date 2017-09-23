@@ -27,7 +27,7 @@ import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.hooks.ReadEntity;
 import org.apache.hadoop.hive.ql.hooks.WriteEntity;
 import org.apache.hadoop.hive.ql.plan.Explain.Level;
-
+import org.apache.hadoop.hive.ql.session.LineageState;
 
 /**
  * MoveWork.
@@ -39,6 +39,12 @@ public class MoveWork implements Serializable {
   private LoadTableDesc loadTableWork;
   private LoadFileDesc loadFileWork;
   private LoadMultiFilesDesc loadMultiFilesWork;
+  /*
+  these are sessionState objects that are copied over to work to allow for parallel execution.
+  based on the current use case the methods are selectively synchronized, which might need to be
+  taken care when using other methods.
+   */
+  private final LineageState sessionStateLineageState;
 
   private boolean checkFileFormat;
   private boolean srcLocal;
@@ -59,6 +65,7 @@ public class MoveWork implements Serializable {
   private boolean isNoop;
 
   public MoveWork() {
+    sessionStateLineageState = null;
   }
 
   private MoveWork(HashSet<ReadEntity> inputs, HashSet<WriteEntity> outputs) {
@@ -92,6 +99,7 @@ public class MoveWork implements Serializable {
     srcLocal = o.isSrcLocal();
     inputs = o.getInputs();
     outputs = o.getOutputs();
+    sessionStateLineageState = o.sessionStateLineageState;
   }
 
   @Explain(displayName = "tables", explainLevels = { Level.USER, Level.DEFAULT, Level.EXTENDED })
@@ -153,6 +161,7 @@ public class MoveWork implements Serializable {
     this.srcLocal = srcLocal;
   }
 
+<<<<<<< HEAD
   // TODO# temporary test flag
   public void setNoop(boolean b) {
     this.isNoop = true;
@@ -160,5 +169,9 @@ public class MoveWork implements Serializable {
 
   public boolean isNoop() {
     return this.isNoop;
+=======
+  public LineageState getLineagState() {
+    return sessionStateLineageState;
+>>>>>>> 39d8d73e7b... HIVE-17426 : Execution framework in hive to run tasks in parallel (Anishek Agarwal, reviwed by Daniel Dai, Thejas Nair)
   }
 }

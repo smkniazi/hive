@@ -18,19 +18,6 @@
 
 package org.apache.hadoop.hive.ql.parse;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.antlr.runtime.tree.Tree;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.hadoop.fs.FileStatus;
@@ -38,6 +25,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
+import org.apache.hadoop.hive.common.ValidWriteIds;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.Warehouse;
@@ -73,8 +61,20 @@ import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.mapred.OutputFormat;
 import org.slf4j.Logger;
 
-import static org.apache.hadoop.hive.ql.parse.EximUtil.METADATA_NAME;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import static org.apache.hadoop.hive.ql.parse.EximUtil.METADATA_NAME;
 /**
  * ImportSemanticAnalyzer.
  *
@@ -493,10 +493,10 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       // Do not commit the write ID from each task; need to commit once.
       // TODO: we should just change the import to use a single MoveTask, like dynparts.
       loadTableWork.setIntermediateInMmWrite(mmWriteId != null);
-      MoveWork mv = new MoveWork(x.getInputs(), x.getOutputs(), loadTableWork, null, false);
-      @SuppressWarnings("unchecked")
-      Task<?> copyTask = TaskFactory.get(cw, x.getConf()), addPartTask = TaskFactory.get(dw, x.getConf()),
-        loadPartTask = TaskFactory.get(mv, x.getConf());
+      Task<?> loadPartTask = TaskFactory.get(new MoveWork(
+              x.getInputs(), x.getOutputs(), loadTableWork, null, false,
+              SessionState.get().getLineageState()),
+          x.getConf());
       copyTask.addDependentTask(loadPartTask);
       addPartTask.addDependentTask(loadPartTask);
       if (commitTask != null) {
