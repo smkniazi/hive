@@ -161,7 +161,6 @@ public class MoveWork implements Serializable {
     this.srcLocal = srcLocal;
   }
 
-<<<<<<< HEAD
   // TODO# temporary test flag
   public void setNoop(boolean b) {
     this.isNoop = true;
@@ -169,9 +168,8 @@ public class MoveWork implements Serializable {
 
   public boolean isNoop() {
     return this.isNoop;
-=======
+
   public LineageState getLineagState() {
     return sessionStateLineageState;
->>>>>>> 39d8d73e7b... HIVE-17426 : Execution framework in hive to run tasks in parallel (Anishek Agarwal, reviwed by Daniel Dai, Thejas Nair)
   }
 }
