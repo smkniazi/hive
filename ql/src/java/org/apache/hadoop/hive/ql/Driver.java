@@ -719,6 +719,7 @@ public class Driver implements CommandProcessor {
       case SHOW_COMPACTIONS:
       case SHOW_TRANSACTIONS:
       case ABORT_TRANSACTIONS:
+      case KILL_QUERY:
         shouldOpenImplicitTxn = false;
         //this implies that no locks are needed for such a command
     }
@@ -1105,6 +1106,9 @@ public class Driver implements CommandProcessor {
       case PARTITION:
         // not currently handled
         continue;
+      case SERVICE_NAME:
+        objName = privObject.getServiceName();
+        break;
         default:
           throw new AssertionError("Unexpected object type");
       }
