@@ -111,6 +111,7 @@ public class TezSessionState {
   private final Map<String, LocalResource> localizedResources = new HashMap<>();
 
   private boolean doAsEnabled;
+  private boolean isLegacyLlapMode;
 
   /**
    * Constructor. We do not automatically connect, because we only want to
@@ -498,13 +499,14 @@ public class TezSessionState {
 
   /**
    * Close a tez session. Will cleanup any tez/am related resources. After closing a session no
-   * further DAGs can be executed against it.
+   * further DAGs can be executed against it. Only called by session management classes; some
+   * sessions should not simply be closed by users - e.g. pool sessions need to be restarted.
    *
    * @param keepTmpDir
    *          whether or not to remove the scratch dir at the same time.
    * @throws Exception
    */
-  public void close(boolean keepTmpDir) throws Exception {
+  void close(boolean keepTmpDir) throws Exception {
     if (session != null) {
       LOG.info("Closing Tez Session");
       closeClient(session);
@@ -728,4 +730,27 @@ public class TezSessionState {
     } while (!ownerThread.compareAndSet(null, newName));
   }
 
+  void setLegacyLlapMode(boolean value) {
+    this.isLegacyLlapMode = value;
+  }
+
+  boolean getLegacyLlapMode() {
+    return this.isLegacyLlapMode;
+  }
+
+  public void returnToSessionManager() throws Exception {
+    // By default, TezSessionPoolManager handles this for both pool and non-pool session.
+    TezSessionPoolManager.getInstance().returnSession(this);
+  }
+
+  public TezSessionState reopen(
+      Configuration conf, String[] inputOutputJars) throws Exception {
+    // By default, TezSessionPoolManager handles this for both pool and non-pool session.
+    return TezSessionPoolManager.getInstance().reopenSession(this, conf, inputOutputJars);
+  }
+
+  public void destroy() throws Exception {
+    // By default, TezSessionPoolManager handles this for both pool and non-pool session.
+    TezSessionPoolManager.getInstance().destroySession(this);
+  }
 }
