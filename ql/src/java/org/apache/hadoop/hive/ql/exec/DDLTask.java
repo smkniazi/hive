@@ -181,6 +181,7 @@ import org.apache.hadoop.hive.ql.plan.FileMergeDesc;
 import org.apache.hadoop.hive.ql.plan.GrantDesc;
 import org.apache.hadoop.hive.ql.plan.GrantRevokeRoleDDL;
 import org.apache.hadoop.hive.ql.plan.InsertTableDesc;
+import org.apache.hadoop.hive.ql.plan.KillQueryDesc;
 import org.apache.hadoop.hive.ql.plan.ListBucketingCtx;
 import org.apache.hadoop.hive.ql.plan.LoadMultiFilesDesc;
 import org.apache.hadoop.hive.ql.plan.LockDatabaseDesc;
@@ -596,6 +597,11 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       PreInsertTableDesc preInsertTableDesc = work.getPreInsertTableDesc();
       if (preInsertTableDesc != null) {
         return preInsertWork(db, preInsertTableDesc);
+      }
+
+      KillQueryDesc killQueryDesc = work.getKillQueryDesc();
+      if (killQueryDesc != null) {
+        return killQuery(db, killQueryDesc);
       }
     } catch (Throwable e) {
       failed(e);
@@ -3034,6 +3040,15 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
   private int abortTxns(Hive db, AbortTxnsDesc desc) throws HiveException {
     db.abortTransactions(desc.getTxnids());
+    return 0;
+  }
+
+  private int killQuery(Hive db, KillQueryDesc desc) throws HiveException {
+    SessionState sessionState = SessionState.get();
+    for (String queryId : desc.getQueryIds()) {
+      sessionState.getKillQuery().killQuery(queryId);
+    }
+    LOG.info("kill query called (" + desc.getQueryIds().toString() + ")");
     return 0;
   }
 
