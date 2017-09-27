@@ -41,7 +41,9 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   /*
   if the writeType above is NOT_ACID then the currentTransactionId will be null
    */
-  private final Long currentTransactionId;
+
+  private Long txnId;
+  private int stmtId;
 
   // TODO: the below seems like they should just be combined into partitionDesc
   private org.apache.hadoop.hive.ql.plan.TableDesc table;
@@ -55,7 +57,6 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     this.dpCtx = o.dpCtx;
     this.lbCtx = o.lbCtx;
     this.inheritTableSpecs = o.inheritTableSpecs;
-    this.currentTransactionId = o.currentTransactionId;
     this.table = o.table;
     this.partitionSpec = o.partitionSpec;
   }
@@ -204,14 +205,27 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     return mmWriteId;
   }
 
+  public Long getTxnId() {
+    return txnId;
+  }
+
+  public void setTxnId(Long txnId) {
+    this.txnId = txnId;
+  }
+
+  public int getStmtId() {
+    return stmtId;
+  }
+
+  public void setStmtId(int stmtId) {
+    this.stmtId = stmtId;
+  }
+
   public void setIntermediateInMmWrite(boolean b) {
     this.commitMmWriteId = !b;
   }
 
   public boolean isCommitMmWrite() {
     return commitMmWriteId;
-
-  public long getCurrentTransactionId() {
-    return writeType == AcidUtils.Operation.NOT_ACID ? 0L : currentTransactionId;
   }
 }
