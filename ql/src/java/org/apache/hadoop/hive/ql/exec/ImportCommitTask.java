@@ -35,11 +35,12 @@ public class ImportCommitTask extends Task<ImportCommitWork> {
 
   @Override
   public int execute(DriverContext driverContext) {
-    Utilities.LOG14535.info("Executing ImportCommit for " + work.getMmWriteId());
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("Executing ImportCommit for " + work.getTxnId());
+    }
 
     try {
       if (driverContext.getCtx().getExplainAnalyze() == AnalyzeState.RUNNING) {
-        Utilities.LOG14535.info("Exiting due to explain");
         return 0;
       }
       Hive db = getHive();

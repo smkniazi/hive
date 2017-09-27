@@ -6837,7 +6837,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       } else {
         queryTmpdir = ctx.getTempDirForPath(dest_path, true);
       }
-      Utilities.LOG14535.info("create filesink w/DEST_TABLE specifying " + queryTmpdir + " from " + dest_path);
+      if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+        Utilities.FILE_OP_LOGGER.trace("create filesink w/DEST_TABLE specifying " + queryTmpdir
+            + " from " + dest_path);
+      }
       if (dpCtx != null) {
         // set the root of the temporary path where dynamic partition columns will populate
         dpCtx.setRootPath(queryTmpdir);
@@ -6905,8 +6908,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           .getAuthority(), partPath.toUri().getPath());
 
       isMmTable = MetaStoreUtils.isInsertOnlyTable(dest_tab.getParameters());
-      queryTmpdir = isMmTable ? dest_path : ctx.getTempDirForPath(dest_path);
-      Utilities.LOG14535.info("create filesink w/DEST_PARTITION specifying " + queryTmpdir + " from " + dest_path);
+      queryTmpdir = isMmTable ? dest_path : ctx.getTempDirForPath(dest_path, true);
+      if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+        Utilities.FILE_OP_LOGGER.trace("create filesink w/DEST_PARTITION specifying "
+            + queryTmpdir + " from " + dest_path);
+      }
       table_desc = Utilities.getTableDesc(dest_tab);
 
       // Add sorting/bucketing if needed
@@ -6982,9 +6988,12 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         // no copy is required. we may want to revisit this policy in future
         try {
           Path qPath = FileUtils.makeQualified(dest_path, conf);
-          queryTmpdir = isMmTable ? qPath : ctx.getTempDirForPath(qPath);
-          Utilities.LOG14535.info("Setting query directory " + queryTmpdir + " from " + dest_path + " (" + isMmTable + ")");
-        } catch (Exception e) { 
+          queryTmpdir = isMmTable ? qPath : ctx.getTempDirForPath(qPath, true);
+          if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+            Utilities.FILE_OP_LOGGER.trace("Setting query directory " + queryTmpdir
+                  + " from " + dest_path + " (" + isMmTable + ")");
+          }
+        } catch (Exception e) {
           throw new SemanticException("Error creating temporary folder on: "
               + dest_path, e);
         }

@@ -1266,8 +1266,11 @@ public final class GenMapRedUtils {
     // 1. create the operator tree
     //
     FileSinkDesc fsInputDesc = fsInput.getConf();
-    Utilities.LOG14535.info("Creating merge work from " + System.identityHashCode(fsInput)
-        + " with write ID " + (fsInputDesc.isMmTable() ? fsInputDesc.getMmWriteId() : null) + " into " + finalName);
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("Creating merge work from " + System.identityHashCode(fsInput)
+        + " with write ID " + (fsInputDesc.isMmTable() ? fsInputDesc.getTransactionId() : null)
+        + " into " + finalName);
+    }
 
     boolean isBlockMerge = (conf.getBoolVar(ConfVars.HIVEMERGERCFILEBLOCKLEVEL) &&
         fsInputDesc.getTableInfo().getInputFileFormatClass().equals(RCFileInputFormat.class)) ||
@@ -1366,11 +1369,10 @@ public final class GenMapRedUtils {
     MoveWork dummyMv = null;
     if (srcMmWriteId == null) {
       // Only create the movework for non-MM table. No action needed for a MM table.
-      Utilities.LOG14535.info("creating dummy movetask for merge (with lfd)");
       dummyMv = new MoveWork(null, null, null,
          new LoadFileDesc(inputDirName, finalName, true, null, null, false), false);
     } else {
-      // TODO# create the noop MoveWork to avoid q file changes for now. Should be removed.
+      // TODO# noop MoveWork to avoid q file changes in HIVE-14990. Remove (w/the flag) after merge.
       dummyMv = new MoveWork(null, null, null,
           new LoadFileDesc(inputDirName, finalName, true, null, null, false), false);
       dummyMv.setNoop(true);
@@ -1393,7 +1395,7 @@ public final class GenMapRedUtils {
     // concatenate. Keeping the old logic for non-MM tables with temp directories and stuff.
     // TODO# is this correct?
     Path fsopPath = srcMmWriteId != null ? fsInputDesc.getFinalDirName() : finalName;
-    Utilities.LOG14535.info("Looking for MoveTask to make it dependant on the conditional tasks");
+
     Task<MoveWork> mvTask = GenMapRedUtils.findMoveTaskForFsopOutput(
         mvTasks, fsopPath, fsInputDesc.isMmTable());
 
@@ -1567,7 +1569,6 @@ public final class GenMapRedUtils {
     TableDesc tblDesc = fsDesc.getTableInfo();
     aliases.add(inputDir.toString()); // dummy alias: just use the input path
 
-    Utilities.LOG14535.info("createMRWorkForMergingFiles for " + inputDir);
     // constructing the default MapredWork
     MapredWork cMrPlan = GenMapRedUtils.getMapRedWorkFromConf(conf);
     MapWork cplan = cMrPlan.getMapWork();
@@ -1618,7 +1619,9 @@ public final class GenMapRedUtils {
           + " format other than RCFile or ORCFile");
     }
 
-    Utilities.LOG14535.info("creating mergefilework from " + inputDirs + " to " + finalName);
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("creating mergefilework from " + inputDirs + " to " + finalName);
+    }
     // create the merge file work
     MergeFileWork work = new MergeFileWork(inputDirs, finalName,
         hasDynamicPartitions, tblDesc.getInputFileFormatClass().getName(), tblDesc);
@@ -1744,10 +1747,24 @@ public final class GenMapRedUtils {
    * @return The conditional task
    */
   @SuppressWarnings("unchecked")
-  public static ConditionalTask createCondTask(HiveConf conf,
-      Task<? extends Serializable> currTask, MoveWork mvWork,
-      Serializable mergeWork, String inputPath) {
-    Utilities.LOG14535.info("Creating conditional merge task for " + inputPath);
+  private static ConditionalTask createCondTask(HiveConf conf,
+      Task<? extends Serializable> currTask, MoveWork mvWork, Serializable mergeWork,
+      Path condInputPath, Path condOutputPath, Task<MoveWork> moveTaskToLink,
+      DependencyCollectionTask dependencyTask) {
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("Creating conditional merge task for " + condInputPath);
+    }
+    // Create a dummy task if no move is needed.
+    Serializable moveWork = mvWork != null ? mvWork : new DependencyCollectionWork();
+
+    // TODO: this should never happen for mm tables.
+    boolean shouldMergeMovePaths = (moveTaskToLink != null && dependencyTask == null
+        && shouldMergeMovePaths(conf, condInputPath, condOutputPath, moveTaskToLink.getWork()));
+
+    Serializable workForMoveOnlyTask = moveWork;
+    if (shouldMergeMovePaths) {
+      workForMoveOnlyTask = mergeMovePaths(condInputPath, moveTaskToLink.getWork());
+    }
 
     // There are 3 options for this ConditionalTask:
     // 1) Merge the partitions
@@ -1823,9 +1840,11 @@ public final class GenMapRedUtils {
       } else if (mvWork.getLoadTableWork() != null) {
         srcDir = mvWork.getLoadTableWork().getSourcePath(); // TODO# THIS
       }
-      Utilities.LOG14535.info("Observing MoveWork " + System.identityHashCode(mvWork)
+      if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+        Utilities.FILE_OP_LOGGER.trace("Observing MoveWork " + System.identityHashCode(mvWork)
           + " with " + srcDir + "(from " + (isLfd ? "LFD" : "LTD") + ") while looking for "
           + fsopFinalDir + "(mm = " + isMmFsop + ")");
+      }
 
       if ((srcDir != null) && srcDir.equals(fsopFinalDir)) {
         return mvTsk;
@@ -1933,11 +1952,17 @@ public final class GenMapRedUtils {
         if (fileSinkDesc.isLinkedFileSink()) {
           for (FileSinkDesc fsConf : fileSinkDesc.getLinkedFileSinkDesc()) {
             fsConf.setDirName(new Path(tmpDir, fsConf.getDirName().getName()));
-            Utilities.LOG14535.info("createMoveTask setting tmpDir for LinkedFileSink chDir " + fsConf.getDirName() + "; dest was " + fileSinkDesc.getDestPath());
+            if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+              Utilities.FILE_OP_LOGGER.trace("createMoveTask setting tmpDir for LinkedFileSink chDir "
+                + fsConf.getDirName() + "; dest was " + fileSinkDesc.getDestPath());
+            }
           }
         } else {
           fileSinkDesc.setDirName(tmpDir);
-          Utilities.LOG14535.info("createMoveTask setting tmpDir  chDir " + tmpDir + "; dest was " + fileSinkDesc.getDestPath());
+          if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+            Utilities.FILE_OP_LOGGER.trace("createMoveTask setting tmpDir chDir "
+              + tmpDir + "; dest was " + fileSinkDesc.getDestPath());
+          }
         }
       }
     }
@@ -1945,8 +1970,6 @@ public final class GenMapRedUtils {
     Task<MoveWork> mvTask = null;
 
     if (!chDir) {
-      // TODO# is it correct to always use MM dir in MM case here? Where does MoveTask point?
-      Utilities.LOG14535.info("Looking for MoveTask from createMoveTask");
       mvTask = GenMapRedUtils.findMoveTaskForFsopOutput(
           mvTasks, fsOp.getConf().getFinalDirName(), fsOp.getConf().isMmTable());
     }

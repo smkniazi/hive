@@ -34,8 +34,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.StringInternUtils;
 import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
+import org.apache.hive.common.util.Ref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configurable;
@@ -516,7 +518,9 @@ public class HiveInputFormat<K extends WritableComparable, V extends Writable>
   private static void processForWriteIds(Path dir, JobConf conf,
       ValidWriteIds writeIds, List<Path> finalPaths) throws IOException {
     FileSystem fs = dir.getFileSystem(conf);
-    Utilities.LOG14535.warn("Checking " + dir + " (root) for inputs");
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("Checking " + dir + " (root) for inputs");
+    }
     // Ignore nullscan-optimized paths.
     if (fs instanceof NullScanFileSystem) {
       finalPaths.add(dir);
@@ -528,9 +532,27 @@ public class HiveInputFormat<K extends WritableComparable, V extends Writable>
       handleNonMmDirChild(file, writeIds, subdirs, finalPaths);
     }
     while (!subdirs.isEmpty()) {
-      Path subdir = subdirs.poll();
-      for (FileStatus file : fs.listStatus(subdir)) {
-        handleNonMmDirChild(file, writeIds, subdirs, finalPaths);
+      Path currDir = subdirs.poll();
+      FileStatus[] files = fs.listStatus(currDir);
+      boolean hadAcidState = false;   // whether getAcidState has been called for currDir
+      for (FileStatus file : files) {
+        Path path = file.getPath();
+        if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+          Utilities.FILE_OP_LOGGER.trace("Checking " + path + " for inputs");
+        }
+        if (!file.isDirectory()) {
+          Utilities.FILE_OP_LOGGER.warn("Ignoring a file not in MM directory " + path);
+        } else if (JavaUtils.extractTxnId(path) == null) {
+          subdirs.add(path);
+        } else if (!hadAcidState) {
+          AcidUtils.Directory dirInfo = AcidUtils.getAcidState(currDir, conf, validTxnList, Ref.from(false), true, null);
+          hadAcidState = true;
+          // TODO: for IOW, we also need to count in base dir, if any
+          for (AcidUtils.ParsedDelta delta : dirInfo.getCurrentDirectories()) {
+            Utilities.FILE_OP_LOGGER.debug("Adding input " + delta.getPath());
+            finalPaths.add(delta.getPath());
+          }
+        }
       }
     }
   }

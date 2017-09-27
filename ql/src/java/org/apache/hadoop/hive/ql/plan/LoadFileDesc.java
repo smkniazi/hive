@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql.plan;
 import java.io.Serializable;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.io.AcidUtils;
 
 /**
@@ -75,6 +76,9 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
       final String columnTypes, AcidUtils.Operation writeType, boolean isMmCtas) {
 
     super(sourcePath, writeType);
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("creating LFD from " + sourcePath + " to " + targetDir);
+    }
     this.targetDir = targetDir;
     this.isDfsDir = isDfsDir;
     this.columns = columns;

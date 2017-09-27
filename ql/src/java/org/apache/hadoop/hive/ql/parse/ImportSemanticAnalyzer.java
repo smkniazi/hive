@@ -27,6 +27,7 @@ import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidWriteIds;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.MetaStoreUtils;
 import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.Warehouse;
 import org.apache.hadoop.hive.metastore.api.Database;
@@ -42,6 +43,7 @@ import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.exec.TaskFactory;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.hooks.WriteEntity;
+import org.apache.hadoop.hive.ql.io.AcidUtils;
 import org.apache.hadoop.hive.ql.io.HiveFileFormatUtils;
 import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -392,14 +394,16 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   private static Task<?> loadTable(URI fromURI, Table table, boolean replace, Path tgtPath,
-                                   ReplicationSpec replicationSpec, EximUtil.SemanticAnalyzerWrapperContext x,
-                                   Long mmWriteId, boolean isSourceMm) {
-    Path dataPath = new Path(fromURI.toString(), "data");
-    Path destPath = mmWriteId == null ? x.getCtx().getExternalTmpPath(tgtPath)
-        : new Path(tgtPath, ValidWriteIds.getMmFilePrefix(mmWriteId));
-    Utilities.LOG14535.info("adding import work for table with source location: "
-        + dataPath + "; table: " + tgtPath + "; copy destination " + destPath + "; mm "
-        + mmWriteId + " (src " + isSourceMm + ") for " + (table == null ? "a new table" : table.getTableName()));
+      ReplicationSpec replicationSpec, EximUtil.SemanticAnalyzerWrapperContext x,
+      Long txnId, int stmtId, boolean isSourceMm) {
+    Path dataPath = new Path(fromURI.toString(), EximUtil.DATA_PATH_NAME);
+    Path destPath = !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtPath)
+        : new Path(tgtPath, AcidUtils.deltaSubdir(txnId, txnId, stmtId));
+    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+      Utilities.FILE_OP_LOGGER.trace("adding import work for table with source location: " +
+        dataPath + "; table: " + tgtPath + "; copy destination " + destPath + "; mm " + txnId +
+        " (src " + isSourceMm + ") for " + (table == null ? "a new table" : table.getTableName()));
+    }
 
     Task<?> copyTask = null;
     if (replicationSpec.isInReplicationScope()) {
@@ -478,21 +482,36 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       String srcLocation = partSpec.getLocation();
       fixLocationInPartSpec(fs, tblDesc, table, wh, replicationSpec, partSpec, x);
       Path tgtLocation = new Path(partSpec.getLocation());
-      Path destPath = mmWriteId == null ? x.getCtx().getExternalTmpPath(tgtLocation)
-          : new Path(tgtLocation, ValidWriteIds.getMmFilePrefix(mmWriteId));
-      Path moveTaskSrc =  mmWriteId == null ? destPath : tgtLocation;
-      Utilities.LOG14535.info("adding import work for partition with source location: "
+
+      Path destPath = !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtLocation)
+          : new Path(tgtLocation, AcidUtils.deltaSubdir(txnId, txnId, stmtId));
+      Path moveTaskSrc =  !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? destPath : tgtLocation;
+      if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
+        Utilities.FILE_OP_LOGGER.trace("adding import work for partition with source location: "
           + srcLocation + "; target: " + tgtLocation + "; copy dest " + destPath + "; mm "
-          + mmWriteId + " (src " + isSourceMm + ") for " + partSpecToString(partSpec.getPartSpec()));
-      CopyWork cw = new CopyWork(new Path(srcLocation), destPath, false);
-      cw.setSkipSourceMmDirs(isSourceMm);
-      DDLWork dw = new DDLWork(x.getInputs(), x.getOutputs(), addPartitionDesc);
+          + txnId + " (src " + isSourceMm + ") for " + partSpecToString(partSpec.getPartSpec()));
+      }
+
+
+      Task<?> copyTask = null;
+      if (replicationSpec.isInReplicationScope()) {
+        if (isSourceMm || isAcid(txnId)) {
+          // TODO: ReplCopyTask is completely screwed. Need to support when it's not as screwed.
+          throw new RuntimeException("Replicating MM and ACID tables is not supported");
+        }
+        copyTask = ReplCopyTask.getLoadCopyTask(
+            replicationSpec, new Path(srcLocation), destPath, x.getConf());
+      } else {
+        CopyWork cw = new CopyWork(new Path(srcLocation), destPath, false);
+        cw.setSkipSourceMmDirs(isSourceMm);
+        copyTask = TaskFactory.get(cw, x.getConf());
+      }
+
+      Task<?> addPartTask = TaskFactory.get(new DDLWork(x.getInputs(),
+          x.getOutputs(), addPartitionDesc), x.getConf());
       LoadTableDesc loadTableWork = new LoadTableDesc(moveTaskSrc, Utilities.getTableDesc(table),
           partSpec.getPartSpec(), true, mmWriteId);
       loadTableWork.setInheritTableSpecs(false);
-      // Do not commit the write ID from each task; need to commit once.
-      // TODO: we should just change the import to use a single MoveTask, like dynparts.
-      loadTableWork.setIntermediateInMmWrite(mmWriteId != null);
       Task<?> loadPartTask = TaskFactory.get(new MoveWork(
               x.getInputs(), x.getOutputs(), loadTableWork, null, false,
               SessionState.get().getLineageState()),
