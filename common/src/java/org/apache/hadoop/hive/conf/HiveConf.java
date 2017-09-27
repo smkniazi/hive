@@ -3547,6 +3547,8 @@ public class HiveConf extends Configuration {
             "hive.spark.client.rpc.server.address," +
             "hive.spark.client.rpc.server.port," +
             "bonecp.,"+
+            "hive.druid.broker.address.default,"+
+            "hive.druid.coordinator.address.default,"+
             "hikari.",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
@@ -4524,6 +4526,7 @@ public class HiveConf extends Configuration {
     "hive\\.auto\\..*",
     "hive\\.cbo\\..*",
     "hive\\.convert\\..*",
+    "hive\\.druid\\..*",
     "hive\\.exec\\.dynamic\\.partition.*",
     "hive\\.exec\\.max\\.dynamic\\.partitions.*",
     "hive\\.exec\\.compress\\..*",
