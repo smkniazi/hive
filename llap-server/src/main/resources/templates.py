@@ -117,7 +117,10 @@ resources = """
       "yarn.resource.normalization.enabled": "false",
       "yarn.memory": "%(container.mb)d",
       "yarn.vcores": "%(container.cores)d",
-      "yarn.component.placement.policy" : "%(placement)d"
+      "yarn.component.placement.policy" : "%(placement)d",
+      "yarn.container.health.threshold.percent": "%(health_percent)d",
+      "yarn.container.health.threshold.window.secs": "%(health_time_window)d",
+      "yarn.container.health.threshold.init.delay.secs": "%(health_init_delay)d"
     }
   }
 }
