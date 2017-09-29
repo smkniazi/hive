@@ -13699,8 +13699,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             AcidUtils.Operation.INSERT);
   }
 
-  private AcidUtils.Operation getAcidType(Table table, Class<? extends OutputFormat> of, String dest) {
-    if (SessionState.get() == null || !SessionState.get().getTxnMgr().supportsAcid()) {
+  private AcidUtils.Operation getAcidType(Class<? extends OutputFormat> of, String dest) {
+    if (SessionState.get() == null || !getTxnMgr().supportsAcid()) {
       return AcidUtils.Operation.NOT_ACID;
     } else if (MetaStoreUtils.isInsertOnlyTable(table.getParameters())) {
       return AcidUtils.Operation.INSERT_ONLY;
@@ -13721,7 +13721,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
   // Make sure the proper transaction manager that supports ACID is being used
   protected void checkAcidTxnManager(Table table) throws SemanticException {
-    if (SessionState.get() != null && !SessionState.get().getTxnMgr().supportsAcid()) {
+    if (SessionState.get() != null && !getTxnMgr().supportsAcid()) {
       throw new SemanticException(ErrorMsg.TXNMGR_NOT_ACID, table.getDbName(), table.getTableName());
     }
   }
