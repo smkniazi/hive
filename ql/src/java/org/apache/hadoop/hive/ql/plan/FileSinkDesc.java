@@ -279,11 +279,11 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   }
 
   public boolean isMmTable() {
-    return mmWriteId != null;
-  }
-
-  public Long getMmWriteId() {
-    return mmWriteId;
+    if (getTable() != null) {
+      return AcidUtils.isInsertOnlyTable(table.getParameters());
+    } else { // Dynamic Partition Insert case
+      return AcidUtils.isInsertOnlyTable(getTableInfo().getProperties());
+    }
   }
 
   public boolean isMaterialization() {

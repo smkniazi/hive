@@ -137,7 +137,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
             parsedTableName = dbTablePair.getValue();
             // get partition metadata if partition specified
             if (child.getChildCount() == 2) {
-              @SuppressWarnings("unused") // TODO: wtf?
+              @SuppressWarnings("unused")
               ASTNode partspec = (ASTNode) child.getChild(1);
               isPartSpecSet = true;
               parsePartitionSpec(child, parsedPartSpec);
@@ -235,6 +235,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     } catch (Exception e) {
       throw new HiveException(e);
     }
+    boolean isSourceMm = AcidUtils.isInsertOnlyTable(tblDesc.getTblProps());
 
     if ((replicationSpec != null) && replicationSpec.isInReplicationScope()){
       tblDesc.setReplicationSpec(replicationSpec);
@@ -313,16 +314,14 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       tableExists = true;
     }
 
-    Long mmWriteId = null;
-    if (table != null && MetaStoreUtils.isInsertOnlyTable(table.getParameters())) {
-      mmWriteId = x.getHive().getNextTableWriteId(table.getDbName(), table.getTableName());
-    } else if (table == null && isSourceMm) {
-      // We could import everything as is - directories and IDs, but that won't work with ACID
-      // txn ids in future. So, let's import everything into the new MM directory with ID == 0.
-      mmWriteId = 0l;
-    }
-    if (mmWriteId != null) {
-      tblDesc.setInitialMmWriteId(mmWriteId);
+    Long txnId = SessionState.get().getTxnMgr().getCurrentTxnId();
+    int stmtId = 0;
+    // TODO [MM gap?]: bad merge; tblDesc is no longer CreateTableDesc, but ImportTableDesc.
+    //                 We need to verify the tests to see if this works correctly.
+    /*
+    if (isAcid(txnId)) {
+      tblDesc.setInitialMmWriteId(txnId);
+>>>>>>> 640159726f... HIVE-17674 : grep TODO HIVE-15212.17.patch |wc - l = 49 (Sergey Shelukhin)
     }
     if (!replicationSpec.isInReplicationScope()) {
       createRegularImportTasks(
@@ -397,7 +396,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       ReplicationSpec replicationSpec, EximUtil.SemanticAnalyzerWrapperContext x,
       Long txnId, int stmtId, boolean isSourceMm) {
     Path dataPath = new Path(fromURI.toString(), EximUtil.DATA_PATH_NAME);
-    Path destPath = !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtPath)
+    Path destPath = !AcidUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtPath)
         : new Path(tgtPath, AcidUtils.deltaSubdir(txnId, txnId, stmtId));
     if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
       Utilities.FILE_OP_LOGGER.trace("adding import work for table with source location: " +
@@ -407,10 +406,16 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
     Task<?> copyTask = null;
     if (replicationSpec.isInReplicationScope()) {
+<<<<<<< HEAD
       if (isSourceMm || mmWriteId != null) {
         // TODO: ReplCopyTask is completely screwed. Need to support when it's not as screwed.
         throw new RuntimeException(
             "Not supported right now because Replication is completely screwed");
+=======
+      if (isSourceMm || isAcid(txnId)) {
+        // Note: this is replication gap, not MM gap... Repl V2 is not ready yet.
+        throw new RuntimeException("Replicating MM and ACID tables is not supported");
+>>>>>>> 640159726f... HIVE-17674 : grep TODO HIVE-15212.17.patch |wc - l = 49 (Sergey Shelukhin)
       }
       ReplCopyTask.getLoadCopyTask(replicationSpec, dataPath, destPath, x.getConf());
     } else {
@@ -482,10 +487,14 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       String srcLocation = partSpec.getLocation();
       fixLocationInPartSpec(fs, tblDesc, table, wh, replicationSpec, partSpec, x);
       Path tgtLocation = new Path(partSpec.getLocation());
+<<<<<<< HEAD
 
       Path destPath = !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtLocation)
+=======
+      Path destPath = !AcidUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtLocation)
+>>>>>>> 640159726f... HIVE-17674 : grep TODO HIVE-15212.17.patch |wc - l = 49 (Sergey Shelukhin)
           : new Path(tgtLocation, AcidUtils.deltaSubdir(txnId, txnId, stmtId));
-      Path moveTaskSrc =  !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? destPath : tgtLocation;
+      Path moveTaskSrc =  !AcidUtils.isInsertOnlyTable(table.getParameters()) ? destPath : tgtLocation;
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("adding import work for partition with source location: "
           + srcLocation + "; target: " + tgtLocation + "; copy dest " + destPath + "; mm "
@@ -496,7 +505,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       Task<?> copyTask = null;
       if (replicationSpec.isInReplicationScope()) {
         if (isSourceMm || isAcid(txnId)) {
-          // TODO: ReplCopyTask is completely screwed. Need to support when it's not as screwed.
+          // Note: this is replication gap, not MM gap... Repl V2 is not ready yet.
           throw new RuntimeException("Replicating MM and ACID tables is not supported");
         }
         copyTask = ReplCopyTask.getLoadCopyTask(
@@ -815,7 +824,9 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     if (table != null) {
       if (table.isPartitioned()) {
         x.getLOG().debug("table partitioned");
-        Task<?> ict = createImportCommitTask(table.getDbName(), table.getTableName(), mmWriteId, x.getConf());
+        Task<?> ict = createImportCommitTask(
+            table.getDbName(), table.getTableName(), txnId, stmtId, x.getConf(),
+            AcidUtils.isInsertOnlyTable(table.getParameters()));
 
         for (AddPartitionDesc addPartitionDesc : partitionDescs) {
           Map<String, String> partSpec = addPartitionDesc.getPartition(0).getPartSpec();
@@ -852,7 +863,8 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
       if (isPartitioned(tblDesc)) {
         Task<?> ict = createImportCommitTask(
-            tblDesc.getDatabaseName(), tblDesc.getTableName(), mmWriteId, x.getConf());
+            tblDesc.getDatabaseName(), tblDesc.getTableName(), txnId, stmtId, x.getConf(),
+            AcidUtils.isInsertOnlyTable(tblDesc.getTblProps()));
         for (AddPartitionDesc addPartitionDesc : partitionDescs) {
           t.addDependentTask(addSinglePartition(fromURI, fs, tblDesc, table, wh, addPartitionDesc,
               replicationSpec, x, mmWriteId, isSourceMm, ict));
@@ -970,7 +982,8 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       if (!replicationSpec.isMetadataOnly()) {
         if (isPartitioned(tblDesc)) {
           Task<?> ict = createImportCommitTask(
-              tblDesc.getDatabaseName(), tblDesc.getTableName(), mmWriteId, x.getConf());
+              tblDesc.getDatabaseName(), tblDesc.getTableName(), txnId, stmtId, x.getConf(),
+              AcidUtils.isInsertOnlyTable(tblDesc.getTblProps()));
           for (AddPartitionDesc addPartitionDesc : partitionDescs) {
             addPartitionDesc.setReplicationSpec(replicationSpec);
             t.addDependentTask(
@@ -995,7 +1008,8 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
           Map<String, String> partSpec = addPartitionDesc.getPartition(0).getPartSpec();
           org.apache.hadoop.hive.ql.metadata.Partition ptn = null;
           Task<?> ict = replicationSpec.isMetadataOnly() ? null : createImportCommitTask(
-              tblDesc.getDatabaseName(), tblDesc.getTableName(), mmWriteId, x.getConf());
+              tblDesc.getDatabaseName(), tblDesc.getTableName(), txnId, stmtId, x.getConf(),
+              AcidUtils.isInsertOnlyTable(tblDesc.getTblProps()));
           if ((ptn = x.getHive().getPartition(table, partSpec, false)) == null) {
             if (!replicationSpec.isMetadataOnly()){
               x.getTasks().add(addSinglePartition(

@@ -205,6 +205,16 @@ public class CompactorMR {
     if(conf.getBoolVar(HiveConf.ConfVars.HIVE_IN_TEST) && conf.getBoolVar(HiveConf.ConfVars.HIVETESTMODEFAILCOMPACTION)) {
       throw new RuntimeException(HiveConf.ConfVars.HIVETESTMODEFAILCOMPACTION.name() + "=true");
     }
+
+    // For MM tables we don't need to launch MR jobs as there is no compaction needed.
+    // We just need to delete the directories for aborted transactions.
+    if (AcidUtils.isInsertOnlyTable(t.getParameters())) {
+      LOG.debug("Going to delete directories for aborted transactions for MM table "
+          + t.getDbName() + "." + t.getTableName());
+      removeFiles(conf, sd.getLocation(), txns, t);
+      return;
+    }
+
     JobConf job = createBaseJobConf(conf, jobName, t, sd, txns, ci);
 
     // Figure out and encode what files we need to read.  We do this here (rather than in

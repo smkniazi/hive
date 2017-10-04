@@ -2059,4 +2059,10 @@ public class MetaStoreUtils {
     ipAddress = (ipAddress == null) ? StringUtils.EMPTY : ipAddress;
     return machineList.includes(ipAddress);
   }
+
+  /** Duplicates AcidUtils; used in a couple places in metastore. */
+  public static boolean isInsertOnlyTableParam(Map<String, String> params) {
+    String transactionalProp = params.get(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
+    return (transactionalProp != null && "insert_only".equalsIgnoreCase(transactionalProp));
+  }
 }

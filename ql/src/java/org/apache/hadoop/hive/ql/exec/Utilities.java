@@ -1634,7 +1634,6 @@ public final class Utilities {
         }
         taskIDToFile = removeTempOrDuplicateFilesNonMm(items, fs);
 
-        // TODO: not clear why two if conditions are different. Preserve the existing logic for now.
         addBucketFileToResults(taskIDToFile, numBuckets, hconf, result);
       }
     } else {
@@ -1666,7 +1665,6 @@ public final class Utilities {
         }
         taskIDToFile = removeTempOrDuplicateFilesNonMm(fs.listStatus(mmDir), fs);
       }
-      // TODO: not clear why two if conditions are different. Preserve the existing logic for now.
       addBucketFileToResults2(taskIDToFile, numBuckets, hconf, result);
     }
 
@@ -4178,7 +4176,6 @@ public final class Utilities {
     Utilities.FILE_OP_LOGGER.debug("Looking for files in: " + specPath);
     ValidWriteIds.IdPathFilter filter = new ValidWriteIds.IdPathFilter(mmWriteId, true);
     if (isMmCtas && !fs.exists(specPath)) {
-      // TODO: do we also need to do this when creating an empty partition from select?
       Utilities.FILE_OP_LOGGER.info("Creating table directory for CTAS with no output at " + specPath);
       FileUtils.mkdir(fs, specPath, hconf);
     }

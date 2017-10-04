@@ -228,7 +228,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
           + " an intermediate table and use insert... select to allow Hive to enforce bucketing.");
     }*/
 
-    if(AcidUtils.isAcidTable(ts.tableHandle)) {
+    if(AcidUtils.isAcidTable(ts.tableHandle) && !AcidUtils.isInsertOnlyTable(ts.tableHandle.getParameters())) {
       throw new SemanticException(ErrorMsg.LOAD_DATA_ON_ACID_TABLE, ts.tableHandle.getCompleteName());
     }
     // make sure the arguments make sense
@@ -276,12 +276,8 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
 
     Long mmWriteId = null;
     Table tbl = ts.tableHandle;
-    if (MetaStoreUtils.isInsertOnlyTable(tbl.getParameters())) {
-      try {
-        mmWriteId = db.getNextTableWriteId(tbl.getDbName(), tbl.getTableName());
-      } catch (HiveException e) {
-        throw new SemanticException(e);
-      }
+    if (AcidUtils.isInsertOnlyTable(tbl.getParameters())) {
+      txnId = SessionState.get().getTxnMgr().getCurrentTxnId();
     }
 
     LoadTableDesc loadTableWork;

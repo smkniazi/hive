@@ -4075,8 +4075,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     List<Task<?>> result = null;
     if (part == null) {
       Set<String> removedSet = alterTbl.getProps().keySet();
-      boolean isFromMmTable = MetaStoreUtils.isInsertOnlyTable(tbl.getParameters()),
-          isRemoved = MetaStoreUtils.isRemovedInsertOnlyTable(removedSet);
+      boolean isFromMmTable = AcidUtils.isInsertOnlyTable(tbl.getParameters()),
+          isRemoved = AcidUtils.isRemovedInsertOnlyTable(removedSet);
       if (isFromMmTable && isRemoved) {
         result = generateRemoveMmTasks(tbl);
       }
@@ -4101,11 +4101,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     // operation commits. Deleting uncommitted things is safe, but moving stuff before we convert
     // could cause data loss.
     List<Path> allMmDirs = new ArrayList<>();
-    if (tbl.isStoredAsSubDirectories()) {
-      // TODO: support this? we only bail because it's a PITA and hardly anyone seems to care.
-      throw new HiveException("Converting list bucketed tables stored as subdirectories "
-          + " to and from MM is not supported");
-    }
+    checkMmLb(tbl);
     List<String> bucketCols = tbl.getBucketCols();
     if (bucketCols != null && !bucketCols.isEmpty()
         && HiveConf.getBoolVar(conf, ConfVars.HIVE_STRICT_CHECKS_BUCKETING)) {
@@ -4151,16 +4147,16 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
   private void checkMmLb(Table tbl) throws HiveException {
     if (!tbl.isStoredAsSubDirectories()) return;
-    // TODO: support this?
+    // TODO [MM gap?]: by design; no-one seems to use LB tables. They will work, but not convert.
+    //                 It's possible to work around this by re-creating and re-inserting the table.
     throw new HiveException("Converting list bucketed tables stored as subdirectories "
-        + " to and from MM is not supported");
+        + " to and from MM is not supported. Please re-create a table in the desired format.");
   }
 
   private void checkMmLb(Partition part) throws HiveException {
     if (!part.isStoredAsSubDirectories()) return;
-    // TODO: support this?
     throw new HiveException("Converting list bucketed tables stored as subdirectories "
-        + " to and from MM is not supported. Please create a table in the desired format.");
+        + " to and from MM is not supported. Please re-create a table in the desired format.");
   }
 
   private void handleRemoveMm(
@@ -4261,8 +4257,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     if (part != null) {
       part.getTPartition().getParameters().putAll(alterTbl.getProps());
     } else {
-      boolean isFromMmTable = MetaStoreUtils.isInsertOnlyTable(tbl.getParameters());
-      Boolean isToMmTable = MetaStoreUtils.isToInsertOnlyTable(alterTbl.getProps());
+      boolean isFromMmTable = AcidUtils.isInsertOnlyTable(tbl.getParameters());
+      Boolean isToMmTable = AcidUtils.isToInsertOnlyTable(alterTbl.getProps());
       if (isToMmTable != null) {
         if (!isFromMmTable && isToMmTable) {
           result = generateAddMmTasks(tbl);

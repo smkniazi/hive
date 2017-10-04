@@ -6840,7 +6840,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
 
       boolean isNonNativeTable = dest_tab.isNonNative();
-      isMmTable = MetaStoreUtils.isInsertOnlyTable(dest_tab.getParameters());
+      isMmTable = AcidUtils.isInsertOnlyTable(dest_tab.getParameters());
       if (isNonNativeTable || isMmTable) {
         queryTmpdir = dest_path;
       } else {
@@ -6873,8 +6873,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       if (!isNonNativeTable) {
         AcidUtils.Operation acidOp = AcidUtils.Operation.NOT_ACID;
         if (destTableIsAcid) {
-          acidOp = getAcidType(dest_tab, table_desc.getOutputFileFormatClass(), dest);
-          checkAcidConstraints(qb, table_desc, dest_tab, acidOp);
+         acidOp = getAcidType(table_desc.getOutputFileFormatClass(), dest);
+          checkAcidConstraints(qb, table_desc, dest_tab);
+        }
+        if (AcidUtils.isInsertOnlyTable(table_desc.getProperties())) {
+          acidOp = getAcidType(table_desc.getOutputFileFormatClass(), dest);
         }
         try {
           mmWriteId = getMmWriteId(dest_tab, isMmTable);
@@ -6916,7 +6919,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       dest_path = new Path(tabPath.toUri().getScheme(), tabPath.toUri()
           .getAuthority(), partPath.toUri().getPath());
 
-      isMmTable = MetaStoreUtils.isInsertOnlyTable(dest_tab.getParameters());
+      isMmTable = AcidUtils.isInsertOnlyTable(dest_tab.getParameters());
       queryTmpdir = isMmTable ? dest_path : ctx.getTempDirForPath(dest_path, true);
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("create filesink w/DEST_PARTITION specifying "
@@ -6939,11 +6942,14 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         acidOp = getAcidType(dest_tab, table_desc.getOutputFileFormatClass(), dest);
         checkAcidConstraints(qb, table_desc, dest_tab, acidOp);
       }
-      try {
-        mmWriteId = getMmWriteId(dest_tab, isMmTable);
-      } catch (HiveException e) {
-        // How is this a semantic exception? Stupid Java and signatures.
-        throw new SemanticException(e);
+      if (AcidUtils.isInsertOnlyTable(dest_part.getTable().getParameters())) {
+        acidOp = getAcidType(table_desc.getOutputFileFormatClass(), dest);
+      }
+      if (isMmTable) {
+        txnId = SessionState.get().getTxnMgr().getCurrentTxnId();
+      } else {
+        txnId = (acidOp == Operation.NOT_ACID) ? null :
+          SessionState.get().getTxnMgr().getCurrentTxnId();
       }
       ltd = new LoadTableDesc(queryTmpdir, table_desc, dest_part.getSpec(), acidOp, mmWriteId);
       ltd.setReplace(!qb.getParseInfo().isInsertIntoTable(dest_tab.getDbName(),
@@ -6975,7 +6981,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         field_schemas = new ArrayList<FieldSchema>();
         destTableIsTemporary = tblDesc.isTemporary();
         destTableIsMaterialization = tblDesc.isMaterialization();
-        if (!destTableIsTemporary && MetaStoreUtils.isInsertOnlyTable(tblDesc.getTblProps(), true)) {
+        if (!destTableIsTemporary && AcidUtils.isInsertOnlyTable(tblDesc.getTblProps(), true)) {
           isMmTable = isMmCtas = true;
           // TODO# this should really get current ACID txn; assuming ACID works correctly the txn
           //       should have been opened to create the ACID table. For now use the first ID.
@@ -7238,8 +7244,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     // If this is an insert, update, or delete on an ACID table then mark that so the
     // FileSinkOperator knows how to properly write to it.
     boolean isDestInsertOnly = (dest_part != null && dest_part.getTable() != null &&
-        MetaStoreUtils.isInsertOnlyTable(dest_part.getTable().getParameters()))
-        || (table_desc != null && MetaStoreUtils.isInsertOnlyTable(table_desc.getProperties()));
+        AcidUtils.isInsertOnlyTable(dest_part.getTable().getParameters()))
+        || (table_desc != null && AcidUtils.isInsertOnlyTable(table_desc.getProperties()));
 
     if (destTableIsAcid && !isDestInsertOnly) {
       AcidUtils.Operation wt = updating(dest) ? AcidUtils.Operation.UPDATE :
@@ -12029,7 +12035,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       if (p != null) {
         tbl = p.getTable();
       }
-      if (tbl != null && AcidUtils.isFullAcidTable(tbl)) {
+      if (tbl != null && (AcidUtils.isFullAcidTable(tbl) || AcidUtils.isInsertOnlyTable(tbl.getParameters()))) {
         acidInQuery = true;
         checkAcidTxnManager(tbl);
       }
@@ -12092,7 +12098,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         tbl = writeEntity.getTable();
       }
 
-      if (tbl != null && AcidUtils.isFullAcidTable(tbl)) {
+      if (tbl != null && (AcidUtils.isFullAcidTable(tbl) || AcidUtils.isInsertOnlyTable(tbl.getParameters()))) {
         acidInQuery = true;
         checkAcidTxnManager(tbl);
       }
