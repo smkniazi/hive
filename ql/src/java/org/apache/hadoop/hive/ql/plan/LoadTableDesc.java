@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class LoadTableDesc extends LoadDesc implements Serializable {
   private static final long serialVersionUID = 1L;
-  private boolean replace;
+  private LoadFileType loadFileType;
   private DynamicPartitionCtx dpCtx;
   private ListBucketingCtx lbCtx;
   private boolean inheritTableSpecs = true; //For partitions, flag controlling whether the current
@@ -49,10 +49,15 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   private org.apache.hadoop.hive.ql.plan.TableDesc table;
   private Map<String, String> partitionSpec; // NOTE: this partitionSpec has to be ordered map
 
+  public enum LoadFileType {
+    REPLACE_ALL,        // Remove all existing data before copy/move
+    KEEP_EXISTING,      // If any file exist while copy, then just duplicate the file
+    OVERWRITE_EXISTING  // If any file exist while copy, then just overwrite the file
+  }
   public LoadTableDesc(final LoadTableDesc o) {
     super(o.getSourcePath(), o.getWriteType());
 
-    this.replace = o.replace;
+    this.loadFileType = o.loadFileType;
     this.dpCtx = o.dpCtx;
     this.lbCtx = o.lbCtx;
     this.inheritTableSpecs = o.inheritTableSpecs;
@@ -63,14 +68,10 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   private LoadTableDesc(final Path sourcePath,
       final TableDesc table,
       final Map<String, String> partitionSpec,
-      final boolean replace,
-      final AcidUtils.Operation writeType, Long mmWriteId) {
+      final LoadFileType loadFileType,
+      final AcidUtils.Operation writeType, Long currentWriteId) {
     super(sourcePath, writeType);
-    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
-      Utilities.FILE_OP_LOGGER.trace("creating part LTD from " + sourcePath + " to "
-        + ((table.getProperties() == null) ? "null" : table.getTableName()));
-    }
-    init(table, partitionSpec, replace, mmWriteId);
+    init(table, partitionSpec, loadFileType, currentWriteId);
   }
 
   /**
@@ -78,21 +79,22 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
    * @param sourcePath
    * @param table
    * @param partitionSpec
-   * @param replace
+   * @param loadFileType
    */
   public LoadTableDesc(final Path sourcePath,
-                       final TableDesc table,
-                       final Map<String, String> partitionSpec,
-                       final boolean replace,
-                       final Long mmWriteId) {
-    this(sourcePath, table, partitionSpec, replace, AcidUtils.Operation.NOT_ACID, mmWriteId);
+      final TableDesc table,
+      final Map<String, String> partitionSpec,
+      final LoadFileType loadFileType) {
+    this(sourcePath, table, partitionSpec, loadFileType, AcidUtils.Operation.NOT_ACID,
+        null);
   }
 
   public LoadTableDesc(final Path sourcePath,
       final TableDesc table,
       final Map<String, String> partitionSpec,
-      final AcidUtils.Operation writeType, Long mmWriteId) {
-    this(sourcePath, table, partitionSpec, true, writeType, mmWriteId);
+      final AcidUtils.Operation writeType, Long currentTransactionId) {
+    this(sourcePath, table, partitionSpec, LoadFileType.REPLACE_ALL,
+            writeType, currentTransactionId);
   }
 
   /**
@@ -102,9 +104,10 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
    * @param partitionSpec
    */
   public LoadTableDesc(final Path sourcePath,
-                       final org.apache.hadoop.hive.ql.plan.TableDesc table,
-                       final Map<String, String> partitionSpec, Long mmWriteId) {
-    this(sourcePath, table, partitionSpec, true, AcidUtils.Operation.NOT_ACID, mmWriteId);
+      final TableDesc table,
+      final Map<String, String> partitionSpec) {
+    this(sourcePath, table, partitionSpec, LoadFileType.REPLACE_ALL,
+            AcidUtils.Operation.NOT_ACID, null);
   }
 
   public LoadTableDesc(final Path sourcePath,
@@ -118,20 +121,19 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     }
     this.dpCtx = dpCtx;
     if (dpCtx != null && dpCtx.getPartSpec() != null && partitionSpec == null) {
-      init(table, dpCtx.getPartSpec(), isReplace, mmWriteId);
+      init(table, dpCtx.getPartSpec(), LoadFileType.REPLACE_ALL);
     } else {
-      init(table, new LinkedHashMap<String, String>(), isReplace, mmWriteId);
+      init(table, new LinkedHashMap<>(), LoadFileType.REPLACE_ALL);
     }
   }
 
   private void init(
       final org.apache.hadoop.hive.ql.plan.TableDesc table,
       final Map<String, String> partitionSpec,
-      final boolean replace,
-      Long writeId) {
+      final LoadFileType loadFileType) {
     this.table = table;
     this.partitionSpec = partitionSpec;
-    this.replace = replace;
+    this.loadFileType = loadFileType;
   }
 
   @Explain(displayName = "table", explainLevels = { Level.USER, Level.DEFAULT, Level.EXTENDED })
@@ -154,20 +156,15 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
 
   @Explain(displayName = "replace")
   public boolean getReplace() {
-    return replace;
+    return (loadFileType == LoadFileType.REPLACE_ALL);
   }
 
-  @Explain(displayName = "micromanaged table")
-  public Boolean isMmTableExplain() {
-    return mmWriteId != null? true : null;
+  public LoadFileType getLoadFileType() {
+    return loadFileType;
   }
 
-  public boolean isMmTable() {
-   return AcidUtils.isInsertOnlyTable(table.getProperties());
-  }
-
-  public void setReplace(boolean replace) {
-    this.replace = replace;
+  public void setLoadFileType(LoadFileType loadFileType) {
+    this.loadFileType = loadFileType;
   }
 
   public DynamicPartitionCtx getDPCtx() {

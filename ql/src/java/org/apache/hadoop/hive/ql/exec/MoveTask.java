@@ -55,6 +55,7 @@ import org.apache.hadoop.hive.ql.plan.DynamicPartitionCtx;
 import org.apache.hadoop.hive.ql.plan.LoadFileDesc;
 import org.apache.hadoop.hive.ql.plan.LoadMultiFilesDesc;
 import org.apache.hadoop.hive.ql.plan.LoadTableDesc;
+import org.apache.hadoop.hive.ql.plan.LoadTableDesc.LoadFileType;
 import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.MapredWork;
 import org.apache.hadoop.hive.ql.plan.MoveWork;
@@ -407,9 +408,10 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
             Utilities.FILE_OP_LOGGER.trace("loadTable called from " + tbd.getSourcePath()
               + " into " + tbd.getTable().getTableName());
           }
-          db.loadTable(tbd.getSourcePath(), tbd.getTable().getTableName(), tbd.getReplace(),
-              work.isSrcLocal(), isSkewedStoredAsDirs(tbd), isAcid, hasFollowingStatsTask(),
-              tbd.getMmWriteId());
+          db.loadTable(tbd.getSourcePath(), tbd.getTable().getTableName(), tbd.getLoadFileType(),
+              work.isSrcLocal(), isSkewedStoredAsDirs(tbd),
+              work.getLoadTableWork().getWriteType() != AcidUtils.Operation.NOT_ACID,
+              hasFollowingStatsTask());
           if (work.getOutputs() != null) {
             DDLTask.addIfAbsentByName(new WriteEntity(table,
               getWriteType(tbd, work.getLoadTableWork().getWriteType())), work.getOutputs());
@@ -714,7 +716,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
    * has done it's job before the query ran.
    */
   WriteEntity.WriteType getWriteType(LoadTableDesc tbd, AcidUtils.Operation operation) {
-    if(tbd.getReplace()) {
+    if (tbd.getLoadFileType() == LoadFileType.REPLACE_ALL) {
       return WriteEntity.WriteType.INSERT_OVERWRITE;
     }
     switch (operation) {

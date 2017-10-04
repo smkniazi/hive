@@ -57,6 +57,7 @@ import org.apache.hadoop.hive.ql.plan.CreateTableDesc;
 import org.apache.hadoop.hive.ql.plan.ImportTableDesc;
 import org.apache.hadoop.hive.ql.plan.DDLWork;
 import org.apache.hadoop.hive.ql.plan.LoadTableDesc;
+import org.apache.hadoop.hive.ql.plan.LoadTableDesc.LoadFileType;
 import org.apache.hadoop.hive.ql.plan.MoveWork;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.serde.serdeConstants;
@@ -406,16 +407,9 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
     Task<?> copyTask = null;
     if (replicationSpec.isInReplicationScope()) {
-<<<<<<< HEAD
-      if (isSourceMm || mmWriteId != null) {
-        // TODO: ReplCopyTask is completely screwed. Need to support when it's not as screwed.
-        throw new RuntimeException(
-            "Not supported right now because Replication is completely screwed");
-=======
       if (isSourceMm || isAcid(txnId)) {
         // Note: this is replication gap, not MM gap... Repl V2 is not ready yet.
         throw new RuntimeException("Replicating MM and ACID tables is not supported");
->>>>>>> 640159726f... HIVE-17674 : grep TODO HIVE-15212.17.patch |wc - l = 49 (Sergey Shelukhin)
       }
       ReplCopyTask.getLoadCopyTask(replicationSpec, dataPath, destPath, x.getConf());
     } else {
@@ -487,12 +481,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       String srcLocation = partSpec.getLocation();
       fixLocationInPartSpec(fs, tblDesc, table, wh, replicationSpec, partSpec, x);
       Path tgtLocation = new Path(partSpec.getLocation());
-<<<<<<< HEAD
-
-      Path destPath = !MetaStoreUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtLocation)
-=======
       Path destPath = !AcidUtils.isInsertOnlyTable(table.getParameters()) ? x.getCtx().getExternalTmpPath(tgtLocation)
->>>>>>> 640159726f... HIVE-17674 : grep TODO HIVE-15212.17.patch |wc - l = 49 (Sergey Shelukhin)
           : new Path(tgtLocation, AcidUtils.deltaSubdir(txnId, txnId, stmtId));
       Path moveTaskSrc =  !AcidUtils.isInsertOnlyTable(table.getParameters()) ? destPath : tgtLocation;
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
@@ -518,8 +507,11 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
       Task<?> addPartTask = TaskFactory.get(new DDLWork(x.getInputs(),
           x.getOutputs(), addPartitionDesc), x.getConf());
-      LoadTableDesc loadTableWork = new LoadTableDesc(moveTaskSrc, Utilities.getTableDesc(table),
-          partSpec.getPartSpec(), true, mmWriteId);
+
+      LoadTableDesc loadTableWork = new LoadTableDesc(tmpPath,
+          Utilities.getTableDesc(table),
+          partSpec.getPartSpec(),
+          replicationSpec.isReplace() ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING);
       loadTableWork.setInheritTableSpecs(false);
       Task<?> loadPartTask = TaskFactory.get(new MoveWork(
               x.getInputs(), x.getOutputs(), loadTableWork, null, false,

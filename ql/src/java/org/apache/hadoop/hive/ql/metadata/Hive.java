@@ -148,6 +148,7 @@ import org.apache.hadoop.hive.ql.optimizer.listbucketingpruner.ListBucketingPrun
 import org.apache.hadoop.hive.ql.plan.AddPartitionDesc;
 import org.apache.hadoop.hive.ql.plan.DropTableDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
+import org.apache.hadoop.hive.ql.plan.LoadTableDesc.LoadFileType;
 import org.apache.hadoop.hive.ql.session.CreateTableAutomaticGrant;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.serde2.Deserializer;
@@ -1620,30 +1621,26 @@ public class Hive {
     return getDatabase(currentDb);
   }
 
-  public void loadSinglePartition(Path loadPath, String tableName,
-      Map<String, String> partSpec, boolean replace, boolean inheritTableSpecs,
-      boolean isSkewedStoreAsSubdir,  boolean isSrcLocal, boolean isAcid,
-      boolean hasFollowingStatsTask, Long mmWriteId, boolean isCommitMmWrite)
-          throws HiveException {
+  /**
+   * @param loadPath
+   * @param tableName
+   * @param partSpec
+   * @param loadFileType
+   * @param inheritTableSpecs
+   * @param isSkewedStoreAsSubdir
+   * @param isSrcLocal
+   * @param isAcid
+   * @param hasFollowingStatsTask
+   * @return
+   * @throws HiveException
+   */
+  public void loadPartition(Path loadPath, String tableName,
+      Map<String, String> partSpec, LoadFileType loadFileType,
+      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
+      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
     Table tbl = getTable(tableName);
-    boolean isMmTableWrite = (mmWriteId != null);
-    Preconditions.checkState(isMmTableWrite == MetaStoreUtils.isInsertOnlyTable(tbl.getParameters()));
-    loadPartition(loadPath, tbl, partSpec, replace, inheritTableSpecs,
-        isSkewedStoreAsSubdir, isSrcLocal, isAcid, hasFollowingStatsTask, mmWriteId);
-    if (isMmTableWrite && isCommitMmWrite) {
-      // The assumption behind committing here is that this partition is the only one outputted.
-      commitMmTableWrite(tbl, mmWriteId);
-    }
-  }
-
-
-  public void commitMmTableWrite(Table tbl, Long mmWriteId)
-      throws HiveException {
-    try {
-      getMSC().finalizeTableWrite(tbl.getDbName(), tbl.getTableName(), mmWriteId, true);
-    } catch (TException e) {
-      throw new HiveException(e);
-    }
+    loadPartition(loadPath, tbl, partSpec, loadFileType, inheritTableSpecs,
+        isSkewedStoreAsSubdir, isSrcLocal, isAcid, hasFollowingStatsTask);
   }
 
   /**
@@ -1658,9 +1655,9 @@ public class Hive {
    *          name of table to be loaded.
    * @param partSpec
    *          defines which partition needs to be loaded
-   * @param replace
-   *          if true - replace files in the partition, otherwise add files to
-   *          the partition
+   * @param loadFileType
+   *          if REPLACE_ALL - replace files in the table,
+   *          otherwise add files to table (KEEP_EXISTING, OVERWRITE_EXISTING)
    * @param inheritTableSpecs if true, on [re]creating the partition, take the
    *          location/inputformat/outputformat/serde details from table spec
    * @param isSrcLocal
@@ -1671,10 +1668,11 @@ public class Hive {
    *          true if there is a following task which updates the stats, so, this method need not update.
    * @return Partition object being loaded with data
    */
-  public Partition loadPartition(Path loadPath, Table tbl, Map<String, String> partSpec,
-      boolean replace, boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
-      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask, Long mmWriteId)
-          throws HiveException {
+  public Partition loadPartition(Path loadPath, Table tbl,
+      Map<String, String> partSpec, LoadFileType loadFileType,
+      boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
+      boolean isSrcLocal, boolean isAcid, boolean hasFollowingStatsTask) throws HiveException {
+
     Path tblDataLocationPath =  tbl.getDataLocation();
     boolean isMmTableWrite = AcidUtils.isInsertOnlyTable(tbl.getParameters());
     try {
@@ -1753,18 +1751,18 @@ public class Hive {
         if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
           Utilities.FILE_OP_LOGGER.trace("moving " + loadPath + " to " + destPath);
         }
-        if (replace || (oldPart == null && !isAcid)) {
-          replaceFiles(tbl.getPath(), loadPath, destPath, oldPartPath, getConf(),
-              isSrcLocal, filter, mmWriteId != null);
-        } else {
-          if (areEventsForDmlNeeded(tbl, oldPart)) {
-            newFiles = Collections.synchronizedList(new ArrayList<Path>());
-          }
 
+        if ((loadFileType == LoadFileType.REPLACE_ALL) || (oldPart == null && !isAcid)) {
+          boolean isAutoPurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
+          replaceFiles(tbl.getPath(), loadPath, newPartPath, oldPartPath, getConf(),
+              isSrcLocal, isAutoPurge, newFiles);
+        } else {
           FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
-          Hive.copyFiles(conf, loadPath, destPath, fs, isSrcLocal, isAcid, newFiles);
+          Hive.copyFiles(conf, loadPath, newPartPath, fs, isSrcLocal, isAcid,
+              (loadFileType == LoadFileType.OVERWRITE_EXISTING), newFiles);
         }
       }
+
       perfLogger.PerfLogEnd("MoveTask", "FileMoves");
       Partition newTPart = oldPart != null ? oldPart : new Partition(tbl, partSpec, newPartPath);
       alterPartitionSpecInMemory(tbl, partSpec, newTPart.getTPartition(), inheritTableSpecs, newPartPath.toString());
@@ -1773,7 +1771,7 @@ public class Hive {
       // Generate an insert event only if inserting into an existing partition
       // When inserting into a new partition, the add partition event takes care of insert event
       if ((null != oldPart) && (null != newFiles)) {
-        fireInsertEvent(tbl, partSpec, replace, newFiles);
+        fireInsertEvent(tbl, partSpec, (loadFileType == LoadFileType.REPLACE_ALL), newFiles);
       } else {
         LOG.debug("No new files were created, and is not a replace, or we're inserting into a "
                 + "partition that does not exist yet. Skipping generating INSERT event.");
@@ -2078,7 +2076,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param loadPath
    * @param tableName
    * @param partSpec
-   * @param replace
+   * @param loadFileType
    * @param numDP number of dynamic partitions
    * @param listBucketingEnabled
    * @param isAcid true if this is an ACID operation
@@ -2087,9 +2085,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @throws HiveException
    */
   public Map<Map<String, String>, Partition> loadDynamicPartitions(final Path loadPath,
-      final String tableName, final Map<String, String> partSpec, final boolean replace,
-      final int numDP, final int numLB, final boolean isAcid, final long txnId,
-      final boolean hasFollowingStatsTask, final AcidUtils.Operation operation, final Long mmWriteId)
+      final String tableName, final Map<String, String> partSpec, final LoadFileType loadFileType,
+      final int numDP, final boolean listBucketingEnabled, final boolean isAcid, final long txnId,
+      final boolean hasFollowingStatsTask, final AcidUtils.Operation operation)
       throws HiveException {
 
     final Map<Map<String, String>, Partition> partitionsMap =
@@ -2138,8 +2136,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
               // load the partition
               Partition newPartition = loadPartition(partPath, tbl, fullPartSpec,
-                  replace, true, numLB > 0,
-                  false, isAcid, hasFollowingStatsTask, mmWriteId);
+                  loadFileType, true, listBucketingEnabled,
+                  false, isAcid, hasFollowingStatsTask);
               partitionsMap.put(fullPartSpec, newPartition);
 
               if (inPlaceEligible) {
@@ -2156,8 +2154,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
                   + " partPath=" + partPath + ", "
                   + " table=" + tbl.getTableName() + ", "
                   + " partSpec=" + fullPartSpec + ", "
-                  + " replace=" + replace + ", "
-                  + " listBucketingLevel=" + numLB + ", "
+                  + " loadFileType=" + loadFileType.toString() + ", "
+                  + " listBucketingEnabled=" + listBucketingEnabled + ", "
                   + " isAcid=" + isAcid + ", "
                   + " hasFollowingStatsTask=" + hasFollowingStatsTask, t);
               throw t;
@@ -2213,8 +2211,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
    *          Directory containing files to load into Table
    * @param tableName
    *          name of table to be loaded.
-   * @param replace
-   *          if true - replace files in the table, otherwise add files to table
+   * @param loadFileType
+   *          if REPLACE_ALL - replace files in the table,
+   *          otherwise add files to table (KEEP_EXISTING, OVERWRITE_EXISTING)
    * @param isSrcLocal
    *          If the source directory is LOCAL
    * @param isSkewedStoreAsSubdir
@@ -2223,9 +2222,9 @@ private void constructOneLBLocationMap(FileStatus fSta,
    *          if there is any following stats task
    * @param isAcid true if this is an ACID based write
    */
-  public void loadTable(Path loadPath, String tableName, boolean replace, boolean isSrcLocal,
-      boolean isSkewedStoreAsSubdir, boolean isAcid, boolean hasFollowingStatsTask,
-      Long mmWriteId) throws HiveException {
+  public void loadTable(Path loadPath, String tableName, LoadFileType loadFileType, boolean isSrcLocal,
+                        boolean isSkewedStoreAsSubdir, boolean isAcid, boolean hasFollowingStatsTask)
+      throws HiveException {
 
     List<Path> newFiles = null;
     Table tbl = getTable(tableName);
@@ -2253,13 +2252,17 @@ private void constructOneLBLocationMap(FileStatus fSta,
         filter = replace ? new ValidWriteIds.IdPathFilter(mmWriteId, false, true) : filter;
       }
       Utilities.FILE_OP_LOGGER.debug("moving " + loadPath + " to " + tblPath + " (replace = " + replace + ")");
-      if (replace) {
-        replaceFiles(tblPath, loadPath, destPath, tblPath,
-            sessionConf, isSrcLocal, filter, mmWriteId != null);
+
+      if (loadFileType == LoadFileType.REPLACE_ALL) {
+        Path tableDest = tbl.getPath();
+        boolean isAutopurge = "true".equalsIgnoreCase(tbl.getProperty("auto.purge"));
+        replaceFiles(tableDest, loadPath, tableDest, tableDest, sessionConf, isSrcLocal, isAutopurge, newFiles);
       } else {
+        FileSystem fs;
         try {
-          FileSystem fs = tbl.getDataLocation().getFileSystem(sessionConf);
-          copyFiles(sessionConf, loadPath, destPath, fs, isSrcLocal, isAcid, newFiles);
+          fs = tbl.getDataLocation().getFileSystem(sessionConf);
+          copyFiles(sessionConf, loadPath, tbl.getPath(), fs, isSrcLocal, isAcid,
+              (loadFileType == LoadFileType.OVERWRITE_EXISTING), newFiles);
         } catch (IOException e) {
           throw new HiveException("addFiles: filesystem error in check phase", e);
         }
@@ -2297,7 +2300,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
       throw new HiveException(e);
     }
 
-    fireInsertEvent(tbl, null, replace, newFiles);
+    fireInsertEvent(tbl, null, (loadFileType == LoadFileType.REPLACE_ALL), newFiles);
   }
 
   /**
@@ -3117,8 +3120,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
   }
 
   private static void copyFiles(final HiveConf conf, final FileSystem destFs,
-                                FileStatus[] srcs, final FileSystem srcFs, final Path destf, final boolean isSrcLocal, final List<Path> newFiles)
-      throws HiveException {
+            FileStatus[] srcs, final FileSystem srcFs, final Path destf, final boolean isSrcLocal,
+            boolean isOverwrite, final List<Path> newFiles) throws HiveException {
 
     final HdfsUtils.HadoopFileStatus fullDestStatus;
     try {
@@ -3173,8 +3176,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
         // copy from source to destination, we will inherit the destination's parent group ownership.
         if (null == pool) {
           try {
-
-            Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
+            Path destPath = mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isOverwrite, isRenameAllowed);
 
             if (null != newFiles) {
               newFiles.add(destPath);
@@ -3190,7 +3192,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
 
               try {
                 Path destPath =
-                    mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isRenameAllowed);
+                    mvFile(conf, srcFs, srcP, destFs, destf, isSrcLocal, isOverwrite, isRenameAllowed);
 
                 if (null != newFiles) {
                   newFiles.add(destPath);
@@ -3279,6 +3281,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param destFs the {@link FileSystem} to move the file to
    * @param destDirPath the {@link Path} to move the file to
    * @param isSrcLocal if the source file is on the local filesystem
+   * @param isOverwrite if true, then overwrite destination file if exist else make a duplicate copy
    * @param isRenameAllowed true if the data should be renamed and not copied, false otherwise
    *
    * @return the {@link Path} the source file was moved to
@@ -3286,7 +3289,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @throws IOException if there was an issue moving the file
    */
   private static Path mvFile(HiveConf conf, FileSystem sourceFs, Path sourcePath, FileSystem destFs, Path destDirPath,
-                             boolean isSrcLocal, boolean isRenameAllowed) throws IOException {
+                             boolean isSrcLocal, boolean isOverwrite, boolean isRenameAllowed) throws IOException {
 
     // Strip off the file type, if any so we don't make:
     // 000000_0.gz -> 000000_0.gz_copy_1
@@ -3305,6 +3308,10 @@ private void constructOneLBLocationMap(FileStatus fSta,
     * I'll leave the below loop for now until a better approach is found.
     */
     for (int counter = 1; destFs.exists(destFilePath); counter++) {
+      if (isOverwrite) {
+        destFs.delete(destFilePath, false);
+        break;
+      }
       destFilePath =  new Path(destDirPath, name + (Utilities.COPY_KEYWORD + counter) + (!type.isEmpty() ? "." + type : ""));
     }
 
@@ -3593,12 +3600,14 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @param fs Filesystem
    * @param isSrcLocal true if source is on local file system
    * @param isAcid true if this is an ACID based write
+   * @param isOverwrite if true, then overwrite if destination file exist, else add a duplicate copy
    * @param newFiles if this is non-null, a list of files that were created as a result of this
    *                 move will be returned.
    * @throws HiveException
    */
-  static protected void copyFiles(HiveConf conf, Path srcf, Path destf,
-      FileSystem fs, boolean isSrcLocal, boolean isAcid, List<Path> newFiles) throws HiveException {
+  static protected void copyFiles(HiveConf conf, Path srcf, Path destf, FileSystem fs,
+                                  boolean isSrcLocal, boolean isAcid,
+                                  boolean isOverwrite, List<Path> newFiles) throws HiveException {
     try {
       // create the destination if it does not exist
       if (!fs.exists(destf)) {
@@ -3630,7 +3639,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     if (isAcid) {
       moveAcidFiles(srcFs, srcs, destf, newFiles);
     } else {
-      copyFiles(conf, fs, srcs, srcFs, destf, isSrcLocal, newFiles);
+      copyFiles(conf, fs, srcs, srcFs, destf, isSrcLocal, isOverwrite, newFiles);
     }
   }
 
