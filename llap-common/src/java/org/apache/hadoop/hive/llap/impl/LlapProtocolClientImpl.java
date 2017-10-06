@@ -37,6 +37,7 @@ import org.apache.hadoop.ipc.ProtocolProxy;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.hive.llap.protocol.LlapProtocolBlockingPB;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class LlapProtocolClientImpl implements LlapProtocolBlockingPB {
   public LlapProtocolClientImpl(Configuration conf, String hostname, int port,
                                 UserGroupInformation ugi,
                                 @Nullable RetryPolicy retryPolicy,
-                                @Nullable SocketFactory socketFactory) {
+                                @Nullable SocketFactory socketFactory) throws SSLCertificateException {
     // Technically, methods run on a threadpool that is created externally with the UGI.
     // However, that is brittle, so we'd save the UGI explicitly here.
     this.ugi = ugi;

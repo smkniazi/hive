@@ -30,6 +30,7 @@ import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.hive.llap.protocol.LlapManagementProtocolPB;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.GetTokenRequestProto;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.GetTokenResponseProto;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
 
 public class LlapManagementProtocolClientImpl implements LlapManagementProtocolPB {
@@ -43,7 +44,7 @@ public class LlapManagementProtocolClientImpl implements LlapManagementProtocolP
 
   public LlapManagementProtocolClientImpl(Configuration conf, String hostname, int port,
                                       @Nullable RetryPolicy retryPolicy,
-                                      @Nullable SocketFactory socketFactory) {
+                                      @Nullable SocketFactory socketFactory) throws SSLCertificateException {
     this.conf = conf;
     this.serverAddr = NetUtils.createSocketAddr(hostname, port);
     this.retryPolicy = retryPolicy;

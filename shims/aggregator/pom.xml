@@ -38,36 +38,18 @@
       <artifactId>hive-shims-common</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
-       <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive.shims</groupId>
       <artifactId>hive-shims-0.23</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
-         <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hive.shims</groupId>
       <artifactId>hive-shims-scheduler</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
-         <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 </project>

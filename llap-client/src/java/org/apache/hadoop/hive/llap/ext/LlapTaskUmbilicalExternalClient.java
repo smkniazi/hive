@@ -55,6 +55,7 @@ import org.apache.hadoop.hive.llap.tez.LlapProtocolClientProxy;
 import org.apache.hadoop.hive.llap.tezplugins.helpers.LlapTaskUmbilicalServer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.ProtocolSignature;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.service.AbstractService;
 import org.apache.tez.common.security.JobTokenIdentifier;
@@ -113,7 +114,7 @@ public class LlapTaskUmbilicalExternalClient extends AbstractService implements 
 
   public LlapTaskUmbilicalExternalClient(Configuration conf, String tokenIdentifier,
       Token<JobTokenIdentifier> sessionToken, LlapTaskUmbilicalExternalResponder responder,
-      Token<LlapTokenIdentifier> llapToken) {
+      Token<LlapTokenIdentifier> llapToken) throws SSLCertificateException {
     super(LlapTaskUmbilicalExternalClient.class.getName());
     this.conf = conf;
     this.umbilical = new LlapTaskUmbilicalExternalImpl();

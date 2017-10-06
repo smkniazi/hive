@@ -40,6 +40,7 @@ import org.apache.hadoop.io.DataInputByteBuffer;
 import org.apache.hadoop.io.retry.RetryPolicies;
 import org.apache.hadoop.io.retry.RetryPolicy;
 import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class LlapTokenClient {
   private LlapManagementProtocolClientImpl client;
   private ServiceInstance clientInstance;
 
-  public LlapTokenClient(Configuration conf) {
+  public LlapTokenClient(Configuration conf) throws SSLCertificateException {
     this.conf = conf;
     registry = new LlapRegistryService(false);
     registry.init(conf);

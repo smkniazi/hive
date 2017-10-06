@@ -68,6 +68,7 @@ import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.ipc.RemoteException;
 import org.apache.hadoop.ipc.RetriableException;
 import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
@@ -243,7 +244,8 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
   }
 
   @VisibleForTesting
-  protected LlapProtocolClientProxy createLlapProtocolClientProxy(int numThreads, Configuration conf) {
+  protected LlapProtocolClientProxy createLlapProtocolClientProxy
+      (int numThreads, Configuration conf) throws SSLCertificateException {
     return new LlapProtocolClientProxy(numThreads, conf, token);
   }
 

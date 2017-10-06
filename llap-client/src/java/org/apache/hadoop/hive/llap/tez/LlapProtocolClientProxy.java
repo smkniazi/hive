@@ -61,6 +61,7 @@ import org.apache.hadoop.hive.llap.security.LlapTokenIdentifier;
 import org.apache.hadoop.io.retry.RetryPolicies;
 import org.apache.hadoop.io.retry.RetryPolicy;
 import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
@@ -84,7 +85,8 @@ public class LlapProtocolClientProxy extends AbstractService {
   private final String llapTokenUser;
 
   public LlapProtocolClientProxy(
-      int numThreads, Configuration conf, Token<LlapTokenIdentifier> llapToken) {
+      int numThreads, Configuration conf, Token<LlapTokenIdentifier> llapToken)
+      throws SSLCertificateException {
     super(LlapProtocolClientProxy.class.getSimpleName());
     this.hostProxies = new ConcurrentHashMap<>();
     this.socketFactory = NetUtils.getDefaultSocketFactory(conf);
@@ -474,7 +476,7 @@ public class LlapProtocolClientProxy extends AbstractService {
     void indicateError(Throwable t);
   }
 
-  private LlapProtocolBlockingPB getProxy(final LlapNodeId nodeId) {
+  private LlapProtocolBlockingPB getProxy(final LlapNodeId nodeId) throws SSLCertificateException {
     String hostId = getHostIdentifier(nodeId.getHostname(), nodeId.getPort());
 
     LlapProtocolBlockingPB proxy = hostProxies.get(hostId);
@@ -498,8 +500,12 @@ public class LlapProtocolClientProxy extends AbstractService {
         proxy = ugi.doAs(new PrivilegedAction<LlapProtocolBlockingPB>() {
           @Override
           public LlapProtocolBlockingPB run() {
-           return new LlapProtocolClientImpl(getConfig(), nodeId.getHostname(),
-               nodeId.getPort(), ugi, retryPolicy, socketFactory);
+            try {
+              return new LlapProtocolClientImpl(getConfig(), nodeId.getHostname(),
+                  nodeId.getPort(), ugi, retryPolicy, socketFactory);
+            } catch (SSLCertificateException e) {
+              return null;
+            }
           }
         });
       }
