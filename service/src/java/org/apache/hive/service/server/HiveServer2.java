@@ -52,6 +52,11 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.llap.coordinator.LlapCoordinator;
 import org.apache.hadoop.hive.llap.registry.impl.LlapRegistryService;
+import org.apache.hadoop.hive.metastore.MetaStoreUtils;
+import org.apache.hadoop.hive.metastore.RawStore;
+import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.cache.CachedStore;
+import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.ql.exec.spark.session.SparkSessionManagerImpl;
 import org.apache.hadoop.hive.ql.exec.tez.TezSessionPoolManager;
 import org.apache.hadoop.hive.ql.exec.tez.WorkloadManager;
@@ -127,6 +132,9 @@ public class HiveServer2 extends CompositeService {
 
     // init arraylist
     thriftCLIServices = new ArrayList<>();
+
+    // Initialize cachedstore with background prewarm. The prewarm will only start if configured.
+    CachedStore.initSharedCacheAsync(hiveConf);
 
     cliService = new CLIService(this);
     addService(cliService);
