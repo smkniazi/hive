@@ -30,6 +30,7 @@ import org.apache.hadoop.fs.Path;
 import com.google.common.collect.ImmutableList;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.hive.metastore.ObjectStore.RetryingExecutor;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -756,4 +757,11 @@ public class TestObjectStore {
       previousId = event.getEventId();
     }
   }
+
+  @Test
+  public void testRetryingExecutorSleep() throws Exception {
+    RetryingExecutor re = new ObjectStore.RetryingExecutor(new HiveConf(), null);
+    assertTrue("invalid sleep value", re.getSleepInterval() >= 0);
+  }
+
 }
