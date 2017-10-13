@@ -1509,7 +1509,6 @@
     </profile>
   </profiles>
 
-
   <distributionManagement>
     <repository>
       <id>Hops</id>
@@ -1517,5 +1516,4 @@
       <url>https://bbc1.sics.se/archiva/repository/Hops/</url>
     </repository>
   </distributionManagement>
-
 </project>
