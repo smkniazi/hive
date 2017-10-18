@@ -180,7 +180,7 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
   @SuppressWarnings("unused")
   private volatile boolean isPaused = false;
 
-  boolean[] globalIncludes = null, sargColumns = null;
+  boolean[] readerIncludes = null, sargColumns = null, fileIncludes = null;
   private final IoTrace trace;
   private Pool<IoTrace> tracePool;
 
@@ -221,10 +221,16 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
         HiveConf.getBoolVar(daemonConf, ConfVars.LLAP_CACHE_ALLOW_SYNTHETIC_FILEID),
         HiveConf.getBoolVar(daemonConf, ConfVars.LLAP_CACHE_DEFAULT_FS_FILE_ID));
     fileMetadata = getFileFooterFromCacheOrDisk();
+    final TypeDescription fileSchema = fileMetadata.getSchema();
     if (readerSchema == null) {
       readerSchema = fileMetadata.getSchema();
     }
-    globalIncludes = OrcInputFormat.genIncludedColumns(readerSchema, includedColumnIds);
+    readerIncludes = OrcInputFormat.genIncludedColumns(readerSchema, includedColumnIds);
+    if (HiveConf.getBoolVar(jobConf, ConfVars.HIVE_TRANSACTIONAL_TABLE_SCAN)) {
+      fileIncludes = OrcInputFormat.shiftReaderIncludedForAcid(readerIncludes);
+    } else {
+      fileIncludes = OrcInputFormat.genIncludedColumns(fileSchema, includedColumnIds);
+    }
     // Do not allow users to override zero-copy setting. The rest can be taken from user config.
     boolean useZeroCopy = OrcConf.USE_ZEROCOPY.getBoolean(daemonConf);
     if (useZeroCopy != OrcConf.USE_ZEROCOPY.getBoolean(jobConf)) {
@@ -232,10 +238,10 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
       jobConf.setBoolean(OrcConf.USE_ZEROCOPY.getAttribute(), useZeroCopy);
     }
     this.jobConf = jobConf;
-    Reader.Options options = new Reader.Options(jobConf).include(globalIncludes);
+    Reader.Options options = new Reader.Options(jobConf).include(readerIncludes);
     evolution = new SchemaEvolution(fileMetadata.getSchema(), readerSchema, options);
     consumer.setFileMetadata(fileMetadata);
-    consumer.setIncludedColumns(globalIncludes);
+    consumer.setIncludedColumns(readerIncludes);
     consumer.setSchemaEvolution(evolution);
   }
 
@@ -308,7 +314,7 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
         int[] filterColumns = RecordReaderImpl.mapSargColumnsToOrcInternalColIdx(
           sarg.getLeaves(), evolution);
         // included will not be null, row options will fill the array with trues if null
-        sargColumns = new boolean[globalIncludes.length];
+        sargColumns = new boolean[evolution.getFileSchema().getMaximumId() + 1];
         for (int i : filterColumns) {
           // filter columns may have -1 as index which could be partition column in SARG.
           if (i > 0) {
@@ -317,11 +323,11 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
         }
 
         // If SARG is present, get relevant stripe metadata from cache or readers.
-        stripeMetadatas = readStripesMetadata(globalIncludes, sargColumns);
+        stripeMetadatas = readStripesMetadata(fileIncludes, sargColumns);
       }
 
       // Now, apply SARG if any; w/o sarg, this will just initialize stripeRgs.
-      boolean hasData = determineRgsToRead(globalIncludes, stride, stripeMetadatas);
+      boolean hasData = determineRgsToRead(fileIncludes, stride, stripeMetadatas);
       if (!hasData) {
         consumer.setDone();
         recordReaderTime(startTime);
@@ -381,10 +387,10 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
           stripeKey.stripeIx = stripeIx;
           OrcProto.StripeFooter footer = getStripeFooterFromCacheOrDisk(si, stripeKey);
           stripeMetadata = createOrcStripeMetadataObject(
-              stripeIx, si, footer, globalIncludes, sargColumns);
+              stripeIx, si, footer, fileIncludes, sargColumns);
           ensureDataReader();
           stripeReader.readIndexStreams(stripeMetadata.getIndex(),
-              si, footer.getStreamsList(), globalIncludes, sargColumns);
+              si, footer.getStreamsList(), fileIncludes, sargColumns);
           consumer.setStripeMetadata(stripeMetadata);
         }
       } catch (Throwable t) {
@@ -404,7 +410,7 @@ public class OrcEncodedDataReader extends CallableWithNdc<Void>
         // Also, currently readEncodedColumns is not stoppable. The consumer will discard the
         // data it receives for one stripe. We could probably interrupt it, if it checked that.
         stripeReader.readEncodedColumns(stripeIx, si, stripeMetadata.getRowIndexes(),
-            stripeMetadata.getEncodings(), stripeMetadata.getStreams(), globalIncludes,
+            stripeMetadata.getEncodings(), stripeMetadata.getStreams(), fileIncludes,
             rgs, consumer);
       } catch (Throwable t) {
         handleReaderError(startTime, t);
