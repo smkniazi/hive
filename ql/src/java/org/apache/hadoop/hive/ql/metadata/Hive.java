@@ -63,7 +63,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileChecksum;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hive.common.FileUtils;
@@ -121,6 +120,7 @@ import org.apache.hadoop.hive.metastore.api.PrimaryKeysRequest;
 import org.apache.hadoop.hive.metastore.api.PrincipalPrivilegeSet;
 import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.PrivilegeBag;
+import org.apache.hadoop.hive.metastore.api.WMResourcePlan;
 import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.RolePrincipalGrant;
 import org.apache.hadoop.hive.metastore.api.SQLForeignKey;
@@ -4716,6 +4716,56 @@ private void constructOneLBLocationMap(FileStatus fSta,
       throws HiveException, NoSuchObjectException {
     try {
       getMSC().addNotNullConstraint(notNullConstraintCols);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public void createResourcePlan(WMResourcePlan resourcePlan) throws HiveException {
+    try {
+      getMSC().createResourcePlan(resourcePlan);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public WMResourcePlan getResourcePlan(String rpName) throws HiveException {
+    try {
+      return getMSC().getResourcePlan(rpName);
+    } catch (NoSuchObjectException e) {
+      return null;
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public List<WMResourcePlan> geAllResourcePlans() throws HiveException {
+    try {
+      return getMSC().getAllResourcePlans();
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public void dropResourcePlan(String rpName) throws HiveException {
+    try {
+      getMSC().dropResourcePlan(rpName);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public void alterResourcePlan(String rpName, WMResourcePlan resourcePlan) throws HiveException {
+    try {
+      getMSC().alterResourcePlan(rpName, resourcePlan);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public boolean validateResourcePlan(String rpName) throws HiveException {
+    try {
+      return getMSC().validateResourcePlan(rpName);
     } catch (Exception e) {
       throw new HiveException(e);
     }

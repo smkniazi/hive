@@ -1331,6 +1331,48 @@ class Iface(fb303.FacebookService.Iface):
   def get_metastore_db_uuid(self):
     pass
 
+  def create_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    pass
+
+  def get_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    pass
+
+  def get_all_resource_plans(self, request):
+    """
+    Parameters:
+     - request
+    """
+    pass
+
+  def alter_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    pass
+
+  def validate_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    pass
+
+  def drop_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    pass
+
 
 class Client(fb303.FacebookService.Client, Iface):
   """
@@ -7326,6 +7368,220 @@ class Client(fb303.FacebookService.Client, Iface):
       raise result.o1
     raise TApplicationException(TApplicationException.MISSING_RESULT, "get_metastore_db_uuid failed: unknown result")
 
+  def create_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    self.send_create_resource_plan(request)
+    return self.recv_create_resource_plan()
+
+  def send_create_resource_plan(self, request):
+    self._oprot.writeMessageBegin('create_resource_plan', TMessageType.CALL, self._seqid)
+    args = create_resource_plan_args()
+    args.request = request
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_create_resource_plan(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = create_resource_plan_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.o1 is not None:
+      raise result.o1
+    if result.o2 is not None:
+      raise result.o2
+    if result.o3 is not None:
+      raise result.o3
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "create_resource_plan failed: unknown result")
+
+  def get_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    self.send_get_resource_plan(request)
+    return self.recv_get_resource_plan()
+
+  def send_get_resource_plan(self, request):
+    self._oprot.writeMessageBegin('get_resource_plan', TMessageType.CALL, self._seqid)
+    args = get_resource_plan_args()
+    args.request = request
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_get_resource_plan(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = get_resource_plan_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.o1 is not None:
+      raise result.o1
+    if result.o2 is not None:
+      raise result.o2
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "get_resource_plan failed: unknown result")
+
+  def get_all_resource_plans(self, request):
+    """
+    Parameters:
+     - request
+    """
+    self.send_get_all_resource_plans(request)
+    return self.recv_get_all_resource_plans()
+
+  def send_get_all_resource_plans(self, request):
+    self._oprot.writeMessageBegin('get_all_resource_plans', TMessageType.CALL, self._seqid)
+    args = get_all_resource_plans_args()
+    args.request = request
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_get_all_resource_plans(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = get_all_resource_plans_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.o1 is not None:
+      raise result.o1
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "get_all_resource_plans failed: unknown result")
+
+  def alter_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    self.send_alter_resource_plan(request)
+    return self.recv_alter_resource_plan()
+
+  def send_alter_resource_plan(self, request):
+    self._oprot.writeMessageBegin('alter_resource_plan', TMessageType.CALL, self._seqid)
+    args = alter_resource_plan_args()
+    args.request = request
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_alter_resource_plan(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = alter_resource_plan_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.o1 is not None:
+      raise result.o1
+    if result.o2 is not None:
+      raise result.o2
+    if result.o3 is not None:
+      raise result.o3
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "alter_resource_plan failed: unknown result")
+
+  def validate_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    self.send_validate_resource_plan(request)
+    return self.recv_validate_resource_plan()
+
+  def send_validate_resource_plan(self, request):
+    self._oprot.writeMessageBegin('validate_resource_plan', TMessageType.CALL, self._seqid)
+    args = validate_resource_plan_args()
+    args.request = request
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_validate_resource_plan(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = validate_resource_plan_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.o1 is not None:
+      raise result.o1
+    if result.o2 is not None:
+      raise result.o2
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "validate_resource_plan failed: unknown result")
+
+  def drop_resource_plan(self, request):
+    """
+    Parameters:
+     - request
+    """
+    self.send_drop_resource_plan(request)
+    return self.recv_drop_resource_plan()
+
+  def send_drop_resource_plan(self, request):
+    self._oprot.writeMessageBegin('drop_resource_plan', TMessageType.CALL, self._seqid)
+    args = drop_resource_plan_args()
+    args.request = request
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_drop_resource_plan(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = drop_resource_plan_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    if result.o1 is not None:
+      raise result.o1
+    if result.o2 is not None:
+      raise result.o2
+    if result.o3 is not None:
+      raise result.o3
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "drop_resource_plan failed: unknown result")
+
 
 class Processor(fb303.FacebookService.Processor, Iface, TProcessor):
   def __init__(self, handler):
@@ -7497,6 +7753,12 @@ class Processor(fb303.FacebookService.Processor, Iface, TProcessor):
     self._processMap["heartbeat_write_id"] = Processor.process_heartbeat_write_id
     self._processMap["get_valid_write_ids"] = Processor.process_get_valid_write_ids
     self._processMap["get_metastore_db_uuid"] = Processor.process_get_metastore_db_uuid
+    self._processMap["create_resource_plan"] = Processor.process_create_resource_plan
+    self._processMap["get_resource_plan"] = Processor.process_get_resource_plan
+    self._processMap["get_all_resource_plans"] = Processor.process_get_all_resource_plans
+    self._processMap["alter_resource_plan"] = Processor.process_alter_resource_plan
+    self._processMap["validate_resource_plan"] = Processor.process_validate_resource_plan
+    self._processMap["drop_resource_plan"] = Processor.process_drop_resource_plan
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -11552,6 +11814,162 @@ class Processor(fb303.FacebookService.Processor, Iface, TProcessor):
       logging.exception(ex)
       result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
     oprot.writeMessageBegin("get_metastore_db_uuid", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_create_resource_plan(self, seqid, iprot, oprot):
+    args = create_resource_plan_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = create_resource_plan_result()
+    try:
+      result.success = self._handler.create_resource_plan(args.request)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except AlreadyExistsException as o1:
+      msg_type = TMessageType.REPLY
+      result.o1 = o1
+    except InvalidObjectException as o2:
+      msg_type = TMessageType.REPLY
+      result.o2 = o2
+    except MetaException as o3:
+      msg_type = TMessageType.REPLY
+      result.o3 = o3
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("create_resource_plan", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_get_resource_plan(self, seqid, iprot, oprot):
+    args = get_resource_plan_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = get_resource_plan_result()
+    try:
+      result.success = self._handler.get_resource_plan(args.request)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except NoSuchObjectException as o1:
+      msg_type = TMessageType.REPLY
+      result.o1 = o1
+    except MetaException as o2:
+      msg_type = TMessageType.REPLY
+      result.o2 = o2
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("get_resource_plan", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_get_all_resource_plans(self, seqid, iprot, oprot):
+    args = get_all_resource_plans_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = get_all_resource_plans_result()
+    try:
+      result.success = self._handler.get_all_resource_plans(args.request)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except MetaException as o1:
+      msg_type = TMessageType.REPLY
+      result.o1 = o1
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("get_all_resource_plans", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_alter_resource_plan(self, seqid, iprot, oprot):
+    args = alter_resource_plan_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = alter_resource_plan_result()
+    try:
+      result.success = self._handler.alter_resource_plan(args.request)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except NoSuchObjectException as o1:
+      msg_type = TMessageType.REPLY
+      result.o1 = o1
+    except InvalidOperationException as o2:
+      msg_type = TMessageType.REPLY
+      result.o2 = o2
+    except MetaException as o3:
+      msg_type = TMessageType.REPLY
+      result.o3 = o3
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("alter_resource_plan", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_validate_resource_plan(self, seqid, iprot, oprot):
+    args = validate_resource_plan_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = validate_resource_plan_result()
+    try:
+      result.success = self._handler.validate_resource_plan(args.request)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except NoSuchObjectException as o1:
+      msg_type = TMessageType.REPLY
+      result.o1 = o1
+    except MetaException as o2:
+      msg_type = TMessageType.REPLY
+      result.o2 = o2
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("validate_resource_plan", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_drop_resource_plan(self, seqid, iprot, oprot):
+    args = drop_resource_plan_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = drop_resource_plan_result()
+    try:
+      result.success = self._handler.drop_resource_plan(args.request)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except NoSuchObjectException as o1:
+      msg_type = TMessageType.REPLY
+      result.o1 = o1
+    except InvalidOperationException as o2:
+      msg_type = TMessageType.REPLY
+      result.o2 = o2
+    except MetaException as o3:
+      msg_type = TMessageType.REPLY
+      result.o3 = o3
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("drop_resource_plan", msg_type, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -27571,6 +27989,191 @@ class get_indexes_result:
       oprot.writeListBegin(TType.STRUCT, len(self.success))
       for iter1067 in self.success:
         iter1067.write(oprot)
+<<<<<<< HEAD
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class get_index_names_args:
+  """
+  Attributes:
+   - db_name
+   - tbl_name
+   - max_indexes
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'db_name', None, None, ), # 1
+    (2, TType.STRING, 'tbl_name', None, None, ), # 2
+    (3, TType.I16, 'max_indexes', None, -1, ), # 3
+  )
+
+  def __init__(self, db_name=None, tbl_name=None, max_indexes=thrift_spec[3][4],):
+    self.db_name = db_name
+    self.tbl_name = tbl_name
+    self.max_indexes = max_indexes
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.db_name = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.tbl_name = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I16:
+          self.max_indexes = iprot.readI16()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('get_index_names_args')
+    if self.db_name is not None:
+      oprot.writeFieldBegin('db_name', TType.STRING, 1)
+      oprot.writeString(self.db_name)
+      oprot.writeFieldEnd()
+    if self.tbl_name is not None:
+      oprot.writeFieldBegin('tbl_name', TType.STRING, 2)
+      oprot.writeString(self.tbl_name)
+      oprot.writeFieldEnd()
+    if self.max_indexes is not None:
+      oprot.writeFieldBegin('max_indexes', TType.I16, 3)
+      oprot.writeI16(self.max_indexes)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.db_name)
+    value = (value * 31) ^ hash(self.tbl_name)
+    value = (value * 31) ^ hash(self.max_indexes)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class get_index_names_result:
+  """
+  Attributes:
+   - success
+   - o2
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRING,None), None, ), # 0
+    (1, TType.STRUCT, 'o2', (MetaException, MetaException.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, o2=None,):
+    self.success = success
+    self.o2 = o2
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype1071, _size1068) = iprot.readListBegin()
+          for _i1072 in xrange(_size1068):
+            _elem1073 = iprot.readString()
+            self.success.append(_elem1073)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o2 = MetaException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('get_index_names_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRING, len(self.success))
+      for iter1074 in self.success:
+        oprot.writeString(iter1074)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.o1 is not None:
@@ -33819,162 +34422,13 @@ class set_crypto_result:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
 class get_delegation_token_args:
   """
   Attributes:
    - token_owner
    - renewer_kerberos_principal_name
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'token_owner', None, None, ), # 1
-    (2, TType.STRING, 'renewer_kerberos_principal_name', None, None, ), # 2
-  )
-
-  def __init__(self, token_owner=None, renewer_kerberos_principal_name=None,):
-    self.token_owner = token_owner
-    self.renewer_kerberos_principal_name = renewer_kerberos_principal_name
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.token_owner = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRING:
-          self.renewer_kerberos_principal_name = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_delegation_token_args')
-    if self.token_owner is not None:
-      oprot.writeFieldBegin('token_owner', TType.STRING, 1)
-      oprot.writeString(self.token_owner)
-      oprot.writeFieldEnd()
-    if self.renewer_kerberos_principal_name is not None:
-      oprot.writeFieldBegin('renewer_kerberos_principal_name', TType.STRING, 2)
-      oprot.writeString(self.renewer_kerberos_principal_name)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.token_owner)
-    value = (value * 31) ^ hash(self.renewer_kerberos_principal_name)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class get_delegation_token_result:
-  """
-  Attributes:
-   - success
-   - o1
-  """
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-    (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, success=None, o1=None,):
-    self.success = success
-    self.o1 = o1
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.o1 = MetaException()
-          self.o1.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_delegation_token_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
-      oprot.writeFieldEnd()
-    if self.o1 is not None:
-      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
-      self.o1.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    value = (value * 31) ^ hash(self.o1)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
+=======
 class renew_delegation_token_args:
   """
   Attributes:
@@ -34915,10 +35369,20 @@ class update_master_key_args:
   Attributes:
    - seq_number
    - key
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
 
   thrift_spec = (
     None, # 0
+<<<<<<< HEAD
+    (1, TType.STRING, 'token_owner', None, None, ), # 1
+    (2, TType.STRING, 'renewer_kerberos_principal_name', None, None, ), # 2
+  )
+
+  def __init__(self, token_owner=None, renewer_kerberos_principal_name=None,):
+    self.token_owner = token_owner
+    self.renewer_kerberos_principal_name = renewer_kerberos_principal_name
+=======
     (1, TType.I32, 'seq_number', None, None, ), # 1
     (2, TType.STRING, 'key', None, None, ), # 2
   )
@@ -34926,6 +35390,7 @@ class update_master_key_args:
   def __init__(self, seq_number=None, key=None,):
     self.seq_number = seq_number
     self.key = key
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -34943,7 +35408,16 @@ class update_master_key_args:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
+<<<<<<< HEAD
+          self.token_owner = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.renewer_kerberos_principal_name = iprot.readString()
+=======
           self.key = iprot.readString()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         else:
           iprot.skip(ftype)
       else:
@@ -34955,6 +35429,16 @@ class update_master_key_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_delegation_token_args')
+    if self.token_owner is not None:
+      oprot.writeFieldBegin('token_owner', TType.STRING, 1)
+      oprot.writeString(self.token_owner)
+      oprot.writeFieldEnd()
+    if self.renewer_kerberos_principal_name is not None:
+      oprot.writeFieldBegin('renewer_kerberos_principal_name', TType.STRING, 2)
+      oprot.writeString(self.renewer_kerberos_principal_name)
+=======
     oprot.writeStructBegin('update_master_key_args')
     if self.seq_number is not None:
       oprot.writeFieldBegin('seq_number', TType.I32, 1)
@@ -34963,6 +35447,7 @@ class update_master_key_args:
     if self.key is not None:
       oprot.writeFieldBegin('key', TType.STRING, 2)
       oprot.writeString(self.key)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -34973,8 +35458,13 @@ class update_master_key_args:
 
   def __hash__(self):
     value = 17
+<<<<<<< HEAD
+    value = (value * 31) ^ hash(self.token_owner)
+    value = (value * 31) ^ hash(self.renewer_kerberos_principal_name)
+=======
     value = (value * 31) ^ hash(self.seq_number)
     value = (value * 31) ^ hash(self.key)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     return value
 
   def __repr__(self):
@@ -34988,7 +35478,11 @@ class update_master_key_args:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class get_delegation_token_result:
+=======
 class update_master_key_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - o1
@@ -34996,9 +35490,14 @@ class update_master_key_result:
   """
 
   thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRING, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+=======
     None, # 0
     (1, TType.STRUCT, 'o1', (NoSuchObjectException, NoSuchObjectException.thrift_spec), None, ), # 1
     (2, TType.STRUCT, 'o2', (MetaException, MetaException.thrift_spec), None, ), # 2
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, o1=None, o2=None,):
@@ -35014,10 +35513,16 @@ class update_master_key_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
+<<<<<<< HEAD
+      if fid == 0:
+        if ftype == TType.STRING:
+          self.success = iprot.readString()
+=======
       if fid == 1:
         if ftype == TType.STRUCT:
           self.o1 = NoSuchObjectException()
           self.o1.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -35035,7 +35540,15 @@ class update_master_key_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_delegation_token_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+=======
     oprot.writeStructBegin('update_master_key_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.o1 is not None:
       oprot.writeFieldBegin('o1', TType.STRUCT, 1)
       self.o1.write(oprot)
@@ -35068,7 +35581,11 @@ class update_master_key_result:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class renew_delegation_token_args:
+=======
 class remove_master_key_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - key_seq
@@ -35105,10 +35622,17 @@ class remove_master_key_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('renew_delegation_token_args')
+    if self.token_str_form is not None:
+      oprot.writeFieldBegin('token_str_form', TType.STRING, 1)
+      oprot.writeString(self.token_str_form)
+=======
     oprot.writeStructBegin('remove_master_key_args')
     if self.key_seq is not None:
       oprot.writeFieldBegin('key_seq', TType.I32, 1)
       oprot.writeI32(self.key_seq)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -35133,7 +35657,390 @@ class remove_master_key_args:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class renew_delegation_token_result:
+  """
+  Attributes:
+   - success
+   - o1
+  """
+
+  thrift_spec = (
+    (0, TType.I64, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, o1=None,):
+    self.success = success
+    self.o1 = o1
+=======
 class remove_master_key_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+<<<<<<< HEAD
+        if ftype == TType.I64:
+          self.success = iprot.readI64()
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = MetaException()
+          self.o1.read(iprot)
+=======
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('renew_delegation_token_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I64, 0)
+      oprot.writeI64(self.success)
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+=======
+    oprot.writeStructBegin('remove_master_key_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+<<<<<<< HEAD
+    value = (value * 31) ^ hash(self.o1)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class cancel_delegation_token_args:
+  """
+  Attributes:
+   - token_str_form
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'token_str_form', None, None, ), # 1
+  )
+
+  def __init__(self, token_str_form=None,):
+    self.token_str_form = token_str_form
+
+=======
+class get_master_keys_args:
+
+  thrift_spec = (
+  )
+
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+<<<<<<< HEAD
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.token_str_form = iprot.readString()
+        else:
+          iprot.skip(ftype)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('cancel_delegation_token_args')
+    if self.token_str_form is not None:
+      oprot.writeFieldBegin('token_str_form', TType.STRING, 1)
+      oprot.writeString(self.token_str_form)
+      oprot.writeFieldEnd()
+=======
+    oprot.writeStructBegin('get_master_keys_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+<<<<<<< HEAD
+    value = (value * 31) ^ hash(self.token_str_form)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class cancel_delegation_token_result:
+=======
+class get_master_keys_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - o1
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    None, # 0
+    (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+=======
+    (0, TType.LIST, 'success', (TType.STRING,None), None, ), # 0
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, o1=None,):
+    self.o1 = o1
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+<<<<<<< HEAD
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = MetaException()
+          self.o1.read(iprot)
+=======
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype1134, _size1131) = iprot.readListBegin()
+          for _i1135 in xrange(_size1131):
+            _elem1136 = iprot.readString()
+            self.success.append(_elem1136)
+          iprot.readListEnd()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('cancel_delegation_token_result')
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+=======
+    oprot.writeStructBegin('get_master_keys_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRING, len(self.success))
+      for iter1137 in self.success:
+        oprot.writeString(iter1137)
+      oprot.writeListEnd()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.o1)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class add_token_args:
+  """
+  Attributes:
+   - token_identifier
+   - delegation_token
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'token_identifier', None, None, ), # 1
+    (2, TType.STRING, 'delegation_token', None, None, ), # 2
+  )
+
+  def __init__(self, token_identifier=None, delegation_token=None,):
+    self.token_identifier = token_identifier
+    self.delegation_token = delegation_token
+
+=======
+class get_open_txns_args:
+
+  thrift_spec = (
+  )
+
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+<<<<<<< HEAD
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.token_identifier = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.delegation_token = iprot.readString()
+        else:
+          iprot.skip(ftype)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('add_token_args')
+    if self.token_identifier is not None:
+      oprot.writeFieldBegin('token_identifier', TType.STRING, 1)
+      oprot.writeString(self.token_identifier)
+      oprot.writeFieldEnd()
+    if self.delegation_token is not None:
+      oprot.writeFieldBegin('delegation_token', TType.STRING, 2)
+      oprot.writeString(self.delegation_token)
+      oprot.writeFieldEnd()
+=======
+    oprot.writeStructBegin('get_open_txns_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+<<<<<<< HEAD
+    value = (value * 31) ^ hash(self.token_identifier)
+    value = (value * 31) ^ hash(self.delegation_token)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class add_token_result:
   """
   Attributes:
    - success
@@ -35169,7 +36076,7 @@ class remove_master_key_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('remove_master_key_result')
+    oprot.writeStructBegin('add_token_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.BOOL, 0)
       oprot.writeBool(self.success)
@@ -35197,64 +36104,19 @@ class remove_master_key_result:
   def __ne__(self, other):
     return not (self == other)
 
-class get_master_keys_args:
-
-  thrift_spec = (
-  )
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_master_keys_args')
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class get_master_keys_result:
+class remove_token_args:
   """
   Attributes:
-   - success
+   - token_identifier
   """
 
   thrift_spec = (
-    (0, TType.LIST, 'success', (TType.STRING,None), None, ), # 0
+    None, # 0
+    (1, TType.STRING, 'token_identifier', None, None, ), # 1
   )
 
-  def __init__(self, success=None,):
-    self.success = success
+  def __init__(self, token_identifier=None,):
+    self.token_identifier = token_identifier
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -35265,14 +36127,9 @@ class get_master_keys_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype1134, _size1131) = iprot.readListBegin()
-          for _i1135 in xrange(_size1131):
-            _elem1136 = iprot.readString()
-            self.success.append(_elem1136)
-          iprot.readListEnd()
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.token_identifier = iprot.readString()
         else:
           iprot.skip(ftype)
       else:
@@ -35284,13 +36141,10 @@ class get_master_keys_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('get_master_keys_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.LIST, 0)
-      oprot.writeListBegin(TType.STRING, len(self.success))
-      for iter1137 in self.success:
-        oprot.writeString(iter1137)
-      oprot.writeListEnd()
+    oprot.writeStructBegin('remove_token_args')
+    if self.token_identifier is not None:
+      oprot.writeFieldBegin('token_identifier', TType.STRING, 1)
+      oprot.writeString(self.token_identifier)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -35301,7 +36155,7 @@ class get_master_keys_result:
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.token_identifier)
     return value
 
   def __repr__(self):
@@ -35315,53 +36169,10 @@ class get_master_keys_result:
   def __ne__(self, other):
     return not (self == other)
 
-class get_open_txns_args:
-
-  thrift_spec = (
-  )
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_open_txns_args')
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
+class remove_token_result:
+=======
 class get_open_txns_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - success
@@ -35626,9 +36437,19 @@ class open_txns_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
+<<<<<<< HEAD
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype1127, _size1124) = iprot.readListBegin()
+          for _i1128 in xrange(_size1124):
+            _elem1129 = iprot.readString()
+            self.success.append(_elem1129)
+          iprot.readListEnd()
+=======
         if ftype == TType.STRUCT:
           self.success = OpenTxnsResponse()
           self.success.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         else:
           iprot.skip(ftype)
       else:
@@ -35642,8 +36463,16 @@ class open_txns_result:
       return
     oprot.writeStructBegin('open_txns_result')
     if self.success is not None:
+<<<<<<< HEAD
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRING, len(self.success))
+      for iter1130 in self.success:
+        oprot.writeString(iter1130)
+      oprot.writeListEnd()
+=======
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -36173,6 +37002,15 @@ class lock_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
+<<<<<<< HEAD
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype1134, _size1131) = iprot.readListBegin()
+          for _i1135 in xrange(_size1131):
+            _elem1136 = iprot.readString()
+            self.success.append(_elem1136)
+          iprot.readListEnd()
+=======
         if ftype == TType.STRUCT:
           self.success = LockResponse()
           self.success.read(iprot)
@@ -36188,6 +37026,7 @@ class lock_result:
         if ftype == TType.STRUCT:
           self.o2 = TxnAbortedException()
           self.o2.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         else:
           iprot.skip(ftype)
       else:
@@ -36201,6 +37040,13 @@ class lock_result:
       return
     oprot.writeStructBegin('lock_result')
     if self.success is not None:
+<<<<<<< HEAD
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRING, len(self.success))
+      for iter1137 in self.success:
+        oprot.writeString(iter1137)
+      oprot.writeListEnd()
+=======
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
       oprot.writeFieldEnd()
@@ -36211,6 +37057,7 @@ class lock_result:
     if self.o2 is not None:
       oprot.writeFieldBegin('o2', TType.STRUCT, 2)
       self.o2.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -37867,15 +38714,20 @@ class get_notification_events_count_result:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class compact_args:
+=======
 class fire_listener_event_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - rqst
   """
+<<<<<<< HEAD
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'rqst', (FireEventRequest, FireEventRequest.thrift_spec), None, ), # 1
+    (1, TType.STRUCT, 'rqst', (CompactionRequest, CompactionRequest.thrift_spec), None, ), # 1
   )
 
   def __init__(self, rqst=None,):
@@ -37892,7 +38744,7 @@ class fire_listener_event_args:
         break
       if fid == 1:
         if ftype == TType.STRUCT:
-          self.rqst = FireEventRequest()
+          self.rqst = CompactionRequest()
           self.rqst.read(iprot)
         else:
           iprot.skip(ftype)
@@ -37905,7 +38757,7 @@ class fire_listener_event_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('fire_listener_event_args')
+    oprot.writeStructBegin('compact_args')
     if self.rqst is not None:
       oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
       self.rqst.write(oprot)
@@ -37933,14 +38785,126 @@ class fire_listener_event_args:
   def __ne__(self, other):
     return not (self == other)
 
-class fire_listener_event_result:
+class compact_result:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('compact_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class compact2_args:
+  """
+  Attributes:
+   - rqst
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'rqst', (CompactionRequest, CompactionRequest.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, rqst=None,):
+    self.rqst = rqst
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.rqst = CompactionRequest()
+          self.rqst.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('compact2_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
+      self.rqst.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.rqst)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class compact2_result:
   """
   Attributes:
    - success
   """
 
   thrift_spec = (
-    (0, TType.STRUCT, 'success', (FireEventResponse, FireEventResponse.thrift_spec), None, ), # 0
+    (0, TType.STRUCT, 'success', (CompactionResponse, CompactionResponse.thrift_spec), None, ), # 0
   )
 
   def __init__(self, success=None,):
@@ -37957,7 +38921,7 @@ class fire_listener_event_result:
         break
       if fid == 0:
         if ftype == TType.STRUCT:
-          self.success = FireEventResponse()
+          self.success = CompactionResponse()
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
@@ -37970,7 +38934,7 @@ class fire_listener_event_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('fire_listener_event_result')
+    oprot.writeStructBegin('compact2_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
@@ -37998,6 +38962,910 @@ class fire_listener_event_result:
   def __ne__(self, other):
     return not (self == other)
 
+class show_compact_args:
+  """
+  Attributes:
+   - rqst
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'rqst', (ShowCompactRequest, ShowCompactRequest.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, rqst=None,):
+    self.rqst = rqst
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.rqst = ShowCompactRequest()
+          self.rqst.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('show_compact_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
+      self.rqst.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.rqst)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class show_compact_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (ShowCompactResponse, ShowCompactResponse.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = ShowCompactResponse()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('show_compact_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class add_dynamic_partitions_args:
+  """
+  Attributes:
+   - rqst
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'rqst', (AddDynamicPartitions, AddDynamicPartitions.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, rqst=None,):
+    self.rqst = rqst
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.rqst = AddDynamicPartitions()
+          self.rqst.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('add_dynamic_partitions_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
+      self.rqst.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.rqst)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class add_dynamic_partitions_result:
+  """
+  Attributes:
+   - o1
+   - o2
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'o1', (NoSuchTxnException, NoSuchTxnException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'o2', (TxnAbortedException, TxnAbortedException.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, o1=None, o2=None,):
+    self.o1 = o1
+    self.o2 = o2
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = NoSuchTxnException()
+          self.o1.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.o2 = TxnAbortedException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('add_dynamic_partitions_result')
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class get_next_notification_args:
+  """
+  Attributes:
+   - rqst
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'rqst', (NotificationEventRequest, NotificationEventRequest.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, rqst=None,):
+    self.rqst = rqst
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.rqst = NotificationEventRequest()
+          self.rqst.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('get_next_notification_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
+      self.rqst.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.rqst)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class get_next_notification_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (NotificationEventResponse, NotificationEventResponse.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = NotificationEventResponse()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('get_next_notification_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class get_current_notificationEventId_args:
+
+  thrift_spec = (
+=======
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'rqst', (FireEventRequest, FireEventRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+<<<<<<< HEAD
+=======
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.rqst = FireEventRequest()
+          self.rqst.read(iprot)
+        else:
+          iprot.skip(ftype)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_current_notificationEventId_args')
+=======
+    oprot.writeStructBegin('fire_listener_event_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
+      self.rqst.write(oprot)
+      oprot.writeFieldEnd()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_current_notificationEventId_result:
+=======
+class fire_listener_event_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (CurrentNotificationEventId, CurrentNotificationEventId.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (FireEventResponse, FireEventResponse.thrift_spec), None, ), # 0
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = CurrentNotificationEventId()
+=======
+          self.success = FireEventResponse()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_current_notificationEventId_result')
+=======
+    oprot.writeStructBegin('fire_listener_event_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_notification_events_count_args:
+  """
+  Attributes:
+   - rqst
+  """
+
+  thrift_spec = None
+  def __init__(self, rqst=None,):
+    self.rqst = rqst
+=======
+class flushCache_args:
+
+  thrift_spec = (
+  )
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+<<<<<<< HEAD
+      if fid == -1:
+        if ftype == TType.STRUCT:
+          self.rqst = NotificationEventsCountRequest()
+          self.rqst.read(iprot)
+        else:
+          iprot.skip(ftype)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_notification_events_count_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, -1)
+      self.rqst.write(oprot)
+      oprot.writeFieldEnd()
+=======
+    oprot.writeStructBegin('flushCache_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_notification_events_count_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (NotificationEventsCountResponse, NotificationEventsCountResponse.thrift_spec), None, ), # 0
+=======
+class flushCache_result:
+
+  thrift_spec = (
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+<<<<<<< HEAD
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = NotificationEventsCountResponse()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_notification_events_count_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+=======
+    oprot.writeStructBegin('flushCache_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class fire_listener_event_args:
+=======
+class cm_recycle_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'rqst', (FireEventRequest, FireEventRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'request', (CmRecycleRequest, CmRecycleRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.rqst = FireEventRequest()
+          self.rqst.read(iprot)
+=======
+          self.request = CmRecycleRequest()
+          self.request.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('fire_listener_event_args')
+    if self.rqst is not None:
+      oprot.writeFieldBegin('rqst', TType.STRUCT, 1)
+      self.rqst.write(oprot)
+=======
+    oprot.writeStructBegin('cm_recycle_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class fire_listener_event_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (FireEventResponse, FireEventResponse.thrift_spec), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+=======
+class cm_recycle_result:
+  """
+  Attributes:
+   - success
+   - o1
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (CmRecycleResponse, CmRecycleResponse.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, success=None, o1=None,):
+    self.success = success
+    self.o1 = o1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+<<<<<<< HEAD
+        if ftype == TType.STRUCT:
+          self.success = FireEventResponse()
+          self.success.read(iprot)
+=======
+        if ftype == TType.STRUCT:
+          self.success = CmRecycleResponse()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = MetaException()
+          self.o1.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('fire_listener_event_result')
+=======
+    oprot.writeStructBegin('cm_recycle_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+<<<<<<< HEAD
+=======
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+<<<<<<< HEAD
+=======
+    value = (value * 31) ^ hash(self.o1)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
 class flushCache_args:
 
   thrift_spec = (
@@ -38094,15 +39962,29 @@ class cm_recycle_args:
   """
   Attributes:
    - request
+=======
+class get_file_metadata_by_expr_args:
+  """
+  Attributes:
+   - req
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
 
   thrift_spec = (
     None, # 0
+<<<<<<< HEAD
     (1, TType.STRUCT, 'request', (CmRecycleRequest, CmRecycleRequest.thrift_spec), None, ), # 1
   )
 
   def __init__(self, request=None,):
     self.request = request
+=======
+    (1, TType.STRUCT, 'req', (GetFileMetadataByExprRequest, GetFileMetadataByExprRequest.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, req=None,):
+    self.req = req
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -38115,8 +39997,13 @@ class cm_recycle_args:
         break
       if fid == 1:
         if ftype == TType.STRUCT:
+<<<<<<< HEAD
           self.request = CmRecycleRequest()
           self.request.read(iprot)
+=======
+          self.req = GetFileMetadataByExprRequest()
+          self.req.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         else:
           iprot.skip(ftype)
       else:
@@ -38128,10 +40015,17 @@ class cm_recycle_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
     oprot.writeStructBegin('cm_recycle_args')
     if self.request is not None:
       oprot.writeFieldBegin('request', TType.STRUCT, 1)
       self.request.write(oprot)
+=======
+    oprot.writeStructBegin('get_file_metadata_by_expr_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -38142,7 +40036,11 @@ class cm_recycle_args:
 
   def __hash__(self):
     value = 17
+<<<<<<< HEAD
     value = (value * 31) ^ hash(self.request)
+=======
+    value = (value * 31) ^ hash(self.req)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     return value
 
   def __repr__(self):
@@ -38156,7 +40054,11 @@ class cm_recycle_args:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
 class cm_recycle_result:
+=======
+class get_file_metadata_by_expr_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - success
@@ -38164,8 +40066,12 @@ class cm_recycle_result:
   """
 
   thrift_spec = (
+<<<<<<< HEAD
     (0, TType.STRUCT, 'success', (CmRecycleResponse, CmRecycleResponse.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+=======
+    (0, TType.STRUCT, 'success', (GetFileMetadataByExprResult, GetFileMetadataByExprResult.thrift_spec), None, ), # 0
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, success=None, o1=None,):
@@ -38183,7 +40089,11 @@ class cm_recycle_result:
         break
       if fid == 0:
         if ftype == TType.STRUCT:
+<<<<<<< HEAD
           self.success = CmRecycleResponse()
+=======
+          self.success = GetFileMetadataByExprResult()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
@@ -38202,7 +40112,11 @@ class cm_recycle_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
     oprot.writeStructBegin('cm_recycle_result')
+=======
+    oprot.writeStructBegin('get_file_metadata_by_expr_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
@@ -38235,138 +40149,11 @@ class cm_recycle_result:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
 class get_file_metadata_by_expr_args:
-  """
-  Attributes:
-   - req
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'req', (GetFileMetadataByExprRequest, GetFileMetadataByExprRequest.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, req=None,):
-    self.req = req
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.req = GetFileMetadataByExprRequest()
-          self.req.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_file_metadata_by_expr_args')
-    if self.req is not None:
-      oprot.writeFieldBegin('req', TType.STRUCT, 1)
-      self.req.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.req)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class get_file_metadata_by_expr_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (GetFileMetadataByExprResult, GetFileMetadataByExprResult.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = GetFileMetadataByExprResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_file_metadata_by_expr_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
+=======
 class get_file_metadata_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - req
@@ -38374,7 +40161,11 @@ class get_file_metadata_args:
 
   thrift_spec = (
     None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (GetFileMetadataByExprRequest, GetFileMetadataByExprRequest.thrift_spec), None, ), # 1
+=======
     (1, TType.STRUCT, 'req', (GetFileMetadataRequest, GetFileMetadataRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, req=None,):
@@ -38391,7 +40182,11 @@ class get_file_metadata_args:
         break
       if fid == 1:
         if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = GetFileMetadataByExprRequest()
+=======
           self.req = GetFileMetadataRequest()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           self.req.read(iprot)
         else:
           iprot.skip(ftype)
@@ -38404,7 +40199,11 @@ class get_file_metadata_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_file_metadata_by_expr_args')
+=======
     oprot.writeStructBegin('get_file_metadata_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.req is not None:
       oprot.writeFieldBegin('req', TType.STRUCT, 1)
       self.req.write(oprot)
@@ -38432,14 +40231,22 @@ class get_file_metadata_args:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class get_file_metadata_by_expr_result:
+=======
 class get_file_metadata_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - success
   """
 
   thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (GetFileMetadataByExprResult, GetFileMetadataByExprResult.thrift_spec), None, ), # 0
+=======
     (0, TType.STRUCT, 'success', (GetFileMetadataResult, GetFileMetadataResult.thrift_spec), None, ), # 0
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, success=None,):
@@ -38456,7 +40263,11 @@ class get_file_metadata_result:
         break
       if fid == 0:
         if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = GetFileMetadataByExprResult()
+=======
           self.success = GetFileMetadataResult()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
@@ -38469,7 +40280,11 @@ class get_file_metadata_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_file_metadata_by_expr_result')
+=======
     oprot.writeStructBegin('get_file_metadata_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
@@ -38497,7 +40312,11 @@ class get_file_metadata_result:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class get_file_metadata_args:
+=======
 class put_file_metadata_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - req
@@ -38505,7 +40324,11 @@ class put_file_metadata_args:
 
   thrift_spec = (
     None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (GetFileMetadataRequest, GetFileMetadataRequest.thrift_spec), None, ), # 1
+=======
     (1, TType.STRUCT, 'req', (PutFileMetadataRequest, PutFileMetadataRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, req=None,):
@@ -38522,7 +40345,11 @@ class put_file_metadata_args:
         break
       if fid == 1:
         if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = GetFileMetadataRequest()
+=======
           self.req = PutFileMetadataRequest()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           self.req.read(iprot)
         else:
           iprot.skip(ftype)
@@ -38535,7 +40362,11 @@ class put_file_metadata_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_file_metadata_args')
+=======
     oprot.writeStructBegin('put_file_metadata_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.req is not None:
       oprot.writeFieldBegin('req', TType.STRUCT, 1)
       self.req.write(oprot)
@@ -38563,14 +40394,22 @@ class put_file_metadata_args:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class get_file_metadata_result:
+=======
 class put_file_metadata_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - success
   """
 
   thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (GetFileMetadataResult, GetFileMetadataResult.thrift_spec), None, ), # 0
+=======
     (0, TType.STRUCT, 'success', (PutFileMetadataResult, PutFileMetadataResult.thrift_spec), None, ), # 0
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, success=None,):
@@ -38587,7 +40426,11 @@ class put_file_metadata_result:
         break
       if fid == 0:
         if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = GetFileMetadataResult()
+=======
           self.success = PutFileMetadataResult()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           self.success.read(iprot)
         else:
           iprot.skip(ftype)
@@ -38600,7 +40443,11 @@ class put_file_metadata_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_file_metadata_result')
+=======
     oprot.writeStructBegin('put_file_metadata_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRUCT, 0)
       self.success.write(oprot)
@@ -38628,11 +40475,179 @@ class put_file_metadata_result:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class put_file_metadata_args:
+=======
 class clear_file_metadata_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - req
   """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (PutFileMetadataRequest, PutFileMetadataRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'req', (ClearFileMetadataRequest, ClearFileMetadataRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, req=None,):
+    self.req = req
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = PutFileMetadataRequest()
+=======
+          self.req = ClearFileMetadataRequest()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.req.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('put_file_metadata_args')
+=======
+    oprot.writeStructBegin('clear_file_metadata_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.req)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class put_file_metadata_result:
+=======
+class clear_file_metadata_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (PutFileMetadataResult, PutFileMetadataResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (ClearFileMetadataResult, ClearFileMetadataResult.thrift_spec), None, ), # 0
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = PutFileMetadataResult()
+=======
+          self.success = ClearFileMetadataResult()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('put_file_metadata_result')
+=======
+    oprot.writeStructBegin('clear_file_metadata_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class clear_file_metadata_args:
+=======
+class cache_file_metadata_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - req
+  """
+<<<<<<< HEAD
 
   thrift_spec = (
     None, # 0
@@ -38642,128 +40657,7 @@ class clear_file_metadata_args:
   def __init__(self, req=None,):
     self.req = req
 
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.req = ClearFileMetadataRequest()
-          self.req.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('clear_file_metadata_args')
-    if self.req is not None:
-      oprot.writeFieldBegin('req', TType.STRUCT, 1)
-      self.req.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.req)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class clear_file_metadata_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (ClearFileMetadataResult, ClearFileMetadataResult.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = ClearFileMetadataResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('clear_file_metadata_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class cache_file_metadata_args:
-  """
-  Attributes:
-   - req
-  """
+=======
 
   thrift_spec = (
     None, # 0
@@ -38890,535 +40784,12 @@ class cache_file_metadata_result:
   def __ne__(self, other):
     return not (self == other)
 
-class get_next_write_id_args:
-  """
-  Attributes:
-   - req
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'req', (GetNextWriteIdRequest, GetNextWriteIdRequest.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, req=None,):
-    self.req = req
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.req = GetNextWriteIdRequest()
-          self.req.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_next_write_id_args')
-    if self.req is not None:
-      oprot.writeFieldBegin('req', TType.STRUCT, 1)
-      self.req.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.req)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class get_next_write_id_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (GetNextWriteIdResult, GetNextWriteIdResult.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = GetNextWriteIdResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_next_write_id_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class finalize_write_id_args:
-  """
-  Attributes:
-   - req
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'req', (FinalizeWriteIdRequest, FinalizeWriteIdRequest.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, req=None,):
-    self.req = req
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.req = FinalizeWriteIdRequest()
-          self.req.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('finalize_write_id_args')
-    if self.req is not None:
-      oprot.writeFieldBegin('req', TType.STRUCT, 1)
-      self.req.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.req)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class finalize_write_id_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (FinalizeWriteIdResult, FinalizeWriteIdResult.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = FinalizeWriteIdResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('finalize_write_id_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class heartbeat_write_id_args:
-  """
-  Attributes:
-   - req
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'req', (HeartbeatWriteIdRequest, HeartbeatWriteIdRequest.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, req=None,):
-    self.req = req
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.req = HeartbeatWriteIdRequest()
-          self.req.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('heartbeat_write_id_args')
-    if self.req is not None:
-      oprot.writeFieldBegin('req', TType.STRUCT, 1)
-      self.req.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.req)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class heartbeat_write_id_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (HeartbeatWriteIdResult, HeartbeatWriteIdResult.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = HeartbeatWriteIdResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('heartbeat_write_id_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class get_valid_write_ids_args:
-  """
-  Attributes:
-   - req
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRUCT, 'req', (GetValidWriteIdsRequest, GetValidWriteIdsRequest.thrift_spec), None, ), # 1
-  )
-
-  def __init__(self, req=None,):
-    self.req = req
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.req = GetValidWriteIdsRequest()
-          self.req.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_valid_write_ids_args')
-    if self.req is not None:
-      oprot.writeFieldBegin('req', TType.STRUCT, 1)
-      self.req.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.req)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class get_valid_write_ids_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRUCT, 'success', (GetValidWriteIdsResult, GetValidWriteIdsResult.thrift_spec), None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRUCT:
-          self.success = GetValidWriteIdsResult()
-          self.success.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('get_valid_write_ids_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRUCT, 0)
-      self.success.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
 class get_metastore_db_uuid_args:
 
   thrift_spec = (
   )
 
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
       fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
@@ -39428,6 +40799,15 @@ class get_metastore_db_uuid_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
+<<<<<<< HEAD
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.req = ClearFileMetadataRequest()
+          self.req.read(iprot)
+        else:
+          iprot.skip(ftype)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -39437,7 +40817,15 @@ class get_metastore_db_uuid_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
+<<<<<<< HEAD
+    oprot.writeStructBegin('clear_file_metadata_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+      oprot.writeFieldEnd()
+=======
     oprot.writeStructBegin('get_metastore_db_uuid_args')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -39447,6 +40835,10 @@ class get_metastore_db_uuid_args:
 
   def __hash__(self):
     value = 17
+<<<<<<< HEAD
+    value = (value * 31) ^ hash(self.req)
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     return value
 
   def __repr__(self):
@@ -39460,7 +40852,584 @@ class get_metastore_db_uuid_args:
   def __ne__(self, other):
     return not (self == other)
 
+<<<<<<< HEAD
+class clear_file_metadata_result:
+=======
 class get_metastore_db_uuid_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (ClearFileMetadataResult, ClearFileMetadataResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRING, 'success', None, None, ), # 0
+    (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+<<<<<<< HEAD
+        if ftype == TType.STRUCT:
+          self.success = ClearFileMetadataResult()
+          self.success.read(iprot)
+=======
+        if ftype == TType.STRING:
+          self.success = iprot.readString()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('clear_file_metadata_result')
+=======
+    oprot.writeStructBegin('get_metastore_db_uuid_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class cache_file_metadata_args:
+=======
+class create_resource_plan_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (CacheFileMetadataRequest, CacheFileMetadataRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'request', (WMCreateResourcePlanRequest, WMCreateResourcePlanRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = CacheFileMetadataRequest()
+          self.req.read(iprot)
+=======
+          self.request = WMCreateResourcePlanRequest()
+          self.request.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('cache_file_metadata_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+=======
+    oprot.writeStructBegin('create_resource_plan_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class cache_file_metadata_result:
+=======
+class create_resource_plan_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+   - o1
+   - o2
+   - o3
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (CacheFileMetadataResult, CacheFileMetadataResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (WMCreateResourcePlanResponse, WMCreateResourcePlanResponse.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'o1', (AlreadyExistsException, AlreadyExistsException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'o2', (InvalidObjectException, InvalidObjectException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'o3', (MetaException, MetaException.thrift_spec), None, ), # 3
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None, o1=None, o2=None, o3=None,):
+    self.success = success
+    self.o1 = o1
+    self.o2 = o2
+    self.o3 = o3
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = CacheFileMetadataResult()
+=======
+          self.success = WMCreateResourcePlanResponse()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = AlreadyExistsException()
+          self.o1.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.o2 = InvalidObjectException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.o3 = MetaException()
+          self.o3.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('cache_file_metadata_result')
+=======
+    oprot.writeStructBegin('create_resource_plan_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o3 is not None:
+      oprot.writeFieldBegin('o3', TType.STRUCT, 3)
+      self.o3.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    value = (value * 31) ^ hash(self.o3)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_next_write_id_args:
+=======
+class get_resource_plan_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (GetNextWriteIdRequest, GetNextWriteIdRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'request', (WMGetResourcePlanRequest, WMGetResourcePlanRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = GetNextWriteIdRequest()
+          self.req.read(iprot)
+=======
+          self.request = WMGetResourcePlanRequest()
+          self.request.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_next_write_id_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+=======
+    oprot.writeStructBegin('get_resource_plan_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_next_write_id_result:
+=======
+class get_resource_plan_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+   - o1
+   - o2
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (GetNextWriteIdResult, GetNextWriteIdResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (WMGetResourcePlanResponse, WMGetResourcePlanResponse.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'o1', (NoSuchObjectException, NoSuchObjectException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'o2', (MetaException, MetaException.thrift_spec), None, ), # 2
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None, o1=None, o2=None,):
+    self.success = success
+    self.o1 = o1
+    self.o2 = o2
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = GetNextWriteIdResult()
+=======
+          self.success = WMGetResourcePlanResponse()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = NoSuchObjectException()
+          self.o1.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.o2 = MetaException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_next_write_id_result')
+=======
+    oprot.writeStructBegin('get_resource_plan_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class finalize_write_id_args:
+=======
+class get_all_resource_plans_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (FinalizeWriteIdRequest, FinalizeWriteIdRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'request', (WMGetAllResourcePlanRequest, WMGetAllResourcePlanRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = FinalizeWriteIdRequest()
+          self.req.read(iprot)
+=======
+          self.request = WMGetAllResourcePlanRequest()
+          self.request.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('finalize_write_id_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+=======
+    oprot.writeStructBegin('get_all_resource_plans_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class finalize_write_id_result:
+=======
+class get_all_resource_plans_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   """
   Attributes:
    - success
@@ -39468,8 +41437,12 @@ class get_metastore_db_uuid_result:
   """
 
   thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (FinalizeWriteIdResult, FinalizeWriteIdResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (WMGetAllResourcePlanResponse, WMGetAllResourcePlanResponse.thrift_spec), None, ), # 0
     (1, TType.STRUCT, 'o1', (MetaException, MetaException.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   )
 
   def __init__(self, success=None, o1=None,):
@@ -39486,8 +41459,13 @@ class get_metastore_db_uuid_result:
       if ftype == TType.STOP:
         break
       if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString()
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = FinalizeWriteIdResult()
+=======
+          self.success = WMGetAllResourcePlanResponse()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
         else:
           iprot.skip(ftype)
       elif fid == 1:
@@ -39505,10 +41483,14 @@ class get_metastore_db_uuid_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('get_metastore_db_uuid_result')
+<<<<<<< HEAD
+    oprot.writeStructBegin('finalize_write_id_result')
+=======
+    oprot.writeStructBegin('get_all_resource_plans_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
       oprot.writeFieldEnd()
     if self.o1 is not None:
       oprot.writeFieldBegin('o1', TType.STRUCT, 1)
@@ -39525,6 +41507,583 @@ class get_metastore_db_uuid_result:
     value = 17
     value = (value * 31) ^ hash(self.success)
     value = (value * 31) ^ hash(self.o1)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class heartbeat_write_id_args:
+=======
+class alter_resource_plan_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (HeartbeatWriteIdRequest, HeartbeatWriteIdRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'request', (WMAlterResourcePlanRequest, WMAlterResourcePlanRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = HeartbeatWriteIdRequest()
+          self.req.read(iprot)
+=======
+          self.request = WMAlterResourcePlanRequest()
+          self.request.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('heartbeat_write_id_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+=======
+    oprot.writeStructBegin('alter_resource_plan_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class heartbeat_write_id_result:
+=======
+class alter_resource_plan_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+   - o1
+   - o2
+   - o3
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (HeartbeatWriteIdResult, HeartbeatWriteIdResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (WMAlterResourcePlanResponse, WMAlterResourcePlanResponse.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'o1', (NoSuchObjectException, NoSuchObjectException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'o2', (InvalidOperationException, InvalidOperationException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'o3', (MetaException, MetaException.thrift_spec), None, ), # 3
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None, o1=None, o2=None, o3=None,):
+    self.success = success
+    self.o1 = o1
+    self.o2 = o2
+    self.o3 = o3
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = HeartbeatWriteIdResult()
+=======
+          self.success = WMAlterResourcePlanResponse()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = NoSuchObjectException()
+          self.o1.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.o2 = InvalidOperationException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.o3 = MetaException()
+          self.o3.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('heartbeat_write_id_result')
+=======
+    oprot.writeStructBegin('alter_resource_plan_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o3 is not None:
+      oprot.writeFieldBegin('o3', TType.STRUCT, 3)
+      self.o3.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    value = (value * 31) ^ hash(self.o3)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_valid_write_ids_args:
+=======
+class validate_resource_plan_args:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+<<<<<<< HEAD
+    (1, TType.STRUCT, 'req', (GetValidWriteIdsRequest, GetValidWriteIdsRequest.thrift_spec), None, ), # 1
+=======
+    (1, TType.STRUCT, 'request', (WMValidateResourcePlanRequest, WMValidateResourcePlanRequest.thrift_spec), None, ), # 1
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.req = GetValidWriteIdsRequest()
+          self.req.read(iprot)
+=======
+          self.request = WMValidateResourcePlanRequest()
+          self.request.read(iprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_valid_write_ids_args')
+    if self.req is not None:
+      oprot.writeFieldBegin('req', TType.STRUCT, 1)
+      self.req.write(oprot)
+=======
+    oprot.writeStructBegin('validate_resource_plan_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+<<<<<<< HEAD
+class get_valid_write_ids_result:
+=======
+class validate_resource_plan_result:
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  """
+  Attributes:
+   - success
+   - o1
+   - o2
+  """
+
+  thrift_spec = (
+<<<<<<< HEAD
+    (0, TType.STRUCT, 'success', (GetValidWriteIdsResult, GetValidWriteIdsResult.thrift_spec), None, ), # 0
+=======
+    (0, TType.STRUCT, 'success', (WMValidateResourcePlanResponse, WMValidateResourcePlanResponse.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'o1', (NoSuchObjectException, NoSuchObjectException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'o2', (MetaException, MetaException.thrift_spec), None, ), # 2
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  )
+
+  def __init__(self, success=None, o1=None, o2=None,):
+    self.success = success
+    self.o1 = o1
+    self.o2 = o2
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+<<<<<<< HEAD
+          self.success = GetValidWriteIdsResult()
+=======
+          self.success = WMValidateResourcePlanResponse()
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = NoSuchObjectException()
+          self.o1.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.o2 = MetaException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+<<<<<<< HEAD
+    oprot.writeStructBegin('get_valid_write_ids_result')
+=======
+    oprot.writeStructBegin('validate_resource_plan_result')
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class drop_resource_plan_args:
+  """
+  Attributes:
+   - request
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'request', (WMDropResourcePlanRequest, WMDropResourcePlanRequest.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, request=None,):
+    self.request = request
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.request = WMDropResourcePlanRequest()
+          self.request.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('drop_resource_plan_args')
+    if self.request is not None:
+      oprot.writeFieldBegin('request', TType.STRUCT, 1)
+      self.request.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.request)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class drop_resource_plan_result:
+  """
+  Attributes:
+   - success
+   - o1
+   - o2
+   - o3
+  """
+
+  thrift_spec = (
+    (0, TType.STRUCT, 'success', (WMDropResourcePlanResponse, WMDropResourcePlanResponse.thrift_spec), None, ), # 0
+    (1, TType.STRUCT, 'o1', (NoSuchObjectException, NoSuchObjectException.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'o2', (InvalidOperationException, InvalidOperationException.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'o3', (MetaException, MetaException.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, success=None, o1=None, o2=None, o3=None,):
+    self.success = success
+    self.o1 = o1
+    self.o2 = o2
+    self.o3 = o3
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRUCT:
+          self.success = WMDropResourcePlanResponse()
+          self.success.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 1:
+        if ftype == TType.STRUCT:
+          self.o1 = NoSuchObjectException()
+          self.o1.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.o2 = InvalidOperationException()
+          self.o2.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.o3 = MetaException()
+          self.o3.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('drop_resource_plan_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRUCT, 0)
+      self.success.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o1 is not None:
+      oprot.writeFieldBegin('o1', TType.STRUCT, 1)
+      self.o1.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o2 is not None:
+      oprot.writeFieldBegin('o2', TType.STRUCT, 2)
+      self.o2.write(oprot)
+      oprot.writeFieldEnd()
+    if self.o3 is not None:
+      oprot.writeFieldBegin('o3', TType.STRUCT, 3)
+      self.o3.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    value = (value * 31) ^ hash(self.o1)
+    value = (value * 31) ^ hash(self.o2)
+    value = (value * 31) ^ hash(self.o3)
     return value
 
   def __repr__(self):

@@ -1240,6 +1240,7 @@ uint32_t ThriftHiveMetastore_get_databases_result::read(::apache::thrift::protoc
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size925;
             ::apache::thrift::protocol::TType _etype928;
             xfer += iprot->readListBegin(_etype928, _size925);
@@ -1248,6 +1249,16 @@ uint32_t ThriftHiveMetastore_get_databases_result::read(::apache::thrift::protoc
             for (_i929 = 0; _i929 < _size925; ++_i929)
             {
               xfer += iprot->readString(this->success[_i929]);
+=======
+            uint32_t _size934;
+            ::apache::thrift::protocol::TType _etype937;
+            xfer += iprot->readListBegin(_etype937, _size934);
+            this->success.resize(_size934);
+            uint32_t _i938;
+            for (_i938 = 0; _i938 < _size934; ++_i938)
+            {
+              xfer += iprot->readString(this->success[_i938]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -1286,10 +1297,17 @@ uint32_t ThriftHiveMetastore_get_databases_result::write(::apache::thrift::proto
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter930;
       for (_iter930 = this->success.begin(); _iter930 != this->success.end(); ++_iter930)
       {
         xfer += oprot->writeString((*_iter930));
+=======
+      std::vector<std::string> ::const_iterator _iter939;
+      for (_iter939 = this->success.begin(); _iter939 != this->success.end(); ++_iter939)
+      {
+        xfer += oprot->writeString((*_iter939));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -1334,6 +1352,7 @@ uint32_t ThriftHiveMetastore_get_databases_presult::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size931;
             ::apache::thrift::protocol::TType _etype934;
             xfer += iprot->readListBegin(_etype934, _size931);
@@ -1342,6 +1361,16 @@ uint32_t ThriftHiveMetastore_get_databases_presult::read(::apache::thrift::proto
             for (_i935 = 0; _i935 < _size931; ++_i935)
             {
               xfer += iprot->readString((*(this->success))[_i935]);
+=======
+            uint32_t _size940;
+            ::apache::thrift::protocol::TType _etype943;
+            xfer += iprot->readListBegin(_etype943, _size940);
+            (*(this->success)).resize(_size940);
+            uint32_t _i944;
+            for (_i944 = 0; _i944 < _size940; ++_i944)
+            {
+              xfer += iprot->readString((*(this->success))[_i944]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -1458,6 +1487,7 @@ uint32_t ThriftHiveMetastore_get_all_databases_result::read(::apache::thrift::pr
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size936;
             ::apache::thrift::protocol::TType _etype939;
             xfer += iprot->readListBegin(_etype939, _size936);
@@ -1466,6 +1496,16 @@ uint32_t ThriftHiveMetastore_get_all_databases_result::read(::apache::thrift::pr
             for (_i940 = 0; _i940 < _size936; ++_i940)
             {
               xfer += iprot->readString(this->success[_i940]);
+=======
+            uint32_t _size945;
+            ::apache::thrift::protocol::TType _etype948;
+            xfer += iprot->readListBegin(_etype948, _size945);
+            this->success.resize(_size945);
+            uint32_t _i949;
+            for (_i949 = 0; _i949 < _size945; ++_i949)
+            {
+              xfer += iprot->readString(this->success[_i949]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -1504,10 +1544,17 @@ uint32_t ThriftHiveMetastore_get_all_databases_result::write(::apache::thrift::p
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter941;
       for (_iter941 = this->success.begin(); _iter941 != this->success.end(); ++_iter941)
       {
         xfer += oprot->writeString((*_iter941));
+=======
+      std::vector<std::string> ::const_iterator _iter950;
+      for (_iter950 = this->success.begin(); _iter950 != this->success.end(); ++_iter950)
+      {
+        xfer += oprot->writeString((*_iter950));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -1552,6 +1599,7 @@ uint32_t ThriftHiveMetastore_get_all_databases_presult::read(::apache::thrift::p
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size942;
             ::apache::thrift::protocol::TType _etype945;
             xfer += iprot->readListBegin(_etype945, _size942);
@@ -1560,6 +1608,16 @@ uint32_t ThriftHiveMetastore_get_all_databases_presult::read(::apache::thrift::p
             for (_i946 = 0; _i946 < _size942; ++_i946)
             {
               xfer += iprot->readString((*(this->success))[_i946]);
+=======
+            uint32_t _size951;
+            ::apache::thrift::protocol::TType _etype954;
+            xfer += iprot->readListBegin(_etype954, _size951);
+            (*(this->success)).resize(_size951);
+            uint32_t _i955;
+            for (_i955 = 0; _i955 < _size951; ++_i955)
+            {
+              xfer += iprot->readString((*(this->success))[_i955]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -2621,6 +2679,7 @@ uint32_t ThriftHiveMetastore_get_type_all_result::read(::apache::thrift::protoco
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size947;
             ::apache::thrift::protocol::TType _ktype948;
             ::apache::thrift::protocol::TType _vtype949;
@@ -2632,6 +2691,19 @@ uint32_t ThriftHiveMetastore_get_type_all_result::read(::apache::thrift::protoco
               xfer += iprot->readString(_key952);
               Type& _val953 = this->success[_key952];
               xfer += _val953.read(iprot);
+=======
+            uint32_t _size956;
+            ::apache::thrift::protocol::TType _ktype957;
+            ::apache::thrift::protocol::TType _vtype958;
+            xfer += iprot->readMapBegin(_ktype957, _vtype958, _size956);
+            uint32_t _i960;
+            for (_i960 = 0; _i960 < _size956; ++_i960)
+            {
+              std::string _key961;
+              xfer += iprot->readString(_key961);
+              Type& _val962 = this->success[_key961];
+              xfer += _val962.read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -2670,11 +2742,19 @@ uint32_t ThriftHiveMetastore_get_type_all_result::write(::apache::thrift::protoc
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_MAP, 0);
     {
       xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::map<std::string, Type> ::const_iterator _iter954;
       for (_iter954 = this->success.begin(); _iter954 != this->success.end(); ++_iter954)
       {
         xfer += oprot->writeString(_iter954->first);
         xfer += _iter954->second.write(oprot);
+=======
+      std::map<std::string, Type> ::const_iterator _iter963;
+      for (_iter963 = this->success.begin(); _iter963 != this->success.end(); ++_iter963)
+      {
+        xfer += oprot->writeString(_iter963->first);
+        xfer += _iter963->second.write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeMapEnd();
     }
@@ -2719,6 +2799,7 @@ uint32_t ThriftHiveMetastore_get_type_all_presult::read(::apache::thrift::protoc
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size955;
             ::apache::thrift::protocol::TType _ktype956;
             ::apache::thrift::protocol::TType _vtype957;
@@ -2730,6 +2811,19 @@ uint32_t ThriftHiveMetastore_get_type_all_presult::read(::apache::thrift::protoc
               xfer += iprot->readString(_key960);
               Type& _val961 = (*(this->success))[_key960];
               xfer += _val961.read(iprot);
+=======
+            uint32_t _size964;
+            ::apache::thrift::protocol::TType _ktype965;
+            ::apache::thrift::protocol::TType _vtype966;
+            xfer += iprot->readMapBegin(_ktype965, _vtype966, _size964);
+            uint32_t _i968;
+            for (_i968 = 0; _i968 < _size964; ++_i968)
+            {
+              std::string _key969;
+              xfer += iprot->readString(_key969);
+              Type& _val970 = (*(this->success))[_key969];
+              xfer += _val970.read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -2883,6 +2977,7 @@ uint32_t ThriftHiveMetastore_get_fields_result::read(::apache::thrift::protocol:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size962;
             ::apache::thrift::protocol::TType _etype965;
             xfer += iprot->readListBegin(_etype965, _size962);
@@ -2891,6 +2986,16 @@ uint32_t ThriftHiveMetastore_get_fields_result::read(::apache::thrift::protocol:
             for (_i966 = 0; _i966 < _size962; ++_i966)
             {
               xfer += this->success[_i966].read(iprot);
+=======
+            uint32_t _size971;
+            ::apache::thrift::protocol::TType _etype974;
+            xfer += iprot->readListBegin(_etype974, _size971);
+            this->success.resize(_size971);
+            uint32_t _i975;
+            for (_i975 = 0; _i975 < _size971; ++_i975)
+            {
+              xfer += this->success[_i975].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -2945,10 +3050,17 @@ uint32_t ThriftHiveMetastore_get_fields_result::write(::apache::thrift::protocol
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<FieldSchema> ::const_iterator _iter967;
       for (_iter967 = this->success.begin(); _iter967 != this->success.end(); ++_iter967)
       {
         xfer += (*_iter967).write(oprot);
+=======
+      std::vector<FieldSchema> ::const_iterator _iter976;
+      for (_iter976 = this->success.begin(); _iter976 != this->success.end(); ++_iter976)
+      {
+        xfer += (*_iter976).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -3001,6 +3113,7 @@ uint32_t ThriftHiveMetastore_get_fields_presult::read(::apache::thrift::protocol
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size968;
             ::apache::thrift::protocol::TType _etype971;
             xfer += iprot->readListBegin(_etype971, _size968);
@@ -3009,6 +3122,16 @@ uint32_t ThriftHiveMetastore_get_fields_presult::read(::apache::thrift::protocol
             for (_i972 = 0; _i972 < _size968; ++_i972)
             {
               xfer += (*(this->success))[_i972].read(iprot);
+=======
+            uint32_t _size977;
+            ::apache::thrift::protocol::TType _etype980;
+            xfer += iprot->readListBegin(_etype980, _size977);
+            (*(this->success)).resize(_size977);
+            uint32_t _i981;
+            for (_i981 = 0; _i981 < _size977; ++_i981)
+            {
+              xfer += (*(this->success))[_i981].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -3194,6 +3317,7 @@ uint32_t ThriftHiveMetastore_get_fields_with_environment_context_result::read(::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size973;
             ::apache::thrift::protocol::TType _etype976;
             xfer += iprot->readListBegin(_etype976, _size973);
@@ -3202,6 +3326,15 @@ uint32_t ThriftHiveMetastore_get_fields_with_environment_context_result::read(::
             for (_i977 = 0; _i977 < _size973; ++_i977)
             {
               xfer += this->success[_i977].read(iprot);
+=======
+            uint32_t _size982;
+            ::apache::thrift::protocol::TType _etype985;
+            xfer += iprot->readListBegin(_etype985, _size982);
+            this->success.resize(_size982);
+            uint32_t _i986;
+            for (_i986 = 0; _i986 < _size982; ++_i986)
+            {
+              xfer += this->success[_i986].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
@@ -3256,10 +3389,10 @@ uint32_t ThriftHiveMetastore_get_fields_with_environment_context_result::write(:
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-      std::vector<FieldSchema> ::const_iterator _iter978;
-      for (_iter978 = this->success.begin(); _iter978 != this->success.end(); ++_iter978)
+      std::vector<FieldSchema> ::const_iterator _iter987;
+      for (_iter987 = this->success.begin(); _iter987 != this->success.end(); ++_iter987)
       {
-        xfer += (*_iter978).write(oprot);
+        xfer += (*_iter987).write(oprot);
       }
       xfer += oprot->writeListEnd();
     }
@@ -3312,14 +3445,14 @@ uint32_t ThriftHiveMetastore_get_fields_with_environment_context_presult::read(:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size979;
-            ::apache::thrift::protocol::TType _etype982;
-            xfer += iprot->readListBegin(_etype982, _size979);
-            (*(this->success)).resize(_size979);
-            uint32_t _i983;
-            for (_i983 = 0; _i983 < _size979; ++_i983)
+            uint32_t _size988;
+            ::apache::thrift::protocol::TType _etype991;
+            xfer += iprot->readListBegin(_etype991, _size988);
+            (*(this->success)).resize(_size988);
+            uint32_t _i992;
+            for (_i992 = 0; _i992 < _size988; ++_i992)
             {
-              xfer += (*(this->success))[_i983].read(iprot);
+              xfer += (*(this->success))[_i992].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
@@ -3489,14 +3622,15 @@ uint32_t ThriftHiveMetastore_get_schema_result::read(::apache::thrift::protocol:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
-            uint32_t _size984;
-            ::apache::thrift::protocol::TType _etype987;
-            xfer += iprot->readListBegin(_etype987, _size984);
-            this->success.resize(_size984);
-            uint32_t _i988;
-            for (_i988 = 0; _i988 < _size984; ++_i988)
+            uint32_t _size993;
+            ::apache::thrift::protocol::TType _etype996;
+            xfer += iprot->readListBegin(_etype996, _size993);
+            this->success.resize(_size993);
+            uint32_t _i997;
+            for (_i997 = 0; _i997 < _size993; ++_i997)
             {
-              xfer += this->success[_i988].read(iprot);
+              xfer += this->success[_i997].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -3551,10 +3685,17 @@ uint32_t ThriftHiveMetastore_get_schema_result::write(::apache::thrift::protocol
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-      std::vector<FieldSchema> ::const_iterator _iter989;
-      for (_iter989 = this->success.begin(); _iter989 != this->success.end(); ++_iter989)
+<<<<<<< HEAD
+      std::vector<FieldSchema> ::const_iterator _iter978;
+      for (_iter978 = this->success.begin(); _iter978 != this->success.end(); ++_iter978)
       {
-        xfer += (*_iter989).write(oprot);
+        xfer += (*_iter978).write(oprot);
+=======
+      std::vector<FieldSchema> ::const_iterator _iter998;
+      for (_iter998 = this->success.begin(); _iter998 != this->success.end(); ++_iter998)
+      {
+        xfer += (*_iter998).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -3607,14 +3748,25 @@ uint32_t ThriftHiveMetastore_get_schema_presult::read(::apache::thrift::protocol
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size990;
-            ::apache::thrift::protocol::TType _etype993;
-            xfer += iprot->readListBegin(_etype993, _size990);
-            (*(this->success)).resize(_size990);
-            uint32_t _i994;
-            for (_i994 = 0; _i994 < _size990; ++_i994)
+<<<<<<< HEAD
+            uint32_t _size979;
+            ::apache::thrift::protocol::TType _etype982;
+            xfer += iprot->readListBegin(_etype982, _size979);
+            (*(this->success)).resize(_size979);
+            uint32_t _i983;
+            for (_i983 = 0; _i983 < _size979; ++_i983)
             {
-              xfer += (*(this->success))[_i994].read(iprot);
+              xfer += (*(this->success))[_i983].read(iprot);
+=======
+            uint32_t _size999;
+            ::apache::thrift::protocol::TType _etype1002;
+            xfer += iprot->readListBegin(_etype1002, _size999);
+            (*(this->success)).resize(_size999);
+            uint32_t _i1003;
+            for (_i1003 = 0; _i1003 < _size999; ++_i1003)
+            {
+              xfer += (*(this->success))[_i1003].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -3800,14 +3952,25 @@ uint32_t ThriftHiveMetastore_get_schema_with_environment_context_result::read(::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
-            uint32_t _size995;
-            ::apache::thrift::protocol::TType _etype998;
-            xfer += iprot->readListBegin(_etype998, _size995);
-            this->success.resize(_size995);
-            uint32_t _i999;
-            for (_i999 = 0; _i999 < _size995; ++_i999)
+<<<<<<< HEAD
+            uint32_t _size984;
+            ::apache::thrift::protocol::TType _etype987;
+            xfer += iprot->readListBegin(_etype987, _size984);
+            this->success.resize(_size984);
+            uint32_t _i988;
+            for (_i988 = 0; _i988 < _size984; ++_i988)
             {
-              xfer += this->success[_i999].read(iprot);
+              xfer += this->success[_i988].read(iprot);
+=======
+            uint32_t _size1004;
+            ::apache::thrift::protocol::TType _etype1007;
+            xfer += iprot->readListBegin(_etype1007, _size1004);
+            this->success.resize(_size1004);
+            uint32_t _i1008;
+            for (_i1008 = 0; _i1008 < _size1004; ++_i1008)
+            {
+              xfer += this->success[_i1008].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -3862,10 +4025,17 @@ uint32_t ThriftHiveMetastore_get_schema_with_environment_context_result::write(:
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-      std::vector<FieldSchema> ::const_iterator _iter1000;
-      for (_iter1000 = this->success.begin(); _iter1000 != this->success.end(); ++_iter1000)
+<<<<<<< HEAD
+      std::vector<FieldSchema> ::const_iterator _iter989;
+      for (_iter989 = this->success.begin(); _iter989 != this->success.end(); ++_iter989)
       {
-        xfer += (*_iter1000).write(oprot);
+        xfer += (*_iter989).write(oprot);
+=======
+      std::vector<FieldSchema> ::const_iterator _iter1009;
+      for (_iter1009 = this->success.begin(); _iter1009 != this->success.end(); ++_iter1009)
+      {
+        xfer += (*_iter1009).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -3918,14 +4088,25 @@ uint32_t ThriftHiveMetastore_get_schema_with_environment_context_presult::read(:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
-            uint32_t _size1001;
-            ::apache::thrift::protocol::TType _etype1004;
-            xfer += iprot->readListBegin(_etype1004, _size1001);
-            (*(this->success)).resize(_size1001);
-            uint32_t _i1005;
-            for (_i1005 = 0; _i1005 < _size1001; ++_i1005)
+<<<<<<< HEAD
+            uint32_t _size990;
+            ::apache::thrift::protocol::TType _etype993;
+            xfer += iprot->readListBegin(_etype993, _size990);
+            (*(this->success)).resize(_size990);
+            uint32_t _i994;
+            for (_i994 = 0; _i994 < _size990; ++_i994)
             {
-              xfer += (*(this->success))[_i1005].read(iprot);
+              xfer += (*(this->success))[_i994].read(iprot);
+=======
+            uint32_t _size1010;
+            ::apache::thrift::protocol::TType _etype1013;
+            xfer += iprot->readListBegin(_etype1013, _size1010);
+            (*(this->success)).resize(_size1010);
+            uint32_t _i1014;
+            for (_i1014 = 0; _i1014 < _size1010; ++_i1014)
+            {
+              xfer += (*(this->success))[_i1014].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -4075,6 +4256,29 @@ uint32_t ThriftHiveMetastore_create_table_result::read(::apache::thrift::protoco
     }
     switch (fid)
     {
+<<<<<<< HEAD
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->success.clear();
+            uint32_t _size995;
+            ::apache::thrift::protocol::TType _etype998;
+            xfer += iprot->readListBegin(_etype998, _size995);
+            this->success.resize(_size995);
+            uint32_t _i999;
+            for (_i999 = 0; _i999 < _size995; ++_i999)
+            {
+              xfer += this->success[_i999].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRUCT) {
           xfer += this->o1.read(iprot);
@@ -4125,7 +4329,23 @@ uint32_t ThriftHiveMetastore_create_table_result::write(::apache::thrift::protoc
 
   xfer += oprot->writeStructBegin("ThriftHiveMetastore_create_table_result");
 
+<<<<<<< HEAD
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+      std::vector<FieldSchema> ::const_iterator _iter1000;
+      for (_iter1000 = this->success.begin(); _iter1000 != this->success.end(); ++_iter1000)
+      {
+        xfer += (*_iter1000).write(oprot);
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+=======
   if (this->__isset.o1) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
     xfer += this->o1.write(oprot);
     xfer += oprot->writeFieldEnd();
@@ -4173,6 +4393,29 @@ uint32_t ThriftHiveMetastore_create_table_presult::read(::apache::thrift::protoc
     }
     switch (fid)
     {
+<<<<<<< HEAD
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            (*(this->success)).clear();
+            uint32_t _size1001;
+            ::apache::thrift::protocol::TType _etype1004;
+            xfer += iprot->readListBegin(_etype1004, _size1001);
+            (*(this->success)).resize(_size1001);
+            uint32_t _i1005;
+            for (_i1005 = 0; _i1005 < _size1001; ++_i1005)
+            {
+              xfer += (*(this->success))[_i1005].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRUCT) {
           xfer += this->o1.read(iprot);
@@ -4518,6 +4761,7 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->primaryKeys.clear();
+<<<<<<< HEAD
             uint32_t _size1006;
             ::apache::thrift::protocol::TType _etype1009;
             xfer += iprot->readListBegin(_etype1009, _size1006);
@@ -4526,6 +4770,16 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
             for (_i1010 = 0; _i1010 < _size1006; ++_i1010)
             {
               xfer += this->primaryKeys[_i1010].read(iprot);
+=======
+            uint32_t _size1015;
+            ::apache::thrift::protocol::TType _etype1018;
+            xfer += iprot->readListBegin(_etype1018, _size1015);
+            this->primaryKeys.resize(_size1015);
+            uint32_t _i1019;
+            for (_i1019 = 0; _i1019 < _size1015; ++_i1019)
+            {
+              xfer += this->primaryKeys[_i1019].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -4538,6 +4792,7 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->foreignKeys.clear();
+<<<<<<< HEAD
             uint32_t _size1011;
             ::apache::thrift::protocol::TType _etype1014;
             xfer += iprot->readListBegin(_etype1014, _size1011);
@@ -4546,6 +4801,16 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
             for (_i1015 = 0; _i1015 < _size1011; ++_i1015)
             {
               xfer += this->foreignKeys[_i1015].read(iprot);
+=======
+            uint32_t _size1020;
+            ::apache::thrift::protocol::TType _etype1023;
+            xfer += iprot->readListBegin(_etype1023, _size1020);
+            this->foreignKeys.resize(_size1020);
+            uint32_t _i1024;
+            for (_i1024 = 0; _i1024 < _size1020; ++_i1024)
+            {
+              xfer += this->foreignKeys[_i1024].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -4558,6 +4823,7 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->uniqueConstraints.clear();
+<<<<<<< HEAD
             uint32_t _size1016;
             ::apache::thrift::protocol::TType _etype1019;
             xfer += iprot->readListBegin(_etype1019, _size1016);
@@ -4566,6 +4832,16 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
             for (_i1020 = 0; _i1020 < _size1016; ++_i1020)
             {
               xfer += this->uniqueConstraints[_i1020].read(iprot);
+=======
+            uint32_t _size1025;
+            ::apache::thrift::protocol::TType _etype1028;
+            xfer += iprot->readListBegin(_etype1028, _size1025);
+            this->uniqueConstraints.resize(_size1025);
+            uint32_t _i1029;
+            for (_i1029 = 0; _i1029 < _size1025; ++_i1029)
+            {
+              xfer += this->uniqueConstraints[_i1029].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -4578,6 +4854,7 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->notNullConstraints.clear();
+<<<<<<< HEAD
             uint32_t _size1021;
             ::apache::thrift::protocol::TType _etype1024;
             xfer += iprot->readListBegin(_etype1024, _size1021);
@@ -4586,6 +4863,16 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::read(::apache::
             for (_i1025 = 0; _i1025 < _size1021; ++_i1025)
             {
               xfer += this->notNullConstraints[_i1025].read(iprot);
+=======
+            uint32_t _size1030;
+            ::apache::thrift::protocol::TType _etype1033;
+            xfer += iprot->readListBegin(_etype1033, _size1030);
+            this->notNullConstraints.resize(_size1030);
+            uint32_t _i1034;
+            for (_i1034 = 0; _i1034 < _size1030; ++_i1034)
+            {
+              xfer += this->notNullConstraints[_i1034].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -4618,10 +4905,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::write(::apache:
   xfer += oprot->writeFieldBegin("primaryKeys", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->primaryKeys.size()));
+<<<<<<< HEAD
     std::vector<SQLPrimaryKey> ::const_iterator _iter1026;
     for (_iter1026 = this->primaryKeys.begin(); _iter1026 != this->primaryKeys.end(); ++_iter1026)
     {
       xfer += (*_iter1026).write(oprot);
+=======
+    std::vector<SQLPrimaryKey> ::const_iterator _iter1035;
+    for (_iter1035 = this->primaryKeys.begin(); _iter1035 != this->primaryKeys.end(); ++_iter1035)
+    {
+      xfer += (*_iter1035).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4630,10 +4924,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::write(::apache:
   xfer += oprot->writeFieldBegin("foreignKeys", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->foreignKeys.size()));
+<<<<<<< HEAD
     std::vector<SQLForeignKey> ::const_iterator _iter1027;
     for (_iter1027 = this->foreignKeys.begin(); _iter1027 != this->foreignKeys.end(); ++_iter1027)
     {
       xfer += (*_iter1027).write(oprot);
+=======
+    std::vector<SQLForeignKey> ::const_iterator _iter1036;
+    for (_iter1036 = this->foreignKeys.begin(); _iter1036 != this->foreignKeys.end(); ++_iter1036)
+    {
+      xfer += (*_iter1036).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4642,10 +4943,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::write(::apache:
   xfer += oprot->writeFieldBegin("uniqueConstraints", ::apache::thrift::protocol::T_LIST, 4);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->uniqueConstraints.size()));
+<<<<<<< HEAD
     std::vector<SQLUniqueConstraint> ::const_iterator _iter1028;
     for (_iter1028 = this->uniqueConstraints.begin(); _iter1028 != this->uniqueConstraints.end(); ++_iter1028)
     {
       xfer += (*_iter1028).write(oprot);
+=======
+    std::vector<SQLUniqueConstraint> ::const_iterator _iter1037;
+    for (_iter1037 = this->uniqueConstraints.begin(); _iter1037 != this->uniqueConstraints.end(); ++_iter1037)
+    {
+      xfer += (*_iter1037).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4654,10 +4962,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_args::write(::apache:
   xfer += oprot->writeFieldBegin("notNullConstraints", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->notNullConstraints.size()));
+<<<<<<< HEAD
     std::vector<SQLNotNullConstraint> ::const_iterator _iter1029;
     for (_iter1029 = this->notNullConstraints.begin(); _iter1029 != this->notNullConstraints.end(); ++_iter1029)
     {
       xfer += (*_iter1029).write(oprot);
+=======
+    std::vector<SQLNotNullConstraint> ::const_iterator _iter1038;
+    for (_iter1038 = this->notNullConstraints.begin(); _iter1038 != this->notNullConstraints.end(); ++_iter1038)
+    {
+      xfer += (*_iter1038).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4685,10 +5000,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_pargs::write(::apache
   xfer += oprot->writeFieldBegin("primaryKeys", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->primaryKeys)).size()));
+<<<<<<< HEAD
     std::vector<SQLPrimaryKey> ::const_iterator _iter1030;
     for (_iter1030 = (*(this->primaryKeys)).begin(); _iter1030 != (*(this->primaryKeys)).end(); ++_iter1030)
     {
       xfer += (*_iter1030).write(oprot);
+=======
+    std::vector<SQLPrimaryKey> ::const_iterator _iter1039;
+    for (_iter1039 = (*(this->primaryKeys)).begin(); _iter1039 != (*(this->primaryKeys)).end(); ++_iter1039)
+    {
+      xfer += (*_iter1039).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4697,10 +5019,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_pargs::write(::apache
   xfer += oprot->writeFieldBegin("foreignKeys", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->foreignKeys)).size()));
+<<<<<<< HEAD
     std::vector<SQLForeignKey> ::const_iterator _iter1031;
     for (_iter1031 = (*(this->foreignKeys)).begin(); _iter1031 != (*(this->foreignKeys)).end(); ++_iter1031)
     {
       xfer += (*_iter1031).write(oprot);
+=======
+    std::vector<SQLForeignKey> ::const_iterator _iter1040;
+    for (_iter1040 = (*(this->foreignKeys)).begin(); _iter1040 != (*(this->foreignKeys)).end(); ++_iter1040)
+    {
+      xfer += (*_iter1040).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4709,10 +5038,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_pargs::write(::apache
   xfer += oprot->writeFieldBegin("uniqueConstraints", ::apache::thrift::protocol::T_LIST, 4);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->uniqueConstraints)).size()));
+<<<<<<< HEAD
     std::vector<SQLUniqueConstraint> ::const_iterator _iter1032;
     for (_iter1032 = (*(this->uniqueConstraints)).begin(); _iter1032 != (*(this->uniqueConstraints)).end(); ++_iter1032)
     {
       xfer += (*_iter1032).write(oprot);
+=======
+    std::vector<SQLUniqueConstraint> ::const_iterator _iter1041;
+    for (_iter1041 = (*(this->uniqueConstraints)).begin(); _iter1041 != (*(this->uniqueConstraints)).end(); ++_iter1041)
+    {
+      xfer += (*_iter1041).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -4721,10 +5057,17 @@ uint32_t ThriftHiveMetastore_create_table_with_constraints_pargs::write(::apache
   xfer += oprot->writeFieldBegin("notNullConstraints", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->notNullConstraints)).size()));
+<<<<<<< HEAD
     std::vector<SQLNotNullConstraint> ::const_iterator _iter1033;
     for (_iter1033 = (*(this->notNullConstraints)).begin(); _iter1033 != (*(this->notNullConstraints)).end(); ++_iter1033)
     {
       xfer += (*_iter1033).write(oprot);
+=======
+    std::vector<SQLNotNullConstraint> ::const_iterator _iter1042;
+    for (_iter1042 = (*(this->notNullConstraints)).begin(); _iter1042 != (*(this->notNullConstraints)).end(); ++_iter1042)
+    {
+      xfer += (*_iter1042).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -6478,6 +6821,7 @@ uint32_t ThriftHiveMetastore_truncate_table_args::read(::apache::thrift::protoco
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->partNames.clear();
+<<<<<<< HEAD
             uint32_t _size1034;
             ::apache::thrift::protocol::TType _etype1037;
             xfer += iprot->readListBegin(_etype1037, _size1034);
@@ -6486,6 +6830,16 @@ uint32_t ThriftHiveMetastore_truncate_table_args::read(::apache::thrift::protoco
             for (_i1038 = 0; _i1038 < _size1034; ++_i1038)
             {
               xfer += iprot->readString(this->partNames[_i1038]);
+=======
+            uint32_t _size1043;
+            ::apache::thrift::protocol::TType _etype1046;
+            xfer += iprot->readListBegin(_etype1046, _size1043);
+            this->partNames.resize(_size1043);
+            uint32_t _i1047;
+            for (_i1047 = 0; _i1047 < _size1043; ++_i1047)
+            {
+              xfer += iprot->readString(this->partNames[_i1047]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -6522,10 +6876,17 @@ uint32_t ThriftHiveMetastore_truncate_table_args::write(::apache::thrift::protoc
   xfer += oprot->writeFieldBegin("partNames", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->partNames.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1039;
     for (_iter1039 = this->partNames.begin(); _iter1039 != this->partNames.end(); ++_iter1039)
     {
       xfer += oprot->writeString((*_iter1039));
+=======
+    std::vector<std::string> ::const_iterator _iter1048;
+    for (_iter1048 = this->partNames.begin(); _iter1048 != this->partNames.end(); ++_iter1048)
+    {
+      xfer += oprot->writeString((*_iter1048));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -6557,10 +6918,17 @@ uint32_t ThriftHiveMetastore_truncate_table_pargs::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("partNames", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->partNames)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1040;
     for (_iter1040 = (*(this->partNames)).begin(); _iter1040 != (*(this->partNames)).end(); ++_iter1040)
     {
       xfer += oprot->writeString((*_iter1040));
+=======
+    std::vector<std::string> ::const_iterator _iter1049;
+    for (_iter1049 = (*(this->partNames)).begin(); _iter1049 != (*(this->partNames)).end(); ++_iter1049)
+    {
+      xfer += oprot->writeString((*_iter1049));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -6804,6 +7172,7 @@ uint32_t ThriftHiveMetastore_get_tables_result::read(::apache::thrift::protocol:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1041;
             ::apache::thrift::protocol::TType _etype1044;
             xfer += iprot->readListBegin(_etype1044, _size1041);
@@ -6812,6 +7181,16 @@ uint32_t ThriftHiveMetastore_get_tables_result::read(::apache::thrift::protocol:
             for (_i1045 = 0; _i1045 < _size1041; ++_i1045)
             {
               xfer += iprot->readString(this->success[_i1045]);
+=======
+            uint32_t _size1050;
+            ::apache::thrift::protocol::TType _etype1053;
+            xfer += iprot->readListBegin(_etype1053, _size1050);
+            this->success.resize(_size1050);
+            uint32_t _i1054;
+            for (_i1054 = 0; _i1054 < _size1050; ++_i1054)
+            {
+              xfer += iprot->readString(this->success[_i1054]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -6850,10 +7229,17 @@ uint32_t ThriftHiveMetastore_get_tables_result::write(::apache::thrift::protocol
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1046;
       for (_iter1046 = this->success.begin(); _iter1046 != this->success.end(); ++_iter1046)
       {
         xfer += oprot->writeString((*_iter1046));
+=======
+      std::vector<std::string> ::const_iterator _iter1055;
+      for (_iter1055 = this->success.begin(); _iter1055 != this->success.end(); ++_iter1055)
+      {
+        xfer += oprot->writeString((*_iter1055));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -6898,6 +7284,7 @@ uint32_t ThriftHiveMetastore_get_tables_presult::read(::apache::thrift::protocol
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1047;
             ::apache::thrift::protocol::TType _etype1050;
             xfer += iprot->readListBegin(_etype1050, _size1047);
@@ -6906,6 +7293,16 @@ uint32_t ThriftHiveMetastore_get_tables_presult::read(::apache::thrift::protocol
             for (_i1051 = 0; _i1051 < _size1047; ++_i1051)
             {
               xfer += iprot->readString((*(this->success))[_i1051]);
+=======
+            uint32_t _size1056;
+            ::apache::thrift::protocol::TType _etype1059;
+            xfer += iprot->readListBegin(_etype1059, _size1056);
+            (*(this->success)).resize(_size1056);
+            uint32_t _i1060;
+            for (_i1060 = 0; _i1060 < _size1056; ++_i1060)
+            {
+              xfer += iprot->readString((*(this->success))[_i1060]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7075,6 +7472,7 @@ uint32_t ThriftHiveMetastore_get_tables_by_type_result::read(::apache::thrift::p
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1052;
             ::apache::thrift::protocol::TType _etype1055;
             xfer += iprot->readListBegin(_etype1055, _size1052);
@@ -7083,6 +7481,16 @@ uint32_t ThriftHiveMetastore_get_tables_by_type_result::read(::apache::thrift::p
             for (_i1056 = 0; _i1056 < _size1052; ++_i1056)
             {
               xfer += iprot->readString(this->success[_i1056]);
+=======
+            uint32_t _size1061;
+            ::apache::thrift::protocol::TType _etype1064;
+            xfer += iprot->readListBegin(_etype1064, _size1061);
+            this->success.resize(_size1061);
+            uint32_t _i1065;
+            for (_i1065 = 0; _i1065 < _size1061; ++_i1065)
+            {
+              xfer += iprot->readString(this->success[_i1065]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7121,10 +7529,17 @@ uint32_t ThriftHiveMetastore_get_tables_by_type_result::write(::apache::thrift::
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1057;
       for (_iter1057 = this->success.begin(); _iter1057 != this->success.end(); ++_iter1057)
       {
         xfer += oprot->writeString((*_iter1057));
+=======
+      std::vector<std::string> ::const_iterator _iter1066;
+      for (_iter1066 = this->success.begin(); _iter1066 != this->success.end(); ++_iter1066)
+      {
+        xfer += oprot->writeString((*_iter1066));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -7169,6 +7584,7 @@ uint32_t ThriftHiveMetastore_get_tables_by_type_presult::read(::apache::thrift::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1058;
             ::apache::thrift::protocol::TType _etype1061;
             xfer += iprot->readListBegin(_etype1061, _size1058);
@@ -7177,6 +7593,16 @@ uint32_t ThriftHiveMetastore_get_tables_by_type_presult::read(::apache::thrift::
             for (_i1062 = 0; _i1062 < _size1058; ++_i1062)
             {
               xfer += iprot->readString((*(this->success))[_i1062]);
+=======
+            uint32_t _size1067;
+            ::apache::thrift::protocol::TType _etype1070;
+            xfer += iprot->readListBegin(_etype1070, _size1067);
+            (*(this->success)).resize(_size1067);
+            uint32_t _i1071;
+            for (_i1071 = 0; _i1071 < _size1067; ++_i1071)
+            {
+              xfer += iprot->readString((*(this->success))[_i1071]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7251,6 +7677,7 @@ uint32_t ThriftHiveMetastore_get_table_meta_args::read(::apache::thrift::protoco
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->tbl_types.clear();
+<<<<<<< HEAD
             uint32_t _size1063;
             ::apache::thrift::protocol::TType _etype1066;
             xfer += iprot->readListBegin(_etype1066, _size1063);
@@ -7259,6 +7686,16 @@ uint32_t ThriftHiveMetastore_get_table_meta_args::read(::apache::thrift::protoco
             for (_i1067 = 0; _i1067 < _size1063; ++_i1067)
             {
               xfer += iprot->readString(this->tbl_types[_i1067]);
+=======
+            uint32_t _size1072;
+            ::apache::thrift::protocol::TType _etype1075;
+            xfer += iprot->readListBegin(_etype1075, _size1072);
+            this->tbl_types.resize(_size1072);
+            uint32_t _i1076;
+            for (_i1076 = 0; _i1076 < _size1072; ++_i1076)
+            {
+              xfer += iprot->readString(this->tbl_types[_i1076]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7295,10 +7732,17 @@ uint32_t ThriftHiveMetastore_get_table_meta_args::write(::apache::thrift::protoc
   xfer += oprot->writeFieldBegin("tbl_types", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->tbl_types.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1068;
     for (_iter1068 = this->tbl_types.begin(); _iter1068 != this->tbl_types.end(); ++_iter1068)
     {
       xfer += oprot->writeString((*_iter1068));
+=======
+    std::vector<std::string> ::const_iterator _iter1077;
+    for (_iter1077 = this->tbl_types.begin(); _iter1077 != this->tbl_types.end(); ++_iter1077)
+    {
+      xfer += oprot->writeString((*_iter1077));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -7330,10 +7774,17 @@ uint32_t ThriftHiveMetastore_get_table_meta_pargs::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("tbl_types", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->tbl_types)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1069;
     for (_iter1069 = (*(this->tbl_types)).begin(); _iter1069 != (*(this->tbl_types)).end(); ++_iter1069)
     {
       xfer += oprot->writeString((*_iter1069));
+=======
+    std::vector<std::string> ::const_iterator _iter1078;
+    for (_iter1078 = (*(this->tbl_types)).begin(); _iter1078 != (*(this->tbl_types)).end(); ++_iter1078)
+    {
+      xfer += oprot->writeString((*_iter1078));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -7374,6 +7825,7 @@ uint32_t ThriftHiveMetastore_get_table_meta_result::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1070;
             ::apache::thrift::protocol::TType _etype1073;
             xfer += iprot->readListBegin(_etype1073, _size1070);
@@ -7382,6 +7834,16 @@ uint32_t ThriftHiveMetastore_get_table_meta_result::read(::apache::thrift::proto
             for (_i1074 = 0; _i1074 < _size1070; ++_i1074)
             {
               xfer += this->success[_i1074].read(iprot);
+=======
+            uint32_t _size1079;
+            ::apache::thrift::protocol::TType _etype1082;
+            xfer += iprot->readListBegin(_etype1082, _size1079);
+            this->success.resize(_size1079);
+            uint32_t _i1083;
+            for (_i1083 = 0; _i1083 < _size1079; ++_i1083)
+            {
+              xfer += this->success[_i1083].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7420,10 +7882,17 @@ uint32_t ThriftHiveMetastore_get_table_meta_result::write(::apache::thrift::prot
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<TableMeta> ::const_iterator _iter1075;
       for (_iter1075 = this->success.begin(); _iter1075 != this->success.end(); ++_iter1075)
       {
         xfer += (*_iter1075).write(oprot);
+=======
+      std::vector<TableMeta> ::const_iterator _iter1084;
+      for (_iter1084 = this->success.begin(); _iter1084 != this->success.end(); ++_iter1084)
+      {
+        xfer += (*_iter1084).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -7468,6 +7937,7 @@ uint32_t ThriftHiveMetastore_get_table_meta_presult::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1076;
             ::apache::thrift::protocol::TType _etype1079;
             xfer += iprot->readListBegin(_etype1079, _size1076);
@@ -7476,6 +7946,16 @@ uint32_t ThriftHiveMetastore_get_table_meta_presult::read(::apache::thrift::prot
             for (_i1080 = 0; _i1080 < _size1076; ++_i1080)
             {
               xfer += (*(this->success))[_i1080].read(iprot);
+=======
+            uint32_t _size1085;
+            ::apache::thrift::protocol::TType _etype1088;
+            xfer += iprot->readListBegin(_etype1088, _size1085);
+            (*(this->success)).resize(_size1085);
+            uint32_t _i1089;
+            for (_i1089 = 0; _i1089 < _size1085; ++_i1089)
+            {
+              xfer += (*(this->success))[_i1089].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7613,6 +8093,7 @@ uint32_t ThriftHiveMetastore_get_all_tables_result::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1081;
             ::apache::thrift::protocol::TType _etype1084;
             xfer += iprot->readListBegin(_etype1084, _size1081);
@@ -7621,6 +8102,16 @@ uint32_t ThriftHiveMetastore_get_all_tables_result::read(::apache::thrift::proto
             for (_i1085 = 0; _i1085 < _size1081; ++_i1085)
             {
               xfer += iprot->readString(this->success[_i1085]);
+=======
+            uint32_t _size1090;
+            ::apache::thrift::protocol::TType _etype1093;
+            xfer += iprot->readListBegin(_etype1093, _size1090);
+            this->success.resize(_size1090);
+            uint32_t _i1094;
+            for (_i1094 = 0; _i1094 < _size1090; ++_i1094)
+            {
+              xfer += iprot->readString(this->success[_i1094]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -7659,10 +8150,17 @@ uint32_t ThriftHiveMetastore_get_all_tables_result::write(::apache::thrift::prot
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1086;
       for (_iter1086 = this->success.begin(); _iter1086 != this->success.end(); ++_iter1086)
       {
         xfer += oprot->writeString((*_iter1086));
+=======
+      std::vector<std::string> ::const_iterator _iter1095;
+      for (_iter1095 = this->success.begin(); _iter1095 != this->success.end(); ++_iter1095)
+      {
+        xfer += oprot->writeString((*_iter1095));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -7707,6 +8205,7 @@ uint32_t ThriftHiveMetastore_get_all_tables_presult::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1087;
             ::apache::thrift::protocol::TType _etype1090;
             xfer += iprot->readListBegin(_etype1090, _size1087);
@@ -7715,6 +8214,16 @@ uint32_t ThriftHiveMetastore_get_all_tables_presult::read(::apache::thrift::prot
             for (_i1091 = 0; _i1091 < _size1087; ++_i1091)
             {
               xfer += iprot->readString((*(this->success))[_i1091]);
+=======
+            uint32_t _size1096;
+            ::apache::thrift::protocol::TType _etype1099;
+            xfer += iprot->readListBegin(_etype1099, _size1096);
+            (*(this->success)).resize(_size1096);
+            uint32_t _i1100;
+            for (_i1100 = 0; _i1100 < _size1096; ++_i1100)
+            {
+              xfer += iprot->readString((*(this->success))[_i1100]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -8024,6 +8533,7 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_args::read(::apache::thri
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->tbl_names.clear();
+<<<<<<< HEAD
             uint32_t _size1092;
             ::apache::thrift::protocol::TType _etype1095;
             xfer += iprot->readListBegin(_etype1095, _size1092);
@@ -8032,6 +8542,16 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_args::read(::apache::thri
             for (_i1096 = 0; _i1096 < _size1092; ++_i1096)
             {
               xfer += iprot->readString(this->tbl_names[_i1096]);
+=======
+            uint32_t _size1101;
+            ::apache::thrift::protocol::TType _etype1104;
+            xfer += iprot->readListBegin(_etype1104, _size1101);
+            this->tbl_names.resize(_size1101);
+            uint32_t _i1105;
+            for (_i1105 = 0; _i1105 < _size1101; ++_i1105)
+            {
+              xfer += iprot->readString(this->tbl_names[_i1105]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -8064,10 +8584,17 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_args::write(::apache::thr
   xfer += oprot->writeFieldBegin("tbl_names", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->tbl_names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1097;
     for (_iter1097 = this->tbl_names.begin(); _iter1097 != this->tbl_names.end(); ++_iter1097)
     {
       xfer += oprot->writeString((*_iter1097));
+=======
+    std::vector<std::string> ::const_iterator _iter1106;
+    for (_iter1106 = this->tbl_names.begin(); _iter1106 != this->tbl_names.end(); ++_iter1106)
+    {
+      xfer += oprot->writeString((*_iter1106));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -8095,10 +8622,17 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_pargs::write(::apache::th
   xfer += oprot->writeFieldBegin("tbl_names", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->tbl_names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1098;
     for (_iter1098 = (*(this->tbl_names)).begin(); _iter1098 != (*(this->tbl_names)).end(); ++_iter1098)
     {
       xfer += oprot->writeString((*_iter1098));
+=======
+    std::vector<std::string> ::const_iterator _iter1107;
+    for (_iter1107 = (*(this->tbl_names)).begin(); _iter1107 != (*(this->tbl_names)).end(); ++_iter1107)
+    {
+      xfer += oprot->writeString((*_iter1107));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -8139,6 +8673,7 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_result::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1099;
             ::apache::thrift::protocol::TType _etype1102;
             xfer += iprot->readListBegin(_etype1102, _size1099);
@@ -8147,6 +8682,16 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_result::read(::apache::th
             for (_i1103 = 0; _i1103 < _size1099; ++_i1103)
             {
               xfer += this->success[_i1103].read(iprot);
+=======
+            uint32_t _size1108;
+            ::apache::thrift::protocol::TType _etype1111;
+            xfer += iprot->readListBegin(_etype1111, _size1108);
+            this->success.resize(_size1108);
+            uint32_t _i1112;
+            for (_i1112 = 0; _i1112 < _size1108; ++_i1112)
+            {
+              xfer += this->success[_i1112].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -8177,10 +8722,17 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_result::write(::apache::t
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Table> ::const_iterator _iter1104;
       for (_iter1104 = this->success.begin(); _iter1104 != this->success.end(); ++_iter1104)
       {
         xfer += (*_iter1104).write(oprot);
+=======
+      std::vector<Table> ::const_iterator _iter1113;
+      for (_iter1113 = this->success.begin(); _iter1113 != this->success.end(); ++_iter1113)
+      {
+        xfer += (*_iter1113).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -8221,6 +8773,7 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_presult::read(::apache::t
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1105;
             ::apache::thrift::protocol::TType _etype1108;
             xfer += iprot->readListBegin(_etype1108, _size1105);
@@ -8229,6 +8782,16 @@ uint32_t ThriftHiveMetastore_get_table_objects_by_name_presult::read(::apache::t
             for (_i1109 = 0; _i1109 < _size1105; ++_i1109)
             {
               xfer += (*(this->success))[_i1109].read(iprot);
+=======
+            uint32_t _size1114;
+            ::apache::thrift::protocol::TType _etype1117;
+            xfer += iprot->readListBegin(_etype1117, _size1114);
+            (*(this->success)).resize(_size1114);
+            uint32_t _i1118;
+            for (_i1118 = 0; _i1118 < _size1114; ++_i1118)
+            {
+              xfer += (*(this->success))[_i1118].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -8864,6 +9427,7 @@ uint32_t ThriftHiveMetastore_get_table_names_by_filter_result::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1110;
             ::apache::thrift::protocol::TType _etype1113;
             xfer += iprot->readListBegin(_etype1113, _size1110);
@@ -8872,6 +9436,16 @@ uint32_t ThriftHiveMetastore_get_table_names_by_filter_result::read(::apache::th
             for (_i1114 = 0; _i1114 < _size1110; ++_i1114)
             {
               xfer += iprot->readString(this->success[_i1114]);
+=======
+            uint32_t _size1119;
+            ::apache::thrift::protocol::TType _etype1122;
+            xfer += iprot->readListBegin(_etype1122, _size1119);
+            this->success.resize(_size1119);
+            uint32_t _i1123;
+            for (_i1123 = 0; _i1123 < _size1119; ++_i1123)
+            {
+              xfer += iprot->readString(this->success[_i1123]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -8926,10 +9500,17 @@ uint32_t ThriftHiveMetastore_get_table_names_by_filter_result::write(::apache::t
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1115;
       for (_iter1115 = this->success.begin(); _iter1115 != this->success.end(); ++_iter1115)
       {
         xfer += oprot->writeString((*_iter1115));
+=======
+      std::vector<std::string> ::const_iterator _iter1124;
+      for (_iter1124 = this->success.begin(); _iter1124 != this->success.end(); ++_iter1124)
+      {
+        xfer += oprot->writeString((*_iter1124));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -8982,6 +9563,7 @@ uint32_t ThriftHiveMetastore_get_table_names_by_filter_presult::read(::apache::t
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1116;
             ::apache::thrift::protocol::TType _etype1119;
             xfer += iprot->readListBegin(_etype1119, _size1116);
@@ -8990,6 +9572,16 @@ uint32_t ThriftHiveMetastore_get_table_names_by_filter_presult::read(::apache::t
             for (_i1120 = 0; _i1120 < _size1116; ++_i1120)
             {
               xfer += iprot->readString((*(this->success))[_i1120]);
+=======
+            uint32_t _size1125;
+            ::apache::thrift::protocol::TType _etype1128;
+            xfer += iprot->readListBegin(_etype1128, _size1125);
+            (*(this->success)).resize(_size1125);
+            uint32_t _i1129;
+            for (_i1129 = 0; _i1129 < _size1125; ++_i1129)
+            {
+              xfer += iprot->readString((*(this->success))[_i1129]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -10323,6 +10915,7 @@ uint32_t ThriftHiveMetastore_add_partitions_args::read(::apache::thrift::protoco
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->new_parts.clear();
+<<<<<<< HEAD
             uint32_t _size1121;
             ::apache::thrift::protocol::TType _etype1124;
             xfer += iprot->readListBegin(_etype1124, _size1121);
@@ -10331,6 +10924,16 @@ uint32_t ThriftHiveMetastore_add_partitions_args::read(::apache::thrift::protoco
             for (_i1125 = 0; _i1125 < _size1121; ++_i1125)
             {
               xfer += this->new_parts[_i1125].read(iprot);
+=======
+            uint32_t _size1130;
+            ::apache::thrift::protocol::TType _etype1133;
+            xfer += iprot->readListBegin(_etype1133, _size1130);
+            this->new_parts.resize(_size1130);
+            uint32_t _i1134;
+            for (_i1134 = 0; _i1134 < _size1130; ++_i1134)
+            {
+              xfer += this->new_parts[_i1134].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -10359,10 +10962,17 @@ uint32_t ThriftHiveMetastore_add_partitions_args::write(::apache::thrift::protoc
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->new_parts.size()));
+<<<<<<< HEAD
     std::vector<Partition> ::const_iterator _iter1126;
     for (_iter1126 = this->new_parts.begin(); _iter1126 != this->new_parts.end(); ++_iter1126)
     {
       xfer += (*_iter1126).write(oprot);
+=======
+    std::vector<Partition> ::const_iterator _iter1135;
+    for (_iter1135 = this->new_parts.begin(); _iter1135 != this->new_parts.end(); ++_iter1135)
+    {
+      xfer += (*_iter1135).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -10386,10 +10996,17 @@ uint32_t ThriftHiveMetastore_add_partitions_pargs::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->new_parts)).size()));
+<<<<<<< HEAD
     std::vector<Partition> ::const_iterator _iter1127;
     for (_iter1127 = (*(this->new_parts)).begin(); _iter1127 != (*(this->new_parts)).end(); ++_iter1127)
     {
       xfer += (*_iter1127).write(oprot);
+=======
+    std::vector<Partition> ::const_iterator _iter1136;
+    for (_iter1136 = (*(this->new_parts)).begin(); _iter1136 != (*(this->new_parts)).end(); ++_iter1136)
+    {
+      xfer += (*_iter1136).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -10598,6 +11215,7 @@ uint32_t ThriftHiveMetastore_add_partitions_pspec_args::read(::apache::thrift::p
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->new_parts.clear();
+<<<<<<< HEAD
             uint32_t _size1128;
             ::apache::thrift::protocol::TType _etype1131;
             xfer += iprot->readListBegin(_etype1131, _size1128);
@@ -10606,6 +11224,16 @@ uint32_t ThriftHiveMetastore_add_partitions_pspec_args::read(::apache::thrift::p
             for (_i1132 = 0; _i1132 < _size1128; ++_i1132)
             {
               xfer += this->new_parts[_i1132].read(iprot);
+=======
+            uint32_t _size1137;
+            ::apache::thrift::protocol::TType _etype1140;
+            xfer += iprot->readListBegin(_etype1140, _size1137);
+            this->new_parts.resize(_size1137);
+            uint32_t _i1141;
+            for (_i1141 = 0; _i1141 < _size1137; ++_i1141)
+            {
+              xfer += this->new_parts[_i1141].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -10634,10 +11262,17 @@ uint32_t ThriftHiveMetastore_add_partitions_pspec_args::write(::apache::thrift::
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->new_parts.size()));
+<<<<<<< HEAD
     std::vector<PartitionSpec> ::const_iterator _iter1133;
     for (_iter1133 = this->new_parts.begin(); _iter1133 != this->new_parts.end(); ++_iter1133)
     {
       xfer += (*_iter1133).write(oprot);
+=======
+    std::vector<PartitionSpec> ::const_iterator _iter1142;
+    for (_iter1142 = this->new_parts.begin(); _iter1142 != this->new_parts.end(); ++_iter1142)
+    {
+      xfer += (*_iter1142).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -10661,10 +11296,17 @@ uint32_t ThriftHiveMetastore_add_partitions_pspec_pargs::write(::apache::thrift:
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->new_parts)).size()));
+<<<<<<< HEAD
     std::vector<PartitionSpec> ::const_iterator _iter1134;
     for (_iter1134 = (*(this->new_parts)).begin(); _iter1134 != (*(this->new_parts)).end(); ++_iter1134)
     {
       xfer += (*_iter1134).write(oprot);
+=======
+    std::vector<PartitionSpec> ::const_iterator _iter1143;
+    for (_iter1143 = (*(this->new_parts)).begin(); _iter1143 != (*(this->new_parts)).end(); ++_iter1143)
+    {
+      xfer += (*_iter1143).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -10889,6 +11531,7 @@ uint32_t ThriftHiveMetastore_append_partition_args::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1135;
             ::apache::thrift::protocol::TType _etype1138;
             xfer += iprot->readListBegin(_etype1138, _size1135);
@@ -10897,6 +11540,16 @@ uint32_t ThriftHiveMetastore_append_partition_args::read(::apache::thrift::proto
             for (_i1139 = 0; _i1139 < _size1135; ++_i1139)
             {
               xfer += iprot->readString(this->part_vals[_i1139]);
+=======
+            uint32_t _size1144;
+            ::apache::thrift::protocol::TType _etype1147;
+            xfer += iprot->readListBegin(_etype1147, _size1144);
+            this->part_vals.resize(_size1144);
+            uint32_t _i1148;
+            for (_i1148 = 0; _i1148 < _size1144; ++_i1148)
+            {
+              xfer += iprot->readString(this->part_vals[_i1148]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -10933,10 +11586,17 @@ uint32_t ThriftHiveMetastore_append_partition_args::write(::apache::thrift::prot
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1140;
     for (_iter1140 = this->part_vals.begin(); _iter1140 != this->part_vals.end(); ++_iter1140)
     {
       xfer += oprot->writeString((*_iter1140));
+=======
+    std::vector<std::string> ::const_iterator _iter1149;
+    for (_iter1149 = this->part_vals.begin(); _iter1149 != this->part_vals.end(); ++_iter1149)
+    {
+      xfer += oprot->writeString((*_iter1149));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -10968,10 +11628,17 @@ uint32_t ThriftHiveMetastore_append_partition_pargs::write(::apache::thrift::pro
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1141;
     for (_iter1141 = (*(this->part_vals)).begin(); _iter1141 != (*(this->part_vals)).end(); ++_iter1141)
     {
       xfer += oprot->writeString((*_iter1141));
+=======
+    std::vector<std::string> ::const_iterator _iter1150;
+    for (_iter1150 = (*(this->part_vals)).begin(); _iter1150 != (*(this->part_vals)).end(); ++_iter1150)
+    {
+      xfer += oprot->writeString((*_iter1150));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -11443,6 +12110,7 @@ uint32_t ThriftHiveMetastore_append_partition_with_environment_context_args::rea
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1142;
             ::apache::thrift::protocol::TType _etype1145;
             xfer += iprot->readListBegin(_etype1145, _size1142);
@@ -11451,6 +12119,16 @@ uint32_t ThriftHiveMetastore_append_partition_with_environment_context_args::rea
             for (_i1146 = 0; _i1146 < _size1142; ++_i1146)
             {
               xfer += iprot->readString(this->part_vals[_i1146]);
+=======
+            uint32_t _size1151;
+            ::apache::thrift::protocol::TType _etype1154;
+            xfer += iprot->readListBegin(_etype1154, _size1151);
+            this->part_vals.resize(_size1151);
+            uint32_t _i1155;
+            for (_i1155 = 0; _i1155 < _size1151; ++_i1155)
+            {
+              xfer += iprot->readString(this->part_vals[_i1155]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -11495,10 +12173,17 @@ uint32_t ThriftHiveMetastore_append_partition_with_environment_context_args::wri
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1147;
     for (_iter1147 = this->part_vals.begin(); _iter1147 != this->part_vals.end(); ++_iter1147)
     {
       xfer += oprot->writeString((*_iter1147));
+=======
+    std::vector<std::string> ::const_iterator _iter1156;
+    for (_iter1156 = this->part_vals.begin(); _iter1156 != this->part_vals.end(); ++_iter1156)
+    {
+      xfer += oprot->writeString((*_iter1156));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -11534,10 +12219,17 @@ uint32_t ThriftHiveMetastore_append_partition_with_environment_context_pargs::wr
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1148;
     for (_iter1148 = (*(this->part_vals)).begin(); _iter1148 != (*(this->part_vals)).end(); ++_iter1148)
     {
       xfer += oprot->writeString((*_iter1148));
+=======
+    std::vector<std::string> ::const_iterator _iter1157;
+    for (_iter1157 = (*(this->part_vals)).begin(); _iter1157 != (*(this->part_vals)).end(); ++_iter1157)
+    {
+      xfer += oprot->writeString((*_iter1157));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -12340,6 +13032,7 @@ uint32_t ThriftHiveMetastore_drop_partition_args::read(::apache::thrift::protoco
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1149;
             ::apache::thrift::protocol::TType _etype1152;
             xfer += iprot->readListBegin(_etype1152, _size1149);
@@ -12348,6 +13041,16 @@ uint32_t ThriftHiveMetastore_drop_partition_args::read(::apache::thrift::protoco
             for (_i1153 = 0; _i1153 < _size1149; ++_i1153)
             {
               xfer += iprot->readString(this->part_vals[_i1153]);
+=======
+            uint32_t _size1158;
+            ::apache::thrift::protocol::TType _etype1161;
+            xfer += iprot->readListBegin(_etype1161, _size1158);
+            this->part_vals.resize(_size1158);
+            uint32_t _i1162;
+            for (_i1162 = 0; _i1162 < _size1158; ++_i1162)
+            {
+              xfer += iprot->readString(this->part_vals[_i1162]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -12392,10 +13095,17 @@ uint32_t ThriftHiveMetastore_drop_partition_args::write(::apache::thrift::protoc
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1154;
     for (_iter1154 = this->part_vals.begin(); _iter1154 != this->part_vals.end(); ++_iter1154)
     {
       xfer += oprot->writeString((*_iter1154));
+=======
+    std::vector<std::string> ::const_iterator _iter1163;
+    for (_iter1163 = this->part_vals.begin(); _iter1163 != this->part_vals.end(); ++_iter1163)
+    {
+      xfer += oprot->writeString((*_iter1163));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -12431,10 +13141,17 @@ uint32_t ThriftHiveMetastore_drop_partition_pargs::write(::apache::thrift::proto
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1155;
     for (_iter1155 = (*(this->part_vals)).begin(); _iter1155 != (*(this->part_vals)).end(); ++_iter1155)
     {
       xfer += oprot->writeString((*_iter1155));
+=======
+    std::vector<std::string> ::const_iterator _iter1164;
+    for (_iter1164 = (*(this->part_vals)).begin(); _iter1164 != (*(this->part_vals)).end(); ++_iter1164)
+    {
+      xfer += oprot->writeString((*_iter1164));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -12643,6 +13360,7 @@ uint32_t ThriftHiveMetastore_drop_partition_with_environment_context_args::read(
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1156;
             ::apache::thrift::protocol::TType _etype1159;
             xfer += iprot->readListBegin(_etype1159, _size1156);
@@ -12651,6 +13369,16 @@ uint32_t ThriftHiveMetastore_drop_partition_with_environment_context_args::read(
             for (_i1160 = 0; _i1160 < _size1156; ++_i1160)
             {
               xfer += iprot->readString(this->part_vals[_i1160]);
+=======
+            uint32_t _size1165;
+            ::apache::thrift::protocol::TType _etype1168;
+            xfer += iprot->readListBegin(_etype1168, _size1165);
+            this->part_vals.resize(_size1165);
+            uint32_t _i1169;
+            for (_i1169 = 0; _i1169 < _size1165; ++_i1169)
+            {
+              xfer += iprot->readString(this->part_vals[_i1169]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -12703,10 +13431,17 @@ uint32_t ThriftHiveMetastore_drop_partition_with_environment_context_args::write
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1161;
     for (_iter1161 = this->part_vals.begin(); _iter1161 != this->part_vals.end(); ++_iter1161)
     {
       xfer += oprot->writeString((*_iter1161));
+=======
+    std::vector<std::string> ::const_iterator _iter1170;
+    for (_iter1170 = this->part_vals.begin(); _iter1170 != this->part_vals.end(); ++_iter1170)
+    {
+      xfer += oprot->writeString((*_iter1170));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -12746,10 +13481,17 @@ uint32_t ThriftHiveMetastore_drop_partition_with_environment_context_pargs::writ
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1162;
     for (_iter1162 = (*(this->part_vals)).begin(); _iter1162 != (*(this->part_vals)).end(); ++_iter1162)
     {
       xfer += oprot->writeString((*_iter1162));
+=======
+    std::vector<std::string> ::const_iterator _iter1171;
+    for (_iter1171 = (*(this->part_vals)).begin(); _iter1171 != (*(this->part_vals)).end(); ++_iter1171)
+    {
+      xfer += oprot->writeString((*_iter1171));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -13755,6 +14497,7 @@ uint32_t ThriftHiveMetastore_get_partition_args::read(::apache::thrift::protocol
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1163;
             ::apache::thrift::protocol::TType _etype1166;
             xfer += iprot->readListBegin(_etype1166, _size1163);
@@ -13763,6 +14506,16 @@ uint32_t ThriftHiveMetastore_get_partition_args::read(::apache::thrift::protocol
             for (_i1167 = 0; _i1167 < _size1163; ++_i1167)
             {
               xfer += iprot->readString(this->part_vals[_i1167]);
+=======
+            uint32_t _size1172;
+            ::apache::thrift::protocol::TType _etype1175;
+            xfer += iprot->readListBegin(_etype1175, _size1172);
+            this->part_vals.resize(_size1172);
+            uint32_t _i1176;
+            for (_i1176 = 0; _i1176 < _size1172; ++_i1176)
+            {
+              xfer += iprot->readString(this->part_vals[_i1176]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -13799,10 +14552,17 @@ uint32_t ThriftHiveMetastore_get_partition_args::write(::apache::thrift::protoco
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1168;
     for (_iter1168 = this->part_vals.begin(); _iter1168 != this->part_vals.end(); ++_iter1168)
     {
       xfer += oprot->writeString((*_iter1168));
+=======
+    std::vector<std::string> ::const_iterator _iter1177;
+    for (_iter1177 = this->part_vals.begin(); _iter1177 != this->part_vals.end(); ++_iter1177)
+    {
+      xfer += oprot->writeString((*_iter1177));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -13834,10 +14594,17 @@ uint32_t ThriftHiveMetastore_get_partition_pargs::write(::apache::thrift::protoc
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1169;
     for (_iter1169 = (*(this->part_vals)).begin(); _iter1169 != (*(this->part_vals)).end(); ++_iter1169)
     {
       xfer += oprot->writeString((*_iter1169));
+=======
+    std::vector<std::string> ::const_iterator _iter1178;
+    for (_iter1178 = (*(this->part_vals)).begin(); _iter1178 != (*(this->part_vals)).end(); ++_iter1178)
+    {
+      xfer += oprot->writeString((*_iter1178));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -14026,6 +14793,7 @@ uint32_t ThriftHiveMetastore_exchange_partition_args::read(::apache::thrift::pro
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->partitionSpecs.clear();
+<<<<<<< HEAD
             uint32_t _size1170;
             ::apache::thrift::protocol::TType _ktype1171;
             ::apache::thrift::protocol::TType _vtype1172;
@@ -14037,6 +14805,19 @@ uint32_t ThriftHiveMetastore_exchange_partition_args::read(::apache::thrift::pro
               xfer += iprot->readString(_key1175);
               std::string& _val1176 = this->partitionSpecs[_key1175];
               xfer += iprot->readString(_val1176);
+=======
+            uint32_t _size1179;
+            ::apache::thrift::protocol::TType _ktype1180;
+            ::apache::thrift::protocol::TType _vtype1181;
+            xfer += iprot->readMapBegin(_ktype1180, _vtype1181, _size1179);
+            uint32_t _i1183;
+            for (_i1183 = 0; _i1183 < _size1179; ++_i1183)
+            {
+              std::string _key1184;
+              xfer += iprot->readString(_key1184);
+              std::string& _val1185 = this->partitionSpecs[_key1184];
+              xfer += iprot->readString(_val1185);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -14097,11 +14878,19 @@ uint32_t ThriftHiveMetastore_exchange_partition_args::write(::apache::thrift::pr
   xfer += oprot->writeFieldBegin("partitionSpecs", ::apache::thrift::protocol::T_MAP, 1);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->partitionSpecs.size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1177;
     for (_iter1177 = this->partitionSpecs.begin(); _iter1177 != this->partitionSpecs.end(); ++_iter1177)
     {
       xfer += oprot->writeString(_iter1177->first);
       xfer += oprot->writeString(_iter1177->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1186;
+    for (_iter1186 = this->partitionSpecs.begin(); _iter1186 != this->partitionSpecs.end(); ++_iter1186)
+    {
+      xfer += oprot->writeString(_iter1186->first);
+      xfer += oprot->writeString(_iter1186->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -14141,11 +14930,19 @@ uint32_t ThriftHiveMetastore_exchange_partition_pargs::write(::apache::thrift::p
   xfer += oprot->writeFieldBegin("partitionSpecs", ::apache::thrift::protocol::T_MAP, 1);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->partitionSpecs)).size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1178;
     for (_iter1178 = (*(this->partitionSpecs)).begin(); _iter1178 != (*(this->partitionSpecs)).end(); ++_iter1178)
     {
       xfer += oprot->writeString(_iter1178->first);
       xfer += oprot->writeString(_iter1178->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1187;
+    for (_iter1187 = (*(this->partitionSpecs)).begin(); _iter1187 != (*(this->partitionSpecs)).end(); ++_iter1187)
+    {
+      xfer += oprot->writeString(_iter1187->first);
+      xfer += oprot->writeString(_iter1187->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -14390,6 +15187,7 @@ uint32_t ThriftHiveMetastore_exchange_partitions_args::read(::apache::thrift::pr
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->partitionSpecs.clear();
+<<<<<<< HEAD
             uint32_t _size1179;
             ::apache::thrift::protocol::TType _ktype1180;
             ::apache::thrift::protocol::TType _vtype1181;
@@ -14401,6 +15199,19 @@ uint32_t ThriftHiveMetastore_exchange_partitions_args::read(::apache::thrift::pr
               xfer += iprot->readString(_key1184);
               std::string& _val1185 = this->partitionSpecs[_key1184];
               xfer += iprot->readString(_val1185);
+=======
+            uint32_t _size1188;
+            ::apache::thrift::protocol::TType _ktype1189;
+            ::apache::thrift::protocol::TType _vtype1190;
+            xfer += iprot->readMapBegin(_ktype1189, _vtype1190, _size1188);
+            uint32_t _i1192;
+            for (_i1192 = 0; _i1192 < _size1188; ++_i1192)
+            {
+              std::string _key1193;
+              xfer += iprot->readString(_key1193);
+              std::string& _val1194 = this->partitionSpecs[_key1193];
+              xfer += iprot->readString(_val1194);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -14461,11 +15272,19 @@ uint32_t ThriftHiveMetastore_exchange_partitions_args::write(::apache::thrift::p
   xfer += oprot->writeFieldBegin("partitionSpecs", ::apache::thrift::protocol::T_MAP, 1);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->partitionSpecs.size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1186;
     for (_iter1186 = this->partitionSpecs.begin(); _iter1186 != this->partitionSpecs.end(); ++_iter1186)
     {
       xfer += oprot->writeString(_iter1186->first);
       xfer += oprot->writeString(_iter1186->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1195;
+    for (_iter1195 = this->partitionSpecs.begin(); _iter1195 != this->partitionSpecs.end(); ++_iter1195)
+    {
+      xfer += oprot->writeString(_iter1195->first);
+      xfer += oprot->writeString(_iter1195->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -14505,11 +15324,19 @@ uint32_t ThriftHiveMetastore_exchange_partitions_pargs::write(::apache::thrift::
   xfer += oprot->writeFieldBegin("partitionSpecs", ::apache::thrift::protocol::T_MAP, 1);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->partitionSpecs)).size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1187;
     for (_iter1187 = (*(this->partitionSpecs)).begin(); _iter1187 != (*(this->partitionSpecs)).end(); ++_iter1187)
     {
       xfer += oprot->writeString(_iter1187->first);
       xfer += oprot->writeString(_iter1187->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1196;
+    for (_iter1196 = (*(this->partitionSpecs)).begin(); _iter1196 != (*(this->partitionSpecs)).end(); ++_iter1196)
+    {
+      xfer += oprot->writeString(_iter1196->first);
+      xfer += oprot->writeString(_iter1196->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -14566,6 +15393,7 @@ uint32_t ThriftHiveMetastore_exchange_partitions_result::read(::apache::thrift::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1188;
             ::apache::thrift::protocol::TType _etype1191;
             xfer += iprot->readListBegin(_etype1191, _size1188);
@@ -14574,6 +15402,16 @@ uint32_t ThriftHiveMetastore_exchange_partitions_result::read(::apache::thrift::
             for (_i1192 = 0; _i1192 < _size1188; ++_i1192)
             {
               xfer += this->success[_i1192].read(iprot);
+=======
+            uint32_t _size1197;
+            ::apache::thrift::protocol::TType _etype1200;
+            xfer += iprot->readListBegin(_etype1200, _size1197);
+            this->success.resize(_size1197);
+            uint32_t _i1201;
+            for (_i1201 = 0; _i1201 < _size1197; ++_i1201)
+            {
+              xfer += this->success[_i1201].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -14636,10 +15474,17 @@ uint32_t ThriftHiveMetastore_exchange_partitions_result::write(::apache::thrift:
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1193;
       for (_iter1193 = this->success.begin(); _iter1193 != this->success.end(); ++_iter1193)
       {
         xfer += (*_iter1193).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1202;
+      for (_iter1202 = this->success.begin(); _iter1202 != this->success.end(); ++_iter1202)
+      {
+        xfer += (*_iter1202).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -14696,6 +15541,7 @@ uint32_t ThriftHiveMetastore_exchange_partitions_presult::read(::apache::thrift:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1194;
             ::apache::thrift::protocol::TType _etype1197;
             xfer += iprot->readListBegin(_etype1197, _size1194);
@@ -14704,6 +15550,16 @@ uint32_t ThriftHiveMetastore_exchange_partitions_presult::read(::apache::thrift:
             for (_i1198 = 0; _i1198 < _size1194; ++_i1198)
             {
               xfer += (*(this->success))[_i1198].read(iprot);
+=======
+            uint32_t _size1203;
+            ::apache::thrift::protocol::TType _etype1206;
+            xfer += iprot->readListBegin(_etype1206, _size1203);
+            (*(this->success)).resize(_size1203);
+            uint32_t _i1207;
+            for (_i1207 = 0; _i1207 < _size1203; ++_i1207)
+            {
+              xfer += (*(this->success))[_i1207].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -14802,6 +15658,7 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_args::read(::apache::thrift
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1199;
             ::apache::thrift::protocol::TType _etype1202;
             xfer += iprot->readListBegin(_etype1202, _size1199);
@@ -14810,6 +15667,16 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_args::read(::apache::thrift
             for (_i1203 = 0; _i1203 < _size1199; ++_i1203)
             {
               xfer += iprot->readString(this->part_vals[_i1203]);
+=======
+            uint32_t _size1208;
+            ::apache::thrift::protocol::TType _etype1211;
+            xfer += iprot->readListBegin(_etype1211, _size1208);
+            this->part_vals.resize(_size1208);
+            uint32_t _i1212;
+            for (_i1212 = 0; _i1212 < _size1208; ++_i1212)
+            {
+              xfer += iprot->readString(this->part_vals[_i1212]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -14830,6 +15697,7 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_args::read(::apache::thrift
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->group_names.clear();
+<<<<<<< HEAD
             uint32_t _size1204;
             ::apache::thrift::protocol::TType _etype1207;
             xfer += iprot->readListBegin(_etype1207, _size1204);
@@ -14838,6 +15706,16 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_args::read(::apache::thrift
             for (_i1208 = 0; _i1208 < _size1204; ++_i1208)
             {
               xfer += iprot->readString(this->group_names[_i1208]);
+=======
+            uint32_t _size1213;
+            ::apache::thrift::protocol::TType _etype1216;
+            xfer += iprot->readListBegin(_etype1216, _size1213);
+            this->group_names.resize(_size1213);
+            uint32_t _i1217;
+            for (_i1217 = 0; _i1217 < _size1213; ++_i1217)
+            {
+              xfer += iprot->readString(this->group_names[_i1217]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -14874,10 +15752,17 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_args::write(::apache::thrif
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1209;
     for (_iter1209 = this->part_vals.begin(); _iter1209 != this->part_vals.end(); ++_iter1209)
     {
       xfer += oprot->writeString((*_iter1209));
+=======
+    std::vector<std::string> ::const_iterator _iter1218;
+    for (_iter1218 = this->part_vals.begin(); _iter1218 != this->part_vals.end(); ++_iter1218)
+    {
+      xfer += oprot->writeString((*_iter1218));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -14890,10 +15775,17 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_args::write(::apache::thrif
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->group_names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1210;
     for (_iter1210 = this->group_names.begin(); _iter1210 != this->group_names.end(); ++_iter1210)
     {
       xfer += oprot->writeString((*_iter1210));
+=======
+    std::vector<std::string> ::const_iterator _iter1219;
+    for (_iter1219 = this->group_names.begin(); _iter1219 != this->group_names.end(); ++_iter1219)
+    {
+      xfer += oprot->writeString((*_iter1219));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -14925,10 +15817,17 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_pargs::write(::apache::thri
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1211;
     for (_iter1211 = (*(this->part_vals)).begin(); _iter1211 != (*(this->part_vals)).end(); ++_iter1211)
     {
       xfer += oprot->writeString((*_iter1211));
+=======
+    std::vector<std::string> ::const_iterator _iter1220;
+    for (_iter1220 = (*(this->part_vals)).begin(); _iter1220 != (*(this->part_vals)).end(); ++_iter1220)
+    {
+      xfer += oprot->writeString((*_iter1220));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -14941,10 +15840,17 @@ uint32_t ThriftHiveMetastore_get_partition_with_auth_pargs::write(::apache::thri
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->group_names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1212;
     for (_iter1212 = (*(this->group_names)).begin(); _iter1212 != (*(this->group_names)).end(); ++_iter1212)
     {
       xfer += oprot->writeString((*_iter1212));
+=======
+    std::vector<std::string> ::const_iterator _iter1221;
+    for (_iter1221 = (*(this->group_names)).begin(); _iter1221 != (*(this->group_names)).end(); ++_iter1221)
+    {
+      xfer += oprot->writeString((*_iter1221));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -15503,6 +16409,7 @@ uint32_t ThriftHiveMetastore_get_partitions_result::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1213;
             ::apache::thrift::protocol::TType _etype1216;
             xfer += iprot->readListBegin(_etype1216, _size1213);
@@ -15511,6 +16418,16 @@ uint32_t ThriftHiveMetastore_get_partitions_result::read(::apache::thrift::proto
             for (_i1217 = 0; _i1217 < _size1213; ++_i1217)
             {
               xfer += this->success[_i1217].read(iprot);
+=======
+            uint32_t _size1222;
+            ::apache::thrift::protocol::TType _etype1225;
+            xfer += iprot->readListBegin(_etype1225, _size1222);
+            this->success.resize(_size1222);
+            uint32_t _i1226;
+            for (_i1226 = 0; _i1226 < _size1222; ++_i1226)
+            {
+              xfer += this->success[_i1226].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -15557,10 +16474,17 @@ uint32_t ThriftHiveMetastore_get_partitions_result::write(::apache::thrift::prot
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1218;
       for (_iter1218 = this->success.begin(); _iter1218 != this->success.end(); ++_iter1218)
       {
         xfer += (*_iter1218).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1227;
+      for (_iter1227 = this->success.begin(); _iter1227 != this->success.end(); ++_iter1227)
+      {
+        xfer += (*_iter1227).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -15609,6 +16533,7 @@ uint32_t ThriftHiveMetastore_get_partitions_presult::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1219;
             ::apache::thrift::protocol::TType _etype1222;
             xfer += iprot->readListBegin(_etype1222, _size1219);
@@ -15617,6 +16542,16 @@ uint32_t ThriftHiveMetastore_get_partitions_presult::read(::apache::thrift::prot
             for (_i1223 = 0; _i1223 < _size1219; ++_i1223)
             {
               xfer += (*(this->success))[_i1223].read(iprot);
+=======
+            uint32_t _size1228;
+            ::apache::thrift::protocol::TType _etype1231;
+            xfer += iprot->readListBegin(_etype1231, _size1228);
+            (*(this->success)).resize(_size1228);
+            uint32_t _i1232;
+            for (_i1232 = 0; _i1232 < _size1228; ++_i1232)
+            {
+              xfer += (*(this->success))[_i1232].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -15715,6 +16650,7 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_args::read(::apache::thrif
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->group_names.clear();
+<<<<<<< HEAD
             uint32_t _size1224;
             ::apache::thrift::protocol::TType _etype1227;
             xfer += iprot->readListBegin(_etype1227, _size1224);
@@ -15723,6 +16659,16 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_args::read(::apache::thrif
             for (_i1228 = 0; _i1228 < _size1224; ++_i1228)
             {
               xfer += iprot->readString(this->group_names[_i1228]);
+=======
+            uint32_t _size1233;
+            ::apache::thrift::protocol::TType _etype1236;
+            xfer += iprot->readListBegin(_etype1236, _size1233);
+            this->group_names.resize(_size1233);
+            uint32_t _i1237;
+            for (_i1237 = 0; _i1237 < _size1233; ++_i1237)
+            {
+              xfer += iprot->readString(this->group_names[_i1237]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -15767,10 +16713,17 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_args::write(::apache::thri
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->group_names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1229;
     for (_iter1229 = this->group_names.begin(); _iter1229 != this->group_names.end(); ++_iter1229)
     {
       xfer += oprot->writeString((*_iter1229));
+=======
+    std::vector<std::string> ::const_iterator _iter1238;
+    for (_iter1238 = this->group_names.begin(); _iter1238 != this->group_names.end(); ++_iter1238)
+    {
+      xfer += oprot->writeString((*_iter1238));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -15810,10 +16763,17 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_pargs::write(::apache::thr
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->group_names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1230;
     for (_iter1230 = (*(this->group_names)).begin(); _iter1230 != (*(this->group_names)).end(); ++_iter1230)
     {
       xfer += oprot->writeString((*_iter1230));
+=======
+    std::vector<std::string> ::const_iterator _iter1239;
+    for (_iter1239 = (*(this->group_names)).begin(); _iter1239 != (*(this->group_names)).end(); ++_iter1239)
+    {
+      xfer += oprot->writeString((*_iter1239));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -15854,6 +16814,7 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_result::read(::apache::thr
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1231;
             ::apache::thrift::protocol::TType _etype1234;
             xfer += iprot->readListBegin(_etype1234, _size1231);
@@ -15862,6 +16823,16 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_result::read(::apache::thr
             for (_i1235 = 0; _i1235 < _size1231; ++_i1235)
             {
               xfer += this->success[_i1235].read(iprot);
+=======
+            uint32_t _size1240;
+            ::apache::thrift::protocol::TType _etype1243;
+            xfer += iprot->readListBegin(_etype1243, _size1240);
+            this->success.resize(_size1240);
+            uint32_t _i1244;
+            for (_i1244 = 0; _i1244 < _size1240; ++_i1244)
+            {
+              xfer += this->success[_i1244].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -15908,10 +16879,17 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_result::write(::apache::th
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1236;
       for (_iter1236 = this->success.begin(); _iter1236 != this->success.end(); ++_iter1236)
       {
         xfer += (*_iter1236).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1245;
+      for (_iter1245 = this->success.begin(); _iter1245 != this->success.end(); ++_iter1245)
+      {
+        xfer += (*_iter1245).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -15960,6 +16938,7 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_presult::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1237;
             ::apache::thrift::protocol::TType _etype1240;
             xfer += iprot->readListBegin(_etype1240, _size1237);
@@ -15968,6 +16947,16 @@ uint32_t ThriftHiveMetastore_get_partitions_with_auth_presult::read(::apache::th
             for (_i1241 = 0; _i1241 < _size1237; ++_i1241)
             {
               xfer += (*(this->success))[_i1241].read(iprot);
+=======
+            uint32_t _size1246;
+            ::apache::thrift::protocol::TType _etype1249;
+            xfer += iprot->readListBegin(_etype1249, _size1246);
+            (*(this->success)).resize(_size1246);
+            uint32_t _i1250;
+            for (_i1250 = 0; _i1250 < _size1246; ++_i1250)
+            {
+              xfer += (*(this->success))[_i1250].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -16145,6 +17134,7 @@ uint32_t ThriftHiveMetastore_get_partitions_pspec_result::read(::apache::thrift:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1242;
             ::apache::thrift::protocol::TType _etype1245;
             xfer += iprot->readListBegin(_etype1245, _size1242);
@@ -16153,6 +17143,16 @@ uint32_t ThriftHiveMetastore_get_partitions_pspec_result::read(::apache::thrift:
             for (_i1246 = 0; _i1246 < _size1242; ++_i1246)
             {
               xfer += this->success[_i1246].read(iprot);
+=======
+            uint32_t _size1251;
+            ::apache::thrift::protocol::TType _etype1254;
+            xfer += iprot->readListBegin(_etype1254, _size1251);
+            this->success.resize(_size1251);
+            uint32_t _i1255;
+            for (_i1255 = 0; _i1255 < _size1251; ++_i1255)
+            {
+              xfer += this->success[_i1255].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -16199,10 +17199,17 @@ uint32_t ThriftHiveMetastore_get_partitions_pspec_result::write(::apache::thrift
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<PartitionSpec> ::const_iterator _iter1247;
       for (_iter1247 = this->success.begin(); _iter1247 != this->success.end(); ++_iter1247)
       {
         xfer += (*_iter1247).write(oprot);
+=======
+      std::vector<PartitionSpec> ::const_iterator _iter1256;
+      for (_iter1256 = this->success.begin(); _iter1256 != this->success.end(); ++_iter1256)
+      {
+        xfer += (*_iter1256).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -16251,6 +17258,7 @@ uint32_t ThriftHiveMetastore_get_partitions_pspec_presult::read(::apache::thrift
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1248;
             ::apache::thrift::protocol::TType _etype1251;
             xfer += iprot->readListBegin(_etype1251, _size1248);
@@ -16259,6 +17267,16 @@ uint32_t ThriftHiveMetastore_get_partitions_pspec_presult::read(::apache::thrift
             for (_i1252 = 0; _i1252 < _size1248; ++_i1252)
             {
               xfer += (*(this->success))[_i1252].read(iprot);
+=======
+            uint32_t _size1257;
+            ::apache::thrift::protocol::TType _etype1260;
+            xfer += iprot->readListBegin(_etype1260, _size1257);
+            (*(this->success)).resize(_size1257);
+            uint32_t _i1261;
+            for (_i1261 = 0; _i1261 < _size1257; ++_i1261)
+            {
+              xfer += (*(this->success))[_i1261].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -16436,6 +17454,7 @@ uint32_t ThriftHiveMetastore_get_partition_names_result::read(::apache::thrift::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1253;
             ::apache::thrift::protocol::TType _etype1256;
             xfer += iprot->readListBegin(_etype1256, _size1253);
@@ -16444,6 +17463,16 @@ uint32_t ThriftHiveMetastore_get_partition_names_result::read(::apache::thrift::
             for (_i1257 = 0; _i1257 < _size1253; ++_i1257)
             {
               xfer += iprot->readString(this->success[_i1257]);
+=======
+            uint32_t _size1262;
+            ::apache::thrift::protocol::TType _etype1265;
+            xfer += iprot->readListBegin(_etype1265, _size1262);
+            this->success.resize(_size1262);
+            uint32_t _i1266;
+            for (_i1266 = 0; _i1266 < _size1262; ++_i1266)
+            {
+              xfer += iprot->readString(this->success[_i1266]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -16490,10 +17519,17 @@ uint32_t ThriftHiveMetastore_get_partition_names_result::write(::apache::thrift:
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1258;
       for (_iter1258 = this->success.begin(); _iter1258 != this->success.end(); ++_iter1258)
       {
         xfer += oprot->writeString((*_iter1258));
+=======
+      std::vector<std::string> ::const_iterator _iter1267;
+      for (_iter1267 = this->success.begin(); _iter1267 != this->success.end(); ++_iter1267)
+      {
+        xfer += oprot->writeString((*_iter1267));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -16542,6 +17578,7 @@ uint32_t ThriftHiveMetastore_get_partition_names_presult::read(::apache::thrift:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1259;
             ::apache::thrift::protocol::TType _etype1262;
             xfer += iprot->readListBegin(_etype1262, _size1259);
@@ -16550,6 +17587,16 @@ uint32_t ThriftHiveMetastore_get_partition_names_presult::read(::apache::thrift:
             for (_i1263 = 0; _i1263 < _size1259; ++_i1263)
             {
               xfer += iprot->readString((*(this->success))[_i1263]);
+=======
+            uint32_t _size1268;
+            ::apache::thrift::protocol::TType _etype1271;
+            xfer += iprot->readListBegin(_etype1271, _size1268);
+            (*(this->success)).resize(_size1268);
+            uint32_t _i1272;
+            for (_i1272 = 0; _i1272 < _size1268; ++_i1272)
+            {
+              xfer += iprot->readString((*(this->success))[_i1272]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -16859,6 +17906,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_args::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1264;
             ::apache::thrift::protocol::TType _etype1267;
             xfer += iprot->readListBegin(_etype1267, _size1264);
@@ -16867,6 +17915,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_args::read(::apache::thrift::prot
             for (_i1268 = 0; _i1268 < _size1264; ++_i1268)
             {
               xfer += iprot->readString(this->part_vals[_i1268]);
+=======
+            uint32_t _size1273;
+            ::apache::thrift::protocol::TType _etype1276;
+            xfer += iprot->readListBegin(_etype1276, _size1273);
+            this->part_vals.resize(_size1273);
+            uint32_t _i1277;
+            for (_i1277 = 0; _i1277 < _size1273; ++_i1277)
+            {
+              xfer += iprot->readString(this->part_vals[_i1277]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -16911,10 +17969,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_args::write(::apache::thrift::pro
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1269;
     for (_iter1269 = this->part_vals.begin(); _iter1269 != this->part_vals.end(); ++_iter1269)
     {
       xfer += oprot->writeString((*_iter1269));
+=======
+    std::vector<std::string> ::const_iterator _iter1278;
+    for (_iter1278 = this->part_vals.begin(); _iter1278 != this->part_vals.end(); ++_iter1278)
+    {
+      xfer += oprot->writeString((*_iter1278));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -16950,10 +18015,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_pargs::write(::apache::thrift::pr
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1270;
     for (_iter1270 = (*(this->part_vals)).begin(); _iter1270 != (*(this->part_vals)).end(); ++_iter1270)
     {
       xfer += oprot->writeString((*_iter1270));
+=======
+    std::vector<std::string> ::const_iterator _iter1279;
+    for (_iter1279 = (*(this->part_vals)).begin(); _iter1279 != (*(this->part_vals)).end(); ++_iter1279)
+    {
+      xfer += oprot->writeString((*_iter1279));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -16998,6 +18070,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_result::read(::apache::thrift::pr
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1271;
             ::apache::thrift::protocol::TType _etype1274;
             xfer += iprot->readListBegin(_etype1274, _size1271);
@@ -17006,6 +18079,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_result::read(::apache::thrift::pr
             for (_i1275 = 0; _i1275 < _size1271; ++_i1275)
             {
               xfer += this->success[_i1275].read(iprot);
+=======
+            uint32_t _size1280;
+            ::apache::thrift::protocol::TType _etype1283;
+            xfer += iprot->readListBegin(_etype1283, _size1280);
+            this->success.resize(_size1280);
+            uint32_t _i1284;
+            for (_i1284 = 0; _i1284 < _size1280; ++_i1284)
+            {
+              xfer += this->success[_i1284].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17052,10 +18135,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_result::write(::apache::thrift::p
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1276;
       for (_iter1276 = this->success.begin(); _iter1276 != this->success.end(); ++_iter1276)
       {
         xfer += (*_iter1276).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1285;
+      for (_iter1285 = this->success.begin(); _iter1285 != this->success.end(); ++_iter1285)
+      {
+        xfer += (*_iter1285).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -17104,6 +18194,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_presult::read(::apache::thrift::p
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1277;
             ::apache::thrift::protocol::TType _etype1280;
             xfer += iprot->readListBegin(_etype1280, _size1277);
@@ -17112,6 +18203,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_presult::read(::apache::thrift::p
             for (_i1281 = 0; _i1281 < _size1277; ++_i1281)
             {
               xfer += (*(this->success))[_i1281].read(iprot);
+=======
+            uint32_t _size1286;
+            ::apache::thrift::protocol::TType _etype1289;
+            xfer += iprot->readListBegin(_etype1289, _size1286);
+            (*(this->success)).resize(_size1286);
+            uint32_t _i1290;
+            for (_i1290 = 0; _i1290 < _size1286; ++_i1290)
+            {
+              xfer += (*(this->success))[_i1290].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17194,6 +18295,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_args::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1282;
             ::apache::thrift::protocol::TType _etype1285;
             xfer += iprot->readListBegin(_etype1285, _size1282);
@@ -17202,6 +18304,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_args::read(::apache::th
             for (_i1286 = 0; _i1286 < _size1282; ++_i1286)
             {
               xfer += iprot->readString(this->part_vals[_i1286]);
+=======
+            uint32_t _size1291;
+            ::apache::thrift::protocol::TType _etype1294;
+            xfer += iprot->readListBegin(_etype1294, _size1291);
+            this->part_vals.resize(_size1291);
+            uint32_t _i1295;
+            for (_i1295 = 0; _i1295 < _size1291; ++_i1295)
+            {
+              xfer += iprot->readString(this->part_vals[_i1295]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17230,6 +18342,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_args::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->group_names.clear();
+<<<<<<< HEAD
             uint32_t _size1287;
             ::apache::thrift::protocol::TType _etype1290;
             xfer += iprot->readListBegin(_etype1290, _size1287);
@@ -17238,6 +18351,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_args::read(::apache::th
             for (_i1291 = 0; _i1291 < _size1287; ++_i1291)
             {
               xfer += iprot->readString(this->group_names[_i1291]);
+=======
+            uint32_t _size1296;
+            ::apache::thrift::protocol::TType _etype1299;
+            xfer += iprot->readListBegin(_etype1299, _size1296);
+            this->group_names.resize(_size1296);
+            uint32_t _i1300;
+            for (_i1300 = 0; _i1300 < _size1296; ++_i1300)
+            {
+              xfer += iprot->readString(this->group_names[_i1300]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17274,10 +18397,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_args::write(::apache::t
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1292;
     for (_iter1292 = this->part_vals.begin(); _iter1292 != this->part_vals.end(); ++_iter1292)
     {
       xfer += oprot->writeString((*_iter1292));
+=======
+    std::vector<std::string> ::const_iterator _iter1301;
+    for (_iter1301 = this->part_vals.begin(); _iter1301 != this->part_vals.end(); ++_iter1301)
+    {
+      xfer += oprot->writeString((*_iter1301));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -17294,10 +18424,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_args::write(::apache::t
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 6);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->group_names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1293;
     for (_iter1293 = this->group_names.begin(); _iter1293 != this->group_names.end(); ++_iter1293)
     {
       xfer += oprot->writeString((*_iter1293));
+=======
+    std::vector<std::string> ::const_iterator _iter1302;
+    for (_iter1302 = this->group_names.begin(); _iter1302 != this->group_names.end(); ++_iter1302)
+    {
+      xfer += oprot->writeString((*_iter1302));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -17329,10 +18466,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_pargs::write(::apache::
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1294;
     for (_iter1294 = (*(this->part_vals)).begin(); _iter1294 != (*(this->part_vals)).end(); ++_iter1294)
     {
       xfer += oprot->writeString((*_iter1294));
+=======
+    std::vector<std::string> ::const_iterator _iter1303;
+    for (_iter1303 = (*(this->part_vals)).begin(); _iter1303 != (*(this->part_vals)).end(); ++_iter1303)
+    {
+      xfer += oprot->writeString((*_iter1303));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -17349,10 +18493,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_pargs::write(::apache::
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 6);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->group_names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1295;
     for (_iter1295 = (*(this->group_names)).begin(); _iter1295 != (*(this->group_names)).end(); ++_iter1295)
     {
       xfer += oprot->writeString((*_iter1295));
+=======
+    std::vector<std::string> ::const_iterator _iter1304;
+    for (_iter1304 = (*(this->group_names)).begin(); _iter1304 != (*(this->group_names)).end(); ++_iter1304)
+    {
+      xfer += oprot->writeString((*_iter1304));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -17393,6 +18544,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_result::read(::apache::
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1296;
             ::apache::thrift::protocol::TType _etype1299;
             xfer += iprot->readListBegin(_etype1299, _size1296);
@@ -17401,6 +18553,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_result::read(::apache::
             for (_i1300 = 0; _i1300 < _size1296; ++_i1300)
             {
               xfer += this->success[_i1300].read(iprot);
+=======
+            uint32_t _size1305;
+            ::apache::thrift::protocol::TType _etype1308;
+            xfer += iprot->readListBegin(_etype1308, _size1305);
+            this->success.resize(_size1305);
+            uint32_t _i1309;
+            for (_i1309 = 0; _i1309 < _size1305; ++_i1309)
+            {
+              xfer += this->success[_i1309].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17447,10 +18609,17 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_result::write(::apache:
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1301;
       for (_iter1301 = this->success.begin(); _iter1301 != this->success.end(); ++_iter1301)
       {
         xfer += (*_iter1301).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1310;
+      for (_iter1310 = this->success.begin(); _iter1310 != this->success.end(); ++_iter1310)
+      {
+        xfer += (*_iter1310).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -17499,6 +18668,7 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_presult::read(::apache:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1302;
             ::apache::thrift::protocol::TType _etype1305;
             xfer += iprot->readListBegin(_etype1305, _size1302);
@@ -17507,6 +18677,16 @@ uint32_t ThriftHiveMetastore_get_partitions_ps_with_auth_presult::read(::apache:
             for (_i1306 = 0; _i1306 < _size1302; ++_i1306)
             {
               xfer += (*(this->success))[_i1306].read(iprot);
+=======
+            uint32_t _size1311;
+            ::apache::thrift::protocol::TType _etype1314;
+            xfer += iprot->readListBegin(_etype1314, _size1311);
+            (*(this->success)).resize(_size1311);
+            uint32_t _i1315;
+            for (_i1315 = 0; _i1315 < _size1311; ++_i1315)
+            {
+              xfer += (*(this->success))[_i1315].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17589,6 +18769,7 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_args::read(::apache::thrift:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1307;
             ::apache::thrift::protocol::TType _etype1310;
             xfer += iprot->readListBegin(_etype1310, _size1307);
@@ -17597,6 +18778,16 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_args::read(::apache::thrift:
             for (_i1311 = 0; _i1311 < _size1307; ++_i1311)
             {
               xfer += iprot->readString(this->part_vals[_i1311]);
+=======
+            uint32_t _size1316;
+            ::apache::thrift::protocol::TType _etype1319;
+            xfer += iprot->readListBegin(_etype1319, _size1316);
+            this->part_vals.resize(_size1316);
+            uint32_t _i1320;
+            for (_i1320 = 0; _i1320 < _size1316; ++_i1320)
+            {
+              xfer += iprot->readString(this->part_vals[_i1320]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17641,10 +18832,17 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_args::write(::apache::thrift
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1312;
     for (_iter1312 = this->part_vals.begin(); _iter1312 != this->part_vals.end(); ++_iter1312)
     {
       xfer += oprot->writeString((*_iter1312));
+=======
+    std::vector<std::string> ::const_iterator _iter1321;
+    for (_iter1321 = this->part_vals.begin(); _iter1321 != this->part_vals.end(); ++_iter1321)
+    {
+      xfer += oprot->writeString((*_iter1321));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -17680,10 +18878,17 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_pargs::write(::apache::thrif
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1313;
     for (_iter1313 = (*(this->part_vals)).begin(); _iter1313 != (*(this->part_vals)).end(); ++_iter1313)
     {
       xfer += oprot->writeString((*_iter1313));
+=======
+    std::vector<std::string> ::const_iterator _iter1322;
+    for (_iter1322 = (*(this->part_vals)).begin(); _iter1322 != (*(this->part_vals)).end(); ++_iter1322)
+    {
+      xfer += oprot->writeString((*_iter1322));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -17728,6 +18933,7 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_result::read(::apache::thrif
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1314;
             ::apache::thrift::protocol::TType _etype1317;
             xfer += iprot->readListBegin(_etype1317, _size1314);
@@ -17736,6 +18942,16 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_result::read(::apache::thrif
             for (_i1318 = 0; _i1318 < _size1314; ++_i1318)
             {
               xfer += iprot->readString(this->success[_i1318]);
+=======
+            uint32_t _size1323;
+            ::apache::thrift::protocol::TType _etype1326;
+            xfer += iprot->readListBegin(_etype1326, _size1323);
+            this->success.resize(_size1323);
+            uint32_t _i1327;
+            for (_i1327 = 0; _i1327 < _size1323; ++_i1327)
+            {
+              xfer += iprot->readString(this->success[_i1327]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -17782,10 +18998,17 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_result::write(::apache::thri
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1319;
       for (_iter1319 = this->success.begin(); _iter1319 != this->success.end(); ++_iter1319)
       {
         xfer += oprot->writeString((*_iter1319));
+=======
+      std::vector<std::string> ::const_iterator _iter1328;
+      for (_iter1328 = this->success.begin(); _iter1328 != this->success.end(); ++_iter1328)
+      {
+        xfer += oprot->writeString((*_iter1328));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -17834,6 +19057,7 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_presult::read(::apache::thri
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1320;
             ::apache::thrift::protocol::TType _etype1323;
             xfer += iprot->readListBegin(_etype1323, _size1320);
@@ -17842,6 +19066,16 @@ uint32_t ThriftHiveMetastore_get_partition_names_ps_presult::read(::apache::thri
             for (_i1324 = 0; _i1324 < _size1320; ++_i1324)
             {
               xfer += iprot->readString((*(this->success))[_i1324]);
+=======
+            uint32_t _size1329;
+            ::apache::thrift::protocol::TType _etype1332;
+            xfer += iprot->readListBegin(_etype1332, _size1329);
+            (*(this->success)).resize(_size1329);
+            uint32_t _i1333;
+            for (_i1333 = 0; _i1333 < _size1329; ++_i1333)
+            {
+              xfer += iprot->readString((*(this->success))[_i1333]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -18035,6 +19269,7 @@ uint32_t ThriftHiveMetastore_get_partitions_by_filter_result::read(::apache::thr
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1325;
             ::apache::thrift::protocol::TType _etype1328;
             xfer += iprot->readListBegin(_etype1328, _size1325);
@@ -18043,6 +19278,16 @@ uint32_t ThriftHiveMetastore_get_partitions_by_filter_result::read(::apache::thr
             for (_i1329 = 0; _i1329 < _size1325; ++_i1329)
             {
               xfer += this->success[_i1329].read(iprot);
+=======
+            uint32_t _size1334;
+            ::apache::thrift::protocol::TType _etype1337;
+            xfer += iprot->readListBegin(_etype1337, _size1334);
+            this->success.resize(_size1334);
+            uint32_t _i1338;
+            for (_i1338 = 0; _i1338 < _size1334; ++_i1338)
+            {
+              xfer += this->success[_i1338].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -18089,10 +19334,17 @@ uint32_t ThriftHiveMetastore_get_partitions_by_filter_result::write(::apache::th
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1330;
       for (_iter1330 = this->success.begin(); _iter1330 != this->success.end(); ++_iter1330)
       {
         xfer += (*_iter1330).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1339;
+      for (_iter1339 = this->success.begin(); _iter1339 != this->success.end(); ++_iter1339)
+      {
+        xfer += (*_iter1339).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -18141,6 +19393,7 @@ uint32_t ThriftHiveMetastore_get_partitions_by_filter_presult::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1331;
             ::apache::thrift::protocol::TType _etype1334;
             xfer += iprot->readListBegin(_etype1334, _size1331);
@@ -18149,6 +19402,16 @@ uint32_t ThriftHiveMetastore_get_partitions_by_filter_presult::read(::apache::th
             for (_i1335 = 0; _i1335 < _size1331; ++_i1335)
             {
               xfer += (*(this->success))[_i1335].read(iprot);
+=======
+            uint32_t _size1340;
+            ::apache::thrift::protocol::TType _etype1343;
+            xfer += iprot->readListBegin(_etype1343, _size1340);
+            (*(this->success)).resize(_size1340);
+            uint32_t _i1344;
+            for (_i1344 = 0; _i1344 < _size1340; ++_i1344)
+            {
+              xfer += (*(this->success))[_i1344].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -18342,6 +19605,7 @@ uint32_t ThriftHiveMetastore_get_part_specs_by_filter_result::read(::apache::thr
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1336;
             ::apache::thrift::protocol::TType _etype1339;
             xfer += iprot->readListBegin(_etype1339, _size1336);
@@ -18350,6 +19614,16 @@ uint32_t ThriftHiveMetastore_get_part_specs_by_filter_result::read(::apache::thr
             for (_i1340 = 0; _i1340 < _size1336; ++_i1340)
             {
               xfer += this->success[_i1340].read(iprot);
+=======
+            uint32_t _size1345;
+            ::apache::thrift::protocol::TType _etype1348;
+            xfer += iprot->readListBegin(_etype1348, _size1345);
+            this->success.resize(_size1345);
+            uint32_t _i1349;
+            for (_i1349 = 0; _i1349 < _size1345; ++_i1349)
+            {
+              xfer += this->success[_i1349].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -18396,10 +19670,17 @@ uint32_t ThriftHiveMetastore_get_part_specs_by_filter_result::write(::apache::th
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<PartitionSpec> ::const_iterator _iter1341;
       for (_iter1341 = this->success.begin(); _iter1341 != this->success.end(); ++_iter1341)
       {
         xfer += (*_iter1341).write(oprot);
+=======
+      std::vector<PartitionSpec> ::const_iterator _iter1350;
+      for (_iter1350 = this->success.begin(); _iter1350 != this->success.end(); ++_iter1350)
+      {
+        xfer += (*_iter1350).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -18448,6 +19729,7 @@ uint32_t ThriftHiveMetastore_get_part_specs_by_filter_presult::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1342;
             ::apache::thrift::protocol::TType _etype1345;
             xfer += iprot->readListBegin(_etype1345, _size1342);
@@ -18456,6 +19738,16 @@ uint32_t ThriftHiveMetastore_get_part_specs_by_filter_presult::read(::apache::th
             for (_i1346 = 0; _i1346 < _size1342; ++_i1346)
             {
               xfer += (*(this->success))[_i1346].read(iprot);
+=======
+            uint32_t _size1351;
+            ::apache::thrift::protocol::TType _etype1354;
+            xfer += iprot->readListBegin(_etype1354, _size1351);
+            (*(this->success)).resize(_size1351);
+            uint32_t _i1355;
+            for (_i1355 = 0; _i1355 < _size1351; ++_i1355)
+            {
+              xfer += (*(this->success))[_i1355].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -19024,6 +20316,7 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_args::read(::apache::thrift
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->names.clear();
+<<<<<<< HEAD
             uint32_t _size1347;
             ::apache::thrift::protocol::TType _etype1350;
             xfer += iprot->readListBegin(_etype1350, _size1347);
@@ -19032,6 +20325,16 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_args::read(::apache::thrift
             for (_i1351 = 0; _i1351 < _size1347; ++_i1351)
             {
               xfer += iprot->readString(this->names[_i1351]);
+=======
+            uint32_t _size1356;
+            ::apache::thrift::protocol::TType _etype1359;
+            xfer += iprot->readListBegin(_etype1359, _size1356);
+            this->names.resize(_size1356);
+            uint32_t _i1360;
+            for (_i1360 = 0; _i1360 < _size1356; ++_i1360)
+            {
+              xfer += iprot->readString(this->names[_i1360]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -19068,10 +20371,17 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_args::write(::apache::thrif
   xfer += oprot->writeFieldBegin("names", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1352;
     for (_iter1352 = this->names.begin(); _iter1352 != this->names.end(); ++_iter1352)
     {
       xfer += oprot->writeString((*_iter1352));
+=======
+    std::vector<std::string> ::const_iterator _iter1361;
+    for (_iter1361 = this->names.begin(); _iter1361 != this->names.end(); ++_iter1361)
+    {
+      xfer += oprot->writeString((*_iter1361));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -19103,10 +20413,17 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_pargs::write(::apache::thri
   xfer += oprot->writeFieldBegin("names", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1353;
     for (_iter1353 = (*(this->names)).begin(); _iter1353 != (*(this->names)).end(); ++_iter1353)
     {
       xfer += oprot->writeString((*_iter1353));
+=======
+    std::vector<std::string> ::const_iterator _iter1362;
+    for (_iter1362 = (*(this->names)).begin(); _iter1362 != (*(this->names)).end(); ++_iter1362)
+    {
+      xfer += oprot->writeString((*_iter1362));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -19147,6 +20464,7 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_result::read(::apache::thri
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1354;
             ::apache::thrift::protocol::TType _etype1357;
             xfer += iprot->readListBegin(_etype1357, _size1354);
@@ -19155,6 +20473,16 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_result::read(::apache::thri
             for (_i1358 = 0; _i1358 < _size1354; ++_i1358)
             {
               xfer += this->success[_i1358].read(iprot);
+=======
+            uint32_t _size1363;
+            ::apache::thrift::protocol::TType _etype1366;
+            xfer += iprot->readListBegin(_etype1366, _size1363);
+            this->success.resize(_size1363);
+            uint32_t _i1367;
+            for (_i1367 = 0; _i1367 < _size1363; ++_i1367)
+            {
+              xfer += this->success[_i1367].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -19201,10 +20529,17 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_result::write(::apache::thr
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Partition> ::const_iterator _iter1359;
       for (_iter1359 = this->success.begin(); _iter1359 != this->success.end(); ++_iter1359)
       {
         xfer += (*_iter1359).write(oprot);
+=======
+      std::vector<Partition> ::const_iterator _iter1368;
+      for (_iter1368 = this->success.begin(); _iter1368 != this->success.end(); ++_iter1368)
+      {
+        xfer += (*_iter1368).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -19253,6 +20588,7 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_presult::read(::apache::thr
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1360;
             ::apache::thrift::protocol::TType _etype1363;
             xfer += iprot->readListBegin(_etype1363, _size1360);
@@ -19261,6 +20597,16 @@ uint32_t ThriftHiveMetastore_get_partitions_by_names_presult::read(::apache::thr
             for (_i1364 = 0; _i1364 < _size1360; ++_i1364)
             {
               xfer += (*(this->success))[_i1364].read(iprot);
+=======
+            uint32_t _size1369;
+            ::apache::thrift::protocol::TType _etype1372;
+            xfer += iprot->readListBegin(_etype1372, _size1369);
+            (*(this->success)).resize(_size1369);
+            uint32_t _i1373;
+            for (_i1373 = 0; _i1373 < _size1369; ++_i1373)
+            {
+              xfer += (*(this->success))[_i1373].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -19582,6 +20928,7 @@ uint32_t ThriftHiveMetastore_alter_partitions_args::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->new_parts.clear();
+<<<<<<< HEAD
             uint32_t _size1365;
             ::apache::thrift::protocol::TType _etype1368;
             xfer += iprot->readListBegin(_etype1368, _size1365);
@@ -19590,6 +20937,16 @@ uint32_t ThriftHiveMetastore_alter_partitions_args::read(::apache::thrift::proto
             for (_i1369 = 0; _i1369 < _size1365; ++_i1369)
             {
               xfer += this->new_parts[_i1369].read(iprot);
+=======
+            uint32_t _size1374;
+            ::apache::thrift::protocol::TType _etype1377;
+            xfer += iprot->readListBegin(_etype1377, _size1374);
+            this->new_parts.resize(_size1374);
+            uint32_t _i1378;
+            for (_i1378 = 0; _i1378 < _size1374; ++_i1378)
+            {
+              xfer += this->new_parts[_i1378].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -19626,10 +20983,17 @@ uint32_t ThriftHiveMetastore_alter_partitions_args::write(::apache::thrift::prot
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->new_parts.size()));
+<<<<<<< HEAD
     std::vector<Partition> ::const_iterator _iter1370;
     for (_iter1370 = this->new_parts.begin(); _iter1370 != this->new_parts.end(); ++_iter1370)
     {
       xfer += (*_iter1370).write(oprot);
+=======
+    std::vector<Partition> ::const_iterator _iter1379;
+    for (_iter1379 = this->new_parts.begin(); _iter1379 != this->new_parts.end(); ++_iter1379)
+    {
+      xfer += (*_iter1379).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -19661,10 +21025,17 @@ uint32_t ThriftHiveMetastore_alter_partitions_pargs::write(::apache::thrift::pro
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->new_parts)).size()));
+<<<<<<< HEAD
     std::vector<Partition> ::const_iterator _iter1371;
     for (_iter1371 = (*(this->new_parts)).begin(); _iter1371 != (*(this->new_parts)).end(); ++_iter1371)
     {
       xfer += (*_iter1371).write(oprot);
+=======
+    std::vector<Partition> ::const_iterator _iter1380;
+    for (_iter1380 = (*(this->new_parts)).begin(); _iter1380 != (*(this->new_parts)).end(); ++_iter1380)
+    {
+      xfer += (*_iter1380).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -19849,6 +21220,7 @@ uint32_t ThriftHiveMetastore_alter_partitions_with_environment_context_args::rea
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->new_parts.clear();
+<<<<<<< HEAD
             uint32_t _size1372;
             ::apache::thrift::protocol::TType _etype1375;
             xfer += iprot->readListBegin(_etype1375, _size1372);
@@ -19857,6 +21229,16 @@ uint32_t ThriftHiveMetastore_alter_partitions_with_environment_context_args::rea
             for (_i1376 = 0; _i1376 < _size1372; ++_i1376)
             {
               xfer += this->new_parts[_i1376].read(iprot);
+=======
+            uint32_t _size1381;
+            ::apache::thrift::protocol::TType _etype1384;
+            xfer += iprot->readListBegin(_etype1384, _size1381);
+            this->new_parts.resize(_size1381);
+            uint32_t _i1385;
+            for (_i1385 = 0; _i1385 < _size1381; ++_i1385)
+            {
+              xfer += this->new_parts[_i1385].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -19901,10 +21283,17 @@ uint32_t ThriftHiveMetastore_alter_partitions_with_environment_context_args::wri
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->new_parts.size()));
+<<<<<<< HEAD
     std::vector<Partition> ::const_iterator _iter1377;
     for (_iter1377 = this->new_parts.begin(); _iter1377 != this->new_parts.end(); ++_iter1377)
     {
       xfer += (*_iter1377).write(oprot);
+=======
+    std::vector<Partition> ::const_iterator _iter1386;
+    for (_iter1386 = this->new_parts.begin(); _iter1386 != this->new_parts.end(); ++_iter1386)
+    {
+      xfer += (*_iter1386).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -19940,10 +21329,17 @@ uint32_t ThriftHiveMetastore_alter_partitions_with_environment_context_pargs::wr
   xfer += oprot->writeFieldBegin("new_parts", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>((*(this->new_parts)).size()));
+<<<<<<< HEAD
     std::vector<Partition> ::const_iterator _iter1378;
     for (_iter1378 = (*(this->new_parts)).begin(); _iter1378 != (*(this->new_parts)).end(); ++_iter1378)
     {
       xfer += (*_iter1378).write(oprot);
+=======
+    std::vector<Partition> ::const_iterator _iter1387;
+    for (_iter1387 = (*(this->new_parts)).begin(); _iter1387 != (*(this->new_parts)).end(); ++_iter1387)
+    {
+      xfer += (*_iter1387).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -20387,6 +21783,7 @@ uint32_t ThriftHiveMetastore_rename_partition_args::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1379;
             ::apache::thrift::protocol::TType _etype1382;
             xfer += iprot->readListBegin(_etype1382, _size1379);
@@ -20395,6 +21792,16 @@ uint32_t ThriftHiveMetastore_rename_partition_args::read(::apache::thrift::proto
             for (_i1383 = 0; _i1383 < _size1379; ++_i1383)
             {
               xfer += iprot->readString(this->part_vals[_i1383]);
+=======
+            uint32_t _size1388;
+            ::apache::thrift::protocol::TType _etype1391;
+            xfer += iprot->readListBegin(_etype1391, _size1388);
+            this->part_vals.resize(_size1388);
+            uint32_t _i1392;
+            for (_i1392 = 0; _i1392 < _size1388; ++_i1392)
+            {
+              xfer += iprot->readString(this->part_vals[_i1392]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -20439,10 +21846,17 @@ uint32_t ThriftHiveMetastore_rename_partition_args::write(::apache::thrift::prot
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1384;
     for (_iter1384 = this->part_vals.begin(); _iter1384 != this->part_vals.end(); ++_iter1384)
     {
       xfer += oprot->writeString((*_iter1384));
+=======
+    std::vector<std::string> ::const_iterator _iter1393;
+    for (_iter1393 = this->part_vals.begin(); _iter1393 != this->part_vals.end(); ++_iter1393)
+    {
+      xfer += oprot->writeString((*_iter1393));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -20478,10 +21892,17 @@ uint32_t ThriftHiveMetastore_rename_partition_pargs::write(::apache::thrift::pro
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1385;
     for (_iter1385 = (*(this->part_vals)).begin(); _iter1385 != (*(this->part_vals)).end(); ++_iter1385)
     {
       xfer += oprot->writeString((*_iter1385));
+=======
+    std::vector<std::string> ::const_iterator _iter1394;
+    for (_iter1394 = (*(this->part_vals)).begin(); _iter1394 != (*(this->part_vals)).end(); ++_iter1394)
+    {
+      xfer += oprot->writeString((*_iter1394));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -20654,6 +22075,7 @@ uint32_t ThriftHiveMetastore_partition_name_has_valid_characters_args::read(::ap
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1386;
             ::apache::thrift::protocol::TType _etype1389;
             xfer += iprot->readListBegin(_etype1389, _size1386);
@@ -20662,6 +22084,16 @@ uint32_t ThriftHiveMetastore_partition_name_has_valid_characters_args::read(::ap
             for (_i1390 = 0; _i1390 < _size1386; ++_i1390)
             {
               xfer += iprot->readString(this->part_vals[_i1390]);
+=======
+            uint32_t _size1395;
+            ::apache::thrift::protocol::TType _etype1398;
+            xfer += iprot->readListBegin(_etype1398, _size1395);
+            this->part_vals.resize(_size1395);
+            uint32_t _i1399;
+            for (_i1399 = 0; _i1399 < _size1395; ++_i1399)
+            {
+              xfer += iprot->readString(this->part_vals[_i1399]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -20698,10 +22130,17 @@ uint32_t ThriftHiveMetastore_partition_name_has_valid_characters_args::write(::a
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1391;
     for (_iter1391 = this->part_vals.begin(); _iter1391 != this->part_vals.end(); ++_iter1391)
     {
       xfer += oprot->writeString((*_iter1391));
+=======
+    std::vector<std::string> ::const_iterator _iter1400;
+    for (_iter1400 = this->part_vals.begin(); _iter1400 != this->part_vals.end(); ++_iter1400)
+    {
+      xfer += oprot->writeString((*_iter1400));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -20729,10 +22168,17 @@ uint32_t ThriftHiveMetastore_partition_name_has_valid_characters_pargs::write(::
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1392;
     for (_iter1392 = (*(this->part_vals)).begin(); _iter1392 != (*(this->part_vals)).end(); ++_iter1392)
     {
       xfer += oprot->writeString((*_iter1392));
+=======
+    std::vector<std::string> ::const_iterator _iter1401;
+    for (_iter1401 = (*(this->part_vals)).begin(); _iter1401 != (*(this->part_vals)).end(); ++_iter1401)
+    {
+      xfer += oprot->writeString((*_iter1401));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -21207,6 +22653,7 @@ uint32_t ThriftHiveMetastore_partition_name_to_vals_result::read(::apache::thrif
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1393;
             ::apache::thrift::protocol::TType _etype1396;
             xfer += iprot->readListBegin(_etype1396, _size1393);
@@ -21215,6 +22662,16 @@ uint32_t ThriftHiveMetastore_partition_name_to_vals_result::read(::apache::thrif
             for (_i1397 = 0; _i1397 < _size1393; ++_i1397)
             {
               xfer += iprot->readString(this->success[_i1397]);
+=======
+            uint32_t _size1402;
+            ::apache::thrift::protocol::TType _etype1405;
+            xfer += iprot->readListBegin(_etype1405, _size1402);
+            this->success.resize(_size1402);
+            uint32_t _i1406;
+            for (_i1406 = 0; _i1406 < _size1402; ++_i1406)
+            {
+              xfer += iprot->readString(this->success[_i1406]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -21253,10 +22710,17 @@ uint32_t ThriftHiveMetastore_partition_name_to_vals_result::write(::apache::thri
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1398;
       for (_iter1398 = this->success.begin(); _iter1398 != this->success.end(); ++_iter1398)
       {
         xfer += oprot->writeString((*_iter1398));
+=======
+      std::vector<std::string> ::const_iterator _iter1407;
+      for (_iter1407 = this->success.begin(); _iter1407 != this->success.end(); ++_iter1407)
+      {
+        xfer += oprot->writeString((*_iter1407));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -21301,6 +22765,7 @@ uint32_t ThriftHiveMetastore_partition_name_to_vals_presult::read(::apache::thri
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1399;
             ::apache::thrift::protocol::TType _etype1402;
             xfer += iprot->readListBegin(_etype1402, _size1399);
@@ -21309,6 +22774,16 @@ uint32_t ThriftHiveMetastore_partition_name_to_vals_presult::read(::apache::thri
             for (_i1403 = 0; _i1403 < _size1399; ++_i1403)
             {
               xfer += iprot->readString((*(this->success))[_i1403]);
+=======
+            uint32_t _size1408;
+            ::apache::thrift::protocol::TType _etype1411;
+            xfer += iprot->readListBegin(_etype1411, _size1408);
+            (*(this->success)).resize(_size1408);
+            uint32_t _i1412;
+            for (_i1412 = 0; _i1412 < _size1408; ++_i1412)
+            {
+              xfer += iprot->readString((*(this->success))[_i1412]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -21446,6 +22921,7 @@ uint32_t ThriftHiveMetastore_partition_name_to_spec_result::read(::apache::thrif
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1404;
             ::apache::thrift::protocol::TType _ktype1405;
             ::apache::thrift::protocol::TType _vtype1406;
@@ -21457,6 +22933,19 @@ uint32_t ThriftHiveMetastore_partition_name_to_spec_result::read(::apache::thrif
               xfer += iprot->readString(_key1409);
               std::string& _val1410 = this->success[_key1409];
               xfer += iprot->readString(_val1410);
+=======
+            uint32_t _size1413;
+            ::apache::thrift::protocol::TType _ktype1414;
+            ::apache::thrift::protocol::TType _vtype1415;
+            xfer += iprot->readMapBegin(_ktype1414, _vtype1415, _size1413);
+            uint32_t _i1417;
+            for (_i1417 = 0; _i1417 < _size1413; ++_i1417)
+            {
+              std::string _key1418;
+              xfer += iprot->readString(_key1418);
+              std::string& _val1419 = this->success[_key1418];
+              xfer += iprot->readString(_val1419);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -21495,11 +22984,19 @@ uint32_t ThriftHiveMetastore_partition_name_to_spec_result::write(::apache::thri
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_MAP, 0);
     {
       xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::map<std::string, std::string> ::const_iterator _iter1411;
       for (_iter1411 = this->success.begin(); _iter1411 != this->success.end(); ++_iter1411)
       {
         xfer += oprot->writeString(_iter1411->first);
         xfer += oprot->writeString(_iter1411->second);
+=======
+      std::map<std::string, std::string> ::const_iterator _iter1420;
+      for (_iter1420 = this->success.begin(); _iter1420 != this->success.end(); ++_iter1420)
+      {
+        xfer += oprot->writeString(_iter1420->first);
+        xfer += oprot->writeString(_iter1420->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeMapEnd();
     }
@@ -21544,6 +23041,7 @@ uint32_t ThriftHiveMetastore_partition_name_to_spec_presult::read(::apache::thri
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1412;
             ::apache::thrift::protocol::TType _ktype1413;
             ::apache::thrift::protocol::TType _vtype1414;
@@ -21555,6 +23053,19 @@ uint32_t ThriftHiveMetastore_partition_name_to_spec_presult::read(::apache::thri
               xfer += iprot->readString(_key1417);
               std::string& _val1418 = (*(this->success))[_key1417];
               xfer += iprot->readString(_val1418);
+=======
+            uint32_t _size1421;
+            ::apache::thrift::protocol::TType _ktype1422;
+            ::apache::thrift::protocol::TType _vtype1423;
+            xfer += iprot->readMapBegin(_ktype1422, _vtype1423, _size1421);
+            uint32_t _i1425;
+            for (_i1425 = 0; _i1425 < _size1421; ++_i1425)
+            {
+              std::string _key1426;
+              xfer += iprot->readString(_key1426);
+              std::string& _val1427 = (*(this->success))[_key1426];
+              xfer += iprot->readString(_val1427);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -21629,6 +23140,7 @@ uint32_t ThriftHiveMetastore_markPartitionForEvent_args::read(::apache::thrift::
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1419;
             ::apache::thrift::protocol::TType _ktype1420;
             ::apache::thrift::protocol::TType _vtype1421;
@@ -21640,6 +23152,19 @@ uint32_t ThriftHiveMetastore_markPartitionForEvent_args::read(::apache::thrift::
               xfer += iprot->readString(_key1424);
               std::string& _val1425 = this->part_vals[_key1424];
               xfer += iprot->readString(_val1425);
+=======
+            uint32_t _size1428;
+            ::apache::thrift::protocol::TType _ktype1429;
+            ::apache::thrift::protocol::TType _vtype1430;
+            xfer += iprot->readMapBegin(_ktype1429, _vtype1430, _size1428);
+            uint32_t _i1432;
+            for (_i1432 = 0; _i1432 < _size1428; ++_i1432)
+            {
+              std::string _key1433;
+              xfer += iprot->readString(_key1433);
+              std::string& _val1434 = this->part_vals[_key1433];
+              xfer += iprot->readString(_val1434);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -21650,9 +23175,15 @@ uint32_t ThriftHiveMetastore_markPartitionForEvent_args::read(::apache::thrift::
         break;
       case 4:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1426;
           xfer += iprot->readI32(ecast1426);
           this->eventType = (PartitionEventType::type)ecast1426;
+=======
+          int32_t ecast1435;
+          xfer += iprot->readI32(ecast1435);
+          this->eventType = (PartitionEventType::type)ecast1435;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.eventType = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -21686,11 +23217,19 @@ uint32_t ThriftHiveMetastore_markPartitionForEvent_args::write(::apache::thrift:
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_MAP, 3);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1427;
     for (_iter1427 = this->part_vals.begin(); _iter1427 != this->part_vals.end(); ++_iter1427)
     {
       xfer += oprot->writeString(_iter1427->first);
       xfer += oprot->writeString(_iter1427->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1436;
+    for (_iter1436 = this->part_vals.begin(); _iter1436 != this->part_vals.end(); ++_iter1436)
+    {
+      xfer += oprot->writeString(_iter1436->first);
+      xfer += oprot->writeString(_iter1436->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -21726,11 +23265,19 @@ uint32_t ThriftHiveMetastore_markPartitionForEvent_pargs::write(::apache::thrift
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_MAP, 3);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1428;
     for (_iter1428 = (*(this->part_vals)).begin(); _iter1428 != (*(this->part_vals)).end(); ++_iter1428)
     {
       xfer += oprot->writeString(_iter1428->first);
       xfer += oprot->writeString(_iter1428->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1437;
+    for (_iter1437 = (*(this->part_vals)).begin(); _iter1437 != (*(this->part_vals)).end(); ++_iter1437)
+    {
+      xfer += oprot->writeString(_iter1437->first);
+      xfer += oprot->writeString(_iter1437->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -21999,6 +23546,7 @@ uint32_t ThriftHiveMetastore_isPartitionMarkedForEvent_args::read(::apache::thri
         if (ftype == ::apache::thrift::protocol::T_MAP) {
           {
             this->part_vals.clear();
+<<<<<<< HEAD
             uint32_t _size1429;
             ::apache::thrift::protocol::TType _ktype1430;
             ::apache::thrift::protocol::TType _vtype1431;
@@ -22010,6 +23558,19 @@ uint32_t ThriftHiveMetastore_isPartitionMarkedForEvent_args::read(::apache::thri
               xfer += iprot->readString(_key1434);
               std::string& _val1435 = this->part_vals[_key1434];
               xfer += iprot->readString(_val1435);
+=======
+            uint32_t _size1438;
+            ::apache::thrift::protocol::TType _ktype1439;
+            ::apache::thrift::protocol::TType _vtype1440;
+            xfer += iprot->readMapBegin(_ktype1439, _vtype1440, _size1438);
+            uint32_t _i1442;
+            for (_i1442 = 0; _i1442 < _size1438; ++_i1442)
+            {
+              std::string _key1443;
+              xfer += iprot->readString(_key1443);
+              std::string& _val1444 = this->part_vals[_key1443];
+              xfer += iprot->readString(_val1444);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readMapEnd();
           }
@@ -22020,9 +23581,15 @@ uint32_t ThriftHiveMetastore_isPartitionMarkedForEvent_args::read(::apache::thri
         break;
       case 4:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1436;
           xfer += iprot->readI32(ecast1436);
           this->eventType = (PartitionEventType::type)ecast1436;
+=======
+          int32_t ecast1445;
+          xfer += iprot->readI32(ecast1445);
+          this->eventType = (PartitionEventType::type)ecast1445;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.eventType = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -22056,11 +23623,19 @@ uint32_t ThriftHiveMetastore_isPartitionMarkedForEvent_args::write(::apache::thr
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_MAP, 3);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->part_vals.size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1437;
     for (_iter1437 = this->part_vals.begin(); _iter1437 != this->part_vals.end(); ++_iter1437)
     {
       xfer += oprot->writeString(_iter1437->first);
       xfer += oprot->writeString(_iter1437->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1446;
+    for (_iter1446 = this->part_vals.begin(); _iter1446 != this->part_vals.end(); ++_iter1446)
+    {
+      xfer += oprot->writeString(_iter1446->first);
+      xfer += oprot->writeString(_iter1446->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -22096,11 +23671,19 @@ uint32_t ThriftHiveMetastore_isPartitionMarkedForEvent_pargs::write(::apache::th
   xfer += oprot->writeFieldBegin("part_vals", ::apache::thrift::protocol::T_MAP, 3);
   {
     xfer += oprot->writeMapBegin(::apache::thrift::protocol::T_STRING, ::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->part_vals)).size()));
+<<<<<<< HEAD
     std::map<std::string, std::string> ::const_iterator _iter1438;
     for (_iter1438 = (*(this->part_vals)).begin(); _iter1438 != (*(this->part_vals)).end(); ++_iter1438)
     {
       xfer += oprot->writeString(_iter1438->first);
       xfer += oprot->writeString(_iter1438->second);
+=======
+    std::map<std::string, std::string> ::const_iterator _iter1447;
+    for (_iter1447 = (*(this->part_vals)).begin(); _iter1447 != (*(this->part_vals)).end(); ++_iter1447)
+    {
+      xfer += oprot->writeString(_iter1447->first);
+      xfer += oprot->writeString(_iter1447->second);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeMapEnd();
   }
@@ -23536,6 +25119,7 @@ uint32_t ThriftHiveMetastore_get_indexes_result::read(::apache::thrift::protocol
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1439;
             ::apache::thrift::protocol::TType _etype1442;
             xfer += iprot->readListBegin(_etype1442, _size1439);
@@ -23544,6 +25128,16 @@ uint32_t ThriftHiveMetastore_get_indexes_result::read(::apache::thrift::protocol
             for (_i1443 = 0; _i1443 < _size1439; ++_i1443)
             {
               xfer += this->success[_i1443].read(iprot);
+=======
+            uint32_t _size1448;
+            ::apache::thrift::protocol::TType _etype1451;
+            xfer += iprot->readListBegin(_etype1451, _size1448);
+            this->success.resize(_size1448);
+            uint32_t _i1452;
+            for (_i1452 = 0; _i1452 < _size1448; ++_i1452)
+            {
+              xfer += this->success[_i1452].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -23590,10 +25184,17 @@ uint32_t ThriftHiveMetastore_get_indexes_result::write(::apache::thrift::protoco
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Index> ::const_iterator _iter1444;
       for (_iter1444 = this->success.begin(); _iter1444 != this->success.end(); ++_iter1444)
       {
         xfer += (*_iter1444).write(oprot);
+=======
+      std::vector<Index> ::const_iterator _iter1453;
+      for (_iter1453 = this->success.begin(); _iter1453 != this->success.end(); ++_iter1453)
+      {
+        xfer += (*_iter1453).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -23642,6 +25243,7 @@ uint32_t ThriftHiveMetastore_get_indexes_presult::read(::apache::thrift::protoco
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1445;
             ::apache::thrift::protocol::TType _etype1448;
             xfer += iprot->readListBegin(_etype1448, _size1445);
@@ -23650,6 +25252,16 @@ uint32_t ThriftHiveMetastore_get_indexes_presult::read(::apache::thrift::protoco
             for (_i1449 = 0; _i1449 < _size1445; ++_i1449)
             {
               xfer += (*(this->success))[_i1449].read(iprot);
+=======
+            uint32_t _size1454;
+            ::apache::thrift::protocol::TType _etype1457;
+            xfer += iprot->readListBegin(_etype1457, _size1454);
+            (*(this->success)).resize(_size1454);
+            uint32_t _i1458;
+            for (_i1458 = 0; _i1458 < _size1454; ++_i1458)
+            {
+              xfer += (*(this->success))[_i1458].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -23827,6 +25439,7 @@ uint32_t ThriftHiveMetastore_get_index_names_result::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1450;
             ::apache::thrift::protocol::TType _etype1453;
             xfer += iprot->readListBegin(_etype1453, _size1450);
@@ -23835,6 +25448,16 @@ uint32_t ThriftHiveMetastore_get_index_names_result::read(::apache::thrift::prot
             for (_i1454 = 0; _i1454 < _size1450; ++_i1454)
             {
               xfer += iprot->readString(this->success[_i1454]);
+=======
+            uint32_t _size1459;
+            ::apache::thrift::protocol::TType _etype1462;
+            xfer += iprot->readListBegin(_etype1462, _size1459);
+            this->success.resize(_size1459);
+            uint32_t _i1463;
+            for (_i1463 = 0; _i1463 < _size1459; ++_i1463)
+            {
+              xfer += iprot->readString(this->success[_i1463]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -23873,10 +25496,17 @@ uint32_t ThriftHiveMetastore_get_index_names_result::write(::apache::thrift::pro
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1455;
       for (_iter1455 = this->success.begin(); _iter1455 != this->success.end(); ++_iter1455)
       {
         xfer += oprot->writeString((*_iter1455));
+=======
+      std::vector<std::string> ::const_iterator _iter1464;
+      for (_iter1464 = this->success.begin(); _iter1464 != this->success.end(); ++_iter1464)
+      {
+        xfer += oprot->writeString((*_iter1464));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -23921,6 +25551,7 @@ uint32_t ThriftHiveMetastore_get_index_names_presult::read(::apache::thrift::pro
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1456;
             ::apache::thrift::protocol::TType _etype1459;
             xfer += iprot->readListBegin(_etype1459, _size1456);
@@ -23929,6 +25560,16 @@ uint32_t ThriftHiveMetastore_get_index_names_presult::read(::apache::thrift::pro
             for (_i1460 = 0; _i1460 < _size1456; ++_i1460)
             {
               xfer += iprot->readString((*(this->success))[_i1460]);
+=======
+            uint32_t _size1465;
+            ::apache::thrift::protocol::TType _etype1468;
+            xfer += iprot->readListBegin(_etype1468, _size1465);
+            (*(this->success)).resize(_size1465);
+            uint32_t _i1469;
+            for (_i1469 = 0; _i1469 < _size1465; ++_i1469)
+            {
+              xfer += iprot->readString((*(this->success))[_i1469]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -28409,6 +30050,7 @@ uint32_t ThriftHiveMetastore_get_functions_result::read(::apache::thrift::protoc
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1461;
             ::apache::thrift::protocol::TType _etype1464;
             xfer += iprot->readListBegin(_etype1464, _size1461);
@@ -28417,6 +30059,16 @@ uint32_t ThriftHiveMetastore_get_functions_result::read(::apache::thrift::protoc
             for (_i1465 = 0; _i1465 < _size1461; ++_i1465)
             {
               xfer += iprot->readString(this->success[_i1465]);
+=======
+            uint32_t _size1470;
+            ::apache::thrift::protocol::TType _etype1473;
+            xfer += iprot->readListBegin(_etype1473, _size1470);
+            this->success.resize(_size1470);
+            uint32_t _i1474;
+            for (_i1474 = 0; _i1474 < _size1470; ++_i1474)
+            {
+              xfer += iprot->readString(this->success[_i1474]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -28455,10 +30107,17 @@ uint32_t ThriftHiveMetastore_get_functions_result::write(::apache::thrift::proto
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1466;
       for (_iter1466 = this->success.begin(); _iter1466 != this->success.end(); ++_iter1466)
       {
         xfer += oprot->writeString((*_iter1466));
+=======
+      std::vector<std::string> ::const_iterator _iter1475;
+      for (_iter1475 = this->success.begin(); _iter1475 != this->success.end(); ++_iter1475)
+      {
+        xfer += oprot->writeString((*_iter1475));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -28503,6 +30162,7 @@ uint32_t ThriftHiveMetastore_get_functions_presult::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1467;
             ::apache::thrift::protocol::TType _etype1470;
             xfer += iprot->readListBegin(_etype1470, _size1467);
@@ -28511,6 +30171,16 @@ uint32_t ThriftHiveMetastore_get_functions_presult::read(::apache::thrift::proto
             for (_i1471 = 0; _i1471 < _size1467; ++_i1471)
             {
               xfer += iprot->readString((*(this->success))[_i1471]);
+=======
+            uint32_t _size1476;
+            ::apache::thrift::protocol::TType _etype1479;
+            xfer += iprot->readListBegin(_etype1479, _size1476);
+            (*(this->success)).resize(_size1476);
+            uint32_t _i1480;
+            for (_i1480 = 0; _i1480 < _size1476; ++_i1480)
+            {
+              xfer += iprot->readString((*(this->success))[_i1480]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -29470,6 +31140,7 @@ uint32_t ThriftHiveMetastore_get_role_names_result::read(::apache::thrift::proto
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1472;
             ::apache::thrift::protocol::TType _etype1475;
             xfer += iprot->readListBegin(_etype1475, _size1472);
@@ -29478,6 +31149,16 @@ uint32_t ThriftHiveMetastore_get_role_names_result::read(::apache::thrift::proto
             for (_i1476 = 0; _i1476 < _size1472; ++_i1476)
             {
               xfer += iprot->readString(this->success[_i1476]);
+=======
+            uint32_t _size1481;
+            ::apache::thrift::protocol::TType _etype1484;
+            xfer += iprot->readListBegin(_etype1484, _size1481);
+            this->success.resize(_size1481);
+            uint32_t _i1485;
+            for (_i1485 = 0; _i1485 < _size1481; ++_i1485)
+            {
+              xfer += iprot->readString(this->success[_i1485]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -29516,10 +31197,17 @@ uint32_t ThriftHiveMetastore_get_role_names_result::write(::apache::thrift::prot
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1477;
       for (_iter1477 = this->success.begin(); _iter1477 != this->success.end(); ++_iter1477)
       {
         xfer += oprot->writeString((*_iter1477));
+=======
+      std::vector<std::string> ::const_iterator _iter1486;
+      for (_iter1486 = this->success.begin(); _iter1486 != this->success.end(); ++_iter1486)
+      {
+        xfer += oprot->writeString((*_iter1486));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -29564,6 +31252,7 @@ uint32_t ThriftHiveMetastore_get_role_names_presult::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1478;
             ::apache::thrift::protocol::TType _etype1481;
             xfer += iprot->readListBegin(_etype1481, _size1478);
@@ -29572,6 +31261,16 @@ uint32_t ThriftHiveMetastore_get_role_names_presult::read(::apache::thrift::prot
             for (_i1482 = 0; _i1482 < _size1478; ++_i1482)
             {
               xfer += iprot->readString((*(this->success))[_i1482]);
+=======
+            uint32_t _size1487;
+            ::apache::thrift::protocol::TType _etype1490;
+            xfer += iprot->readListBegin(_etype1490, _size1487);
+            (*(this->success)).resize(_size1487);
+            uint32_t _i1491;
+            for (_i1491 = 0; _i1491 < _size1487; ++_i1491)
+            {
+              xfer += iprot->readString((*(this->success))[_i1491]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -29644,9 +31343,15 @@ uint32_t ThriftHiveMetastore_grant_role_args::read(::apache::thrift::protocol::T
         break;
       case 3:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1483;
           xfer += iprot->readI32(ecast1483);
           this->principal_type = (PrincipalType::type)ecast1483;
+=======
+          int32_t ecast1492;
+          xfer += iprot->readI32(ecast1492);
+          this->principal_type = (PrincipalType::type)ecast1492;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.principal_type = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -29662,9 +31367,15 @@ uint32_t ThriftHiveMetastore_grant_role_args::read(::apache::thrift::protocol::T
         break;
       case 5:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1484;
           xfer += iprot->readI32(ecast1484);
           this->grantorType = (PrincipalType::type)ecast1484;
+=======
+          int32_t ecast1493;
+          xfer += iprot->readI32(ecast1493);
+          this->grantorType = (PrincipalType::type)ecast1493;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.grantorType = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -29935,9 +31646,15 @@ uint32_t ThriftHiveMetastore_revoke_role_args::read(::apache::thrift::protocol::
         break;
       case 3:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1485;
           xfer += iprot->readI32(ecast1485);
           this->principal_type = (PrincipalType::type)ecast1485;
+=======
+          int32_t ecast1494;
+          xfer += iprot->readI32(ecast1494);
+          this->principal_type = (PrincipalType::type)ecast1494;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.principal_type = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -30168,9 +31885,15 @@ uint32_t ThriftHiveMetastore_list_roles_args::read(::apache::thrift::protocol::T
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1486;
           xfer += iprot->readI32(ecast1486);
           this->principal_type = (PrincipalType::type)ecast1486;
+=======
+          int32_t ecast1495;
+          xfer += iprot->readI32(ecast1495);
+          this->principal_type = (PrincipalType::type)ecast1495;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.principal_type = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -30259,6 +31982,7 @@ uint32_t ThriftHiveMetastore_list_roles_result::read(::apache::thrift::protocol:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1487;
             ::apache::thrift::protocol::TType _etype1490;
             xfer += iprot->readListBegin(_etype1490, _size1487);
@@ -30267,6 +31991,16 @@ uint32_t ThriftHiveMetastore_list_roles_result::read(::apache::thrift::protocol:
             for (_i1491 = 0; _i1491 < _size1487; ++_i1491)
             {
               xfer += this->success[_i1491].read(iprot);
+=======
+            uint32_t _size1496;
+            ::apache::thrift::protocol::TType _etype1499;
+            xfer += iprot->readListBegin(_etype1499, _size1496);
+            this->success.resize(_size1496);
+            uint32_t _i1500;
+            for (_i1500 = 0; _i1500 < _size1496; ++_i1500)
+            {
+              xfer += this->success[_i1500].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -30305,10 +32039,17 @@ uint32_t ThriftHiveMetastore_list_roles_result::write(::apache::thrift::protocol
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<Role> ::const_iterator _iter1492;
       for (_iter1492 = this->success.begin(); _iter1492 != this->success.end(); ++_iter1492)
       {
         xfer += (*_iter1492).write(oprot);
+=======
+      std::vector<Role> ::const_iterator _iter1501;
+      for (_iter1501 = this->success.begin(); _iter1501 != this->success.end(); ++_iter1501)
+      {
+        xfer += (*_iter1501).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -30353,6 +32094,7 @@ uint32_t ThriftHiveMetastore_list_roles_presult::read(::apache::thrift::protocol
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1493;
             ::apache::thrift::protocol::TType _etype1496;
             xfer += iprot->readListBegin(_etype1496, _size1493);
@@ -30361,6 +32103,16 @@ uint32_t ThriftHiveMetastore_list_roles_presult::read(::apache::thrift::protocol
             for (_i1497 = 0; _i1497 < _size1493; ++_i1497)
             {
               xfer += (*(this->success))[_i1497].read(iprot);
+=======
+            uint32_t _size1502;
+            ::apache::thrift::protocol::TType _etype1505;
+            xfer += iprot->readListBegin(_etype1505, _size1502);
+            (*(this->success)).resize(_size1502);
+            uint32_t _i1506;
+            for (_i1506 = 0; _i1506 < _size1502; ++_i1506)
+            {
+              xfer += (*(this->success))[_i1506].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -31056,6 +32808,7 @@ uint32_t ThriftHiveMetastore_get_privilege_set_args::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->group_names.clear();
+<<<<<<< HEAD
             uint32_t _size1498;
             ::apache::thrift::protocol::TType _etype1501;
             xfer += iprot->readListBegin(_etype1501, _size1498);
@@ -31064,6 +32817,16 @@ uint32_t ThriftHiveMetastore_get_privilege_set_args::read(::apache::thrift::prot
             for (_i1502 = 0; _i1502 < _size1498; ++_i1502)
             {
               xfer += iprot->readString(this->group_names[_i1502]);
+=======
+            uint32_t _size1507;
+            ::apache::thrift::protocol::TType _etype1510;
+            xfer += iprot->readListBegin(_etype1510, _size1507);
+            this->group_names.resize(_size1507);
+            uint32_t _i1511;
+            for (_i1511 = 0; _i1511 < _size1507; ++_i1511)
+            {
+              xfer += iprot->readString(this->group_names[_i1511]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -31100,10 +32863,17 @@ uint32_t ThriftHiveMetastore_get_privilege_set_args::write(::apache::thrift::pro
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->group_names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1503;
     for (_iter1503 = this->group_names.begin(); _iter1503 != this->group_names.end(); ++_iter1503)
     {
       xfer += oprot->writeString((*_iter1503));
+=======
+    std::vector<std::string> ::const_iterator _iter1512;
+    for (_iter1512 = this->group_names.begin(); _iter1512 != this->group_names.end(); ++_iter1512)
+    {
+      xfer += oprot->writeString((*_iter1512));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -31135,10 +32905,17 @@ uint32_t ThriftHiveMetastore_get_privilege_set_pargs::write(::apache::thrift::pr
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 3);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->group_names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1504;
     for (_iter1504 = (*(this->group_names)).begin(); _iter1504 != (*(this->group_names)).end(); ++_iter1504)
     {
       xfer += oprot->writeString((*_iter1504));
+=======
+    std::vector<std::string> ::const_iterator _iter1513;
+    for (_iter1513 = (*(this->group_names)).begin(); _iter1513 != (*(this->group_names)).end(); ++_iter1513)
+    {
+      xfer += oprot->writeString((*_iter1513));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -31313,9 +33090,15 @@ uint32_t ThriftHiveMetastore_list_privileges_args::read(::apache::thrift::protoc
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I32) {
+<<<<<<< HEAD
           int32_t ecast1505;
           xfer += iprot->readI32(ecast1505);
           this->principal_type = (PrincipalType::type)ecast1505;
+=======
+          int32_t ecast1514;
+          xfer += iprot->readI32(ecast1514);
+          this->principal_type = (PrincipalType::type)ecast1514;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
           this->__isset.principal_type = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -31420,6 +33203,7 @@ uint32_t ThriftHiveMetastore_list_privileges_result::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1506;
             ::apache::thrift::protocol::TType _etype1509;
             xfer += iprot->readListBegin(_etype1509, _size1506);
@@ -31428,6 +33212,16 @@ uint32_t ThriftHiveMetastore_list_privileges_result::read(::apache::thrift::prot
             for (_i1510 = 0; _i1510 < _size1506; ++_i1510)
             {
               xfer += this->success[_i1510].read(iprot);
+=======
+            uint32_t _size1515;
+            ::apache::thrift::protocol::TType _etype1518;
+            xfer += iprot->readListBegin(_etype1518, _size1515);
+            this->success.resize(_size1515);
+            uint32_t _i1519;
+            for (_i1519 = 0; _i1519 < _size1515; ++_i1519)
+            {
+              xfer += this->success[_i1519].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -31466,10 +33260,17 @@ uint32_t ThriftHiveMetastore_list_privileges_result::write(::apache::thrift::pro
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<HiveObjectPrivilege> ::const_iterator _iter1511;
       for (_iter1511 = this->success.begin(); _iter1511 != this->success.end(); ++_iter1511)
       {
         xfer += (*_iter1511).write(oprot);
+=======
+      std::vector<HiveObjectPrivilege> ::const_iterator _iter1520;
+      for (_iter1520 = this->success.begin(); _iter1520 != this->success.end(); ++_iter1520)
+      {
+        xfer += (*_iter1520).write(oprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -31514,6 +33315,7 @@ uint32_t ThriftHiveMetastore_list_privileges_presult::read(::apache::thrift::pro
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1512;
             ::apache::thrift::protocol::TType _etype1515;
             xfer += iprot->readListBegin(_etype1515, _size1512);
@@ -31522,6 +33324,16 @@ uint32_t ThriftHiveMetastore_list_privileges_presult::read(::apache::thrift::pro
             for (_i1516 = 0; _i1516 < _size1512; ++_i1516)
             {
               xfer += (*(this->success))[_i1516].read(iprot);
+=======
+            uint32_t _size1521;
+            ::apache::thrift::protocol::TType _etype1524;
+            xfer += iprot->readListBegin(_etype1524, _size1521);
+            (*(this->success)).resize(_size1521);
+            uint32_t _i1525;
+            for (_i1525 = 0; _i1525 < _size1521; ++_i1525)
+            {
+              xfer += (*(this->success))[_i1525].read(iprot);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -32209,6 +34021,7 @@ uint32_t ThriftHiveMetastore_set_ugi_args::read(::apache::thrift::protocol::TPro
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->group_names.clear();
+<<<<<<< HEAD
             uint32_t _size1517;
             ::apache::thrift::protocol::TType _etype1520;
             xfer += iprot->readListBegin(_etype1520, _size1517);
@@ -32217,6 +34030,16 @@ uint32_t ThriftHiveMetastore_set_ugi_args::read(::apache::thrift::protocol::TPro
             for (_i1521 = 0; _i1521 < _size1517; ++_i1521)
             {
               xfer += iprot->readString(this->group_names[_i1521]);
+=======
+            uint32_t _size1526;
+            ::apache::thrift::protocol::TType _etype1529;
+            xfer += iprot->readListBegin(_etype1529, _size1526);
+            this->group_names.resize(_size1526);
+            uint32_t _i1530;
+            for (_i1530 = 0; _i1530 < _size1526; ++_i1530)
+            {
+              xfer += iprot->readString(this->group_names[_i1530]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -32249,10 +34072,17 @@ uint32_t ThriftHiveMetastore_set_ugi_args::write(::apache::thrift::protocol::TPr
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->group_names.size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1522;
     for (_iter1522 = this->group_names.begin(); _iter1522 != this->group_names.end(); ++_iter1522)
     {
       xfer += oprot->writeString((*_iter1522));
+=======
+    std::vector<std::string> ::const_iterator _iter1531;
+    for (_iter1531 = this->group_names.begin(); _iter1531 != this->group_names.end(); ++_iter1531)
+    {
+      xfer += oprot->writeString((*_iter1531));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -32280,10 +34110,17 @@ uint32_t ThriftHiveMetastore_set_ugi_pargs::write(::apache::thrift::protocol::TP
   xfer += oprot->writeFieldBegin("group_names", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>((*(this->group_names)).size()));
+<<<<<<< HEAD
     std::vector<std::string> ::const_iterator _iter1523;
     for (_iter1523 = (*(this->group_names)).begin(); _iter1523 != (*(this->group_names)).end(); ++_iter1523)
     {
       xfer += oprot->writeString((*_iter1523));
+=======
+    std::vector<std::string> ::const_iterator _iter1532;
+    for (_iter1532 = (*(this->group_names)).begin(); _iter1532 != (*(this->group_names)).end(); ++_iter1532)
+    {
+      xfer += oprot->writeString((*_iter1532));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     xfer += oprot->writeListEnd();
   }
@@ -32324,6 +34161,7 @@ uint32_t ThriftHiveMetastore_set_ugi_result::read(::apache::thrift::protocol::TP
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1524;
             ::apache::thrift::protocol::TType _etype1527;
             xfer += iprot->readListBegin(_etype1527, _size1524);
@@ -32332,6 +34170,16 @@ uint32_t ThriftHiveMetastore_set_ugi_result::read(::apache::thrift::protocol::TP
             for (_i1528 = 0; _i1528 < _size1524; ++_i1528)
             {
               xfer += iprot->readString(this->success[_i1528]);
+=======
+            uint32_t _size1533;
+            ::apache::thrift::protocol::TType _etype1536;
+            xfer += iprot->readListBegin(_etype1536, _size1533);
+            this->success.resize(_size1533);
+            uint32_t _i1537;
+            for (_i1537 = 0; _i1537 < _size1533; ++_i1537)
+            {
+              xfer += iprot->readString(this->success[_i1537]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -32370,10 +34218,17 @@ uint32_t ThriftHiveMetastore_set_ugi_result::write(::apache::thrift::protocol::T
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1529;
       for (_iter1529 = this->success.begin(); _iter1529 != this->success.end(); ++_iter1529)
       {
         xfer += oprot->writeString((*_iter1529));
+=======
+      std::vector<std::string> ::const_iterator _iter1538;
+      for (_iter1538 = this->success.begin(); _iter1538 != this->success.end(); ++_iter1538)
+      {
+        xfer += oprot->writeString((*_iter1538));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -32418,6 +34273,7 @@ uint32_t ThriftHiveMetastore_set_ugi_presult::read(::apache::thrift::protocol::T
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1530;
             ::apache::thrift::protocol::TType _etype1533;
             xfer += iprot->readListBegin(_etype1533, _size1530);
@@ -32426,6 +34282,16 @@ uint32_t ThriftHiveMetastore_set_ugi_presult::read(::apache::thrift::protocol::T
             for (_i1534 = 0; _i1534 < _size1530; ++_i1534)
             {
               xfer += iprot->readString((*(this->success))[_i1534]);
+=======
+            uint32_t _size1539;
+            ::apache::thrift::protocol::TType _etype1542;
+            xfer += iprot->readListBegin(_etype1542, _size1539);
+            (*(this->success)).resize(_size1539);
+            uint32_t _i1543;
+            for (_i1543 = 0; _i1543 < _size1539; ++_i1543)
+            {
+              xfer += iprot->readString((*(this->success))[_i1543]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -33971,6 +35837,7 @@ uint32_t ThriftHiveMetastore_get_all_token_identifiers_result::read(::apache::th
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1535;
             ::apache::thrift::protocol::TType _etype1538;
             xfer += iprot->readListBegin(_etype1538, _size1535);
@@ -33979,6 +35846,16 @@ uint32_t ThriftHiveMetastore_get_all_token_identifiers_result::read(::apache::th
             for (_i1539 = 0; _i1539 < _size1535; ++_i1539)
             {
               xfer += iprot->readString(this->success[_i1539]);
+=======
+            uint32_t _size1544;
+            ::apache::thrift::protocol::TType _etype1547;
+            xfer += iprot->readListBegin(_etype1547, _size1544);
+            this->success.resize(_size1544);
+            uint32_t _i1548;
+            for (_i1548 = 0; _i1548 < _size1544; ++_i1548)
+            {
+              xfer += iprot->readString(this->success[_i1548]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -34009,10 +35886,17 @@ uint32_t ThriftHiveMetastore_get_all_token_identifiers_result::write(::apache::t
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1540;
       for (_iter1540 = this->success.begin(); _iter1540 != this->success.end(); ++_iter1540)
       {
         xfer += oprot->writeString((*_iter1540));
+=======
+      std::vector<std::string> ::const_iterator _iter1549;
+      for (_iter1549 = this->success.begin(); _iter1549 != this->success.end(); ++_iter1549)
+      {
+        xfer += oprot->writeString((*_iter1549));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -34053,6 +35937,7 @@ uint32_t ThriftHiveMetastore_get_all_token_identifiers_presult::read(::apache::t
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1541;
             ::apache::thrift::protocol::TType _etype1544;
             xfer += iprot->readListBegin(_etype1544, _size1541);
@@ -34061,6 +35946,16 @@ uint32_t ThriftHiveMetastore_get_all_token_identifiers_presult::read(::apache::t
             for (_i1545 = 0; _i1545 < _size1541; ++_i1545)
             {
               xfer += iprot->readString((*(this->success))[_i1545]);
+=======
+            uint32_t _size1550;
+            ::apache::thrift::protocol::TType _etype1553;
+            xfer += iprot->readListBegin(_etype1553, _size1550);
+            (*(this->success)).resize(_size1550);
+            uint32_t _i1554;
+            for (_i1554 = 0; _i1554 < _size1550; ++_i1554)
+            {
+              xfer += iprot->readString((*(this->success))[_i1554]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -34786,6 +36681,7 @@ uint32_t ThriftHiveMetastore_get_master_keys_result::read(::apache::thrift::prot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->success.clear();
+<<<<<<< HEAD
             uint32_t _size1546;
             ::apache::thrift::protocol::TType _etype1549;
             xfer += iprot->readListBegin(_etype1549, _size1546);
@@ -34794,6 +36690,16 @@ uint32_t ThriftHiveMetastore_get_master_keys_result::read(::apache::thrift::prot
             for (_i1550 = 0; _i1550 < _size1546; ++_i1550)
             {
               xfer += iprot->readString(this->success[_i1550]);
+=======
+            uint32_t _size1555;
+            ::apache::thrift::protocol::TType _etype1558;
+            xfer += iprot->readListBegin(_etype1558, _size1555);
+            this->success.resize(_size1555);
+            uint32_t _i1559;
+            for (_i1559 = 0; _i1559 < _size1555; ++_i1559)
+            {
+              xfer += iprot->readString(this->success[_i1559]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -34824,10 +36730,17 @@ uint32_t ThriftHiveMetastore_get_master_keys_result::write(::apache::thrift::pro
     xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->success.size()));
+<<<<<<< HEAD
       std::vector<std::string> ::const_iterator _iter1551;
       for (_iter1551 = this->success.begin(); _iter1551 != this->success.end(); ++_iter1551)
       {
         xfer += oprot->writeString((*_iter1551));
+=======
+      std::vector<std::string> ::const_iterator _iter1560;
+      for (_iter1560 = this->success.begin(); _iter1560 != this->success.end(); ++_iter1560)
+      {
+        xfer += oprot->writeString((*_iter1560));
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       xfer += oprot->writeListEnd();
     }
@@ -34868,6 +36781,7 @@ uint32_t ThriftHiveMetastore_get_master_keys_presult::read(::apache::thrift::pro
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             (*(this->success)).clear();
+<<<<<<< HEAD
             uint32_t _size1552;
             ::apache::thrift::protocol::TType _etype1555;
             xfer += iprot->readListBegin(_etype1555, _size1552);
@@ -34876,6 +36790,16 @@ uint32_t ThriftHiveMetastore_get_master_keys_presult::read(::apache::thrift::pro
             for (_i1556 = 0; _i1556 < _size1552; ++_i1556)
             {
               xfer += iprot->readString((*(this->success))[_i1556]);
+=======
+            uint32_t _size1561;
+            ::apache::thrift::protocol::TType _etype1564;
+            xfer += iprot->readListBegin(_etype1564, _size1561);
+            (*(this->success)).resize(_size1561);
+            uint32_t _i1565;
+            for (_i1565 = 0; _i1565 < _size1561; ++_i1565)
+            {
+              xfer += iprot->readString((*(this->success))[_i1565]);
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
             }
             xfer += iprot->readListEnd();
           }
@@ -40937,6 +42861,1408 @@ uint32_t ThriftHiveMetastore_get_metastore_db_uuid_presult::read(::apache::thrif
         if (ftype == ::apache::thrift::protocol::T_STRUCT) {
           xfer += this->o1.read(iprot);
           this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ThriftHiveMetastore_create_resource_plan_args::~ThriftHiveMetastore_create_resource_plan_args() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_create_resource_plan_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->request.read(iprot);
+          this->__isset.request = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_create_resource_plan_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_create_resource_plan_args");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->request.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_create_resource_plan_pargs::~ThriftHiveMetastore_create_resource_plan_pargs() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_create_resource_plan_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_create_resource_plan_pargs");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->request)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_create_resource_plan_result::~ThriftHiveMetastore_create_resource_plan_result() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_create_resource_plan_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o3.read(iprot);
+          this->__isset.o3 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_create_resource_plan_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_create_resource_plan_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+    xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->o1.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o2) {
+    xfer += oprot->writeFieldBegin("o2", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->o2.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o3) {
+    xfer += oprot->writeFieldBegin("o3", ::apache::thrift::protocol::T_STRUCT, 3);
+    xfer += this->o3.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_create_resource_plan_presult::~ThriftHiveMetastore_create_resource_plan_presult() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_create_resource_plan_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o3.read(iprot);
+          this->__isset.o3 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_resource_plan_args::~ThriftHiveMetastore_get_resource_plan_args() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_resource_plan_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->request.read(iprot);
+          this->__isset.request = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_get_resource_plan_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_get_resource_plan_args");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->request.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_resource_plan_pargs::~ThriftHiveMetastore_get_resource_plan_pargs() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_resource_plan_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_get_resource_plan_pargs");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->request)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_resource_plan_result::~ThriftHiveMetastore_get_resource_plan_result() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_resource_plan_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_get_resource_plan_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_get_resource_plan_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+    xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->o1.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o2) {
+    xfer += oprot->writeFieldBegin("o2", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->o2.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_resource_plan_presult::~ThriftHiveMetastore_get_resource_plan_presult() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_resource_plan_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_all_resource_plans_args::~ThriftHiveMetastore_get_all_resource_plans_args() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_all_resource_plans_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->request.read(iprot);
+          this->__isset.request = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_get_all_resource_plans_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_get_all_resource_plans_args");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->request.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_all_resource_plans_pargs::~ThriftHiveMetastore_get_all_resource_plans_pargs() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_all_resource_plans_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_get_all_resource_plans_pargs");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->request)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_all_resource_plans_result::~ThriftHiveMetastore_get_all_resource_plans_result() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_all_resource_plans_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_get_all_resource_plans_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_get_all_resource_plans_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+    xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->o1.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_get_all_resource_plans_presult::~ThriftHiveMetastore_get_all_resource_plans_presult() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_get_all_resource_plans_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ThriftHiveMetastore_alter_resource_plan_args::~ThriftHiveMetastore_alter_resource_plan_args() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_alter_resource_plan_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->request.read(iprot);
+          this->__isset.request = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_alter_resource_plan_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_alter_resource_plan_args");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->request.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_alter_resource_plan_pargs::~ThriftHiveMetastore_alter_resource_plan_pargs() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_alter_resource_plan_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_alter_resource_plan_pargs");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->request)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_alter_resource_plan_result::~ThriftHiveMetastore_alter_resource_plan_result() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_alter_resource_plan_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o3.read(iprot);
+          this->__isset.o3 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_alter_resource_plan_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_alter_resource_plan_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+    xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->o1.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o2) {
+    xfer += oprot->writeFieldBegin("o2", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->o2.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o3) {
+    xfer += oprot->writeFieldBegin("o3", ::apache::thrift::protocol::T_STRUCT, 3);
+    xfer += this->o3.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_alter_resource_plan_presult::~ThriftHiveMetastore_alter_resource_plan_presult() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_alter_resource_plan_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o3.read(iprot);
+          this->__isset.o3 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ThriftHiveMetastore_validate_resource_plan_args::~ThriftHiveMetastore_validate_resource_plan_args() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_validate_resource_plan_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->request.read(iprot);
+          this->__isset.request = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_validate_resource_plan_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_validate_resource_plan_args");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->request.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_validate_resource_plan_pargs::~ThriftHiveMetastore_validate_resource_plan_pargs() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_validate_resource_plan_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_validate_resource_plan_pargs");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->request)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_validate_resource_plan_result::~ThriftHiveMetastore_validate_resource_plan_result() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_validate_resource_plan_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_validate_resource_plan_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_validate_resource_plan_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+    xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->o1.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o2) {
+    xfer += oprot->writeFieldBegin("o2", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->o2.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_validate_resource_plan_presult::~ThriftHiveMetastore_validate_resource_plan_presult() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_validate_resource_plan_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
+ThriftHiveMetastore_drop_resource_plan_args::~ThriftHiveMetastore_drop_resource_plan_args() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_drop_resource_plan_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->request.read(iprot);
+          this->__isset.request = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_drop_resource_plan_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_drop_resource_plan_args");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += this->request.write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_drop_resource_plan_pargs::~ThriftHiveMetastore_drop_resource_plan_pargs() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_drop_resource_plan_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_drop_resource_plan_pargs");
+
+  xfer += oprot->writeFieldBegin("request", ::apache::thrift::protocol::T_STRUCT, 1);
+  xfer += (*(this->request)).write(oprot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_drop_resource_plan_result::~ThriftHiveMetastore_drop_resource_plan_result() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_drop_resource_plan_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->success.read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o3.read(iprot);
+          this->__isset.o3 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t ThriftHiveMetastore_drop_resource_plan_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("ThriftHiveMetastore_drop_resource_plan_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRUCT, 0);
+    xfer += this->success.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o1) {
+    xfer += oprot->writeFieldBegin("o1", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->o1.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o2) {
+    xfer += oprot->writeFieldBegin("o2", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->o2.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  } else if (this->__isset.o3) {
+    xfer += oprot->writeFieldBegin("o3", ::apache::thrift::protocol::T_STRUCT, 3);
+    xfer += this->o3.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+ThriftHiveMetastore_drop_resource_plan_presult::~ThriftHiveMetastore_drop_resource_plan_presult() throw() {
+}
+
+
+uint32_t ThriftHiveMetastore_drop_resource_plan_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += (*(this->success)).read(iprot);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o1.read(iprot);
+          this->__isset.o1 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o2.read(iprot);
+          this->__isset.o2 = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->o3.read(iprot);
+          this->__isset.o3 = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -47333,7 +50659,70 @@ void ThriftHiveMetastoreClient::recv_get_partitions_statistics_req(PartitionsSta
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_partitions_statistics_req failed: unknown result");
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreClient::set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password)
+{
+  send_set_crypto(key_store, key_store_password, trust_store, trust_store_password);
+  recv_set_crypto();
+}
+
+void ThriftHiveMetastoreClient::send_set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("set_crypto", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_set_crypto_pargs args;
+  args.key_store = &key_store;
+  args.key_store_password = &key_store_password;
+  args.trust_store = &trust_store;
+  args.trust_store_password = &trust_store_password;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_set_crypto()
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("set_crypto") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_set_crypto_presult result;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  return;
+}
+
+void ThriftHiveMetastoreClient::get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name)
+=======
 void ThriftHiveMetastoreClient::get_aggr_stats_for(AggrStats& _return, const PartitionsStatsRequest& request)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
   send_get_aggr_stats_for(request);
   recv_get_aggr_stats_for(_return);
@@ -48912,65 +52301,6 @@ void ThriftHiveMetastoreClient::recv_set_ugi(std::vector<std::string> & _return)
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "set_ugi failed: unknown result");
 }
 
-void ThriftHiveMetastoreClient::set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password)
-{
-  send_set_crypto(key_store, key_store_password, trust_store, trust_store_password);
-  recv_set_crypto();
-}
-
-void ThriftHiveMetastoreClient::send_set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password)
-{
-  int32_t cseqid = 0;
-  oprot_->writeMessageBegin("set_crypto", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_set_crypto_pargs args;
-  args.key_store = &key_store;
-  args.key_store_password = &key_store_password;
-  args.trust_store = &trust_store;
-  args.trust_store_password = &trust_store_password;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-}
-
-void ThriftHiveMetastoreClient::recv_set_crypto()
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("set_crypto") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  ThriftHiveMetastore_set_crypto_presult result;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.o1) {
-    throw result.o1;
-  }
-  return;
-}
-
 void ThriftHiveMetastoreClient::get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name)
 {
   send_get_delegation_token(token_owner, renewer_kerberos_principal_name);
@@ -49790,7 +53120,243 @@ void ThriftHiveMetastoreClient::recv_open_txns(OpenTxnsResponse& _return)
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "open_txns failed: unknown result");
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreClient::get_next_write_id(GetNextWriteIdResult& _return, const GetNextWriteIdRequest& req)
+{
+  send_get_next_write_id(req);
+  recv_get_next_write_id(_return);
+}
+
+void ThriftHiveMetastoreClient::send_get_next_write_id(const GetNextWriteIdRequest& req)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_next_write_id_pargs args;
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_get_next_write_id(GetNextWriteIdResult& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("get_next_write_id") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_get_next_write_id_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_write_id failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::finalize_write_id(FinalizeWriteIdResult& _return, const FinalizeWriteIdRequest& req)
+{
+  send_finalize_write_id(req);
+  recv_finalize_write_id(_return);
+}
+
+void ThriftHiveMetastoreClient::send_finalize_write_id(const FinalizeWriteIdRequest& req)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_finalize_write_id_pargs args;
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_finalize_write_id(FinalizeWriteIdResult& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("finalize_write_id") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_finalize_write_id_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "finalize_write_id failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::heartbeat_write_id(HeartbeatWriteIdResult& _return, const HeartbeatWriteIdRequest& req)
+{
+  send_heartbeat_write_id(req);
+  recv_heartbeat_write_id(_return);
+}
+
+void ThriftHiveMetastoreClient::send_heartbeat_write_id(const HeartbeatWriteIdRequest& req)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_heartbeat_write_id_pargs args;
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_heartbeat_write_id(HeartbeatWriteIdResult& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("heartbeat_write_id") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_heartbeat_write_id_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "heartbeat_write_id failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::get_valid_write_ids(GetValidWriteIdsResult& _return, const GetValidWriteIdsRequest& req)
+{
+  send_get_valid_write_ids(req);
+  recv_get_valid_write_ids(_return);
+}
+
+void ThriftHiveMetastoreClient::send_get_valid_write_ids(const GetValidWriteIdsRequest& req)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_valid_write_ids_pargs args;
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_get_valid_write_ids(GetValidWriteIdsResult& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("get_valid_write_ids") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_get_valid_write_ids_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_valid_write_ids failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::get_metastore_db_uuid(std::string& _return)
+=======
 void ThriftHiveMetastoreClient::abort_txn(const AbortTxnRequest& rqst)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
   send_abort_txn(rqst);
   recv_abort_txn();
@@ -51191,238 +54757,6 @@ void ThriftHiveMetastoreClient::recv_cache_file_metadata(CacheFileMetadataResult
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "cache_file_metadata failed: unknown result");
 }
 
-void ThriftHiveMetastoreClient::get_next_write_id(GetNextWriteIdResult& _return, const GetNextWriteIdRequest& req)
-{
-  send_get_next_write_id(req);
-  recv_get_next_write_id(_return);
-}
-
-void ThriftHiveMetastoreClient::send_get_next_write_id(const GetNextWriteIdRequest& req)
-{
-  int32_t cseqid = 0;
-  oprot_->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_next_write_id_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-}
-
-void ThriftHiveMetastoreClient::recv_get_next_write_id(GetNextWriteIdResult& _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("get_next_write_id") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  ThriftHiveMetastore_get_next_write_id_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_write_id failed: unknown result");
-}
-
-void ThriftHiveMetastoreClient::finalize_write_id(FinalizeWriteIdResult& _return, const FinalizeWriteIdRequest& req)
-{
-  send_finalize_write_id(req);
-  recv_finalize_write_id(_return);
-}
-
-void ThriftHiveMetastoreClient::send_finalize_write_id(const FinalizeWriteIdRequest& req)
-{
-  int32_t cseqid = 0;
-  oprot_->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_finalize_write_id_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-}
-
-void ThriftHiveMetastoreClient::recv_finalize_write_id(FinalizeWriteIdResult& _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("finalize_write_id") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  ThriftHiveMetastore_finalize_write_id_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "finalize_write_id failed: unknown result");
-}
-
-void ThriftHiveMetastoreClient::heartbeat_write_id(HeartbeatWriteIdResult& _return, const HeartbeatWriteIdRequest& req)
-{
-  send_heartbeat_write_id(req);
-  recv_heartbeat_write_id(_return);
-}
-
-void ThriftHiveMetastoreClient::send_heartbeat_write_id(const HeartbeatWriteIdRequest& req)
-{
-  int32_t cseqid = 0;
-  oprot_->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_heartbeat_write_id_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-}
-
-void ThriftHiveMetastoreClient::recv_heartbeat_write_id(HeartbeatWriteIdResult& _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("heartbeat_write_id") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  ThriftHiveMetastore_heartbeat_write_id_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "heartbeat_write_id failed: unknown result");
-}
-
-void ThriftHiveMetastoreClient::get_valid_write_ids(GetValidWriteIdsResult& _return, const GetValidWriteIdsRequest& req)
-{
-  send_get_valid_write_ids(req);
-  recv_get_valid_write_ids(_return);
-}
-
-void ThriftHiveMetastoreClient::send_get_valid_write_ids(const GetValidWriteIdsRequest& req)
-{
-  int32_t cseqid = 0;
-  oprot_->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_valid_write_ids_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-}
-
-void ThriftHiveMetastoreClient::recv_get_valid_write_ids(GetValidWriteIdsResult& _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("get_valid_write_ids") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  ThriftHiveMetastore_get_valid_write_ids_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_valid_write_ids failed: unknown result");
-}
-
 void ThriftHiveMetastoreClient::get_metastore_db_uuid(std::string& _return)
 {
   send_get_metastore_db_uuid();
@@ -51481,6 +54815,396 @@ void ThriftHiveMetastoreClient::recv_get_metastore_db_uuid(std::string& _return)
     throw result.o1;
   }
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_metastore_db_uuid failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::create_resource_plan(WMCreateResourcePlanResponse& _return, const WMCreateResourcePlanRequest& request)
+{
+  send_create_resource_plan(request);
+  recv_create_resource_plan(_return);
+}
+
+void ThriftHiveMetastoreClient::send_create_resource_plan(const WMCreateResourcePlanRequest& request)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("create_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_create_resource_plan_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_create_resource_plan(WMCreateResourcePlanResponse& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("create_resource_plan") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_create_resource_plan_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  if (result.__isset.o2) {
+    throw result.o2;
+  }
+  if (result.__isset.o3) {
+    throw result.o3;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "create_resource_plan failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::get_resource_plan(WMGetResourcePlanResponse& _return, const WMGetResourcePlanRequest& request)
+{
+  send_get_resource_plan(request);
+  recv_get_resource_plan(_return);
+}
+
+void ThriftHiveMetastoreClient::send_get_resource_plan(const WMGetResourcePlanRequest& request)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("get_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_resource_plan_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_get_resource_plan(WMGetResourcePlanResponse& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("get_resource_plan") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_get_resource_plan_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  if (result.__isset.o2) {
+    throw result.o2;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_resource_plan failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::get_all_resource_plans(WMGetAllResourcePlanResponse& _return, const WMGetAllResourcePlanRequest& request)
+{
+  send_get_all_resource_plans(request);
+  recv_get_all_resource_plans(_return);
+}
+
+void ThriftHiveMetastoreClient::send_get_all_resource_plans(const WMGetAllResourcePlanRequest& request)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("get_all_resource_plans", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_all_resource_plans_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_get_all_resource_plans(WMGetAllResourcePlanResponse& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("get_all_resource_plans") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_get_all_resource_plans_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_all_resource_plans failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::alter_resource_plan(WMAlterResourcePlanResponse& _return, const WMAlterResourcePlanRequest& request)
+{
+  send_alter_resource_plan(request);
+  recv_alter_resource_plan(_return);
+}
+
+void ThriftHiveMetastoreClient::send_alter_resource_plan(const WMAlterResourcePlanRequest& request)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("alter_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_alter_resource_plan_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_alter_resource_plan(WMAlterResourcePlanResponse& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("alter_resource_plan") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_alter_resource_plan_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  if (result.__isset.o2) {
+    throw result.o2;
+  }
+  if (result.__isset.o3) {
+    throw result.o3;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "alter_resource_plan failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::validate_resource_plan(WMValidateResourcePlanResponse& _return, const WMValidateResourcePlanRequest& request)
+{
+  send_validate_resource_plan(request);
+  recv_validate_resource_plan(_return);
+}
+
+void ThriftHiveMetastoreClient::send_validate_resource_plan(const WMValidateResourcePlanRequest& request)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("validate_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_validate_resource_plan_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_validate_resource_plan(WMValidateResourcePlanResponse& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("validate_resource_plan") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_validate_resource_plan_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  if (result.__isset.o2) {
+    throw result.o2;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "validate_resource_plan failed: unknown result");
+}
+
+void ThriftHiveMetastoreClient::drop_resource_plan(WMDropResourcePlanResponse& _return, const WMDropResourcePlanRequest& request)
+{
+  send_drop_resource_plan(request);
+  recv_drop_resource_plan(_return);
+}
+
+void ThriftHiveMetastoreClient::send_drop_resource_plan(const WMDropResourcePlanRequest& request)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("drop_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_drop_resource_plan_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void ThriftHiveMetastoreClient::recv_drop_resource_plan(WMDropResourcePlanResponse& _return)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("drop_resource_plan") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  ThriftHiveMetastore_drop_resource_plan_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    // _return pointer has now been filled
+    return;
+  }
+  if (result.__isset.o1) {
+    throw result.o1;
+  }
+  if (result.__isset.o2) {
+    throw result.o2;
+  }
+  if (result.__isset.o3) {
+    throw result.o3;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_resource_plan failed: unknown result");
 }
 
 bool ThriftHiveMetastoreProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
@@ -57114,7 +60838,67 @@ void ThriftHiveMetastoreProcessor::process_update_table_column_statistics(int32_
   }
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreProcessor::process_set_crypto(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.set_crypto", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.set_crypto");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.set_crypto");
+  }
+
+  ThriftHiveMetastore_set_crypto_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.set_crypto", bytes);
+  }
+
+  ThriftHiveMetastore_set_crypto_result result;
+  try {
+    iface_->set_crypto(args.key_store, args.key_store_password, args.trust_store, args.trust_store_password);
+  } catch (MetaException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.set_crypto");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("set_crypto", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.set_crypto");
+  }
+
+  oprot->writeMessageBegin("set_crypto", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.set_crypto", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_get_delegation_token(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+=======
 void ThriftHiveMetastoreProcessor::process_update_partition_column_statistics(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
@@ -58899,62 +62683,6 @@ void ThriftHiveMetastoreProcessor::process_set_ugi(int32_t seqid, ::apache::thri
 
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.set_ugi", bytes);
-  }
-}
-
-void ThriftHiveMetastoreProcessor::process_set_crypto(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
-  void* ctx = NULL;
-  if (this->eventHandler_.get() != NULL) {
-    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.set_crypto", callContext);
-  }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.set_crypto");
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.set_crypto");
-  }
-
-  ThriftHiveMetastore_set_crypto_args args;
-  args.read(iprot);
-  iprot->readMessageEnd();
-  uint32_t bytes = iprot->getTransport()->readEnd();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.set_crypto", bytes);
-  }
-
-  ThriftHiveMetastore_set_crypto_result result;
-  try {
-    iface_->set_crypto(args.key_store, args.key_store_password, args.trust_store, args.trust_store_password);
-  } catch (MetaException &o1) {
-    result.o1 = o1;
-    result.__isset.o1 = true;
-  } catch (const std::exception& e) {
-    if (this->eventHandler_.get() != NULL) {
-      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.set_crypto");
-    }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("set_crypto", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return;
-  }
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.set_crypto");
-  }
-
-  oprot->writeMessageBegin("set_crypto", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.set_crypto", bytes);
   }
 }
 
@@ -61069,222 +64797,6 @@ void ThriftHiveMetastoreProcessor::process_cache_file_metadata(int32_t seqid, ::
   }
 }
 
-void ThriftHiveMetastoreProcessor::process_get_next_write_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
-  void* ctx = NULL;
-  if (this->eventHandler_.get() != NULL) {
-    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.get_next_write_id", callContext);
-  }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.get_next_write_id");
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.get_next_write_id");
-  }
-
-  ThriftHiveMetastore_get_next_write_id_args args;
-  args.read(iprot);
-  iprot->readMessageEnd();
-  uint32_t bytes = iprot->getTransport()->readEnd();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.get_next_write_id", bytes);
-  }
-
-  ThriftHiveMetastore_get_next_write_id_result result;
-  try {
-    iface_->get_next_write_id(result.success, args.req);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
-    if (this->eventHandler_.get() != NULL) {
-      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.get_next_write_id");
-    }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return;
-  }
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.get_next_write_id");
-  }
-
-  oprot->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_next_write_id", bytes);
-  }
-}
-
-void ThriftHiveMetastoreProcessor::process_finalize_write_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
-  void* ctx = NULL;
-  if (this->eventHandler_.get() != NULL) {
-    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.finalize_write_id", callContext);
-  }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.finalize_write_id");
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.finalize_write_id");
-  }
-
-  ThriftHiveMetastore_finalize_write_id_args args;
-  args.read(iprot);
-  iprot->readMessageEnd();
-  uint32_t bytes = iprot->getTransport()->readEnd();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.finalize_write_id", bytes);
-  }
-
-  ThriftHiveMetastore_finalize_write_id_result result;
-  try {
-    iface_->finalize_write_id(result.success, args.req);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
-    if (this->eventHandler_.get() != NULL) {
-      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.finalize_write_id");
-    }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return;
-  }
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.finalize_write_id");
-  }
-
-  oprot->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.finalize_write_id", bytes);
-  }
-}
-
-void ThriftHiveMetastoreProcessor::process_heartbeat_write_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
-  void* ctx = NULL;
-  if (this->eventHandler_.get() != NULL) {
-    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.heartbeat_write_id", callContext);
-  }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.heartbeat_write_id");
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.heartbeat_write_id");
-  }
-
-  ThriftHiveMetastore_heartbeat_write_id_args args;
-  args.read(iprot);
-  iprot->readMessageEnd();
-  uint32_t bytes = iprot->getTransport()->readEnd();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.heartbeat_write_id", bytes);
-  }
-
-  ThriftHiveMetastore_heartbeat_write_id_result result;
-  try {
-    iface_->heartbeat_write_id(result.success, args.req);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
-    if (this->eventHandler_.get() != NULL) {
-      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.heartbeat_write_id");
-    }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return;
-  }
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.heartbeat_write_id");
-  }
-
-  oprot->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.heartbeat_write_id", bytes);
-  }
-}
-
-void ThriftHiveMetastoreProcessor::process_get_valid_write_ids(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
-{
-  void* ctx = NULL;
-  if (this->eventHandler_.get() != NULL) {
-    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.get_valid_write_ids", callContext);
-  }
-  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.get_valid_write_ids");
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.get_valid_write_ids");
-  }
-
-  ThriftHiveMetastore_get_valid_write_ids_args args;
-  args.read(iprot);
-  iprot->readMessageEnd();
-  uint32_t bytes = iprot->getTransport()->readEnd();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.get_valid_write_ids", bytes);
-  }
-
-  ThriftHiveMetastore_get_valid_write_ids_result result;
-  try {
-    iface_->get_valid_write_ids(result.success, args.req);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
-    if (this->eventHandler_.get() != NULL) {
-      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.get_valid_write_ids");
-    }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
-    return;
-  }
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.get_valid_write_ids");
-  }
-
-  oprot->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_valid_write_ids", bytes);
-  }
-}
-
 void ThriftHiveMetastoreProcessor::process_get_metastore_db_uuid(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
 {
   void* ctx = NULL;
@@ -61339,6 +64851,372 @@ void ThriftHiveMetastoreProcessor::process_get_metastore_db_uuid(int32_t seqid, 
 
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_metastore_db_uuid", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_create_resource_plan(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.create_resource_plan", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.create_resource_plan");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.create_resource_plan");
+  }
+
+  ThriftHiveMetastore_create_resource_plan_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.create_resource_plan", bytes);
+  }
+
+  ThriftHiveMetastore_create_resource_plan_result result;
+  try {
+    iface_->create_resource_plan(result.success, args.request);
+    result.__isset.success = true;
+  } catch (AlreadyExistsException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (InvalidObjectException &o2) {
+    result.o2 = o2;
+    result.__isset.o2 = true;
+  } catch (MetaException &o3) {
+    result.o3 = o3;
+    result.__isset.o3 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.create_resource_plan");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("create_resource_plan", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.create_resource_plan");
+  }
+
+  oprot->writeMessageBegin("create_resource_plan", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.create_resource_plan", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_get_resource_plan(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.get_resource_plan", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.get_resource_plan");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.get_resource_plan");
+  }
+
+  ThriftHiveMetastore_get_resource_plan_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.get_resource_plan", bytes);
+  }
+
+  ThriftHiveMetastore_get_resource_plan_result result;
+  try {
+    iface_->get_resource_plan(result.success, args.request);
+    result.__isset.success = true;
+  } catch (NoSuchObjectException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (MetaException &o2) {
+    result.o2 = o2;
+    result.__isset.o2 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.get_resource_plan");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_resource_plan", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.get_resource_plan");
+  }
+
+  oprot->writeMessageBegin("get_resource_plan", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_resource_plan", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_get_all_resource_plans(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.get_all_resource_plans", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.get_all_resource_plans");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.get_all_resource_plans");
+  }
+
+  ThriftHiveMetastore_get_all_resource_plans_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.get_all_resource_plans", bytes);
+  }
+
+  ThriftHiveMetastore_get_all_resource_plans_result result;
+  try {
+    iface_->get_all_resource_plans(result.success, args.request);
+    result.__isset.success = true;
+  } catch (MetaException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.get_all_resource_plans");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_all_resource_plans", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.get_all_resource_plans");
+  }
+
+  oprot->writeMessageBegin("get_all_resource_plans", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_all_resource_plans", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_alter_resource_plan(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.alter_resource_plan", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.alter_resource_plan");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.alter_resource_plan");
+  }
+
+  ThriftHiveMetastore_alter_resource_plan_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.alter_resource_plan", bytes);
+  }
+
+  ThriftHiveMetastore_alter_resource_plan_result result;
+  try {
+    iface_->alter_resource_plan(result.success, args.request);
+    result.__isset.success = true;
+  } catch (NoSuchObjectException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (InvalidOperationException &o2) {
+    result.o2 = o2;
+    result.__isset.o2 = true;
+  } catch (MetaException &o3) {
+    result.o3 = o3;
+    result.__isset.o3 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.alter_resource_plan");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("alter_resource_plan", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.alter_resource_plan");
+  }
+
+  oprot->writeMessageBegin("alter_resource_plan", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.alter_resource_plan", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_validate_resource_plan(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.validate_resource_plan", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.validate_resource_plan");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.validate_resource_plan");
+  }
+
+  ThriftHiveMetastore_validate_resource_plan_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.validate_resource_plan", bytes);
+  }
+
+  ThriftHiveMetastore_validate_resource_plan_result result;
+  try {
+    iface_->validate_resource_plan(result.success, args.request);
+    result.__isset.success = true;
+  } catch (NoSuchObjectException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (MetaException &o2) {
+    result.o2 = o2;
+    result.__isset.o2 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.validate_resource_plan");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("validate_resource_plan", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.validate_resource_plan");
+  }
+
+  oprot->writeMessageBegin("validate_resource_plan", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.validate_resource_plan", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_drop_resource_plan(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.drop_resource_plan", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.drop_resource_plan");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.drop_resource_plan");
+  }
+
+  ThriftHiveMetastore_drop_resource_plan_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.drop_resource_plan", bytes);
+  }
+
+  ThriftHiveMetastore_drop_resource_plan_result result;
+  try {
+    iface_->drop_resource_plan(result.success, args.request);
+    result.__isset.success = true;
+  } catch (NoSuchObjectException &o1) {
+    result.o1 = o1;
+    result.__isset.o1 = true;
+  } catch (InvalidOperationException &o2) {
+    result.o2 = o2;
+    result.__isset.o2 = true;
+  } catch (MetaException &o3) {
+    result.o3 = o3;
+    result.__isset.o3 = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.drop_resource_plan");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("drop_resource_plan", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.drop_resource_plan");
+  }
+
+  oprot->writeMessageBegin("drop_resource_plan", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.drop_resource_plan", bytes);
   }
 }
 
@@ -62062,7 +65940,227 @@ void ThriftHiveMetastoreConcurrentClient::get_type(Type& _return, const std::str
   recv_get_type(_return, seqid);
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreProcessor::process_get_next_write_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.get_next_write_id", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.get_next_write_id");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.get_next_write_id");
+  }
+
+  ThriftHiveMetastore_get_next_write_id_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.get_next_write_id", bytes);
+  }
+
+  ThriftHiveMetastore_get_next_write_id_result result;
+  try {
+    iface_->get_next_write_id(result.success, args.req);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.get_next_write_id");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.get_next_write_id");
+  }
+
+  oprot->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_next_write_id", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_finalize_write_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.finalize_write_id", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.finalize_write_id");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.finalize_write_id");
+  }
+
+  ThriftHiveMetastore_finalize_write_id_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.finalize_write_id", bytes);
+  }
+
+  ThriftHiveMetastore_finalize_write_id_result result;
+  try {
+    iface_->finalize_write_id(result.success, args.req);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.finalize_write_id");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.finalize_write_id");
+  }
+
+  oprot->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.finalize_write_id", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_heartbeat_write_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.heartbeat_write_id", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.heartbeat_write_id");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.heartbeat_write_id");
+  }
+
+  ThriftHiveMetastore_heartbeat_write_id_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.heartbeat_write_id", bytes);
+  }
+
+  ThriftHiveMetastore_heartbeat_write_id_result result;
+  try {
+    iface_->heartbeat_write_id(result.success, args.req);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.heartbeat_write_id");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.heartbeat_write_id");
+  }
+
+  oprot->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.heartbeat_write_id", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_get_valid_write_ids(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("ThriftHiveMetastore.get_valid_write_ids", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "ThriftHiveMetastore.get_valid_write_ids");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "ThriftHiveMetastore.get_valid_write_ids");
+  }
+
+  ThriftHiveMetastore_get_valid_write_ids_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "ThriftHiveMetastore.get_valid_write_ids", bytes);
+  }
+
+  ThriftHiveMetastore_get_valid_write_ids_result result;
+  try {
+    iface_->get_valid_write_ids(result.success, args.req);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "ThriftHiveMetastore.get_valid_write_ids");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preWrite(ctx, "ThriftHiveMetastore.get_valid_write_ids");
+  }
+
+  oprot->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postWrite(ctx, "ThriftHiveMetastore.get_valid_write_ids", bytes);
+  }
+}
+
+void ThriftHiveMetastoreProcessor::process_get_metastore_db_uuid(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+=======
 int32_t ThriftHiveMetastoreConcurrentClient::send_get_type(const std::string& name)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
   int32_t cseqid = this->sync_.generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -69202,7 +73300,8 @@ bool ThriftHiveMetastoreConcurrentClient::recv_drop_index_by_name(const int32_t 
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
-      if (fname.compare("drop_index_by_name") != 0) {
+<<<<<<< HEAD
+      if (fname.compare("get_config_value") != 0) {
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -69211,8 +73310,432 @@ bool ThriftHiveMetastoreConcurrentClient::recv_drop_index_by_name(const int32_t 
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+      ThriftHiveMetastore_get_config_value_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_config_value failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+void ThriftHiveMetastoreConcurrentClient::partition_name_to_vals(std::vector<std::string> & _return, const std::string& part_name)
+{
+  int32_t seqid = send_partition_name_to_vals(part_name);
+  recv_partition_name_to_vals(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_partition_name_to_vals(const std::string& part_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("partition_name_to_vals", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_partition_name_to_vals_pargs args;
+  args.part_name = &part_name;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ThriftHiveMetastoreConcurrentClient::recv_partition_name_to_vals(std::vector<std::string> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("partition_name_to_vals") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      ThriftHiveMetastore_partition_name_to_vals_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "partition_name_to_vals failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+void ThriftHiveMetastoreConcurrentClient::partition_name_to_spec(std::map<std::string, std::string> & _return, const std::string& part_name)
+{
+  int32_t seqid = send_partition_name_to_spec(part_name);
+  recv_partition_name_to_spec(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_partition_name_to_spec(const std::string& part_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("partition_name_to_spec", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_partition_name_to_spec_pargs args;
+  args.part_name = &part_name;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ThriftHiveMetastoreConcurrentClient::recv_partition_name_to_spec(std::map<std::string, std::string> & _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("partition_name_to_spec") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      ThriftHiveMetastore_partition_name_to_spec_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "partition_name_to_spec failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+void ThriftHiveMetastoreConcurrentClient::markPartitionForEvent(const std::string& db_name, const std::string& tbl_name, const std::map<std::string, std::string> & part_vals, const PartitionEventType::type eventType)
+{
+  int32_t seqid = send_markPartitionForEvent(db_name, tbl_name, part_vals, eventType);
+  recv_markPartitionForEvent(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_markPartitionForEvent(const std::string& db_name, const std::string& tbl_name, const std::map<std::string, std::string> & part_vals, const PartitionEventType::type eventType)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("markPartitionForEvent", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_markPartitionForEvent_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.part_vals = &part_vals;
+  args.eventType = &eventType;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ThriftHiveMetastoreConcurrentClient::recv_markPartitionForEvent(const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("markPartitionForEvent") != 0) {
+=======
+      if (fname.compare("drop_index_by_name") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_markPartitionForEvent_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_drop_index_by_name_presult result;
+      result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+<<<<<<< HEAD
+=======
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+<<<<<<< HEAD
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+      if (result.__isset.o5) {
+        sentry.commit();
+        throw result.o5;
+      }
+      if (result.__isset.o6) {
+        sentry.commit();
+        throw result.o6;
+      }
+      sentry.commit();
+      return;
+=======
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_index_by_name failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::isPartitionMarkedForEvent(const std::string& db_name, const std::string& tbl_name, const std::map<std::string, std::string> & part_vals, const PartitionEventType::type eventType)
+{
+  int32_t seqid = send_isPartitionMarkedForEvent(db_name, tbl_name, part_vals, eventType);
+  return recv_isPartitionMarkedForEvent(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_isPartitionMarkedForEvent(const std::string& db_name, const std::string& tbl_name, const std::map<std::string, std::string> & part_vals, const PartitionEventType::type eventType)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("isPartitionMarkedForEvent", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_isPartitionMarkedForEvent_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.part_vals = &part_vals;
+  args.eventType = &eventType;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_index_by_name(Index& _return, const std::string& db_name, const std::string& tbl_name, const std::string& index_name)
+{
+  int32_t seqid = send_get_index_by_name(db_name, tbl_name, index_name);
+  recv_get_index_by_name(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_by_name(const std::string& db_name, const std::string& tbl_name, const std::string& index_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_index_by_name", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_index_by_name_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.index_name = &index_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_isPartitionMarkedForEvent(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_index_by_name(Index& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("isPartitionMarkedForEvent") != 0) {
+=======
+      if (fname.compare("get_index_by_name") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_isPartitionMarkedForEvent_presult result;
+=======
+      ThriftHiveMetastore_get_index_by_name_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -69230,8 +73753,29 @@ bool ThriftHiveMetastoreConcurrentClient::recv_drop_index_by_name(const int32_t 
         sentry.commit();
         throw result.o2;
       }
+<<<<<<< HEAD
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+      if (result.__isset.o5) {
+        sentry.commit();
+        throw result.o5;
+      }
+      if (result.__isset.o6) {
+        sentry.commit();
+        throw result.o6;
+      }
       // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_index_by_name failed: unknown result");
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "isPartitionMarkedForEvent failed: unknown result");
+=======
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_index_by_name failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -69241,100 +73785,23 @@ bool ThriftHiveMetastoreConcurrentClient::recv_drop_index_by_name(const int32_t 
   } // end while(true)
 }
 
-void ThriftHiveMetastoreConcurrentClient::get_index_by_name(Index& _return, const std::string& db_name, const std::string& tbl_name, const std::string& index_name)
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::add_index(Index& _return, const Index& new_index, const Table& index_table)
 {
-  int32_t seqid = send_get_index_by_name(db_name, tbl_name, index_name);
-  recv_get_index_by_name(_return, seqid);
+  int32_t seqid = send_add_index(new_index, index_table);
+  recv_add_index(_return, seqid);
 }
 
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_by_name(const std::string& db_name, const std::string& tbl_name, const std::string& index_name)
+int32_t ThriftHiveMetastoreConcurrentClient::send_add_index(const Index& new_index, const Table& index_table)
 {
   int32_t cseqid = this->sync_.generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_index_by_name", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("add_index", ::apache::thrift::protocol::T_CALL, cseqid);
 
-  ThriftHiveMetastore_get_index_by_name_pargs args;
-  args.db_name = &db_name;
-  args.tbl_name = &tbl_name;
-  args.index_name = &index_name;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_index_by_name(Index& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_index_by_name") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_index_by_name_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_index_by_name failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+  ThriftHiveMetastore_add_index_pargs args;
+  args.new_index = &new_index;
+  args.index_table = &index_table;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_indexes(std::vector<Index> & _return, const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
 {
   int32_t seqid = send_get_indexes(db_name, tbl_name, max_indexes);
@@ -69351,6 +73818,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_indexes(const std::string&
   args.db_name = &db_name;
   args.tbl_name = &tbl_name;
   args.max_indexes = &max_indexes;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -69361,7 +73829,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_indexes(const std::string&
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_add_index(Index& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_indexes(std::vector<Index> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -69390,7 +73862,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_indexes(std::vector<Index> & 
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("add_index") != 0) {
+=======
       if (fname.compare("get_indexes") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -69399,7 +73875,272 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_indexes(std::vector<Index> & 
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_add_index_presult result;
+=======
       ThriftHiveMetastore_get_indexes_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+<<<<<<< HEAD
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "add_index failed: unknown result");
+=======
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_indexes failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::alter_index(const std::string& dbname, const std::string& base_tbl_name, const std::string& idx_name, const Index& new_idx)
+{
+  int32_t seqid = send_alter_index(dbname, base_tbl_name, idx_name, new_idx);
+  recv_alter_index(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_alter_index(const std::string& dbname, const std::string& base_tbl_name, const std::string& idx_name, const Index& new_idx)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("alter_index", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_alter_index_pargs args;
+  args.dbname = &dbname;
+  args.base_tbl_name = &base_tbl_name;
+  args.idx_name = &idx_name;
+  args.new_idx = &new_idx;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_index_names(std::vector<std::string> & _return, const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+{
+  int32_t seqid = send_get_index_names(db_name, tbl_name, max_indexes);
+  recv_get_index_names(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_names(const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_index_names", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_index_names_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.max_indexes = &max_indexes;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_alter_index(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_index_names(std::vector<std::string> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("alter_index") != 0) {
+=======
+      if (fname.compare("get_index_names") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_alter_index_presult result;
+=======
+      ThriftHiveMetastore_get_index_names_presult result;
+      result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+<<<<<<< HEAD
+      sentry.commit();
+      return;
+=======
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_index_names failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::drop_index_by_name(const std::string& db_name, const std::string& tbl_name, const std::string& index_name, const bool deleteData)
+{
+  int32_t seqid = send_drop_index_by_name(db_name, tbl_name, index_name, deleteData);
+  return recv_drop_index_by_name(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_drop_index_by_name(const std::string& db_name, const std::string& tbl_name, const std::string& index_name, const bool deleteData)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("drop_index_by_name", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_drop_index_by_name_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.index_name = &index_name;
+  args.deleteData = &deleteData;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_primary_keys(PrimaryKeysResponse& _return, const PrimaryKeysRequest& request)
+{
+  int32_t seqid = send_get_primary_keys(request);
+  recv_get_primary_keys(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_primary_keys(const PrimaryKeysRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_primary_keys", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_primary_keys_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_drop_index_by_name(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_primary_keys(PrimaryKeysResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("drop_index_by_name") != 0) {
+=======
+      if (fname.compare("get_primary_keys") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_drop_index_by_name_presult result;
+=======
+      ThriftHiveMetastore_get_primary_keys_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -69419,7 +74160,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_indexes(std::vector<Index> & 
         throw result.o2;
       }
       // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_indexes failed: unknown result");
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_index_by_name failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_primary_keys failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -69429,22 +74174,39 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_indexes(std::vector<Index> & 
   } // end while(true)
 }
 
-void ThriftHiveMetastoreConcurrentClient::get_index_names(std::vector<std::string> & _return, const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_index_by_name(Index& _return, const std::string& db_name, const std::string& tbl_name, const std::string& index_name)
 {
-  int32_t seqid = send_get_index_names(db_name, tbl_name, max_indexes);
-  recv_get_index_names(_return, seqid);
+  int32_t seqid = send_get_index_by_name(db_name, tbl_name, index_name);
+  recv_get_index_by_name(_return, seqid);
 }
 
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_names(const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_by_name(const std::string& db_name, const std::string& tbl_name, const std::string& index_name)
 {
   int32_t cseqid = this->sync_.generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_index_names", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_index_by_name", ::apache::thrift::protocol::T_CALL, cseqid);
 
-  ThriftHiveMetastore_get_index_names_pargs args;
+  ThriftHiveMetastore_get_index_by_name_pargs args;
   args.db_name = &db_name;
   args.tbl_name = &tbl_name;
-  args.max_indexes = &max_indexes;
+  args.index_name = &index_name;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_foreign_keys(ForeignKeysResponse& _return, const ForeignKeysRequest& request)
+{
+  int32_t seqid = send_get_foreign_keys(request);
+  recv_get_foreign_keys(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_foreign_keys(const ForeignKeysRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_foreign_keys", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_foreign_keys_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -69455,7 +74217,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_names(const std::str
   return cseqid;
 }
 
-void ThriftHiveMetastoreConcurrentClient::recv_get_index_names(std::vector<std::string> & _return, const int32_t seqid)
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_index_by_name(Index& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_foreign_keys(ForeignKeysResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -69484,7 +74250,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_index_names(std::vector<std::
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
-      if (fname.compare("get_index_names") != 0) {
+<<<<<<< HEAD
+      if (fname.compare("get_index_by_name") != 0) {
+=======
+      if (fname.compare("get_foreign_keys") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -69493,7 +74263,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_index_names(std::vector<std::
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
-      ThriftHiveMetastore_get_index_names_presult result;
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_index_by_name_presult result;
+=======
+      ThriftHiveMetastore_get_foreign_keys_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -69503,6 +74277,261 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_index_names(std::vector<std::
         // _return pointer has now been filled
         sentry.commit();
         return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_index_by_name failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_foreign_keys failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_indexes(std::vector<Index> & _return, const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+{
+  int32_t seqid = send_get_indexes(db_name, tbl_name, max_indexes);
+  recv_get_indexes(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_indexes(const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_indexes", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_indexes_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.max_indexes = &max_indexes;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_unique_constraints(UniqueConstraintsResponse& _return, const UniqueConstraintsRequest& request)
+{
+  int32_t seqid = send_get_unique_constraints(request);
+  recv_get_unique_constraints(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_unique_constraints(const UniqueConstraintsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_unique_constraints", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_unique_constraints_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_indexes(std::vector<Index> & _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_unique_constraints(UniqueConstraintsResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_indexes") != 0) {
+=======
+      if (fname.compare("get_unique_constraints") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_indexes_presult result;
+=======
+      ThriftHiveMetastore_get_unique_constraints_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_indexes failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_unique_constraints failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_index_names(std::vector<std::string> & _return, const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+{
+  int32_t seqid = send_get_index_names(db_name, tbl_name, max_indexes);
+  recv_get_index_names(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_index_names(const std::string& db_name, const std::string& tbl_name, const int16_t max_indexes)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_index_names", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_index_names_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.max_indexes = &max_indexes;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_not_null_constraints(NotNullConstraintsResponse& _return, const NotNullConstraintsRequest& request)
+{
+  int32_t seqid = send_get_not_null_constraints(request);
+  recv_get_not_null_constraints(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_not_null_constraints(const NotNullConstraintsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_not_null_constraints", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_not_null_constraints_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_index_names(std::vector<std::string> & _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_not_null_constraints(NotNullConstraintsResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_index_names") != 0) {
+=======
+      if (fname.compare("get_not_null_constraints") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_index_names_presult result;
+=======
+      ThriftHiveMetastore_get_not_null_constraints_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+<<<<<<< HEAD
       }
       if (result.__isset.o2) {
         sentry.commit();
@@ -69591,6 +74620,8 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_primary_keys(PrimaryKeysRespo
         // _return pointer has now been filled
         sentry.commit();
         return;
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       }
       if (result.__isset.o1) {
         sentry.commit();
@@ -69601,7 +74632,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_primary_keys(PrimaryKeysRespo
         throw result.o2;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_primary_keys failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_not_null_constraints failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -69611,6 +74646,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_primary_keys(PrimaryKeysRespo
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::get_foreign_keys(ForeignKeysResponse& _return, const ForeignKeysRequest& request)
 {
   int32_t seqid = send_get_foreign_keys(request);
@@ -69625,268 +74661,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_foreign_keys(const Foreign
 
   ThriftHiveMetastore_get_foreign_keys_pargs args;
   args.request = &request;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_foreign_keys(ForeignKeysResponse& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_foreign_keys") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_foreign_keys_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_foreign_keys failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::get_unique_constraints(UniqueConstraintsResponse& _return, const UniqueConstraintsRequest& request)
-{
-  int32_t seqid = send_get_unique_constraints(request);
-  recv_get_unique_constraints(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_unique_constraints(const UniqueConstraintsRequest& request)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_unique_constraints", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_unique_constraints_pargs args;
-  args.request = &request;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_unique_constraints(UniqueConstraintsResponse& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_unique_constraints") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_unique_constraints_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_unique_constraints failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::get_not_null_constraints(NotNullConstraintsResponse& _return, const NotNullConstraintsRequest& request)
-{
-  int32_t seqid = send_get_not_null_constraints(request);
-  recv_get_not_null_constraints(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_not_null_constraints(const NotNullConstraintsRequest& request)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_not_null_constraints", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_not_null_constraints_pargs args;
-  args.request = &request;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_not_null_constraints(NotNullConstraintsResponse& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_not_null_constraints") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_not_null_constraints_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_not_null_constraints failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+=======
 bool ThriftHiveMetastoreConcurrentClient::update_table_column_statistics(const ColumnStatistics& stats_obj)
 {
   int32_t seqid = send_update_table_column_statistics(stats_obj);
@@ -69901,6 +74676,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_update_table_column_statistics
 
   ThriftHiveMetastore_update_table_column_statistics_pargs args;
   args.stats_obj = &stats_obj;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -69911,7 +74687,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_update_table_column_statistics
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_foreign_keys(ForeignKeysResponse& _return, const int32_t seqid)
+=======
 bool ThriftHiveMetastoreConcurrentClient::recv_update_table_column_statistics(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -69940,7 +74720,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_table_column_statistics(co
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_foreign_keys") != 0) {
+=======
       if (fname.compare("update_table_column_statistics") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -69949,8 +74733,12 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_table_column_statistics(co
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_foreign_keys_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_update_table_column_statistics_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -69977,7 +74765,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_table_column_statistics(co
         throw result.o4;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_foreign_keys failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "update_table_column_statistics failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -69987,6 +74779,22 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_table_column_statistics(co
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_unique_constraints(UniqueConstraintsResponse& _return, const UniqueConstraintsRequest& request)
+{
+  int32_t seqid = send_get_unique_constraints(request);
+  recv_get_unique_constraints(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_unique_constraints(const UniqueConstraintsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_unique_constraints", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_unique_constraints_pargs args;
+  args.request = &request;
+=======
 bool ThriftHiveMetastoreConcurrentClient::update_partition_column_statistics(const ColumnStatistics& stats_obj)
 {
   int32_t seqid = send_update_partition_column_statistics(stats_obj);
@@ -70001,6 +74809,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_update_partition_column_statis
 
   ThriftHiveMetastore_update_partition_column_statistics_pargs args;
   args.stats_obj = &stats_obj;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70011,7 +74820,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_update_partition_column_statis
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_unique_constraints(UniqueConstraintsResponse& _return, const int32_t seqid)
+=======
 bool ThriftHiveMetastoreConcurrentClient::recv_update_partition_column_statistics(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70040,7 +74853,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_partition_column_statistic
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_unique_constraints") != 0) {
+=======
       if (fname.compare("update_partition_column_statistics") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70049,8 +74866,12 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_partition_column_statistic
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_unique_constraints_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_update_partition_column_statistics_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -70077,7 +74898,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_partition_column_statistic
         throw result.o4;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_unique_constraints failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "update_partition_column_statistics failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70087,6 +74912,22 @@ bool ThriftHiveMetastoreConcurrentClient::recv_update_partition_column_statistic
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_not_null_constraints(NotNullConstraintsResponse& _return, const NotNullConstraintsRequest& request)
+{
+  int32_t seqid = send_get_not_null_constraints(request);
+  recv_get_not_null_constraints(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_not_null_constraints(const NotNullConstraintsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_not_null_constraints", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_not_null_constraints_pargs args;
+  args.request = &request;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_table_column_statistics(ColumnStatistics& _return, const std::string& db_name, const std::string& tbl_name, const std::string& col_name)
 {
   int32_t seqid = send_get_table_column_statistics(db_name, tbl_name, col_name);
@@ -70103,6 +74944,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_column_statistics(co
   args.db_name = &db_name;
   args.tbl_name = &tbl_name;
   args.col_name = &col_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70113,7 +74955,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_column_statistics(co
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_not_null_constraints(NotNullConstraintsResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_table_column_statistics(ColumnStatistics& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70142,7 +74988,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_column_statistics(Colum
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_not_null_constraints") != 0) {
+=======
       if (fname.compare("get_table_column_statistics") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70151,7 +75001,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_column_statistics(Colum
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_not_null_constraints_presult result;
+=======
       ThriftHiveMetastore_get_table_column_statistics_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -70179,7 +75033,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_column_statistics(Colum
         throw result.o4;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_not_null_constraints failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_table_column_statistics failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70189,6 +75047,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_column_statistics(Colum
   } // end while(true)
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::update_table_column_statistics(const ColumnStatistics& stats_obj)
+{
+  int32_t seqid = send_update_table_column_statistics(stats_obj);
+  return recv_update_table_column_statistics(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_update_table_column_statistics(const ColumnStatistics& stats_obj)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("update_table_column_statistics", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_update_table_column_statistics_pargs args;
+  args.stats_obj = &stats_obj;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_partition_column_statistics(ColumnStatistics& _return, const std::string& db_name, const std::string& tbl_name, const std::string& part_name, const std::string& col_name)
 {
   int32_t seqid = send_get_partition_column_statistics(db_name, tbl_name, part_name, col_name);
@@ -70206,6 +75080,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_partition_column_statistic
   args.tbl_name = &tbl_name;
   args.part_name = &part_name;
   args.col_name = &col_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70216,7 +75091,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_partition_column_statistic
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_update_table_column_statistics(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_partition_column_statistics(ColumnStatistics& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70245,7 +75124,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_partition_column_statistics(C
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("update_table_column_statistics") != 0) {
+=======
       if (fname.compare("get_partition_column_statistics") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70254,7 +75137,279 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_partition_column_statistics(C
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_update_table_column_statistics_presult result;
+=======
       ThriftHiveMetastore_get_partition_column_statistics_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "update_table_column_statistics failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_partition_column_statistics failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::update_partition_column_statistics(const ColumnStatistics& stats_obj)
+{
+  int32_t seqid = send_update_partition_column_statistics(stats_obj);
+  return recv_update_partition_column_statistics(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_update_partition_column_statistics(const ColumnStatistics& stats_obj)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("update_partition_column_statistics", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_update_partition_column_statistics_pargs args;
+  args.stats_obj = &stats_obj;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_table_statistics_req(TableStatsResult& _return, const TableStatsRequest& request)
+{
+  int32_t seqid = send_get_table_statistics_req(request);
+  recv_get_table_statistics_req(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_statistics_req(const TableStatsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_table_statistics_req", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_table_statistics_req_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_update_partition_column_statistics(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableStatsResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("update_partition_column_statistics") != 0) {
+=======
+      if (fname.compare("get_table_statistics_req") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_update_partition_column_statistics_presult result;
+=======
+      ThriftHiveMetastore_get_table_statistics_req_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "update_partition_column_statistics failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_table_statistics_req failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_table_column_statistics(ColumnStatistics& _return, const std::string& db_name, const std::string& tbl_name, const std::string& col_name)
+{
+  int32_t seqid = send_get_table_column_statistics(db_name, tbl_name, col_name);
+  recv_get_table_column_statistics(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& col_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_table_column_statistics", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_table_column_statistics_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.col_name = &col_name;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_partitions_statistics_req(PartitionsStatsResult& _return, const PartitionsStatsRequest& request)
+{
+  int32_t seqid = send_get_partitions_statistics_req(request);
+  recv_get_partitions_statistics_req(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_partitions_statistics_req(const PartitionsStatsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_partitions_statistics_req", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_partitions_statistics_req_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_table_column_statistics(ColumnStatistics& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_partitions_statistics_req(PartitionsStatsResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_table_column_statistics") != 0) {
+=======
+      if (fname.compare("get_partitions_statistics_req") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_table_column_statistics_presult result;
+=======
+      ThriftHiveMetastore_get_partitions_statistics_req_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -70282,7 +75437,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_partition_column_statistics(C
         throw result.o4;
       }
       // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_partition_column_statistics failed: unknown result");
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_table_column_statistics failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_partitions_statistics_req failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70292,20 +75451,40 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_partition_column_statistics(C
   } // end while(true)
 }
 
-void ThriftHiveMetastoreConcurrentClient::get_table_statistics_req(TableStatsResult& _return, const TableStatsRequest& request)
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_partition_column_statistics(ColumnStatistics& _return, const std::string& db_name, const std::string& tbl_name, const std::string& part_name, const std::string& col_name)
 {
-  int32_t seqid = send_get_table_statistics_req(request);
-  recv_get_table_statistics_req(_return, seqid);
+  int32_t seqid = send_get_partition_column_statistics(db_name, tbl_name, part_name, col_name);
+  recv_get_partition_column_statistics(_return, seqid);
 }
 
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_statistics_req(const TableStatsRequest& request)
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_partition_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& part_name, const std::string& col_name)
 {
   int32_t cseqid = this->sync_.generateSeqId();
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_table_statistics_req", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_partition_column_statistics", ::apache::thrift::protocol::T_CALL, cseqid);
 
-  ThriftHiveMetastore_get_table_statistics_req_pargs args;
+  ThriftHiveMetastore_get_partition_column_statistics_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.part_name = &part_name;
+  args.col_name = &col_name;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_aggr_stats_for(AggrStats& _return, const PartitionsStatsRequest& request)
+{
+  int32_t seqid = send_get_aggr_stats_for(request);
+  recv_get_aggr_stats_for(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_aggr_stats_for(const PartitionsStatsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_aggr_stats_for", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_aggr_stats_for_pargs args;
   args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70316,7 +75495,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_statistics_req(const
   return cseqid;
 }
 
-void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableStatsResult& _return, const int32_t seqid)
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_partition_column_statistics(ColumnStatistics& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_aggr_stats_for(AggrStats& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70345,7 +75528,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableSta
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
-      if (fname.compare("get_table_statistics_req") != 0) {
+<<<<<<< HEAD
+      if (fname.compare("get_partition_column_statistics") != 0) {
+=======
+      if (fname.compare("get_aggr_stats_for") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70354,7 +75541,144 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableSta
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_partition_column_statistics_presult result;
+=======
+      ThriftHiveMetastore_get_aggr_stats_for_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_partition_column_statistics failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_aggr_stats_for failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_table_statistics_req(TableStatsResult& _return, const TableStatsRequest& request)
+{
+  int32_t seqid = send_get_table_statistics_req(request);
+  recv_get_table_statistics_req(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_table_statistics_req(const TableStatsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_table_statistics_req", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_table_statistics_req_pargs args;
+=======
+bool ThriftHiveMetastoreConcurrentClient::set_aggr_stats_for(const SetPartitionsStatsRequest& request)
+{
+  int32_t seqid = send_set_aggr_stats_for(request);
+  return recv_set_aggr_stats_for(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_set_aggr_stats_for(const SetPartitionsStatsRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("set_aggr_stats_for", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_set_aggr_stats_for_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableStatsResult& _return, const int32_t seqid)
+=======
+bool ThriftHiveMetastoreConcurrentClient::recv_set_aggr_stats_for(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_table_statistics_req") != 0) {
+=======
+      if (fname.compare("set_aggr_stats_for") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
       ThriftHiveMetastore_get_table_statistics_req_presult result;
+=======
+      bool _return;
+      ThriftHiveMetastore_set_aggr_stats_for_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -70374,7 +75698,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableSta
         throw result.o2;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_table_statistics_req failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "set_aggr_stats_for failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70384,6 +75712,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_table_statistics_req(TableSta
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::get_partitions_statistics_req(PartitionsStatsResult& _return, const PartitionsStatsRequest& request)
 {
   int32_t seqid = send_get_partitions_statistics_req(request);
@@ -70398,6 +75727,25 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_partitions_statistics_req(
 
   ThriftHiveMetastore_get_partitions_statistics_req_pargs args;
   args.request = &request;
+=======
+bool ThriftHiveMetastoreConcurrentClient::delete_partition_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& part_name, const std::string& col_name)
+{
+  int32_t seqid = send_delete_partition_column_statistics(db_name, tbl_name, part_name, col_name);
+  return recv_delete_partition_column_statistics(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_delete_partition_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& part_name, const std::string& col_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("delete_partition_column_statistics", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_delete_partition_column_statistics_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.part_name = &part_name;
+  args.col_name = &col_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70408,7 +75756,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_partitions_statistics_req(
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_get_partitions_statistics_req(PartitionsStatsResult& _return, const int32_t seqid)
+=======
+bool ThriftHiveMetastoreConcurrentClient::recv_delete_partition_column_statistics(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70437,7 +75789,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_partitions_statistics_req(Par
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("get_partitions_statistics_req") != 0) {
+=======
+      if (fname.compare("delete_partition_column_statistics") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70446,7 +75802,12 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_partitions_statistics_req(Par
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_get_partitions_statistics_req_presult result;
+=======
+      bool _return;
+      ThriftHiveMetastore_delete_partition_column_statistics_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -70558,7 +75919,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_aggr_stats_for(AggrStats& _re
         throw result.o2;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_aggr_stats_for failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "delete_partition_column_statistics failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70568,6 +75933,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_aggr_stats_for(AggrStats& _re
   } // end while(true)
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::set_aggr_stats_for(const SetPartitionsStatsRequest& request)
 {
   int32_t seqid = send_set_aggr_stats_for(request);
@@ -70582,6 +75948,24 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_set_aggr_stats_for(const SetPa
 
   ThriftHiveMetastore_set_aggr_stats_for_pargs args;
   args.request = &request;
+=======
+bool ThriftHiveMetastoreConcurrentClient::delete_table_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& col_name)
+{
+  int32_t seqid = send_delete_table_column_statistics(db_name, tbl_name, col_name);
+  return recv_delete_table_column_statistics(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_delete_table_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& col_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("delete_table_column_statistics", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_delete_table_column_statistics_pargs args;
+  args.db_name = &db_name;
+  args.tbl_name = &tbl_name;
+  args.col_name = &col_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70592,7 +75976,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_set_aggr_stats_for(const SetPa
   return cseqid;
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::recv_set_aggr_stats_for(const int32_t seqid)
+=======
+bool ThriftHiveMetastoreConcurrentClient::recv_delete_table_column_statistics(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70621,7 +76009,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_set_aggr_stats_for(const int32_t 
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("set_aggr_stats_for") != 0) {
+=======
+      if (fname.compare("delete_table_column_statistics") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70631,7 +76023,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_set_aggr_stats_for(const int32_t 
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
       bool _return;
+<<<<<<< HEAD
       ThriftHiveMetastore_set_aggr_stats_for_presult result;
+=======
+      ThriftHiveMetastore_delete_table_column_statistics_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -70658,7 +76054,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_set_aggr_stats_for(const int32_t 
         throw result.o4;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "set_aggr_stats_for failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "delete_table_column_statistics failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70668,6 +76068,7 @@ bool ThriftHiveMetastoreConcurrentClient::recv_set_aggr_stats_for(const int32_t 
   } // end while(true)
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::delete_partition_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& part_name, const std::string& col_name)
 {
   int32_t seqid = send_delete_partition_column_statistics(db_name, tbl_name, part_name, col_name);
@@ -70685,6 +76086,22 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_delete_partition_column_statis
   args.tbl_name = &tbl_name;
   args.part_name = &part_name;
   args.col_name = &col_name;
+=======
+void ThriftHiveMetastoreConcurrentClient::create_function(const Function& func)
+{
+  int32_t seqid = send_create_function(func);
+  recv_create_function(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_create_function(const Function& func)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("create_function", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_create_function_pargs args;
+  args.func = &func;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70695,7 +76112,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_delete_partition_column_statis
   return cseqid;
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::recv_delete_partition_column_statistics(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_create_function(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -70724,7 +76145,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_delete_partition_column_statistic
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("delete_partition_column_statistics") != 0) {
+=======
+      if (fname.compare("create_function") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -70733,17 +76158,24 @@ bool ThriftHiveMetastoreConcurrentClient::recv_delete_partition_column_statistic
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       bool _return;
       ThriftHiveMetastore_delete_partition_column_statistics_presult result;
       result.success = &_return;
+=======
+      ThriftHiveMetastore_create_function_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
       if (result.__isset.success) {
         sentry.commit();
         return _return;
       }
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
@@ -70760,8 +76192,13 @@ bool ThriftHiveMetastoreConcurrentClient::recv_delete_partition_column_statistic
         sentry.commit();
         throw result.o4;
       }
+<<<<<<< HEAD
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "delete_partition_column_statistics failed: unknown result");
+=======
+      sentry.commit();
+      return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -70771,6 +76208,7 @@ bool ThriftHiveMetastoreConcurrentClient::recv_delete_partition_column_statistic
   } // end while(true)
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::delete_table_column_statistics(const std::string& db_name, const std::string& tbl_name, const std::string& col_name)
 {
   int32_t seqid = send_delete_table_column_statistics(db_name, tbl_name, col_name);
@@ -70787,186 +76225,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_delete_table_column_statistics
   args.db_name = &db_name;
   args.tbl_name = &tbl_name;
   args.col_name = &col_name;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-bool ThriftHiveMetastoreConcurrentClient::recv_delete_table_column_statistics(const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("delete_table_column_statistics") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      bool _return;
-      ThriftHiveMetastore_delete_table_column_statistics_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        sentry.commit();
-        return _return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      if (result.__isset.o3) {
-        sentry.commit();
-        throw result.o3;
-      }
-      if (result.__isset.o4) {
-        sentry.commit();
-        throw result.o4;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "delete_table_column_statistics failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::create_function(const Function& func)
-{
-  int32_t seqid = send_create_function(func);
-  recv_create_function(seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_create_function(const Function& func)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("create_function", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_create_function_pargs args;
-  args.func = &func;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_create_function(const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("create_function") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_create_function_presult result;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      if (result.__isset.o3) {
-        sentry.commit();
-        throw result.o3;
-      }
-      if (result.__isset.o4) {
-        sentry.commit();
-        throw result.o4;
-      }
-      sentry.commit();
-      return;
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+=======
 void ThriftHiveMetastoreConcurrentClient::drop_function(const std::string& dbName, const std::string& funcName)
 {
   int32_t seqid = send_drop_function(dbName, funcName);
@@ -70982,6 +76241,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_drop_function(const std::strin
   ThriftHiveMetastore_drop_function_pargs args;
   args.dbName = &dbName;
   args.funcName = &funcName;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -70992,7 +76252,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_drop_function(const std::strin
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_delete_table_column_statistics(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_drop_function(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71021,7 +76285,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_drop_function(const int32_t seqid
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("delete_table_column_statistics") != 0) {
+=======
       if (fname.compare("drop_function") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71030,11 +76298,24 @@ void ThriftHiveMetastoreConcurrentClient::recv_drop_function(const int32_t seqid
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_delete_table_column_statistics_presult result;
+      result.success = &_return;
+=======
       ThriftHiveMetastore_drop_function_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
@@ -71043,8 +76324,21 @@ void ThriftHiveMetastoreConcurrentClient::recv_drop_function(const int32_t seqid
         sentry.commit();
         throw result.o3;
       }
+<<<<<<< HEAD
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "delete_table_column_statistics failed: unknown result");
+=======
       sentry.commit();
       return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71054,6 +76348,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_drop_function(const int32_t seqid
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::create_function(const Function& func)
+{
+  int32_t seqid = send_create_function(func);
+  recv_create_function(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_create_function(const Function& func)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("create_function", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_create_function_pargs args;
+  args.func = &func;
+=======
 void ThriftHiveMetastoreConcurrentClient::alter_function(const std::string& dbName, const std::string& funcName, const Function& newFunc)
 {
   int32_t seqid = send_alter_function(dbName, funcName, newFunc);
@@ -71070,6 +76380,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_alter_function(const std::stri
   args.dbName = &dbName;
   args.funcName = &funcName;
   args.newFunc = &newFunc;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71080,7 +76391,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_alter_function(const std::stri
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_create_function(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_alter_function(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71109,7 +76424,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_alter_function(const int32_t seqi
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("create_function") != 0) {
+=======
       if (fname.compare("alter_function") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71118,7 +76437,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_alter_function(const int32_t seqi
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_create_function_presult result;
+=======
       ThriftHiveMetastore_alter_function_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
@@ -71131,6 +76454,17 @@ void ThriftHiveMetastoreConcurrentClient::recv_alter_function(const int32_t seqi
         sentry.commit();
         throw result.o2;
       }
+<<<<<<< HEAD
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      if (result.__isset.o4) {
+        sentry.commit();
+        throw result.o4;
+      }
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       sentry.commit();
       return;
     }
@@ -71142,6 +76476,23 @@ void ThriftHiveMetastoreConcurrentClient::recv_alter_function(const int32_t seqi
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::drop_function(const std::string& dbName, const std::string& funcName)
+{
+  int32_t seqid = send_drop_function(dbName, funcName);
+  recv_drop_function(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_drop_function(const std::string& dbName, const std::string& funcName)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("drop_function", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_drop_function_pargs args;
+  args.dbName = &dbName;
+  args.funcName = &funcName;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_functions(std::vector<std::string> & _return, const std::string& dbName, const std::string& pattern)
 {
   int32_t seqid = send_get_functions(dbName, pattern);
@@ -71157,6 +76508,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_functions(const std::strin
   ThriftHiveMetastore_get_functions_pargs args;
   args.dbName = &dbName;
   args.pattern = &pattern;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71167,7 +76519,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_functions(const std::strin
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_drop_function(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_functions(std::vector<std::string> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71196,7 +76552,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_functions(std::vector<std::st
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("drop_function") != 0) {
+=======
       if (fname.compare("get_functions") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71205,23 +76565,31 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_functions(std::vector<std::st
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_drop_function_presult result;
+=======
       ThriftHiveMetastore_get_functions_presult result;
       result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
       }
+<<<<<<< HEAD
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      sentry.commit();
+      return;
+=======
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_functions failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71231,6 +76599,24 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_functions(std::vector<std::st
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::alter_function(const std::string& dbName, const std::string& funcName, const Function& newFunc)
+{
+  int32_t seqid = send_alter_function(dbName, funcName, newFunc);
+  recv_alter_function(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_alter_function(const std::string& dbName, const std::string& funcName, const Function& newFunc)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("alter_function", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_alter_function_pargs args;
+  args.dbName = &dbName;
+  args.funcName = &funcName;
+  args.newFunc = &newFunc;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_function(Function& _return, const std::string& dbName, const std::string& funcName)
 {
   int32_t seqid = send_get_function(dbName, funcName);
@@ -71246,6 +76632,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_function(const std::string
   ThriftHiveMetastore_get_function_pargs args;
   args.dbName = &dbName;
   args.funcName = &funcName;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71256,7 +76643,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_function(const std::string
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_alter_function(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_function(Function& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71285,7 +76676,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_function(Function& _return, c
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("alter_function") != 0) {
+=======
       if (fname.compare("get_function") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71294,17 +76689,24 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_function(Function& _return, c
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_alter_function_presult result;
+=======
       ThriftHiveMetastore_get_function_presult result;
       result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
+=======
       if (result.__isset.success) {
         // _return pointer has now been filled
         sentry.commit();
         return;
       }
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
@@ -71313,8 +76715,13 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_function(Function& _return, c
         sentry.commit();
         throw result.o2;
       }
+<<<<<<< HEAD
+      sentry.commit();
+      return;
+=======
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_function failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71324,6 +76731,23 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_function(Function& _return, c
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_functions(std::vector<std::string> & _return, const std::string& dbName, const std::string& pattern)
+{
+  int32_t seqid = send_get_functions(dbName, pattern);
+  recv_get_functions(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_functions(const std::string& dbName, const std::string& pattern)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_functions", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_functions_pargs args;
+  args.dbName = &dbName;
+  args.pattern = &pattern;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_all_functions(GetAllFunctionsResponse& _return)
 {
   int32_t seqid = send_get_all_functions();
@@ -71337,6 +76761,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_functions()
   oprot_->writeMessageBegin("get_all_functions", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_all_functions_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71347,7 +76772,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_functions()
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_functions(std::vector<std::string> & _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_all_functions(GetAllFunctionsResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71376,7 +76805,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_functions(GetAllFunctions
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_functions") != 0) {
+=======
       if (fname.compare("get_all_functions") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71385,7 +76818,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_functions(GetAllFunctions
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_functions_presult result;
+=======
       ThriftHiveMetastore_get_all_functions_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -71401,7 +76838,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_functions(GetAllFunctions
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_functions failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_all_functions failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71411,6 +76852,23 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_functions(GetAllFunctions
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_function(Function& _return, const std::string& dbName, const std::string& funcName)
+{
+  int32_t seqid = send_get_function(dbName, funcName);
+  recv_get_function(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_function(const std::string& dbName, const std::string& funcName)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_function", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_function_pargs args;
+  args.dbName = &dbName;
+  args.funcName = &funcName;
+=======
 bool ThriftHiveMetastoreConcurrentClient::create_role(const Role& role)
 {
   int32_t seqid = send_create_role(role);
@@ -71425,6 +76883,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_create_role(const Role& role)
 
   ThriftHiveMetastore_create_role_pargs args;
   args.role = &role;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71435,7 +76894,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_create_role(const Role& role)
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_function(Function& _return, const int32_t seqid)
+=======
 bool ThriftHiveMetastoreConcurrentClient::recv_create_role(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71464,7 +76927,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_create_role(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_function") != 0) {
+=======
       if (fname.compare("create_role") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71473,182 +76940,12 @@ bool ThriftHiveMetastoreConcurrentClient::recv_create_role(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_function_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_create_role_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        sentry.commit();
-        return _return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "create_role failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-bool ThriftHiveMetastoreConcurrentClient::drop_role(const std::string& role_name)
-{
-  int32_t seqid = send_drop_role(role_name);
-  return recv_drop_role(seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_drop_role(const std::string& role_name)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("drop_role", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_drop_role_pargs args;
-  args.role_name = &role_name;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-bool ThriftHiveMetastoreConcurrentClient::recv_drop_role(const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("drop_role") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      bool _return;
-      ThriftHiveMetastore_drop_role_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        sentry.commit();
-        return _return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_role failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::get_role_names(std::vector<std::string> & _return)
-{
-  int32_t seqid = send_get_role_names();
-  recv_get_role_names(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_role_names()
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_role_names", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_role_names_pargs args;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_role_names(std::vector<std::string> & _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_role_names") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_role_names_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -71663,8 +76960,17 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_role_names(std::vector<std::s
         sentry.commit();
         throw result.o1;
       }
+<<<<<<< HEAD
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
       // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_role_names failed: unknown result");
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_function failed: unknown result");
+=======
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "create_role failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71674,6 +76980,274 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_role_names(std::vector<std::s
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_all_functions(GetAllFunctionsResponse& _return)
+{
+  int32_t seqid = send_get_all_functions();
+  recv_get_all_functions(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_functions()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_all_functions", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_all_functions_pargs args;
+=======
+bool ThriftHiveMetastoreConcurrentClient::drop_role(const std::string& role_name)
+{
+  int32_t seqid = send_drop_role(role_name);
+  return recv_drop_role(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_drop_role(const std::string& role_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("drop_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_drop_role_pargs args;
+  args.role_name = &role_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_all_functions(GetAllFunctionsResponse& _return, const int32_t seqid)
+=======
+bool ThriftHiveMetastoreConcurrentClient::recv_drop_role(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_all_functions") != 0) {
+=======
+      if (fname.compare("drop_role") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_all_functions_presult result;
+=======
+      bool _return;
+      ThriftHiveMetastore_drop_role_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+<<<<<<< HEAD
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+=======
+        sentry.commit();
+        return _return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_all_functions failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_role failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::create_role(const Role& role)
+{
+  int32_t seqid = send_create_role(role);
+  return recv_create_role(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_create_role(const Role& role)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("create_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_create_role_pargs args;
+  args.role = &role;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_role_names(std::vector<std::string> & _return)
+{
+  int32_t seqid = send_get_role_names();
+  recv_get_role_names(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_role_names()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_role_names", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_role_names_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_create_role(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_role_names(std::vector<std::string> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("create_role") != 0) {
+=======
+      if (fname.compare("get_role_names") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_create_role_presult result;
+=======
+      ThriftHiveMetastore_get_role_names_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+<<<<<<< HEAD
+        sentry.commit();
+        return _return;
+=======
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "create_role failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_role_names failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::drop_role(const std::string& role_name)
+{
+  int32_t seqid = send_drop_role(role_name);
+  return recv_drop_role(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_drop_role(const std::string& role_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("drop_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_drop_role_pargs args;
+  args.role_name = &role_name;
+=======
 bool ThriftHiveMetastoreConcurrentClient::grant_role(const std::string& role_name, const std::string& principal_name, const PrincipalType::type principal_type, const std::string& grantor, const PrincipalType::type grantorType, const bool grant_option)
 {
   int32_t seqid = send_grant_role(role_name, principal_name, principal_type, grantor, grantorType, grant_option);
@@ -71693,6 +77267,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_role(const std::string& 
   args.grantor = &grantor;
   args.grantorType = &grantorType;
   args.grant_option = &grant_option;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71703,7 +77278,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_role(const std::string& 
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_drop_role(const int32_t seqid)
+=======
 bool ThriftHiveMetastoreConcurrentClient::recv_grant_role(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71732,7 +77311,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_role(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("drop_role") != 0) {
+=======
       if (fname.compare("grant_role") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71742,7 +77325,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_role(const int32_t seqid)
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
       bool _return;
+<<<<<<< HEAD
+      ThriftHiveMetastore_drop_role_presult result;
+=======
       ThriftHiveMetastore_grant_role_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -71757,7 +77344,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_role(const int32_t seqid)
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_role failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_role failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71767,6 +77358,21 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_role(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_role_names(std::vector<std::string> & _return)
+{
+  int32_t seqid = send_get_role_names();
+  recv_get_role_names(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_role_names()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_role_names", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_role_names_pargs args;
+=======
 bool ThriftHiveMetastoreConcurrentClient::revoke_role(const std::string& role_name, const std::string& principal_name, const PrincipalType::type principal_type)
 {
   int32_t seqid = send_revoke_role(role_name, principal_name, principal_type);
@@ -71783,6 +77389,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_revoke_role(const std::string&
   args.role_name = &role_name;
   args.principal_name = &principal_name;
   args.principal_type = &principal_type;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71793,7 +77400,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_revoke_role(const std::string&
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_role_names(std::vector<std::string> & _return, const int32_t seqid)
+=======
 bool ThriftHiveMetastoreConcurrentClient::recv_revoke_role(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71822,7 +77433,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_revoke_role(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_role_names") != 0) {
+=======
       if (fname.compare("revoke_role") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71831,8 +77446,12 @@ bool ThriftHiveMetastoreConcurrentClient::recv_revoke_role(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_role_names_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_revoke_role_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -71847,7 +77466,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_revoke_role(const int32_t seqid)
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_role_names failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "revoke_role failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71857,6 +77480,27 @@ bool ThriftHiveMetastoreConcurrentClient::recv_revoke_role(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::grant_role(const std::string& role_name, const std::string& principal_name, const PrincipalType::type principal_type, const std::string& grantor, const PrincipalType::type grantorType, const bool grant_option)
+{
+  int32_t seqid = send_grant_role(role_name, principal_name, principal_type, grantor, grantorType, grant_option);
+  return recv_grant_role(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_grant_role(const std::string& role_name, const std::string& principal_name, const PrincipalType::type principal_type, const std::string& grantor, const PrincipalType::type grantorType, const bool grant_option)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("grant_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_grant_role_pargs args;
+  args.role_name = &role_name;
+  args.principal_name = &principal_name;
+  args.principal_type = &principal_type;
+  args.grantor = &grantor;
+  args.grantorType = &grantorType;
+  args.grant_option = &grant_option;
+=======
 void ThriftHiveMetastoreConcurrentClient::list_roles(std::vector<Role> & _return, const std::string& principal_name, const PrincipalType::type principal_type)
 {
   int32_t seqid = send_list_roles(principal_name, principal_type);
@@ -71872,6 +77516,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_list_roles(const std::string& 
   ThriftHiveMetastore_list_roles_pargs args;
   args.principal_name = &principal_name;
   args.principal_type = &principal_type;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71882,7 +77527,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_list_roles(const std::string& 
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_grant_role(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_list_roles(std::vector<Role> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71911,7 +77560,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_list_roles(std::vector<Role> & _r
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("grant_role") != 0) {
+=======
       if (fname.compare("list_roles") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -71920,23 +77573,31 @@ void ThriftHiveMetastoreConcurrentClient::recv_list_roles(std::vector<Role> & _r
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_grant_role_presult result;
+=======
       ThriftHiveMetastore_list_roles_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
-        // _return pointer has now been filled
         sentry.commit();
-        return;
+        return _return;
       }
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_role failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "list_roles failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -71946,6 +77607,24 @@ void ThriftHiveMetastoreConcurrentClient::recv_list_roles(std::vector<Role> & _r
   } // end while(true)
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::revoke_role(const std::string& role_name, const std::string& principal_name, const PrincipalType::type principal_type)
+{
+  int32_t seqid = send_revoke_role(role_name, principal_name, principal_type);
+  return recv_revoke_role(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_revoke_role(const std::string& role_name, const std::string& principal_name, const PrincipalType::type principal_type)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("revoke_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_revoke_role_pargs args;
+  args.role_name = &role_name;
+  args.principal_name = &principal_name;
+  args.principal_type = &principal_type;
+=======
 void ThriftHiveMetastoreConcurrentClient::grant_revoke_role(GrantRevokeRoleResponse& _return, const GrantRevokeRoleRequest& request)
 {
   int32_t seqid = send_grant_revoke_role(request);
@@ -71960,6 +77639,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_revoke_role(const GrantR
 
   ThriftHiveMetastore_grant_revoke_role_pargs args;
   args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -71970,7 +77650,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_revoke_role(const GrantR
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_revoke_role(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_role(GrantRevokeRoleResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -71999,7 +77683,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_role(GrantRevokeRole
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("revoke_role") != 0) {
+=======
       if (fname.compare("grant_revoke_role") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72008,23 +77696,31 @@ void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_role(GrantRevokeRole
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_revoke_role_presult result;
+=======
       ThriftHiveMetastore_grant_revoke_role_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
-        // _return pointer has now been filled
         sentry.commit();
-        return;
+        return _return;
       }
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "revoke_role failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_revoke_role failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72034,6 +77730,23 @@ void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_role(GrantRevokeRole
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::list_roles(std::vector<Role> & _return, const std::string& principal_name, const PrincipalType::type principal_type)
+{
+  int32_t seqid = send_list_roles(principal_name, principal_type);
+  recv_list_roles(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_list_roles(const std::string& principal_name, const PrincipalType::type principal_type)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("list_roles", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_list_roles_pargs args;
+  args.principal_name = &principal_name;
+  args.principal_type = &principal_type;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_principals_in_role(GetPrincipalsInRoleResponse& _return, const GetPrincipalsInRoleRequest& request)
 {
   int32_t seqid = send_get_principals_in_role(request);
@@ -72048,6 +77761,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_principals_in_role(const G
 
   ThriftHiveMetastore_get_principals_in_role_pargs args;
   args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -72058,7 +77772,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_principals_in_role(const G
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_list_roles(std::vector<Role> & _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_principals_in_role(GetPrincipalsInRoleResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72087,7 +77805,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_principals_in_role(GetPrincip
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("list_roles") != 0) {
+=======
       if (fname.compare("get_principals_in_role") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72096,7 +77818,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_principals_in_role(GetPrincip
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_list_roles_presult result;
+=======
       ThriftHiveMetastore_get_principals_in_role_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72112,7 +77838,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_principals_in_role(GetPrincip
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "list_roles failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_principals_in_role failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72122,6 +77852,21 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_principals_in_role(GetPrincip
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::grant_revoke_role(GrantRevokeRoleResponse& _return, const GrantRevokeRoleRequest& request)
+{
+  int32_t seqid = send_grant_revoke_role(request);
+  recv_grant_revoke_role(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_grant_revoke_role(const GrantRevokeRoleRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("grant_revoke_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_grant_revoke_role_pargs args;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_role_grants_for_principal(GetRoleGrantsForPrincipalResponse& _return, const GetRoleGrantsForPrincipalRequest& request)
 {
   int32_t seqid = send_get_role_grants_for_principal(request);
@@ -72135,6 +77880,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_role_grants_for_principal(
   oprot_->writeMessageBegin("get_role_grants_for_principal", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_role_grants_for_principal_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.request = &request;
   args.write(oprot_);
 
@@ -72146,7 +77892,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_role_grants_for_principal(
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_role(GrantRevokeRoleResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_role_grants_for_principal(GetRoleGrantsForPrincipalResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72175,7 +77925,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_role_grants_for_principal(Get
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("grant_revoke_role") != 0) {
+=======
       if (fname.compare("get_role_grants_for_principal") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72184,7 +77938,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_role_grants_for_principal(Get
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_grant_revoke_role_presult result;
+=======
       ThriftHiveMetastore_get_role_grants_for_principal_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72200,7 +77958,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_role_grants_for_principal(Get
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_revoke_role failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_role_grants_for_principal failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72210,6 +77972,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_role_grants_for_principal(Get
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_principals_in_role(GetPrincipalsInRoleResponse& _return, const GetPrincipalsInRoleRequest& request)
+{
+  int32_t seqid = send_get_principals_in_role(request);
+  recv_get_principals_in_role(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_principals_in_role(const GetPrincipalsInRoleRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_principals_in_role", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_principals_in_role_pargs args;
+  args.request = &request;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_privilege_set(PrincipalPrivilegeSet& _return, const HiveObjectRef& hiveObject, const std::string& user_name, const std::vector<std::string> & group_names)
 {
   int32_t seqid = send_get_privilege_set(hiveObject, user_name, group_names);
@@ -72226,6 +78004,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_privilege_set(const HiveOb
   args.hiveObject = &hiveObject;
   args.user_name = &user_name;
   args.group_names = &group_names;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -72236,7 +78015,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_privilege_set(const HiveOb
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_principals_in_role(GetPrincipalsInRoleResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_privilege_set(PrincipalPrivilegeSet& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72265,7 +78048,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_privilege_set(PrincipalPrivil
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_principals_in_role") != 0) {
+=======
       if (fname.compare("get_privilege_set") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72274,7 +78061,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_privilege_set(PrincipalPrivil
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_principals_in_role_presult result;
+=======
       ThriftHiveMetastore_get_privilege_set_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72290,6 +78081,254 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_privilege_set(PrincipalPrivil
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_principals_in_role failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_privilege_set failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_role_grants_for_principal(GetRoleGrantsForPrincipalResponse& _return, const GetRoleGrantsForPrincipalRequest& request)
+{
+  int32_t seqid = send_get_role_grants_for_principal(request);
+  recv_get_role_grants_for_principal(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_role_grants_for_principal(const GetRoleGrantsForPrincipalRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_role_grants_for_principal", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_role_grants_for_principal_pargs args;
+  args.request = &request;
+=======
+void ThriftHiveMetastoreConcurrentClient::list_privileges(std::vector<HiveObjectPrivilege> & _return, const std::string& principal_name, const PrincipalType::type principal_type, const HiveObjectRef& hiveObject)
+{
+  int32_t seqid = send_list_privileges(principal_name, principal_type, hiveObject);
+  recv_list_privileges(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_list_privileges(const std::string& principal_name, const PrincipalType::type principal_type, const HiveObjectRef& hiveObject)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("list_privileges", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_list_privileges_pargs args;
+  args.principal_name = &principal_name;
+  args.principal_type = &principal_type;
+  args.hiveObject = &hiveObject;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_role_grants_for_principal(GetRoleGrantsForPrincipalResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_list_privileges(std::vector<HiveObjectPrivilege> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_role_grants_for_principal") != 0) {
+=======
+      if (fname.compare("list_privileges") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_role_grants_for_principal_presult result;
+=======
+      ThriftHiveMetastore_list_privileges_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_role_grants_for_principal failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "list_privileges failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_privilege_set(PrincipalPrivilegeSet& _return, const HiveObjectRef& hiveObject, const std::string& user_name, const std::vector<std::string> & group_names)
+{
+  int32_t seqid = send_get_privilege_set(hiveObject, user_name, group_names);
+  recv_get_privilege_set(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_privilege_set(const HiveObjectRef& hiveObject, const std::string& user_name, const std::vector<std::string> & group_names)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_privilege_set", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_privilege_set_pargs args;
+  args.hiveObject = &hiveObject;
+  args.user_name = &user_name;
+  args.group_names = &group_names;
+=======
+bool ThriftHiveMetastoreConcurrentClient::grant_privileges(const PrivilegeBag& privileges)
+{
+  int32_t seqid = send_grant_privileges(privileges);
+  return recv_grant_privileges(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_grant_privileges(const PrivilegeBag& privileges)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("grant_privileges", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_grant_privileges_pargs args;
+  args.privileges = &privileges;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_privilege_set(PrincipalPrivilegeSet& _return, const int32_t seqid)
+=======
+bool ThriftHiveMetastoreConcurrentClient::recv_grant_privileges(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_privilege_set") != 0) {
+=======
+      if (fname.compare("grant_privileges") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_privilege_set_presult result;
+=======
+      bool _return;
+      ThriftHiveMetastore_grant_privileges_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_privilege_set failed: unknown result");
     }
     // seqid != rseqid
@@ -72381,6 +78420,9 @@ void ThriftHiveMetastoreConcurrentClient::recv_list_privileges(std::vector<HiveO
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "list_privileges failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_privileges failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72390,6 +78432,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_list_privileges(std::vector<HiveO
   } // end while(true)
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::grant_privileges(const PrivilegeBag& privileges)
 {
   int32_t seqid = send_grant_privileges(privileges);
@@ -72403,6 +78446,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_privileges(const Privile
   oprot_->writeMessageBegin("grant_privileges", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_grant_privileges_pargs args;
+=======
+bool ThriftHiveMetastoreConcurrentClient::revoke_privileges(const PrivilegeBag& privileges)
+{
+  int32_t seqid = send_revoke_privileges(privileges);
+  return recv_revoke_privileges(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_revoke_privileges(const PrivilegeBag& privileges)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("revoke_privileges", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_revoke_privileges_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.privileges = &privileges;
   args.write(oprot_);
 
@@ -72414,7 +78472,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_privileges(const Privile
   return cseqid;
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::recv_grant_privileges(const int32_t seqid)
+=======
+bool ThriftHiveMetastoreConcurrentClient::recv_revoke_privileges(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72443,7 +78505,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_privileges(const int32_t se
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("grant_privileges") != 0) {
+=======
+      if (fname.compare("revoke_privileges") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72453,7 +78519,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_privileges(const int32_t se
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
       bool _return;
+<<<<<<< HEAD
       ThriftHiveMetastore_grant_privileges_presult result;
+=======
+      ThriftHiveMetastore_revoke_privileges_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72468,7 +78538,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_privileges(const int32_t se
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_privileges failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "revoke_privileges failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72478,6 +78552,7 @@ bool ThriftHiveMetastoreConcurrentClient::recv_grant_privileges(const int32_t se
   } // end while(true)
 }
 
+<<<<<<< HEAD
 bool ThriftHiveMetastoreConcurrentClient::revoke_privileges(const PrivilegeBag& privileges)
 {
   int32_t seqid = send_revoke_privileges(privileges);
@@ -72492,80 +78567,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_revoke_privileges(const Privil
 
   ThriftHiveMetastore_revoke_privileges_pargs args;
   args.privileges = &privileges;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-bool ThriftHiveMetastoreConcurrentClient::recv_revoke_privileges(const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("revoke_privileges") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      bool _return;
-      ThriftHiveMetastore_revoke_privileges_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        sentry.commit();
-        return _return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "revoke_privileges failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+=======
 void ThriftHiveMetastoreConcurrentClient::grant_revoke_privileges(GrantRevokePrivilegeResponse& _return, const GrantRevokePrivilegeRequest& request)
 {
   int32_t seqid = send_grant_revoke_privileges(request);
@@ -72580,6 +78582,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_revoke_privileges(const 
 
   ThriftHiveMetastore_grant_revoke_privileges_pargs args;
   args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -72590,7 +78593,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_grant_revoke_privileges(const 
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_revoke_privileges(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_privileges(GrantRevokePrivilegeResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72619,7 +78626,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_privileges(GrantRevo
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("revoke_privileges") != 0) {
+=======
       if (fname.compare("grant_revoke_privileges") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72628,23 +78639,31 @@ void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_privileges(GrantRevo
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_revoke_privileges_presult result;
+=======
       ThriftHiveMetastore_grant_revoke_privileges_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
-        // _return pointer has now been filled
         sentry.commit();
-        return;
+        return _return;
       }
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "revoke_privileges failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_revoke_privileges failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72654,6 +78673,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_privileges(GrantRevo
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::grant_revoke_privileges(GrantRevokePrivilegeResponse& _return, const GrantRevokePrivilegeRequest& request)
+{
+  int32_t seqid = send_grant_revoke_privileges(request);
+  recv_grant_revoke_privileges(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_grant_revoke_privileges(const GrantRevokePrivilegeRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("grant_revoke_privileges", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_grant_revoke_privileges_pargs args;
+  args.request = &request;
+=======
 void ThriftHiveMetastoreConcurrentClient::set_ugi(std::vector<std::string> & _return, const std::string& user_name, const std::vector<std::string> & group_names)
 {
   int32_t seqid = send_set_ugi(user_name, group_names);
@@ -72669,6 +78704,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_set_ugi(const std::string& use
   ThriftHiveMetastore_set_ugi_pargs args;
   args.user_name = &user_name;
   args.group_names = &group_names;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -72679,7 +78715,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_set_ugi(const std::string& use
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_grant_revoke_privileges(GrantRevokePrivilegeResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_set_ugi(std::vector<std::string> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72708,7 +78748,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_set_ugi(std::vector<std::string> 
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("grant_revoke_privileges") != 0) {
+=======
       if (fname.compare("set_ugi") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72717,7 +78761,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_set_ugi(std::vector<std::string> 
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_grant_revoke_privileges_presult result;
+=======
       ThriftHiveMetastore_set_ugi_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72733,7 +78781,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_set_ugi(std::vector<std::string> 
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "grant_revoke_privileges failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "set_ugi failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -72743,6 +78795,130 @@ void ThriftHiveMetastoreConcurrentClient::recv_set_ugi(std::vector<std::string> 
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::set_ugi(std::vector<std::string> & _return, const std::string& user_name, const std::vector<std::string> & group_names)
+{
+  int32_t seqid = send_set_ugi(user_name, group_names);
+  recv_set_ugi(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_set_ugi(const std::string& user_name, const std::vector<std::string> & group_names)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("set_ugi", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_set_ugi_pargs args;
+  args.user_name = &user_name;
+  args.group_names = &group_names;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name)
+{
+  int32_t seqid = send_get_delegation_token(token_owner, renewer_kerberos_principal_name);
+  recv_get_delegation_token(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_delegation_token(const std::string& token_owner, const std::string& renewer_kerberos_principal_name)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_delegation_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_delegation_token_pargs args;
+  args.token_owner = &token_owner;
+  args.renewer_kerberos_principal_name = &renewer_kerberos_principal_name;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_set_ugi(std::vector<std::string> & _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_delegation_token(std::string& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("set_ugi") != 0) {
+=======
+      if (fname.compare("get_delegation_token") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_set_ugi_presult result;
+=======
+      ThriftHiveMetastore_get_delegation_token_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "set_ugi failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_delegation_token failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password)
 {
   int32_t seqid = send_set_crypto(key_store, key_store_password, trust_store, trust_store_password);
@@ -72760,6 +78936,22 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_set_crypto(const std::string& 
   args.key_store_password = &key_store_password;
   args.trust_store = &trust_store;
   args.trust_store_password = &trust_store_password;
+=======
+int64_t ThriftHiveMetastoreConcurrentClient::renew_delegation_token(const std::string& token_str_form)
+{
+  int32_t seqid = send_renew_delegation_token(token_str_form);
+  return recv_renew_delegation_token(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_renew_delegation_token(const std::string& token_str_form)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("renew_delegation_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_renew_delegation_token_pargs args;
+  args.token_str_form = &token_str_form;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -72770,7 +78962,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_set_crypto(const std::string& 
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_set_crypto(const int32_t seqid)
+=======
+int64_t ThriftHiveMetastoreConcurrentClient::recv_renew_delegation_token(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -72799,7 +78995,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_set_crypto(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("set_crypto") != 0) {
+=======
+      if (fname.compare("renew_delegation_token") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -72808,6 +79008,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_set_crypto(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_set_crypto_presult result;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72892,95 +79093,10 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_delegation_token(std::string&
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
       ThriftHiveMetastore_get_delegation_token_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_delegation_token failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-int64_t ThriftHiveMetastoreConcurrentClient::renew_delegation_token(const std::string& token_str_form)
-{
-  int32_t seqid = send_renew_delegation_token(token_str_form);
-  return recv_renew_delegation_token(seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_renew_delegation_token(const std::string& token_str_form)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("renew_delegation_token", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_renew_delegation_token_pargs args;
-  args.token_str_form = &token_str_form;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-int64_t ThriftHiveMetastoreConcurrentClient::recv_renew_delegation_token(const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("renew_delegation_token") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
+=======
       int64_t _return;
       ThriftHiveMetastore_renew_delegation_token_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -72995,7 +79111,11 @@ int64_t ThriftHiveMetastoreConcurrentClient::recv_renew_delegation_token(const i
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_delegation_token failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "renew_delegation_token failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73005,6 +79125,21 @@ int64_t ThriftHiveMetastoreConcurrentClient::recv_renew_delegation_token(const i
   } // end while(true)
 }
 
+<<<<<<< HEAD
+int64_t ThriftHiveMetastoreConcurrentClient::renew_delegation_token(const std::string& token_str_form)
+{
+  int32_t seqid = send_renew_delegation_token(token_str_form);
+  return recv_renew_delegation_token(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_renew_delegation_token(const std::string& token_str_form)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("renew_delegation_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_renew_delegation_token_pargs args;
+=======
 void ThriftHiveMetastoreConcurrentClient::cancel_delegation_token(const std::string& token_str_form)
 {
   int32_t seqid = send_cancel_delegation_token(token_str_form);
@@ -73018,6 +79153,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_cancel_delegation_token(const 
   oprot_->writeMessageBegin("cancel_delegation_token", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_cancel_delegation_token_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.token_str_form = &token_str_form;
   args.write(oprot_);
 
@@ -73029,7 +79165,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_cancel_delegation_token(const 
   return cseqid;
 }
 
+<<<<<<< HEAD
+int64_t ThriftHiveMetastoreConcurrentClient::recv_renew_delegation_token(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_cancel_delegation_token(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73058,6 +79198,9 @@ void ThriftHiveMetastoreConcurrentClient::recv_cancel_delegation_token(const int
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("renew_delegation_token") != 0) {
+=======
       if (fname.compare("cancel_delegation_token") != 0) {
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
@@ -73142,6 +79285,7 @@ bool ThriftHiveMetastoreConcurrentClient::recv_add_token(const int32_t seqid)
         iprot_->getTransport()->readEnd();
       }
       if (fname.compare("add_token") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73150,8 +79294,13 @@ bool ThriftHiveMetastoreConcurrentClient::recv_add_token(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      int64_t _return;
+      ThriftHiveMetastore_renew_delegation_token_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_add_token_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -73162,7 +79311,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_add_token(const int32_t seqid)
         return _return;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "renew_delegation_token failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "add_token failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73172,6 +79325,22 @@ bool ThriftHiveMetastoreConcurrentClient::recv_add_token(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::cancel_delegation_token(const std::string& token_str_form)
+{
+  int32_t seqid = send_cancel_delegation_token(token_str_form);
+  recv_cancel_delegation_token(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_cancel_delegation_token(const std::string& token_str_form)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("cancel_delegation_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_cancel_delegation_token_pargs args;
+  args.token_str_form = &token_str_form;
+=======
 bool ThriftHiveMetastoreConcurrentClient::remove_token(const std::string& token_identifier)
 {
   int32_t seqid = send_remove_token(token_identifier);
@@ -73186,6 +79355,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_remove_token(const std::string
 
   ThriftHiveMetastore_remove_token_pargs args;
   args.token_identifier = &token_identifier;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73196,7 +79366,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_remove_token(const std::string
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_cancel_delegation_token(const int32_t seqid)
+=======
 bool ThriftHiveMetastoreConcurrentClient::recv_remove_token(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73225,7 +79399,11 @@ bool ThriftHiveMetastoreConcurrentClient::recv_remove_token(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("cancel_delegation_token") != 0) {
+=======
       if (fname.compare("remove_token") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73234,19 +79412,32 @@ bool ThriftHiveMetastoreConcurrentClient::recv_remove_token(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_cancel_delegation_token_presult result;
+=======
       bool _return;
       ThriftHiveMetastore_remove_token_presult result;
       result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      sentry.commit();
+      return;
+=======
       if (result.__isset.success) {
         sentry.commit();
         return _return;
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "remove_token failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73256,6 +79447,23 @@ bool ThriftHiveMetastoreConcurrentClient::recv_remove_token(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::add_token(const std::string& token_identifier, const std::string& delegation_token)
+{
+  int32_t seqid = send_add_token(token_identifier, delegation_token);
+  return recv_add_token(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_add_token(const std::string& token_identifier, const std::string& delegation_token)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("add_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_add_token_pargs args;
+  args.token_identifier = &token_identifier;
+  args.delegation_token = &delegation_token;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_token(std::string& _return, const std::string& token_identifier)
 {
   int32_t seqid = send_get_token(token_identifier);
@@ -73270,6 +79478,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_token(const std::string& t
 
   ThriftHiveMetastore_get_token_pargs args;
   args.token_identifier = &token_identifier;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73280,7 +79489,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_token(const std::string& t
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_add_token(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_token(std::string& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73309,7 +79522,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_token(std::string& _return, c
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("add_token") != 0) {
+=======
       if (fname.compare("get_token") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73318,19 +79535,30 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_token(std::string& _return, c
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_add_token_presult result;
+=======
       ThriftHiveMetastore_get_token_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
-        // _return pointer has now been filled
         sentry.commit();
+<<<<<<< HEAD
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "add_token failed: unknown result");
+=======
         return;
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_token failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73340,6 +79568,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_token(std::string& _return, c
   } // end while(true)
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::remove_token(const std::string& token_identifier)
+{
+  int32_t seqid = send_remove_token(token_identifier);
+  return recv_remove_token(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_remove_token(const std::string& token_identifier)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("remove_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_remove_token_pargs args;
+  args.token_identifier = &token_identifier;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_all_token_identifiers(std::vector<std::string> & _return)
 {
   int32_t seqid = send_get_all_token_identifiers();
@@ -73353,6 +79597,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_token_identifiers()
   oprot_->writeMessageBegin("get_all_token_identifiers", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_all_token_identifiers_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73363,7 +79608,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_token_identifiers()
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_remove_token(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_all_token_identifiers(std::vector<std::string> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73392,7 +79641,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_token_identifiers(std::ve
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("remove_token") != 0) {
+=======
       if (fname.compare("get_all_token_identifiers") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73401,19 +79654,32 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_token_identifiers(std::ve
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_remove_token_presult result;
+=======
       ThriftHiveMetastore_get_all_token_identifiers_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
+<<<<<<< HEAD
+        sentry.commit();
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "remove_token failed: unknown result");
+=======
         // _return pointer has now been filled
         sentry.commit();
         return;
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_all_token_identifiers failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73423,6 +79689,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_all_token_identifiers(std::ve
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_token(std::string& _return, const std::string& token_identifier)
+{
+  int32_t seqid = send_get_token(token_identifier);
+  recv_get_token(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_token(const std::string& token_identifier)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_token", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_token_pargs args;
+  args.token_identifier = &token_identifier;
+=======
 int32_t ThriftHiveMetastoreConcurrentClient::add_master_key(const std::string& key)
 {
   int32_t seqid = send_add_master_key(key);
@@ -73437,6 +79719,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_add_master_key(const std::stri
 
   ThriftHiveMetastore_add_master_key_pargs args;
   args.key = &key;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73447,7 +79730,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_add_master_key(const std::stri
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_token(std::string& _return, const int32_t seqid)
+=======
 int32_t ThriftHiveMetastoreConcurrentClient::recv_add_master_key(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73476,7 +79763,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::recv_add_master_key(const int32_t s
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_token") != 0) {
+=======
       if (fname.compare("add_master_key") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73485,8 +79776,12 @@ int32_t ThriftHiveMetastoreConcurrentClient::recv_add_master_key(const int32_t s
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_token_presult result;
+=======
       int32_t _return;
       ThriftHiveMetastore_add_master_key_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -73496,12 +79791,12 @@ int32_t ThriftHiveMetastoreConcurrentClient::recv_add_master_key(const int32_t s
         sentry.commit();
         return _return;
       }
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_token failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "add_master_key failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73511,6 +79806,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::recv_add_master_key(const int32_t s
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_all_token_identifiers(std::vector<std::string> & _return)
+{
+  int32_t seqid = send_get_all_token_identifiers();
+  recv_get_all_token_identifiers(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_token_identifiers()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_all_token_identifiers", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_all_token_identifiers_pargs args;
+=======
 void ThriftHiveMetastoreConcurrentClient::update_master_key(const int32_t seq_number, const std::string& key)
 {
   int32_t seqid = send_update_master_key(seq_number, key);
@@ -73526,6 +79836,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_update_master_key(const int32_
   ThriftHiveMetastore_update_master_key_pargs args;
   args.seq_number = &seq_number;
   args.key = &key;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73536,7 +79847,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_update_master_key(const int32_
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_all_token_identifiers(std::vector<std::string> & _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_update_master_key(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73565,7 +79880,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_update_master_key(const int32_t s
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_all_token_identifiers") != 0) {
+=======
       if (fname.compare("update_master_key") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73574,6 +79893,9 @@ void ThriftHiveMetastoreConcurrentClient::recv_update_master_key(const int32_t s
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_all_token_identifiers_presult result;
+=======
       ThriftHiveMetastore_update_master_key_presult result;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -73662,17 +79984,26 @@ bool ThriftHiveMetastoreConcurrentClient::recv_remove_master_key(const int32_t s
       }
       bool _return;
       ThriftHiveMetastore_remove_master_key_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
+        // _return pointer has now been filled
         sentry.commit();
+<<<<<<< HEAD
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_all_token_identifiers failed: unknown result");
+=======
         return _return;
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "remove_master_key failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73682,6 +80013,22 @@ bool ThriftHiveMetastoreConcurrentClient::recv_remove_master_key(const int32_t s
   } // end while(true)
 }
 
+<<<<<<< HEAD
+int32_t ThriftHiveMetastoreConcurrentClient::add_master_key(const std::string& key)
+{
+  int32_t seqid = send_add_master_key(key);
+  return recv_add_master_key(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_add_master_key(const std::string& key)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("add_master_key", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_add_master_key_pargs args;
+  args.key = &key;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_master_keys(std::vector<std::string> & _return)
 {
   int32_t seqid = send_get_master_keys();
@@ -73695,6 +80042,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_master_keys()
   oprot_->writeMessageBegin("get_master_keys", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_master_keys_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73705,7 +80053,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_master_keys()
   return cseqid;
 }
 
+<<<<<<< HEAD
+int32_t ThriftHiveMetastoreConcurrentClient::recv_add_master_key(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_master_keys(std::vector<std::string> & _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73734,7 +80086,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_master_keys(std::vector<std::
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("add_master_key") != 0) {
+=======
       if (fname.compare("get_master_keys") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73743,19 +80099,35 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_master_keys(std::vector<std::
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      int32_t _return;
+      ThriftHiveMetastore_add_master_key_presult result;
+=======
       ThriftHiveMetastore_get_master_keys_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
       if (result.__isset.success) {
+<<<<<<< HEAD
+        sentry.commit();
+        return _return;
+      }
+      if (result.__isset.o1) {
+=======
         // _return pointer has now been filled
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         sentry.commit();
         return;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "add_master_key failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_master_keys failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73765,6 +80137,23 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_master_keys(std::vector<std::
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::update_master_key(const int32_t seq_number, const std::string& key)
+{
+  int32_t seqid = send_update_master_key(seq_number, key);
+  recv_update_master_key(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_update_master_key(const int32_t seq_number, const std::string& key)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("update_master_key", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_update_master_key_pargs args;
+  args.seq_number = &seq_number;
+  args.key = &key;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_open_txns(GetOpenTxnsResponse& _return)
 {
   int32_t seqid = send_get_open_txns();
@@ -73778,6 +80167,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_open_txns()
   oprot_->writeMessageBegin("get_open_txns", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_open_txns_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73788,7 +80178,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_open_txns()
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_update_master_key(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns(GetOpenTxnsResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73817,7 +80211,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns(GetOpenTxnsResponse
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("update_master_key") != 0) {
+=======
       if (fname.compare("get_open_txns") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73826,12 +80224,28 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns(GetOpenTxnsResponse
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_update_master_key_presult result;
+=======
       ThriftHiveMetastore_get_open_txns_presult result;
       result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      sentry.commit();
+      return;
+=======
       if (result.__isset.success) {
         // _return pointer has now been filled
         sentry.commit();
@@ -73839,6 +80253,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns(GetOpenTxnsResponse
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_open_txns failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73848,6 +80263,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns(GetOpenTxnsResponse
   } // end while(true)
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::remove_master_key(const int32_t key_seq)
+{
+  int32_t seqid = send_remove_master_key(key_seq);
+  return recv_remove_master_key(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_remove_master_key(const int32_t key_seq)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("remove_master_key", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_remove_master_key_pargs args;
+  args.key_seq = &key_seq;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_open_txns_info(GetOpenTxnsInfoResponse& _return)
 {
   int32_t seqid = send_get_open_txns_info();
@@ -73861,6 +80292,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_open_txns_info()
   oprot_->writeMessageBegin("get_open_txns_info", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_open_txns_info_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73871,7 +80303,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_open_txns_info()
   return cseqid;
 }
 
+<<<<<<< HEAD
+bool ThriftHiveMetastoreConcurrentClient::recv_remove_master_key(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns_info(GetOpenTxnsInfoResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73900,7 +80336,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns_info(GetOpenTxnsInf
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("remove_master_key") != 0) {
+=======
       if (fname.compare("get_open_txns_info") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73909,7 +80349,12 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns_info(GetOpenTxnsInf
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      bool _return;
+      ThriftHiveMetastore_remove_master_key_presult result;
+=======
       ThriftHiveMetastore_get_open_txns_info_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -73921,7 +80366,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns_info(GetOpenTxnsInf
         return;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "remove_master_key failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_open_txns_info failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -73931,6 +80380,21 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns_info(GetOpenTxnsInf
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_master_keys(std::vector<std::string> & _return)
+{
+  int32_t seqid = send_get_master_keys();
+  recv_get_master_keys(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_master_keys()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_master_keys", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_master_keys_pargs args;
+=======
 void ThriftHiveMetastoreConcurrentClient::open_txns(OpenTxnsResponse& _return, const OpenTxnRequest& rqst)
 {
   int32_t seqid = send_open_txns(rqst);
@@ -73945,6 +80409,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_open_txns(const OpenTxnRequest
 
   ThriftHiveMetastore_open_txns_pargs args;
   args.rqst = &rqst;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -73955,7 +80420,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_open_txns(const OpenTxnRequest
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_master_keys(std::vector<std::string> & _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_open_txns(OpenTxnsResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -73984,7 +80453,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_open_txns(OpenTxnsResponse& _retu
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_master_keys") != 0) {
+=======
       if (fname.compare("open_txns") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -73993,8 +80466,365 @@ void ThriftHiveMetastoreConcurrentClient::recv_open_txns(OpenTxnsResponse& _retu
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_master_keys_presult result;
+=======
+      ThriftHiveMetastore_open_txns_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_master_keys failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "open_txns failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_open_txns(GetOpenTxnsResponse& _return)
+{
+  int32_t seqid = send_get_open_txns();
+  recv_get_open_txns(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_open_txns()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_open_txns", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_open_txns_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::abort_txn(const AbortTxnRequest& rqst)
+{
+  int32_t seqid = send_abort_txn(rqst);
+  recv_abort_txn(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_abort_txn(const AbortTxnRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("abort_txn", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_abort_txn_pargs args;
+  args.rqst = &rqst;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns(GetOpenTxnsResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_abort_txn(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_open_txns") != 0) {
+=======
+      if (fname.compare("abort_txn") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_open_txns_presult result;
+      result.success = &_return;
+=======
+      ThriftHiveMetastore_abort_txn_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+<<<<<<< HEAD
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_open_txns failed: unknown result");
+=======
+      sentry.commit();
+      return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_open_txns_info(GetOpenTxnsInfoResponse& _return)
+{
+  int32_t seqid = send_get_open_txns_info();
+  recv_get_open_txns_info(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_open_txns_info()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_open_txns_info", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_open_txns_info_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::abort_txns(const AbortTxnsRequest& rqst)
+{
+  int32_t seqid = send_abort_txns(rqst);
+  recv_abort_txns(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_abort_txns(const AbortTxnsRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("abort_txns", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_abort_txns_pargs args;
+  args.rqst = &rqst;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_open_txns_info(GetOpenTxnsInfoResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_abort_txns(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_open_txns_info") != 0) {
+=======
+      if (fname.compare("abort_txns") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_open_txns_info_presult result;
+      result.success = &_return;
+=======
+      ThriftHiveMetastore_abort_txns_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+<<<<<<< HEAD
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_open_txns_info failed: unknown result");
+=======
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      sentry.commit();
+      return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::open_txns(OpenTxnsResponse& _return, const OpenTxnRequest& rqst)
+{
+  int32_t seqid = send_open_txns(rqst);
+  recv_open_txns(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_open_txns(const OpenTxnRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("open_txns", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_open_txns_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::commit_txn(const CommitTxnRequest& rqst)
+{
+  int32_t seqid = send_commit_txn(rqst);
+  recv_commit_txn(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_commit_txn(const CommitTxnRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("commit_txn", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_commit_txn_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.rqst = &rqst;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_open_txns(OpenTxnsResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_commit_txn(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("open_txns") != 0) {
+=======
+      if (fname.compare("commit_txn") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
       ThriftHiveMetastore_open_txns_presult result;
       result.success = &_return;
+=======
+      ThriftHiveMetastore_commit_txn_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
@@ -74015,6 +80845,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_open_txns(OpenTxnsResponse& _retu
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::abort_txn(const AbortTxnRequest& rqst)
 {
   int32_t seqid = send_abort_txn(rqst);
@@ -74028,6 +80859,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_abort_txn(const AbortTxnReques
   oprot_->writeMessageBegin("abort_txn", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_abort_txn_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::lock(LockResponse& _return, const LockRequest& rqst)
+{
+  int32_t seqid = send_lock(rqst);
+  recv_lock(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_lock(const LockRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("lock", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_lock_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.rqst = &rqst;
   args.write(oprot_);
 
@@ -74039,7 +80885,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_abort_txn(const AbortTxnReques
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_abort_txn(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_lock(LockResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74068,7 +80918,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_abort_txn(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("abort_txn") != 0) {
+=======
+      if (fname.compare("lock") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74077,17 +80931,40 @@ void ThriftHiveMetastoreConcurrentClient::recv_abort_txn(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_abort_txn_presult result;
+=======
+      ThriftHiveMetastore_lock_presult result;
+      result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
       }
       sentry.commit();
       return;
+=======
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "lock failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -74097,6 +80974,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_abort_txn(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::abort_txns(const AbortTxnsRequest& rqst)
 {
   int32_t seqid = send_abort_txns(rqst);
@@ -74110,6 +80988,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_abort_txns(const AbortTxnsRequ
   oprot_->writeMessageBegin("abort_txns", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_abort_txns_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::check_lock(LockResponse& _return, const CheckLockRequest& rqst)
+{
+  int32_t seqid = send_check_lock(rqst);
+  recv_check_lock(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_check_lock(const CheckLockRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("check_lock", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_check_lock_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.rqst = &rqst;
   args.write(oprot_);
 
@@ -74121,7 +81014,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_abort_txns(const AbortTxnsRequ
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_abort_txns(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_check_lock(LockResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74150,7 +81047,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_abort_txns(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("abort_txns") != 0) {
+=======
+      if (fname.compare("check_lock") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74159,7 +81060,12 @@ void ThriftHiveMetastoreConcurrentClient::recv_abort_txns(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_abort_txns_presult result;
+=======
+      ThriftHiveMetastore_check_lock_presult result;
+      result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
@@ -74168,6 +81074,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_abort_txns(const int32_t seqid)
         sentry.commit();
         throw result.o1;
       }
+<<<<<<< HEAD
       sentry.commit();
       return;
     }
@@ -74224,14 +81131,13 @@ void ThriftHiveMetastoreConcurrentClient::recv_commit_txn(const int32_t seqid)
         x.read(iprot_);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
+=======
+      if (result.__isset.o1) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         sentry.commit();
-        throw x;
+        throw result.o1;
       }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
+<<<<<<< HEAD
       if (fname.compare("commit_txn") != 0) {
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
@@ -74256,6 +81162,18 @@ void ThriftHiveMetastoreConcurrentClient::recv_commit_txn(const int32_t seqid)
       }
       sentry.commit();
       return;
+=======
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "check_lock failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -74265,6 +81183,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_commit_txn(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::lock(LockResponse& _return, const LockRequest& rqst)
 {
   int32_t seqid = send_lock(rqst);
@@ -74278,6 +81197,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_lock(const LockRequest& rqst)
   oprot_->writeMessageBegin("lock", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_lock_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::unlock(const UnlockRequest& rqst)
+{
+  int32_t seqid = send_unlock(rqst);
+  recv_unlock(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_unlock(const UnlockRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("unlock", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_unlock_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.rqst = &rqst;
   args.write(oprot_);
 
@@ -74289,7 +81223,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_lock(const LockRequest& rqst)
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_lock(LockResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_unlock(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74318,7 +81256,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_lock(LockResponse& _return, const
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("lock") != 0) {
+=======
+      if (fname.compare("unlock") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74327,27 +81269,38 @@ void ThriftHiveMetastoreConcurrentClient::recv_lock(LockResponse& _return, const
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_lock_presult result;
       result.success = &_return;
+=======
+      ThriftHiveMetastore_unlock_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
       }
+<<<<<<< HEAD
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       if (result.__isset.o2) {
         sentry.commit();
         throw result.o2;
       }
+<<<<<<< HEAD
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "lock failed: unknown result");
+=======
+      sentry.commit();
+      return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -74357,6 +81310,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_lock(LockResponse& _return, const
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::check_lock(LockResponse& _return, const CheckLockRequest& rqst)
 {
   int32_t seqid = send_check_lock(rqst);
@@ -74370,6 +81324,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_check_lock(const CheckLockRequ
   oprot_->writeMessageBegin("check_lock", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_check_lock_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::show_locks(ShowLocksResponse& _return, const ShowLocksRequest& rqst)
+{
+  int32_t seqid = send_show_locks(rqst);
+  recv_show_locks(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_show_locks(const ShowLocksRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("show_locks", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_show_locks_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.rqst = &rqst;
   args.write(oprot_);
 
@@ -74381,7 +81350,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_check_lock(const CheckLockRequ
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_check_lock(LockResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_show_locks(ShowLocksResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74410,7 +81383,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_check_lock(LockResponse& _return,
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("check_lock") != 0) {
+=======
+      if (fname.compare("show_locks") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74419,7 +81396,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_check_lock(LockResponse& _return,
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_check_lock_presult result;
+=======
+      ThriftHiveMetastore_show_locks_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -74443,7 +81424,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_check_lock(LockResponse& _return,
         throw result.o3;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "check_lock failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "show_locks failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -74453,6 +81438,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_check_lock(LockResponse& _return,
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::unlock(const UnlockRequest& rqst)
 {
   int32_t seqid = send_unlock(rqst);
@@ -74467,162 +81453,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_unlock(const UnlockRequest& rq
 
   ThriftHiveMetastore_unlock_pargs args;
   args.rqst = &rqst;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_unlock(const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("unlock") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_unlock_presult result;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.o1) {
-        sentry.commit();
-        throw result.o1;
-      }
-      if (result.__isset.o2) {
-        sentry.commit();
-        throw result.o2;
-      }
-      sentry.commit();
-      return;
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::show_locks(ShowLocksResponse& _return, const ShowLocksRequest& rqst)
-{
-  int32_t seqid = send_show_locks(rqst);
-  recv_show_locks(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_show_locks(const ShowLocksRequest& rqst)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("show_locks", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_show_locks_pargs args;
-  args.rqst = &rqst;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_show_locks(ShowLocksResponse& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("show_locks") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_show_locks_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "show_locks failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+=======
 void ThriftHiveMetastoreConcurrentClient::heartbeat(const HeartbeatRequest& ids)
 {
   int32_t seqid = send_heartbeat(ids);
@@ -74637,6 +81468,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat(const HeartbeatReque
 
   ThriftHiveMetastore_heartbeat_pargs args;
   args.ids = &ids;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -74647,7 +81479,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat(const HeartbeatReque
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_unlock(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_heartbeat(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74676,7 +81512,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("unlock") != 0) {
+=======
       if (fname.compare("heartbeat") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74685,7 +81525,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_unlock_presult result;
+=======
       ThriftHiveMetastore_heartbeat_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
@@ -74698,10 +81542,13 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat(const int32_t seqid)
         sentry.commit();
         throw result.o2;
       }
+<<<<<<< HEAD
+=======
       if (result.__isset.o3) {
         sentry.commit();
         throw result.o3;
       }
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       sentry.commit();
       return;
     }
@@ -74713,6 +81560,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::show_locks(ShowLocksResponse& _return, const ShowLocksRequest& rqst)
+{
+  int32_t seqid = send_show_locks(rqst);
+  recv_show_locks(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_show_locks(const ShowLocksRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("show_locks", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_show_locks_pargs args;
+  args.rqst = &rqst;
+=======
 void ThriftHiveMetastoreConcurrentClient::heartbeat_txn_range(HeartbeatTxnRangeResponse& _return, const HeartbeatTxnRangeRequest& txns)
 {
   int32_t seqid = send_heartbeat_txn_range(txns);
@@ -74727,6 +81590,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat_txn_range(const Hear
 
   ThriftHiveMetastore_heartbeat_txn_range_pargs args;
   args.txns = &txns;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -74737,7 +81601,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat_txn_range(const Hear
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_show_locks(ShowLocksResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_txn_range(HeartbeatTxnRangeResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74766,7 +81634,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_txn_range(HeartbeatTxnR
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("show_locks") != 0) {
+=======
       if (fname.compare("heartbeat_txn_range") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74775,7 +81647,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_txn_range(HeartbeatTxnR
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_show_locks_presult result;
+=======
       ThriftHiveMetastore_heartbeat_txn_range_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -74787,7 +81663,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_txn_range(HeartbeatTxnR
         return;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "show_locks failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "heartbeat_txn_range failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -74797,6 +81677,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_txn_range(HeartbeatTxnR
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::heartbeat(const HeartbeatRequest& ids)
+{
+  int32_t seqid = send_heartbeat(ids);
+  recv_heartbeat(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat(const HeartbeatRequest& ids)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("heartbeat", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_heartbeat_pargs args;
+  args.ids = &ids;
+=======
 void ThriftHiveMetastoreConcurrentClient::compact(const CompactionRequest& rqst)
 {
   int32_t seqid = send_compact(rqst);
@@ -74811,6 +81707,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_compact(const CompactionReques
 
   ThriftHiveMetastore_compact_pargs args;
   args.rqst = &rqst;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -74821,7 +81718,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_compact(const CompactionReques
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_heartbeat(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_compact(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74850,7 +81751,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_compact(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("heartbeat") != 0) {
+=======
       if (fname.compare("compact") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74859,11 +81764,30 @@ void ThriftHiveMetastoreConcurrentClient::recv_compact(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_heartbeat_presult result;
+=======
       ThriftHiveMetastore_compact_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+=======
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       sentry.commit();
       return;
     }
@@ -74875,6 +81799,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_compact(const int32_t seqid)
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::heartbeat_txn_range(HeartbeatTxnRangeResponse& _return, const HeartbeatTxnRangeRequest& txns)
+{
+  int32_t seqid = send_heartbeat_txn_range(txns);
+  recv_heartbeat_txn_range(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat_txn_range(const HeartbeatTxnRangeRequest& txns)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("heartbeat_txn_range", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_heartbeat_txn_range_pargs args;
+  args.txns = &txns;
+=======
 void ThriftHiveMetastoreConcurrentClient::compact2(CompactionResponse& _return, const CompactionRequest& rqst)
 {
   int32_t seqid = send_compact2(rqst);
@@ -74889,6 +81829,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_compact2(const CompactionReque
 
   ThriftHiveMetastore_compact2_pargs args;
   args.rqst = &rqst;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -74899,7 +81840,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_compact2(const CompactionReque
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_txn_range(HeartbeatTxnRangeResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_compact2(CompactionResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -74928,7 +81873,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_compact2(CompactionResponse& _ret
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("heartbeat_txn_range") != 0) {
+=======
       if (fname.compare("compact2") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -74937,8 +81886,245 @@ void ThriftHiveMetastoreConcurrentClient::recv_compact2(CompactionResponse& _ret
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_heartbeat_txn_range_presult result;
+=======
+      ThriftHiveMetastore_compact2_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "heartbeat_txn_range failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "compact2 failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::compact(const CompactionRequest& rqst)
+{
+  int32_t seqid = send_compact(rqst);
+  recv_compact(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_compact(const CompactionRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("compact", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_compact_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::show_compact(ShowCompactResponse& _return, const ShowCompactRequest& rqst)
+{
+  int32_t seqid = send_show_compact(rqst);
+  recv_show_compact(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_show_compact(const ShowCompactRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("show_compact", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_show_compact_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.rqst = &rqst;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_compact(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_show_compact(ShowCompactResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("compact") != 0) {
+=======
+      if (fname.compare("show_compact") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_compact_presult result;
+=======
+      ThriftHiveMetastore_show_compact_presult result;
+      result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+<<<<<<< HEAD
+      sentry.commit();
+      return;
+=======
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "show_compact failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::compact2(CompactionResponse& _return, const CompactionRequest& rqst)
+{
+  int32_t seqid = send_compact2(rqst);
+  recv_compact2(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_compact2(const CompactionRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("compact2", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_compact2_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::add_dynamic_partitions(const AddDynamicPartitions& rqst)
+{
+  int32_t seqid = send_add_dynamic_partitions(rqst);
+  recv_add_dynamic_partitions(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_add_dynamic_partitions(const AddDynamicPartitions& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("add_dynamic_partitions", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_add_dynamic_partitions_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.rqst = &rqst;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_compact2(CompactionResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_add_dynamic_partitions(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("compact2") != 0) {
+=======
+      if (fname.compare("add_dynamic_partitions") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
       ThriftHiveMetastore_compact2_presult result;
       result.success = &_return;
+=======
+      ThriftHiveMetastore_add_dynamic_partitions_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
@@ -74959,6 +82145,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_compact2(CompactionResponse& _ret
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::show_compact(ShowCompactResponse& _return, const ShowCompactRequest& rqst)
 {
   int32_t seqid = send_show_compact(rqst);
@@ -74972,6 +82159,21 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_show_compact(const ShowCompact
   oprot_->writeMessageBegin("show_compact", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_show_compact_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_next_notification(NotificationEventResponse& _return, const NotificationEventRequest& rqst)
+{
+  int32_t seqid = send_get_next_notification(rqst);
+  recv_get_next_notification(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_next_notification(const NotificationEventRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_next_notification", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_next_notification_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.rqst = &rqst;
   args.write(oprot_);
 
@@ -74983,6 +82185,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_show_compact(const ShowCompact
   return cseqid;
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::recv_show_compact(ShowCompactResponse& _return, const int32_t seqid)
 {
 
@@ -75068,6 +82271,9 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_add_dynamic_partitions(const A
 }
 
 void ThriftHiveMetastoreConcurrentClient::recv_add_dynamic_partitions(const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_next_notification(NotificationEventResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -75096,7 +82302,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_add_dynamic_partitions(const int3
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
       if (fname.compare("add_dynamic_partitions") != 0) {
+=======
+      if (fname.compare("get_next_notification") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -75105,11 +82315,17 @@ void ThriftHiveMetastoreConcurrentClient::recv_add_dynamic_partitions(const int3
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
       ThriftHiveMetastore_add_dynamic_partitions_presult result;
+=======
+      ThriftHiveMetastore_get_next_notification_presult result;
+      result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
       if (result.__isset.o1) {
         sentry.commit();
         throw result.o1;
@@ -75120,6 +82336,15 @@ void ThriftHiveMetastoreConcurrentClient::recv_add_dynamic_partitions(const int3
       }
       sentry.commit();
       return;
+=======
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_notification failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -75129,6 +82354,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_add_dynamic_partitions(const int3
   } // end while(true)
 }
 
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::get_next_notification(NotificationEventResponse& _return, const NotificationEventRequest& rqst)
 {
   int32_t seqid = send_get_next_notification(rqst);
@@ -75143,76 +82369,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_next_notification(const No
 
   ThriftHiveMetastore_get_next_notification_pargs args;
   args.rqst = &rqst;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_next_notification(NotificationEventResponse& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_next_notification") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_next_notification_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_notification failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+=======
 void ThriftHiveMetastoreConcurrentClient::get_current_notificationEventId(CurrentNotificationEventId& _return)
 {
   int32_t seqid = send_get_current_notificationEventId();
@@ -75226,6 +82383,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_current_notificationEventI
   oprot_->writeMessageBegin("get_current_notificationEventId", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_get_current_notificationEventId_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -75236,7 +82394,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_current_notificationEventI
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_next_notification(NotificationEventResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_current_notificationEventId(CurrentNotificationEventId& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -75265,7 +82427,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_current_notificationEventId(C
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_next_notification") != 0) {
+=======
       if (fname.compare("get_current_notificationEventId") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -75274,7 +82440,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_current_notificationEventId(C
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_next_notification_presult result;
+=======
       ThriftHiveMetastore_get_current_notificationEventId_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -75286,7 +82456,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_current_notificationEventId(C
         return;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_notification failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_current_notificationEventId failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -75296,6 +82470,21 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_current_notificationEventId(C
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_current_notificationEventId(CurrentNotificationEventId& _return)
+{
+  int32_t seqid = send_get_current_notificationEventId();
+  recv_get_current_notificationEventId(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_current_notificationEventId()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_current_notificationEventId", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_current_notificationEventId_pargs args;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_notification_events_count(NotificationEventsCountResponse& _return, const NotificationEventsCountRequest& rqst)
 {
   int32_t seqid = send_get_notification_events_count(rqst);
@@ -75310,6 +82499,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_notification_events_count(
 
   ThriftHiveMetastore_get_notification_events_count_pargs args;
   args.rqst = &rqst;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -75320,7 +82510,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_notification_events_count(
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_current_notificationEventId(CurrentNotificationEventId& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_notification_events_count(NotificationEventsCountResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -75349,7 +82543,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_notification_events_count(Not
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("get_current_notificationEventId") != 0) {
+=======
       if (fname.compare("get_notification_events_count") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -75358,7 +82556,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_notification_events_count(Not
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_current_notificationEventId_presult result;
+=======
       ThriftHiveMetastore_get_notification_events_count_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -75370,7 +82572,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_notification_events_count(Not
         return;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_current_notificationEventId failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_notification_events_count failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -75380,6 +82586,123 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_notification_events_count(Not
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_notification_events_count(NotificationEventsCountResponse& _return, const NotificationEventsCountRequest& rqst)
+{
+  int32_t seqid = send_get_notification_events_count(rqst);
+  recv_get_notification_events_count(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_notification_events_count(const NotificationEventsCountRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_notification_events_count", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_notification_events_count_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::fire_listener_event(FireEventResponse& _return, const FireEventRequest& rqst)
+{
+  int32_t seqid = send_fire_listener_event(rqst);
+  recv_fire_listener_event(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_fire_listener_event(const FireEventRequest& rqst)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("fire_listener_event", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_fire_listener_event_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.rqst = &rqst;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_notification_events_count(NotificationEventsCountResponse& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_fire_listener_event(FireEventResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_notification_events_count") != 0) {
+=======
+      if (fname.compare("fire_listener_event") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_notification_events_count_presult result;
+=======
+      ThriftHiveMetastore_fire_listener_event_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_notification_events_count failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "fire_listener_event failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
 void ThriftHiveMetastoreConcurrentClient::fire_listener_event(FireEventResponse& _return, const FireEventRequest& rqst)
 {
   int32_t seqid = send_fire_listener_event(rqst);
@@ -75394,76 +82717,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_fire_listener_event(const Fire
 
   ThriftHiveMetastore_fire_listener_event_pargs args;
   args.rqst = &rqst;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_fire_listener_event(FireEventResponse& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("fire_listener_event") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_fire_listener_event_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "fire_listener_event failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
+=======
 void ThriftHiveMetastoreConcurrentClient::flushCache()
 {
   int32_t seqid = send_flushCache();
@@ -75477,6 +82731,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_flushCache()
   oprot_->writeMessageBegin("flushCache", ::apache::thrift::protocol::T_CALL, cseqid);
 
   ThriftHiveMetastore_flushCache_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -75487,7 +82742,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_flushCache()
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_fire_listener_event(FireEventResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_flushCache(const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -75516,7 +82775,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_flushCache(const int32_t seqid)
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("fire_listener_event") != 0) {
+=======
       if (fname.compare("flushCache") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -75525,6 +82788,9 @@ void ThriftHiveMetastoreConcurrentClient::recv_flushCache(const int32_t seqid)
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_fire_listener_event_presult result;
+=======
       ThriftHiveMetastore_flushCache_presult result;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -75604,6 +82870,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_cm_recycle(CmRecycleResponse& _re
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
       ThriftHiveMetastore_cm_recycle_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -75619,7 +82886,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_cm_recycle(CmRecycleResponse& _re
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "fire_listener_event failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "cm_recycle failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -75629,6 +82900,21 @@ void ThriftHiveMetastoreConcurrentClient::recv_cm_recycle(CmRecycleResponse& _re
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::flushCache()
+{
+  int32_t seqid = send_flushCache();
+  recv_flushCache(seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_flushCache()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("flushCache", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_flushCache_pargs args;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_file_metadata_by_expr(GetFileMetadataByExprResult& _return, const GetFileMetadataByExprRequest& req)
 {
   int32_t seqid = send_get_file_metadata_by_expr(req);
@@ -75643,6 +82929,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_file_metadata_by_expr(cons
 
   ThriftHiveMetastore_get_file_metadata_by_expr_pargs args;
   args.req = &req;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -75653,7 +82940,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_file_metadata_by_expr(cons
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_flushCache(const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata_by_expr(GetFileMetadataByExprResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -75682,7 +82973,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata_by_expr(GetFile
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("flushCache") != 0) {
+=======
       if (fname.compare("get_file_metadata_by_expr") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -75691,12 +82986,20 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata_by_expr(GetFile
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_flushCache_presult result;
+=======
       ThriftHiveMetastore_get_file_metadata_by_expr_presult result;
       result.success = &_return;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.read(iprot_);
       iprot_->readMessageEnd();
       iprot_->getTransport()->readEnd();
 
+<<<<<<< HEAD
+      sentry.commit();
+      return;
+=======
       if (result.__isset.success) {
         // _return pointer has now been filled
         sentry.commit();
@@ -75704,6 +83007,7 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata_by_expr(GetFile
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_file_metadata_by_expr failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);
@@ -75713,6 +83017,22 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata_by_expr(GetFile
   } // end while(true)
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::cm_recycle(CmRecycleResponse& _return, const CmRecycleRequest& request)
+{
+  int32_t seqid = send_cm_recycle(request);
+  recv_cm_recycle(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_cm_recycle(const CmRecycleRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("cm_recycle", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_cm_recycle_pargs args;
+  args.request = &request;
+=======
 void ThriftHiveMetastoreConcurrentClient::get_file_metadata(GetFileMetadataResult& _return, const GetFileMetadataRequest& req)
 {
   int32_t seqid = send_get_file_metadata(req);
@@ -75727,6 +83047,7 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_file_metadata(const GetFil
 
   ThriftHiveMetastore_get_file_metadata_pargs args;
   args.req = &req;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -75737,7 +83058,11 @@ int32_t ThriftHiveMetastoreConcurrentClient::send_get_file_metadata(const GetFil
   return cseqid;
 }
 
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_cm_recycle(CmRecycleResponse& _return, const int32_t seqid)
+=======
 void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata(GetFileMetadataResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 {
 
   int32_t rseqid = 0;
@@ -75766,7 +83091,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata(GetFileMetadata
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
       }
+<<<<<<< HEAD
+      if (fname.compare("cm_recycle") != 0) {
+=======
       if (fname.compare("get_file_metadata") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
         iprot_->skip(::apache::thrift::protocol::T_STRUCT);
         iprot_->readMessageEnd();
         iprot_->getTransport()->readEnd();
@@ -75775,678 +83104,11 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata(GetFileMetadata
         using ::apache::thrift::protocol::TProtocolException;
         throw TProtocolException(TProtocolException::INVALID_DATA);
       }
+<<<<<<< HEAD
+      ThriftHiveMetastore_cm_recycle_presult result;
+=======
       ThriftHiveMetastore_get_file_metadata_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_file_metadata failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::put_file_metadata(PutFileMetadataResult& _return, const PutFileMetadataRequest& req)
-{
-  int32_t seqid = send_put_file_metadata(req);
-  recv_put_file_metadata(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_put_file_metadata(const PutFileMetadataRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("put_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_put_file_metadata_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_put_file_metadata(PutFileMetadataResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("put_file_metadata") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_put_file_metadata_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "put_file_metadata failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::clear_file_metadata(ClearFileMetadataResult& _return, const ClearFileMetadataRequest& req)
-{
-  int32_t seqid = send_clear_file_metadata(req);
-  recv_clear_file_metadata(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_clear_file_metadata(const ClearFileMetadataRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("clear_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_clear_file_metadata_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_clear_file_metadata(ClearFileMetadataResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("clear_file_metadata") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_clear_file_metadata_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "clear_file_metadata failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::cache_file_metadata(CacheFileMetadataResult& _return, const CacheFileMetadataRequest& req)
-{
-  int32_t seqid = send_cache_file_metadata(req);
-  recv_cache_file_metadata(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_cache_file_metadata(const CacheFileMetadataRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("cache_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_cache_file_metadata_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_cache_file_metadata(CacheFileMetadataResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("cache_file_metadata") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_cache_file_metadata_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "cache_file_metadata failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::get_next_write_id(GetNextWriteIdResult& _return, const GetNextWriteIdRequest& req)
-{
-  int32_t seqid = send_get_next_write_id(req);
-  recv_get_next_write_id(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_next_write_id(const GetNextWriteIdRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_next_write_id_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_next_write_id(GetNextWriteIdResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_next_write_id") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_next_write_id_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_write_id failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::finalize_write_id(FinalizeWriteIdResult& _return, const FinalizeWriteIdRequest& req)
-{
-  int32_t seqid = send_finalize_write_id(req);
-  recv_finalize_write_id(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_finalize_write_id(const FinalizeWriteIdRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_finalize_write_id_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_finalize_write_id(FinalizeWriteIdResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("finalize_write_id") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_finalize_write_id_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "finalize_write_id failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::heartbeat_write_id(HeartbeatWriteIdResult& _return, const HeartbeatWriteIdRequest& req)
-{
-  int32_t seqid = send_heartbeat_write_id(req);
-  recv_heartbeat_write_id(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat_write_id(const HeartbeatWriteIdRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_heartbeat_write_id_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_write_id(HeartbeatWriteIdResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("heartbeat_write_id") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_heartbeat_write_id_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "heartbeat_write_id failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::get_valid_write_ids(GetValidWriteIdsResult& _return, const GetValidWriteIdsRequest& req)
-{
-  int32_t seqid = send_get_valid_write_ids(req);
-  recv_get_valid_write_ids(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_valid_write_ids(const GetValidWriteIdsRequest& req)
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_valid_write_ids_pargs args;
-  args.req = &req;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_valid_write_ids(GetValidWriteIdsResult& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_valid_write_ids") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_valid_write_ids_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_valid_write_ids failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
-}
-
-void ThriftHiveMetastoreConcurrentClient::get_metastore_db_uuid(std::string& _return)
-{
-  int32_t seqid = send_get_metastore_db_uuid();
-  recv_get_metastore_db_uuid(_return, seqid);
-}
-
-int32_t ThriftHiveMetastoreConcurrentClient::send_get_metastore_db_uuid()
-{
-  int32_t cseqid = this->sync_.generateSeqId();
-  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_metastore_db_uuid", ::apache::thrift::protocol::T_CALL, cseqid);
-
-  ThriftHiveMetastore_get_metastore_db_uuid_pargs args;
-  args.write(oprot_);
-
-  oprot_->writeMessageEnd();
-  oprot_->getTransport()->writeEnd();
-  oprot_->getTransport()->flush();
-
-  sentry.commit();
-  return cseqid;
-}
-
-void ThriftHiveMetastoreConcurrentClient::recv_get_metastore_db_uuid(std::string& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_metastore_db_uuid") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      ThriftHiveMetastore_get_metastore_db_uuid_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
       result.success = &_return;
       result.read(iprot_);
       iprot_->readMessageEnd();
@@ -76462,7 +83124,1200 @@ void ThriftHiveMetastoreConcurrentClient::recv_get_metastore_db_uuid(std::string
         throw result.o1;
       }
       // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "cm_recycle failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_file_metadata failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_file_metadata_by_expr(GetFileMetadataByExprResult& _return, const GetFileMetadataByExprRequest& req)
+{
+  int32_t seqid = send_get_file_metadata_by_expr(req);
+  recv_get_file_metadata_by_expr(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_file_metadata_by_expr(const GetFileMetadataByExprRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_file_metadata_by_expr", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_file_metadata_by_expr_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::put_file_metadata(PutFileMetadataResult& _return, const PutFileMetadataRequest& req)
+{
+  int32_t seqid = send_put_file_metadata(req);
+  recv_put_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_put_file_metadata(const PutFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("put_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_put_file_metadata_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata_by_expr(GetFileMetadataByExprResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_put_file_metadata(PutFileMetadataResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_file_metadata_by_expr") != 0) {
+=======
+      if (fname.compare("put_file_metadata") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_file_metadata_by_expr_presult result;
+=======
+      ThriftHiveMetastore_put_file_metadata_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_file_metadata_by_expr failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "put_file_metadata failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_file_metadata(GetFileMetadataResult& _return, const GetFileMetadataRequest& req)
+{
+  int32_t seqid = send_get_file_metadata(req);
+  recv_get_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_file_metadata(const GetFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_file_metadata_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::clear_file_metadata(ClearFileMetadataResult& _return, const ClearFileMetadataRequest& req)
+{
+  int32_t seqid = send_clear_file_metadata(req);
+  recv_clear_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_clear_file_metadata(const ClearFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("clear_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_clear_file_metadata_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_file_metadata(GetFileMetadataResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_clear_file_metadata(ClearFileMetadataResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_file_metadata") != 0) {
+=======
+      if (fname.compare("clear_file_metadata") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_file_metadata_presult result;
+=======
+      ThriftHiveMetastore_clear_file_metadata_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_file_metadata failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "clear_file_metadata failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::put_file_metadata(PutFileMetadataResult& _return, const PutFileMetadataRequest& req)
+{
+  int32_t seqid = send_put_file_metadata(req);
+  recv_put_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_put_file_metadata(const PutFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("put_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_put_file_metadata_pargs args;
+=======
+void ThriftHiveMetastoreConcurrentClient::cache_file_metadata(CacheFileMetadataResult& _return, const CacheFileMetadataRequest& req)
+{
+  int32_t seqid = send_cache_file_metadata(req);
+  recv_cache_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_cache_file_metadata(const CacheFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("cache_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_cache_file_metadata_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.req = &req;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_put_file_metadata(PutFileMetadataResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_cache_file_metadata(CacheFileMetadataResult& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("put_file_metadata") != 0) {
+=======
+      if (fname.compare("cache_file_metadata") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_put_file_metadata_presult result;
+=======
+      ThriftHiveMetastore_cache_file_metadata_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "put_file_metadata failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "cache_file_metadata failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::clear_file_metadata(ClearFileMetadataResult& _return, const ClearFileMetadataRequest& req)
+{
+  int32_t seqid = send_clear_file_metadata(req);
+  recv_clear_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_clear_file_metadata(const ClearFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("clear_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_clear_file_metadata_pargs args;
+  args.req = &req;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_metastore_db_uuid(std::string& _return)
+{
+  int32_t seqid = send_get_metastore_db_uuid();
+  recv_get_metastore_db_uuid(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_metastore_db_uuid()
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_metastore_db_uuid", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_metastore_db_uuid_pargs args;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_clear_file_metadata(ClearFileMetadataResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_metastore_db_uuid(std::string& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("clear_file_metadata") != 0) {
+=======
+      if (fname.compare("get_metastore_db_uuid") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_clear_file_metadata_presult result;
+=======
+      ThriftHiveMetastore_get_metastore_db_uuid_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "clear_file_metadata failed: unknown result");
+=======
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_metastore_db_uuid failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::cache_file_metadata(CacheFileMetadataResult& _return, const CacheFileMetadataRequest& req)
+{
+  int32_t seqid = send_cache_file_metadata(req);
+  recv_cache_file_metadata(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_cache_file_metadata(const CacheFileMetadataRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("cache_file_metadata", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_cache_file_metadata_pargs args;
+  args.req = &req;
+=======
+void ThriftHiveMetastoreConcurrentClient::create_resource_plan(WMCreateResourcePlanResponse& _return, const WMCreateResourcePlanRequest& request)
+{
+  int32_t seqid = send_create_resource_plan(request);
+  recv_create_resource_plan(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_create_resource_plan(const WMCreateResourcePlanRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("create_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_create_resource_plan_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_cache_file_metadata(CacheFileMetadataResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_create_resource_plan(WMCreateResourcePlanResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("cache_file_metadata") != 0) {
+=======
+      if (fname.compare("create_resource_plan") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_cache_file_metadata_presult result;
+=======
+      ThriftHiveMetastore_create_resource_plan_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "cache_file_metadata failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "create_resource_plan failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_next_write_id(GetNextWriteIdResult& _return, const GetNextWriteIdRequest& req)
+{
+  int32_t seqid = send_get_next_write_id(req);
+  recv_get_next_write_id(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_next_write_id(const GetNextWriteIdRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_next_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_next_write_id_pargs args;
+  args.req = &req;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_resource_plan(WMGetResourcePlanResponse& _return, const WMGetResourcePlanRequest& request)
+{
+  int32_t seqid = send_get_resource_plan(request);
+  recv_get_resource_plan(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_resource_plan(const WMGetResourcePlanRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_resource_plan_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_next_write_id(GetNextWriteIdResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_resource_plan(WMGetResourcePlanResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_next_write_id") != 0) {
+=======
+      if (fname.compare("get_resource_plan") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_next_write_id_presult result;
+=======
+      ThriftHiveMetastore_get_resource_plan_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_next_write_id failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_resource_plan failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::finalize_write_id(FinalizeWriteIdResult& _return, const FinalizeWriteIdRequest& req)
+{
+  int32_t seqid = send_finalize_write_id(req);
+  recv_finalize_write_id(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_finalize_write_id(const FinalizeWriteIdRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("finalize_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_finalize_write_id_pargs args;
+  args.req = &req;
+=======
+void ThriftHiveMetastoreConcurrentClient::get_all_resource_plans(WMGetAllResourcePlanResponse& _return, const WMGetAllResourcePlanRequest& request)
+{
+  int32_t seqid = send_get_all_resource_plans(request);
+  recv_get_all_resource_plans(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_all_resource_plans(const WMGetAllResourcePlanRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_all_resource_plans", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_all_resource_plans_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_finalize_write_id(FinalizeWriteIdResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_get_all_resource_plans(WMGetAllResourcePlanResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("finalize_write_id") != 0) {
+=======
+      if (fname.compare("get_all_resource_plans") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_finalize_write_id_presult result;
+=======
+      ThriftHiveMetastore_get_all_resource_plans_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "finalize_write_id failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_all_resource_plans failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::heartbeat_write_id(HeartbeatWriteIdResult& _return, const HeartbeatWriteIdRequest& req)
+{
+  int32_t seqid = send_heartbeat_write_id(req);
+  recv_heartbeat_write_id(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_heartbeat_write_id(const HeartbeatWriteIdRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("heartbeat_write_id", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_heartbeat_write_id_pargs args;
+  args.req = &req;
+=======
+void ThriftHiveMetastoreConcurrentClient::alter_resource_plan(WMAlterResourcePlanResponse& _return, const WMAlterResourcePlanRequest& request)
+{
+  int32_t seqid = send_alter_resource_plan(request);
+  recv_alter_resource_plan(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_alter_resource_plan(const WMAlterResourcePlanRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("alter_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_alter_resource_plan_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_heartbeat_write_id(HeartbeatWriteIdResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_alter_resource_plan(WMAlterResourcePlanResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("heartbeat_write_id") != 0) {
+=======
+      if (fname.compare("alter_resource_plan") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_heartbeat_write_id_presult result;
+=======
+      ThriftHiveMetastore_alter_resource_plan_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "heartbeat_write_id failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "alter_resource_plan failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::get_valid_write_ids(GetValidWriteIdsResult& _return, const GetValidWriteIdsRequest& req)
+{
+  int32_t seqid = send_get_valid_write_ids(req);
+  recv_get_valid_write_ids(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_get_valid_write_ids(const GetValidWriteIdsRequest& req)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("get_valid_write_ids", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_get_valid_write_ids_pargs args;
+  args.req = &req;
+=======
+void ThriftHiveMetastoreConcurrentClient::validate_resource_plan(WMValidateResourcePlanResponse& _return, const WMValidateResourcePlanRequest& request)
+{
+  int32_t seqid = send_validate_resource_plan(request);
+  recv_validate_resource_plan(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_validate_resource_plan(const WMValidateResourcePlanRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("validate_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_validate_resource_plan_pargs args;
+  args.request = &request;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+<<<<<<< HEAD
+void ThriftHiveMetastoreConcurrentClient::recv_get_valid_write_ids(GetValidWriteIdsResult& _return, const int32_t seqid)
+=======
+void ThriftHiveMetastoreConcurrentClient::recv_validate_resource_plan(WMValidateResourcePlanResponse& _return, const int32_t seqid)
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+<<<<<<< HEAD
+      if (fname.compare("get_valid_write_ids") != 0) {
+=======
+      if (fname.compare("validate_resource_plan") != 0) {
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+<<<<<<< HEAD
+      ThriftHiveMetastore_get_valid_write_ids_presult result;
+=======
+      ThriftHiveMetastore_validate_resource_plan_presult result;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      // in a bad state, don't commit
+<<<<<<< HEAD
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_valid_write_ids failed: unknown result");
+=======
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "validate_resource_plan failed: unknown result");
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+    }
+    // seqid != rseqid
+    this->sync_.updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_.waitForWork(seqid);
+  } // end while(true)
+}
+
+void ThriftHiveMetastoreConcurrentClient::drop_resource_plan(WMDropResourcePlanResponse& _return, const WMDropResourcePlanRequest& request)
+{
+  int32_t seqid = send_drop_resource_plan(request);
+  recv_drop_resource_plan(_return, seqid);
+}
+
+int32_t ThriftHiveMetastoreConcurrentClient::send_drop_resource_plan(const WMDropResourcePlanRequest& request)
+{
+  int32_t cseqid = this->sync_.generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
+  oprot_->writeMessageBegin("drop_resource_plan", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  ThriftHiveMetastore_drop_resource_plan_pargs args;
+  args.request = &request;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+void ThriftHiveMetastoreConcurrentClient::recv_drop_resource_plan(WMDropResourcePlanResponse& _return, const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
+
+  while(true) {
+    if(!this->sync_.getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("drop_resource_plan") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      ThriftHiveMetastore_drop_resource_plan_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        // _return pointer has now been filled
+        sentry.commit();
+        return;
+      }
+      if (result.__isset.o1) {
+        sentry.commit();
+        throw result.o1;
+      }
+      if (result.__isset.o2) {
+        sentry.commit();
+        throw result.o2;
+      }
+      if (result.__isset.o3) {
+        sentry.commit();
+        throw result.o3;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "drop_resource_plan failed: unknown result");
     }
     // seqid != rseqid
     this->sync_.updatePending(fname, mtype, rseqid);

@@ -26,8 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.PrivilegedExceptionAction;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -177,43 +175,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.jdo.JDOException;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
-import java.util.Timer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
-
-import static org.apache.commons.lang.StringUtils.join;
-import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_COMMENT;
-import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_NAME;
-import static org.apache.hadoop.hive.metastore.MetaStoreUtils.validateName;
+import com.facebook.fb303.FacebookBase;
+import com.facebook.fb303.fb_status;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
  * TODO:pc remove application logic to a separate interface.
@@ -3094,16 +3061,33 @@ public class HiveMetaStore extends ThriftHiveMetastore {
             continue;
           }
 
+          final UserGroupInformation ugi;
+          try {
+            ugi = UserGroupInformation.getCurrentUser();
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+
           partFutures.add(threadPool.submit(new Callable<Partition>() {
             @Override public Partition call() throws Exception {
-              boolean madeDir = createLocationForAddedPartition(table, part);
-              if (addedPartitions.put(new PartValEqWrapperLite(part), madeDir) != null) {
-                // Technically, for ifNotExists case, we could insert one and discard the other
-                // because the first one now "exists", but it seems better to report the problem
-                // upstream as such a command doesn't make sense.
-                throw new MetaException("Duplicate partitions in the list: " + part);
-              }
-              initializeAddedPartition(table, part, madeDir);
+              ugi.doAs(new PrivilegedExceptionAction<Partition>() {
+                @Override
+                public Partition run() throws Exception {
+                  try {
+                    boolean madeDir = createLocationForAddedPartition(table, part);
+                    if (addedPartitions.put(new PartValEqWrapperLite(part), madeDir) != null) {
+                      // Technically, for ifNotExists case, we could insert one and discard the other
+                      // because the first one now "exists", but it seems better to report the problem
+                      // upstream as such a command doesn't make sense.
+                      throw new MetaException("Duplicate partitions in the list: " + part);
+                    }
+                    initializeAddedPartition(table, part, madeDir);
+                  } catch (MetaException e) {
+                    throw new IOException(e.getMessage(), e);
+                  }
+                  return null;
+                }
+              });
               return part;
             }
           }));
@@ -3624,14 +3608,13 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       Table tbl = null;
       List<Partition> parts = null;
       boolean mustPurge = false;
-      boolean isExternalTbl = false;
       List<Map<String, String>> transactionalListenerResponses = Lists.newArrayList();
 
       try {
         // We need Partition-s for firing events and for result; DN needs MPartition-s to drop.
         // Great... Maybe we could bypass fetching MPartitions by issuing direct SQL deletes.
         tbl = get_table_core(dbName, tblName);
-        isExternalTbl = isExternal(tbl);
+        isExternal(tbl);
         mustPurge = isMustPurge(envContext, tbl);
         int minCount = 0;
         RequestPartsSpec spec = request.getParts();
@@ -4565,7 +4548,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
               }
             }
 
-            @SuppressWarnings("deprecation")
             Deserializer s = MetaStoreUtils.getDeserializer(curConf, tbl, false);
             ret = MetaStoreUtils.getFieldsFromDeserializer(tableName, s);
           } catch (SerDeException e) {
@@ -7656,6 +7638,84 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         return getMS().getMetastoreDbUuid();
       } catch (MetaException e) {
         LOG.error("Exception thrown while querying metastore db uuid", e);
+        throw e;
+      }
+    }
+
+
+    @Override
+    public WMCreateResourcePlanResponse create_resource_plan(WMCreateResourcePlanRequest request)
+        throws AlreadyExistsException, InvalidObjectException, MetaException, TException {
+      try {
+        getMS().createResourcePlan(request.getResourcePlan());
+        return new WMCreateResourcePlanResponse();
+      } catch (MetaException e) {
+        LOG.error("Exception while trying to persist resource plan", e);
+        throw e;
+      }
+    }
+
+    @Override
+    public WMGetResourcePlanResponse get_resource_plan(WMGetResourcePlanRequest request)
+        throws NoSuchObjectException, MetaException, TException {
+      try {
+        WMResourcePlan rp = getMS().getResourcePlan(request.getResourcePlanName());
+        WMGetResourcePlanResponse resp = new WMGetResourcePlanResponse();
+        resp.setResourcePlan(rp);
+        return resp;
+      } catch (MetaException e) {
+        LOG.error("Exception while trying to retrieve resource plan", e);
+        throw e;
+      }
+    }
+
+    @Override
+    public WMGetAllResourcePlanResponse get_all_resource_plans(WMGetAllResourcePlanRequest request)
+        throws MetaException, TException {
+      try {
+        WMGetAllResourcePlanResponse resp = new WMGetAllResourcePlanResponse();
+        resp.setResourcePlans(getMS().getAllResourcePlans());
+        return resp;
+      } catch (MetaException e) {
+        LOG.error("Exception while trying to retrieve resource plans", e);
+        throw e;
+      }
+    }
+
+    @Override
+    public WMAlterResourcePlanResponse alter_resource_plan(WMAlterResourcePlanRequest request)
+        throws NoSuchObjectException, InvalidOperationException, MetaException, TException {
+      try {
+        getMS().alterResourcePlan(request.getResourcePlanName(), request.getResourcePlan());
+        return new WMAlterResourcePlanResponse();
+      } catch (MetaException e) {
+        LOG.error("Exception while trying to alter resource plan", e);
+        throw e;
+      }
+    }
+
+    @Override
+    public WMValidateResourcePlanResponse validate_resource_plan(WMValidateResourcePlanRequest request)
+        throws NoSuchObjectException, MetaException, TException {
+      try {
+        boolean isValid = getMS().validateResourcePlan(request.getResourcePlanName());
+        WMValidateResourcePlanResponse resp = new WMValidateResourcePlanResponse();
+        resp.setIsValid(isValid);
+        return resp;
+      } catch (MetaException e) {
+        LOG.error("Exception while trying to validate resource plan", e);
+        throw e;
+      }
+    }
+
+    @Override
+    public WMDropResourcePlanResponse drop_resource_plan(WMDropResourcePlanRequest request)
+        throws NoSuchObjectException, InvalidOperationException, MetaException, TException {
+      try {
+        getMS().dropResourcePlan(request.getResourcePlanName());
+        return new WMDropResourcePlanResponse();
+      } catch (MetaException e) {
+        LOG.error("Exception while trying to retrieve resource plans", e);
         throw e;
       }
     }

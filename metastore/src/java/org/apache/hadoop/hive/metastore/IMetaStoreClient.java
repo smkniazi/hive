@@ -87,6 +87,7 @@ import org.apache.hadoop.hive.metastore.api.PrimaryKeysRequest;
 import org.apache.hadoop.hive.metastore.api.PrincipalPrivilegeSet;
 import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.PrivilegeBag;
+import org.apache.hadoop.hive.metastore.api.WMResourcePlan;
 import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.SQLForeignKey;
 import org.apache.hadoop.hive.metastore.api.SQLNotNullConstraint;
@@ -1776,4 +1777,21 @@ public interface IMetaStoreClient {
    */
   String getMetastoreDbUuid() throws MetaException, TException;
 
+  void createResourcePlan(WMResourcePlan resourcePlan)
+      throws InvalidObjectException, MetaException, TException;
+
+  WMResourcePlan getResourcePlan(String resourcePlanName)
+    throws NoSuchObjectException, MetaException, TException;
+
+  List<WMResourcePlan> getAllResourcePlans()
+      throws NoSuchObjectException, MetaException, TException;
+
+  void dropResourcePlan(String resourcePlanName)
+      throws NoSuchObjectException, MetaException, TException;
+
+  void alterResourcePlan(String resourcePlanName, WMResourcePlan resourcePlan)
+      throws NoSuchObjectException, InvalidObjectException, MetaException, TException;
+
+  boolean validateResourcePlan(String resourcePlanName)
+      throws NoSuchObjectException, InvalidObjectException, MetaException, TException;
 }

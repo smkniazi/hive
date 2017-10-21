@@ -187,6 +187,18 @@ const char* _kClientCapabilityNames[] = {
 };
 const std::map<int, const char*> _ClientCapability_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(2, _kClientCapabilityValues, _kClientCapabilityNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
+int _kWMResourcePlanStatusValues[] = {
+  WMResourcePlanStatus::ACTIVE,
+  WMResourcePlanStatus::ENABLED,
+  WMResourcePlanStatus::DISABLED
+};
+const char* _kWMResourcePlanStatusNames[] = {
+  "ACTIVE",
+  "ENABLED",
+  "DISABLED"
+};
+const std::map<int, const char*> _WMResourcePlanStatus_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(3, _kWMResourcePlanStatusValues, _kWMResourcePlanStatusNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
+
 
 Version::~Version() throw() {
 }
@@ -21683,7 +21695,7 @@ void WMResourcePlan::__set_name(const std::string& val) {
   this->name = val;
 }
 
-void WMResourcePlan::__set_status(const std::string& val) {
+void WMResourcePlan::__set_status(const WMResourcePlanStatus::type val) {
   this->status = val;
 __isset.status = true;
 }
@@ -21724,8 +21736,10 @@ uint32_t WMResourcePlan::read(::apache::thrift::protocol::TProtocol* iprot) {
         }
         break;
       case 2:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->status);
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          int32_t ecast863;
+          xfer += iprot->readI32(ecast863);
+          this->status = (WMResourcePlanStatus::type)ecast863;
           this->__isset.status = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -21763,8 +21777,8 @@ uint32_t WMResourcePlan::write(::apache::thrift::protocol::TProtocol* oprot) con
   xfer += oprot->writeFieldEnd();
 
   if (this->__isset.status) {
-    xfer += oprot->writeFieldBegin("status", ::apache::thrift::protocol::T_STRING, 2);
-    xfer += oprot->writeString(this->status);
+    xfer += oprot->writeFieldBegin("status", ::apache::thrift::protocol::T_I32, 2);
+    xfer += oprot->writeI32((int32_t)this->status);
     xfer += oprot->writeFieldEnd();
   }
   if (this->__isset.queryParallelism) {
@@ -21785,6 +21799,7 @@ void swap(WMResourcePlan &a, WMResourcePlan &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 WMResourcePlan::WMResourcePlan(const WMResourcePlan& other885) {
   name = other885.name;
   status = other885.status;
@@ -21796,6 +21811,19 @@ WMResourcePlan& WMResourcePlan::operator=(const WMResourcePlan& other886) {
   status = other886.status;
   queryParallelism = other886.queryParallelism;
   __isset = other886.__isset;
+=======
+WMResourcePlan::WMResourcePlan(const WMResourcePlan& other864) {
+  name = other864.name;
+  status = other864.status;
+  queryParallelism = other864.queryParallelism;
+  __isset = other864.__isset;
+}
+WMResourcePlan& WMResourcePlan::operator=(const WMResourcePlan& other865) {
+  name = other865.name;
+  status = other865.status;
+  queryParallelism = other865.queryParallelism;
+  __isset = other865.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void WMResourcePlan::printTo(std::ostream& out) const {
@@ -21976,6 +22004,7 @@ void swap(WMPool &a, WMPool &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 WMPool::WMPool(const WMPool& other887) {
   resourcePlanName = other887.resourcePlanName;
   poolName = other887.poolName;
@@ -21993,6 +22022,25 @@ WMPool& WMPool::operator=(const WMPool& other888) {
   queryParallelism = other888.queryParallelism;
   schedulingPolicy = other888.schedulingPolicy;
   __isset = other888.__isset;
+=======
+WMPool::WMPool(const WMPool& other866) {
+  resourcePlanName = other866.resourcePlanName;
+  poolName = other866.poolName;
+  parentPoolName = other866.parentPoolName;
+  allocFraction = other866.allocFraction;
+  queryParallelism = other866.queryParallelism;
+  schedulingPolicy = other866.schedulingPolicy;
+  __isset = other866.__isset;
+}
+WMPool& WMPool::operator=(const WMPool& other867) {
+  resourcePlanName = other867.resourcePlanName;
+  poolName = other867.poolName;
+  parentPoolName = other867.parentPoolName;
+  allocFraction = other867.allocFraction;
+  queryParallelism = other867.queryParallelism;
+  schedulingPolicy = other867.schedulingPolicy;
+  __isset = other867.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void WMPool::printTo(std::ostream& out) const {
@@ -22138,6 +22186,7 @@ void swap(WMTrigger &a, WMTrigger &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 WMTrigger::WMTrigger(const WMTrigger& other889) {
   resourcePlanName = other889.resourcePlanName;
   poolName = other889.poolName;
@@ -22151,6 +22200,21 @@ WMTrigger& WMTrigger::operator=(const WMTrigger& other890) {
   triggerExpression = other890.triggerExpression;
   actionExpression = other890.actionExpression;
   __isset = other890.__isset;
+=======
+WMTrigger::WMTrigger(const WMTrigger& other868) {
+  resourcePlanName = other868.resourcePlanName;
+  poolName = other868.poolName;
+  triggerExpression = other868.triggerExpression;
+  actionExpression = other868.actionExpression;
+  __isset = other868.__isset;
+}
+WMTrigger& WMTrigger::operator=(const WMTrigger& other869) {
+  resourcePlanName = other869.resourcePlanName;
+  poolName = other869.poolName;
+  triggerExpression = other869.triggerExpression;
+  actionExpression = other869.actionExpression;
+  __isset = other869.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void WMTrigger::printTo(std::ostream& out) const {
@@ -22314,6 +22378,7 @@ void swap(WMMapping &a, WMMapping &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 WMMapping::WMMapping(const WMMapping& other891) {
   resourcePlanName = other891.resourcePlanName;
   entityType = other891.entityType;
@@ -22329,6 +22394,23 @@ WMMapping& WMMapping::operator=(const WMMapping& other892) {
   poolName = other892.poolName;
   ordering = other892.ordering;
   __isset = other892.__isset;
+=======
+WMMapping::WMMapping(const WMMapping& other870) {
+  resourcePlanName = other870.resourcePlanName;
+  entityType = other870.entityType;
+  entityName = other870.entityName;
+  poolName = other870.poolName;
+  ordering = other870.ordering;
+  __isset = other870.__isset;
+}
+WMMapping& WMMapping::operator=(const WMMapping& other871) {
+  resourcePlanName = other871.resourcePlanName;
+  entityType = other871.entityType;
+  entityName = other871.entityName;
+  poolName = other871.poolName;
+  ordering = other871.ordering;
+  __isset = other871.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void WMMapping::printTo(std::ostream& out) const {
@@ -22339,6 +22421,1050 @@ void WMMapping::printTo(std::ostream& out) const {
   out << ", " << "entityName=" << to_string(entityName);
   out << ", " << "poolName="; (__isset.poolName ? (out << to_string(poolName)) : (out << "<null>"));
   out << ", " << "ordering="; (__isset.ordering ? (out << to_string(ordering)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMCreateResourcePlanRequest::~WMCreateResourcePlanRequest() throw() {
+}
+
+
+void WMCreateResourcePlanRequest::__set_resourcePlan(const WMResourcePlan& val) {
+  this->resourcePlan = val;
+__isset.resourcePlan = true;
+}
+
+uint32_t WMCreateResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->resourcePlan.read(iprot);
+          this->__isset.resourcePlan = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMCreateResourcePlanRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMCreateResourcePlanRequest");
+
+  if (this->__isset.resourcePlan) {
+    xfer += oprot->writeFieldBegin("resourcePlan", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->resourcePlan.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMCreateResourcePlanRequest &a, WMCreateResourcePlanRequest &b) {
+  using ::std::swap;
+  swap(a.resourcePlan, b.resourcePlan);
+  swap(a.__isset, b.__isset);
+}
+
+<<<<<<< HEAD
+MetaException::MetaException(const MetaException& other893) : TException() {
+  message = other893.message;
+  __isset = other893.__isset;
+}
+MetaException& MetaException::operator=(const MetaException& other894) {
+  message = other894.message;
+  __isset = other894.__isset;
+=======
+WMCreateResourcePlanRequest::WMCreateResourcePlanRequest(const WMCreateResourcePlanRequest& other872) {
+  resourcePlan = other872.resourcePlan;
+  __isset = other872.__isset;
+}
+WMCreateResourcePlanRequest& WMCreateResourcePlanRequest::operator=(const WMCreateResourcePlanRequest& other873) {
+  resourcePlan = other873.resourcePlan;
+  __isset = other873.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  return *this;
+}
+void WMCreateResourcePlanRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMCreateResourcePlanRequest(";
+  out << "resourcePlan="; (__isset.resourcePlan ? (out << to_string(resourcePlan)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMCreateResourcePlanResponse::~WMCreateResourcePlanResponse() throw() {
+}
+
+
+uint32_t WMCreateResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMCreateResourcePlanResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMCreateResourcePlanResponse");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMCreateResourcePlanResponse &a, WMCreateResourcePlanResponse &b) {
+  using ::std::swap;
+  (void) a;
+  (void) b;
+}
+
+<<<<<<< HEAD
+UnknownTableException::UnknownTableException(const UnknownTableException& other895) : TException() {
+  message = other895.message;
+  __isset = other895.__isset;
+}
+UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other896) {
+  message = other896.message;
+  __isset = other896.__isset;
+=======
+WMCreateResourcePlanResponse::WMCreateResourcePlanResponse(const WMCreateResourcePlanResponse& other874) {
+  (void) other874;
+}
+WMCreateResourcePlanResponse& WMCreateResourcePlanResponse::operator=(const WMCreateResourcePlanResponse& other875) {
+  (void) other875;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  return *this;
+}
+void WMCreateResourcePlanResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMCreateResourcePlanResponse(";
+  out << ")";
+}
+
+
+WMGetResourcePlanRequest::~WMGetResourcePlanRequest() throw() {
+}
+
+
+void WMGetResourcePlanRequest::__set_resourcePlanName(const std::string& val) {
+  this->resourcePlanName = val;
+__isset.resourcePlanName = true;
+}
+
+uint32_t WMGetResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->resourcePlanName);
+          this->__isset.resourcePlanName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMGetResourcePlanRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMGetResourcePlanRequest");
+
+  if (this->__isset.resourcePlanName) {
+    xfer += oprot->writeFieldBegin("resourcePlanName", ::apache::thrift::protocol::T_STRING, 1);
+    xfer += oprot->writeString(this->resourcePlanName);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMGetResourcePlanRequest &a, WMGetResourcePlanRequest &b) {
+  using ::std::swap;
+  swap(a.resourcePlanName, b.resourcePlanName);
+  swap(a.__isset, b.__isset);
+}
+
+<<<<<<< HEAD
+UnknownDBException::UnknownDBException(const UnknownDBException& other897) : TException() {
+  message = other897.message;
+  __isset = other897.__isset;
+}
+UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other898) {
+  message = other898.message;
+  __isset = other898.__isset;
+=======
+WMGetResourcePlanRequest::WMGetResourcePlanRequest(const WMGetResourcePlanRequest& other876) {
+  resourcePlanName = other876.resourcePlanName;
+  __isset = other876.__isset;
+}
+WMGetResourcePlanRequest& WMGetResourcePlanRequest::operator=(const WMGetResourcePlanRequest& other877) {
+  resourcePlanName = other877.resourcePlanName;
+  __isset = other877.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  return *this;
+}
+void WMGetResourcePlanRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMGetResourcePlanRequest(";
+  out << "resourcePlanName="; (__isset.resourcePlanName ? (out << to_string(resourcePlanName)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMGetResourcePlanResponse::~WMGetResourcePlanResponse() throw() {
+}
+
+
+void WMGetResourcePlanResponse::__set_resourcePlan(const WMResourcePlan& val) {
+  this->resourcePlan = val;
+__isset.resourcePlan = true;
+}
+
+uint32_t WMGetResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->resourcePlan.read(iprot);
+          this->__isset.resourcePlan = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMGetResourcePlanResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMGetResourcePlanResponse");
+
+  if (this->__isset.resourcePlan) {
+    xfer += oprot->writeFieldBegin("resourcePlan", ::apache::thrift::protocol::T_STRUCT, 1);
+    xfer += this->resourcePlan.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMGetResourcePlanResponse &a, WMGetResourcePlanResponse &b) {
+  using ::std::swap;
+  swap(a.resourcePlan, b.resourcePlan);
+  swap(a.__isset, b.__isset);
+}
+
+<<<<<<< HEAD
+AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other899) : TException() {
+  message = other899.message;
+  __isset = other899.__isset;
+}
+AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other900) {
+  message = other900.message;
+  __isset = other900.__isset;
+=======
+WMGetResourcePlanResponse::WMGetResourcePlanResponse(const WMGetResourcePlanResponse& other878) {
+  resourcePlan = other878.resourcePlan;
+  __isset = other878.__isset;
+}
+WMGetResourcePlanResponse& WMGetResourcePlanResponse::operator=(const WMGetResourcePlanResponse& other879) {
+  resourcePlan = other879.resourcePlan;
+  __isset = other879.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  return *this;
+}
+void WMGetResourcePlanResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMGetResourcePlanResponse(";
+  out << "resourcePlan="; (__isset.resourcePlan ? (out << to_string(resourcePlan)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMGetAllResourcePlanRequest::~WMGetAllResourcePlanRequest() throw() {
+}
+
+
+uint32_t WMGetAllResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMGetAllResourcePlanRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMGetAllResourcePlanRequest");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMGetAllResourcePlanRequest &a, WMGetAllResourcePlanRequest &b) {
+  using ::std::swap;
+  (void) a;
+  (void) b;
+}
+
+<<<<<<< HEAD
+InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other901) : TException() {
+  message = other901.message;
+  __isset = other901.__isset;
+}
+InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other902) {
+  message = other902.message;
+  __isset = other902.__isset;
+=======
+WMGetAllResourcePlanRequest::WMGetAllResourcePlanRequest(const WMGetAllResourcePlanRequest& other880) {
+  (void) other880;
+}
+WMGetAllResourcePlanRequest& WMGetAllResourcePlanRequest::operator=(const WMGetAllResourcePlanRequest& other881) {
+  (void) other881;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+  return *this;
+}
+void WMGetAllResourcePlanRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMGetAllResourcePlanRequest(";
+  out << ")";
+}
+
+
+WMGetAllResourcePlanResponse::~WMGetAllResourcePlanResponse() throw() {
+}
+
+
+void WMGetAllResourcePlanResponse::__set_resourcePlans(const std::vector<WMResourcePlan> & val) {
+  this->resourcePlans = val;
+__isset.resourcePlans = true;
+}
+
+uint32_t WMGetAllResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->resourcePlans.clear();
+            uint32_t _size882;
+            ::apache::thrift::protocol::TType _etype885;
+            xfer += iprot->readListBegin(_etype885, _size882);
+            this->resourcePlans.resize(_size882);
+            uint32_t _i886;
+            for (_i886 = 0; _i886 < _size882; ++_i886)
+            {
+              xfer += this->resourcePlans[_i886].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.resourcePlans = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMGetAllResourcePlanResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMGetAllResourcePlanResponse");
+
+  if (this->__isset.resourcePlans) {
+    xfer += oprot->writeFieldBegin("resourcePlans", ::apache::thrift::protocol::T_LIST, 1);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->resourcePlans.size()));
+      std::vector<WMResourcePlan> ::const_iterator _iter887;
+      for (_iter887 = this->resourcePlans.begin(); _iter887 != this->resourcePlans.end(); ++_iter887)
+      {
+        xfer += (*_iter887).write(oprot);
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMGetAllResourcePlanResponse &a, WMGetAllResourcePlanResponse &b) {
+  using ::std::swap;
+  swap(a.resourcePlans, b.resourcePlans);
+  swap(a.__isset, b.__isset);
+}
+
+WMGetAllResourcePlanResponse::WMGetAllResourcePlanResponse(const WMGetAllResourcePlanResponse& other888) {
+  resourcePlans = other888.resourcePlans;
+  __isset = other888.__isset;
+}
+WMGetAllResourcePlanResponse& WMGetAllResourcePlanResponse::operator=(const WMGetAllResourcePlanResponse& other889) {
+  resourcePlans = other889.resourcePlans;
+  __isset = other889.__isset;
+  return *this;
+}
+void WMGetAllResourcePlanResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMGetAllResourcePlanResponse(";
+  out << "resourcePlans="; (__isset.resourcePlans ? (out << to_string(resourcePlans)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMAlterResourcePlanRequest::~WMAlterResourcePlanRequest() throw() {
+}
+
+
+void WMAlterResourcePlanRequest::__set_resourcePlanName(const std::string& val) {
+  this->resourcePlanName = val;
+__isset.resourcePlanName = true;
+}
+
+void WMAlterResourcePlanRequest::__set_resourcePlan(const WMResourcePlan& val) {
+  this->resourcePlan = val;
+__isset.resourcePlan = true;
+}
+
+uint32_t WMAlterResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->resourcePlanName);
+          this->__isset.resourcePlanName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRUCT) {
+          xfer += this->resourcePlan.read(iprot);
+          this->__isset.resourcePlan = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMAlterResourcePlanRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMAlterResourcePlanRequest");
+
+  if (this->__isset.resourcePlanName) {
+    xfer += oprot->writeFieldBegin("resourcePlanName", ::apache::thrift::protocol::T_STRING, 1);
+    xfer += oprot->writeString(this->resourcePlanName);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.resourcePlan) {
+    xfer += oprot->writeFieldBegin("resourcePlan", ::apache::thrift::protocol::T_STRUCT, 2);
+    xfer += this->resourcePlan.write(oprot);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMAlterResourcePlanRequest &a, WMAlterResourcePlanRequest &b) {
+  using ::std::swap;
+  swap(a.resourcePlanName, b.resourcePlanName);
+  swap(a.resourcePlan, b.resourcePlan);
+  swap(a.__isset, b.__isset);
+}
+
+WMAlterResourcePlanRequest::WMAlterResourcePlanRequest(const WMAlterResourcePlanRequest& other890) {
+  resourcePlanName = other890.resourcePlanName;
+  resourcePlan = other890.resourcePlan;
+  __isset = other890.__isset;
+}
+WMAlterResourcePlanRequest& WMAlterResourcePlanRequest::operator=(const WMAlterResourcePlanRequest& other891) {
+  resourcePlanName = other891.resourcePlanName;
+  resourcePlan = other891.resourcePlan;
+  __isset = other891.__isset;
+  return *this;
+}
+void WMAlterResourcePlanRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMAlterResourcePlanRequest(";
+  out << "resourcePlanName="; (__isset.resourcePlanName ? (out << to_string(resourcePlanName)) : (out << "<null>"));
+  out << ", " << "resourcePlan="; (__isset.resourcePlan ? (out << to_string(resourcePlan)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMAlterResourcePlanResponse::~WMAlterResourcePlanResponse() throw() {
+}
+
+
+uint32_t WMAlterResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMAlterResourcePlanResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMAlterResourcePlanResponse");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMAlterResourcePlanResponse &a, WMAlterResourcePlanResponse &b) {
+  using ::std::swap;
+  (void) a;
+  (void) b;
+}
+
+WMAlterResourcePlanResponse::WMAlterResourcePlanResponse(const WMAlterResourcePlanResponse& other892) {
+  (void) other892;
+}
+WMAlterResourcePlanResponse& WMAlterResourcePlanResponse::operator=(const WMAlterResourcePlanResponse& other893) {
+  (void) other893;
+  return *this;
+}
+void WMAlterResourcePlanResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMAlterResourcePlanResponse(";
+  out << ")";
+}
+
+
+WMValidateResourcePlanRequest::~WMValidateResourcePlanRequest() throw() {
+}
+
+
+void WMValidateResourcePlanRequest::__set_resourcePlanName(const std::string& val) {
+  this->resourcePlanName = val;
+__isset.resourcePlanName = true;
+}
+
+uint32_t WMValidateResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->resourcePlanName);
+          this->__isset.resourcePlanName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMValidateResourcePlanRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMValidateResourcePlanRequest");
+
+  if (this->__isset.resourcePlanName) {
+    xfer += oprot->writeFieldBegin("resourcePlanName", ::apache::thrift::protocol::T_STRING, 1);
+    xfer += oprot->writeString(this->resourcePlanName);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMValidateResourcePlanRequest &a, WMValidateResourcePlanRequest &b) {
+  using ::std::swap;
+  swap(a.resourcePlanName, b.resourcePlanName);
+  swap(a.__isset, b.__isset);
+}
+
+WMValidateResourcePlanRequest::WMValidateResourcePlanRequest(const WMValidateResourcePlanRequest& other894) {
+  resourcePlanName = other894.resourcePlanName;
+  __isset = other894.__isset;
+}
+WMValidateResourcePlanRequest& WMValidateResourcePlanRequest::operator=(const WMValidateResourcePlanRequest& other895) {
+  resourcePlanName = other895.resourcePlanName;
+  __isset = other895.__isset;
+  return *this;
+}
+void WMValidateResourcePlanRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMValidateResourcePlanRequest(";
+  out << "resourcePlanName="; (__isset.resourcePlanName ? (out << to_string(resourcePlanName)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMValidateResourcePlanResponse::~WMValidateResourcePlanResponse() throw() {
+}
+
+
+void WMValidateResourcePlanResponse::__set_isValid(const bool val) {
+  this->isValid = val;
+__isset.isValid = true;
+}
+
+uint32_t WMValidateResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->isValid);
+          this->__isset.isValid = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMValidateResourcePlanResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMValidateResourcePlanResponse");
+
+  if (this->__isset.isValid) {
+    xfer += oprot->writeFieldBegin("isValid", ::apache::thrift::protocol::T_BOOL, 1);
+    xfer += oprot->writeBool(this->isValid);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMValidateResourcePlanResponse &a, WMValidateResourcePlanResponse &b) {
+  using ::std::swap;
+  swap(a.isValid, b.isValid);
+  swap(a.__isset, b.__isset);
+}
+
+WMValidateResourcePlanResponse::WMValidateResourcePlanResponse(const WMValidateResourcePlanResponse& other896) {
+  isValid = other896.isValid;
+  __isset = other896.__isset;
+}
+WMValidateResourcePlanResponse& WMValidateResourcePlanResponse::operator=(const WMValidateResourcePlanResponse& other897) {
+  isValid = other897.isValid;
+  __isset = other897.__isset;
+  return *this;
+}
+void WMValidateResourcePlanResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMValidateResourcePlanResponse(";
+  out << "isValid="; (__isset.isValid ? (out << to_string(isValid)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMDropResourcePlanRequest::~WMDropResourcePlanRequest() throw() {
+}
+
+
+void WMDropResourcePlanRequest::__set_resourcePlanName(const std::string& val) {
+  this->resourcePlanName = val;
+__isset.resourcePlanName = true;
+}
+
+uint32_t WMDropResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->resourcePlanName);
+          this->__isset.resourcePlanName = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMDropResourcePlanRequest::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMDropResourcePlanRequest");
+
+  if (this->__isset.resourcePlanName) {
+    xfer += oprot->writeFieldBegin("resourcePlanName", ::apache::thrift::protocol::T_STRING, 1);
+    xfer += oprot->writeString(this->resourcePlanName);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMDropResourcePlanRequest &a, WMDropResourcePlanRequest &b) {
+  using ::std::swap;
+  swap(a.resourcePlanName, b.resourcePlanName);
+  swap(a.__isset, b.__isset);
+}
+
+WMDropResourcePlanRequest::WMDropResourcePlanRequest(const WMDropResourcePlanRequest& other898) {
+  resourcePlanName = other898.resourcePlanName;
+  __isset = other898.__isset;
+}
+WMDropResourcePlanRequest& WMDropResourcePlanRequest::operator=(const WMDropResourcePlanRequest& other899) {
+  resourcePlanName = other899.resourcePlanName;
+  __isset = other899.__isset;
+  return *this;
+}
+void WMDropResourcePlanRequest::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMDropResourcePlanRequest(";
+  out << "resourcePlanName="; (__isset.resourcePlanName ? (out << to_string(resourcePlanName)) : (out << "<null>"));
+  out << ")";
+}
+
+
+WMDropResourcePlanResponse::~WMDropResourcePlanResponse() throw() {
+}
+
+
+uint32_t WMDropResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    xfer += iprot->skip(ftype);
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t WMDropResourcePlanResponse::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("WMDropResourcePlanResponse");
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(WMDropResourcePlanResponse &a, WMDropResourcePlanResponse &b) {
+  using ::std::swap;
+  (void) a;
+  (void) b;
+}
+
+WMDropResourcePlanResponse::WMDropResourcePlanResponse(const WMDropResourcePlanResponse& other900) {
+  (void) other900;
+}
+WMDropResourcePlanResponse& WMDropResourcePlanResponse::operator=(const WMDropResourcePlanResponse& other901) {
+  (void) other901;
+  return *this;
+}
+void WMDropResourcePlanResponse::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "WMDropResourcePlanResponse(";
   out << ")";
 }
 
@@ -22412,13 +23538,13 @@ void swap(MetaException &a, MetaException &b) {
   swap(a.__isset, b.__isset);
 }
 
-MetaException::MetaException(const MetaException& other893) : TException() {
-  message = other893.message;
-  __isset = other893.__isset;
+MetaException::MetaException(const MetaException& other902) : TException() {
+  message = other902.message;
+  __isset = other902.__isset;
 }
-MetaException& MetaException::operator=(const MetaException& other894) {
-  message = other894.message;
-  __isset = other894.__isset;
+MetaException& MetaException::operator=(const MetaException& other903) {
+  message = other903.message;
+  __isset = other903.__isset;
   return *this;
 }
 void MetaException::printTo(std::ostream& out) const {
@@ -22509,13 +23635,13 @@ void swap(UnknownTableException &a, UnknownTableException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownTableException::UnknownTableException(const UnknownTableException& other895) : TException() {
-  message = other895.message;
-  __isset = other895.__isset;
+UnknownTableException::UnknownTableException(const UnknownTableException& other904) : TException() {
+  message = other904.message;
+  __isset = other904.__isset;
 }
-UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other896) {
-  message = other896.message;
-  __isset = other896.__isset;
+UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other905) {
+  message = other905.message;
+  __isset = other905.__isset;
   return *this;
 }
 void UnknownTableException::printTo(std::ostream& out) const {
@@ -22606,13 +23732,13 @@ void swap(UnknownDBException &a, UnknownDBException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownDBException::UnknownDBException(const UnknownDBException& other897) : TException() {
-  message = other897.message;
-  __isset = other897.__isset;
+UnknownDBException::UnknownDBException(const UnknownDBException& other906) : TException() {
+  message = other906.message;
+  __isset = other906.__isset;
 }
-UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other898) {
-  message = other898.message;
-  __isset = other898.__isset;
+UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other907) {
+  message = other907.message;
+  __isset = other907.__isset;
   return *this;
 }
 void UnknownDBException::printTo(std::ostream& out) const {
@@ -22703,13 +23829,13 @@ void swap(AlreadyExistsException &a, AlreadyExistsException &b) {
   swap(a.__isset, b.__isset);
 }
 
-AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other899) : TException() {
-  message = other899.message;
-  __isset = other899.__isset;
+AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other908) : TException() {
+  message = other908.message;
+  __isset = other908.__isset;
 }
-AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other900) {
-  message = other900.message;
-  __isset = other900.__isset;
+AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other909) {
+  message = other909.message;
+  __isset = other909.__isset;
   return *this;
 }
 void AlreadyExistsException::printTo(std::ostream& out) const {
@@ -22800,13 +23926,13 @@ void swap(InvalidPartitionException &a, InvalidPartitionException &b) {
   swap(a.__isset, b.__isset);
 }
 
-InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other901) : TException() {
-  message = other901.message;
-  __isset = other901.__isset;
+InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other910) : TException() {
+  message = other910.message;
+  __isset = other910.__isset;
 }
-InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other902) {
-  message = other902.message;
-  __isset = other902.__isset;
+InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other911) {
+  message = other911.message;
+  __isset = other911.__isset;
   return *this;
 }
 void InvalidPartitionException::printTo(std::ostream& out) const {
@@ -22897,6 +24023,7 @@ void swap(UnknownPartitionException &a, UnknownPartitionException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other903) : TException() {
   message = other903.message;
   __isset = other903.__isset;
@@ -22904,6 +24031,15 @@ UnknownPartitionException::UnknownPartitionException(const UnknownPartitionExcep
 UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other904) {
   message = other904.message;
   __isset = other904.__isset;
+=======
+UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other912) : TException() {
+  message = other912.message;
+  __isset = other912.__isset;
+}
+UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other913) {
+  message = other913.message;
+  __isset = other913.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void UnknownPartitionException::printTo(std::ostream& out) const {
@@ -22994,6 +24130,7 @@ void swap(InvalidObjectException &a, InvalidObjectException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 InvalidObjectException::InvalidObjectException(const InvalidObjectException& other905) : TException() {
   message = other905.message;
   __isset = other905.__isset;
@@ -23001,6 +24138,15 @@ InvalidObjectException::InvalidObjectException(const InvalidObjectException& oth
 InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other906) {
   message = other906.message;
   __isset = other906.__isset;
+=======
+InvalidObjectException::InvalidObjectException(const InvalidObjectException& other914) : TException() {
+  message = other914.message;
+  __isset = other914.__isset;
+}
+InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other915) {
+  message = other915.message;
+  __isset = other915.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void InvalidObjectException::printTo(std::ostream& out) const {
@@ -23091,6 +24237,7 @@ void swap(NoSuchObjectException &a, NoSuchObjectException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other907) : TException() {
   message = other907.message;
   __isset = other907.__isset;
@@ -23098,6 +24245,15 @@ NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other9
 NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other908) {
   message = other908.message;
   __isset = other908.__isset;
+=======
+NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other916) : TException() {
+  message = other916.message;
+  __isset = other916.__isset;
+}
+NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other917) {
+  message = other917.message;
+  __isset = other917.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void NoSuchObjectException::printTo(std::ostream& out) const {
@@ -23188,6 +24344,7 @@ void swap(IndexAlreadyExistsException &a, IndexAlreadyExistsException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other909) : TException() {
   message = other909.message;
   __isset = other909.__isset;
@@ -23195,6 +24352,15 @@ IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExist
 IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other910) {
   message = other910.message;
   __isset = other910.__isset;
+=======
+IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other918) : TException() {
+  message = other918.message;
+  __isset = other918.__isset;
+}
+IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other919) {
+  message = other919.message;
+  __isset = other919.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void IndexAlreadyExistsException::printTo(std::ostream& out) const {
@@ -23285,6 +24451,7 @@ void swap(InvalidOperationException &a, InvalidOperationException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 InvalidOperationException::InvalidOperationException(const InvalidOperationException& other911) : TException() {
   message = other911.message;
   __isset = other911.__isset;
@@ -23292,6 +24459,15 @@ InvalidOperationException::InvalidOperationException(const InvalidOperationExcep
 InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other912) {
   message = other912.message;
   __isset = other912.__isset;
+=======
+InvalidOperationException::InvalidOperationException(const InvalidOperationException& other920) : TException() {
+  message = other920.message;
+  __isset = other920.__isset;
+}
+InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other921) {
+  message = other921.message;
+  __isset = other921.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void InvalidOperationException::printTo(std::ostream& out) const {
@@ -23382,6 +24558,7 @@ void swap(ConfigValSecurityException &a, ConfigValSecurityException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other913) : TException() {
   message = other913.message;
   __isset = other913.__isset;
@@ -23389,6 +24566,15 @@ ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityEx
 ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other914) {
   message = other914.message;
   __isset = other914.__isset;
+=======
+ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other922) : TException() {
+  message = other922.message;
+  __isset = other922.__isset;
+}
+ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other923) {
+  message = other923.message;
+  __isset = other923.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void ConfigValSecurityException::printTo(std::ostream& out) const {
@@ -23479,6 +24665,7 @@ void swap(InvalidInputException &a, InvalidInputException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 InvalidInputException::InvalidInputException(const InvalidInputException& other915) : TException() {
   message = other915.message;
   __isset = other915.__isset;
@@ -23486,6 +24673,15 @@ InvalidInputException::InvalidInputException(const InvalidInputException& other9
 InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other916) {
   message = other916.message;
   __isset = other916.__isset;
+=======
+InvalidInputException::InvalidInputException(const InvalidInputException& other924) : TException() {
+  message = other924.message;
+  __isset = other924.__isset;
+}
+InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other925) {
+  message = other925.message;
+  __isset = other925.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void InvalidInputException::printTo(std::ostream& out) const {
@@ -23576,6 +24772,7 @@ void swap(NoSuchTxnException &a, NoSuchTxnException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other917) : TException() {
   message = other917.message;
   __isset = other917.__isset;
@@ -23583,6 +24780,15 @@ NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other917) : TEx
 NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other918) {
   message = other918.message;
   __isset = other918.__isset;
+=======
+NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other926) : TException() {
+  message = other926.message;
+  __isset = other926.__isset;
+}
+NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other927) {
+  message = other927.message;
+  __isset = other927.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void NoSuchTxnException::printTo(std::ostream& out) const {
@@ -23673,6 +24879,7 @@ void swap(TxnAbortedException &a, TxnAbortedException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 TxnAbortedException::TxnAbortedException(const TxnAbortedException& other919) : TException() {
   message = other919.message;
   __isset = other919.__isset;
@@ -23680,6 +24887,15 @@ TxnAbortedException::TxnAbortedException(const TxnAbortedException& other919) : 
 TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other920) {
   message = other920.message;
   __isset = other920.__isset;
+=======
+TxnAbortedException::TxnAbortedException(const TxnAbortedException& other928) : TException() {
+  message = other928.message;
+  __isset = other928.__isset;
+}
+TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other929) {
+  message = other929.message;
+  __isset = other929.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void TxnAbortedException::printTo(std::ostream& out) const {
@@ -23770,6 +24986,7 @@ void swap(TxnOpenException &a, TxnOpenException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 TxnOpenException::TxnOpenException(const TxnOpenException& other921) : TException() {
   message = other921.message;
   __isset = other921.__isset;
@@ -23777,6 +24994,15 @@ TxnOpenException::TxnOpenException(const TxnOpenException& other921) : TExceptio
 TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other922) {
   message = other922.message;
   __isset = other922.__isset;
+=======
+TxnOpenException::TxnOpenException(const TxnOpenException& other930) : TException() {
+  message = other930.message;
+  __isset = other930.__isset;
+}
+TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other931) {
+  message = other931.message;
+  __isset = other931.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void TxnOpenException::printTo(std::ostream& out) const {
@@ -23867,6 +25093,7 @@ void swap(NoSuchLockException &a, NoSuchLockException &b) {
   swap(a.__isset, b.__isset);
 }
 
+<<<<<<< HEAD
 NoSuchLockException::NoSuchLockException(const NoSuchLockException& other923) : TException() {
   message = other923.message;
   __isset = other923.__isset;
@@ -23874,6 +25101,15 @@ NoSuchLockException::NoSuchLockException(const NoSuchLockException& other923) : 
 NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other924) {
   message = other924.message;
   __isset = other924.__isset;
+=======
+NoSuchLockException::NoSuchLockException(const NoSuchLockException& other932) : TException() {
+  message = other932.message;
+  __isset = other932.__isset;
+}
+NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other933) {
+  message = other933.message;
+  __isset = other933.__isset;
+>>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
   return *this;
 }
 void NoSuchLockException::printTo(std::ostream& out) const {
