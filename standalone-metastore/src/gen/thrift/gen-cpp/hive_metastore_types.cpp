@@ -21737,9 +21737,9 @@ uint32_t WMResourcePlan::read(::apache::thrift::protocol::TProtocol* iprot) {
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast863;
-          xfer += iprot->readI32(ecast863);
-          this->status = (WMResourcePlanStatus::type)ecast863;
+          int32_t ecast885;
+          xfer += iprot->readI32(ecast885);
+          this->status = (WMResourcePlanStatus::type)ecast885;
           this->__isset.status = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -21799,31 +21799,17 @@ void swap(WMResourcePlan &a, WMResourcePlan &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-WMResourcePlan::WMResourcePlan(const WMResourcePlan& other885) {
-  name = other885.name;
-  status = other885.status;
-  queryParallelism = other885.queryParallelism;
-  __isset = other885.__isset;
-}
-WMResourcePlan& WMResourcePlan::operator=(const WMResourcePlan& other886) {
+WMResourcePlan::WMResourcePlan(const WMResourcePlan& other886) {
   name = other886.name;
   status = other886.status;
   queryParallelism = other886.queryParallelism;
   __isset = other886.__isset;
-=======
-WMResourcePlan::WMResourcePlan(const WMResourcePlan& other864) {
-  name = other864.name;
-  status = other864.status;
-  queryParallelism = other864.queryParallelism;
-  __isset = other864.__isset;
 }
-WMResourcePlan& WMResourcePlan::operator=(const WMResourcePlan& other865) {
-  name = other865.name;
-  status = other865.status;
-  queryParallelism = other865.queryParallelism;
-  __isset = other865.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMResourcePlan& WMResourcePlan::operator=(const WMResourcePlan& other887) {
+  name = other887.name;
+  status = other887.status;
+  queryParallelism = other887.queryParallelism;
+  __isset = other887.__isset;
   return *this;
 }
 void WMResourcePlan::printTo(std::ostream& out) const {
@@ -22004,17 +21990,7 @@ void swap(WMPool &a, WMPool &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-WMPool::WMPool(const WMPool& other887) {
-  resourcePlanName = other887.resourcePlanName;
-  poolName = other887.poolName;
-  parentPoolName = other887.parentPoolName;
-  allocFraction = other887.allocFraction;
-  queryParallelism = other887.queryParallelism;
-  schedulingPolicy = other887.schedulingPolicy;
-  __isset = other887.__isset;
-}
-WMPool& WMPool::operator=(const WMPool& other888) {
+WMPool::WMPool(const WMPool& other888) {
   resourcePlanName = other888.resourcePlanName;
   poolName = other888.poolName;
   parentPoolName = other888.parentPoolName;
@@ -22022,25 +21998,15 @@ WMPool& WMPool::operator=(const WMPool& other888) {
   queryParallelism = other888.queryParallelism;
   schedulingPolicy = other888.schedulingPolicy;
   __isset = other888.__isset;
-=======
-WMPool::WMPool(const WMPool& other866) {
-  resourcePlanName = other866.resourcePlanName;
-  poolName = other866.poolName;
-  parentPoolName = other866.parentPoolName;
-  allocFraction = other866.allocFraction;
-  queryParallelism = other866.queryParallelism;
-  schedulingPolicy = other866.schedulingPolicy;
-  __isset = other866.__isset;
 }
-WMPool& WMPool::operator=(const WMPool& other867) {
-  resourcePlanName = other867.resourcePlanName;
-  poolName = other867.poolName;
-  parentPoolName = other867.parentPoolName;
-  allocFraction = other867.allocFraction;
-  queryParallelism = other867.queryParallelism;
-  schedulingPolicy = other867.schedulingPolicy;
-  __isset = other867.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMPool& WMPool::operator=(const WMPool& other889) {
+  resourcePlanName = other889.resourcePlanName;
+  poolName = other889.poolName;
+  parentPoolName = other889.parentPoolName;
+  allocFraction = other889.allocFraction;
+  queryParallelism = other889.queryParallelism;
+  schedulingPolicy = other889.schedulingPolicy;
+  __isset = other889.__isset;
   return *this;
 }
 void WMPool::printTo(std::ostream& out) const {
@@ -22186,35 +22152,19 @@ void swap(WMTrigger &a, WMTrigger &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-WMTrigger::WMTrigger(const WMTrigger& other889) {
-  resourcePlanName = other889.resourcePlanName;
-  poolName = other889.poolName;
-  triggerExpression = other889.triggerExpression;
-  actionExpression = other889.actionExpression;
-  __isset = other889.__isset;
-}
-WMTrigger& WMTrigger::operator=(const WMTrigger& other890) {
+WMTrigger::WMTrigger(const WMTrigger& other890) {
   resourcePlanName = other890.resourcePlanName;
   poolName = other890.poolName;
   triggerExpression = other890.triggerExpression;
   actionExpression = other890.actionExpression;
   __isset = other890.__isset;
-=======
-WMTrigger::WMTrigger(const WMTrigger& other868) {
-  resourcePlanName = other868.resourcePlanName;
-  poolName = other868.poolName;
-  triggerExpression = other868.triggerExpression;
-  actionExpression = other868.actionExpression;
-  __isset = other868.__isset;
 }
-WMTrigger& WMTrigger::operator=(const WMTrigger& other869) {
-  resourcePlanName = other869.resourcePlanName;
-  poolName = other869.poolName;
-  triggerExpression = other869.triggerExpression;
-  actionExpression = other869.actionExpression;
-  __isset = other869.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMTrigger& WMTrigger::operator=(const WMTrigger& other891) {
+  resourcePlanName = other891.resourcePlanName;
+  poolName = other891.poolName;
+  triggerExpression = other891.triggerExpression;
+  actionExpression = other891.actionExpression;
+  __isset = other891.__isset;
   return *this;
 }
 void WMTrigger::printTo(std::ostream& out) const {
@@ -22378,39 +22328,21 @@ void swap(WMMapping &a, WMMapping &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-WMMapping::WMMapping(const WMMapping& other891) {
-  resourcePlanName = other891.resourcePlanName;
-  entityType = other891.entityType;
-  entityName = other891.entityName;
-  poolName = other891.poolName;
-  ordering = other891.ordering;
-  __isset = other891.__isset;
-}
-WMMapping& WMMapping::operator=(const WMMapping& other892) {
+WMMapping::WMMapping(const WMMapping& other892) {
   resourcePlanName = other892.resourcePlanName;
   entityType = other892.entityType;
   entityName = other892.entityName;
   poolName = other892.poolName;
   ordering = other892.ordering;
   __isset = other892.__isset;
-=======
-WMMapping::WMMapping(const WMMapping& other870) {
-  resourcePlanName = other870.resourcePlanName;
-  entityType = other870.entityType;
-  entityName = other870.entityName;
-  poolName = other870.poolName;
-  ordering = other870.ordering;
-  __isset = other870.__isset;
 }
-WMMapping& WMMapping::operator=(const WMMapping& other871) {
-  resourcePlanName = other871.resourcePlanName;
-  entityType = other871.entityType;
-  entityName = other871.entityName;
-  poolName = other871.poolName;
-  ordering = other871.ordering;
-  __isset = other871.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMMapping& WMMapping::operator=(const WMMapping& other893) {
+  resourcePlanName = other893.resourcePlanName;
+  entityType = other893.entityType;
+  entityName = other893.entityName;
+  poolName = other893.poolName;
+  ordering = other893.ordering;
+  __isset = other893.__isset;
   return *this;
 }
 void WMMapping::printTo(std::ostream& out) const {
@@ -22496,23 +22428,13 @@ void swap(WMCreateResourcePlanRequest &a, WMCreateResourcePlanRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-MetaException::MetaException(const MetaException& other893) : TException() {
-  message = other893.message;
-  __isset = other893.__isset;
-}
-MetaException& MetaException::operator=(const MetaException& other894) {
-  message = other894.message;
+WMCreateResourcePlanRequest::WMCreateResourcePlanRequest(const WMCreateResourcePlanRequest& other894) {
+  resourcePlan = other894.resourcePlan;
   __isset = other894.__isset;
-=======
-WMCreateResourcePlanRequest::WMCreateResourcePlanRequest(const WMCreateResourcePlanRequest& other872) {
-  resourcePlan = other872.resourcePlan;
-  __isset = other872.__isset;
 }
-WMCreateResourcePlanRequest& WMCreateResourcePlanRequest::operator=(const WMCreateResourcePlanRequest& other873) {
-  resourcePlan = other873.resourcePlan;
-  __isset = other873.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMCreateResourcePlanRequest& WMCreateResourcePlanRequest::operator=(const WMCreateResourcePlanRequest& other895) {
+  resourcePlan = other895.resourcePlan;
+  __isset = other895.__isset;
   return *this;
 }
 void WMCreateResourcePlanRequest::printTo(std::ostream& out) const {
@@ -22571,21 +22493,11 @@ void swap(WMCreateResourcePlanResponse &a, WMCreateResourcePlanResponse &b) {
   (void) b;
 }
 
-<<<<<<< HEAD
-UnknownTableException::UnknownTableException(const UnknownTableException& other895) : TException() {
-  message = other895.message;
-  __isset = other895.__isset;
+WMCreateResourcePlanResponse::WMCreateResourcePlanResponse(const WMCreateResourcePlanResponse& other896) {
+  (void) other896;
 }
-UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other896) {
-  message = other896.message;
-  __isset = other896.__isset;
-=======
-WMCreateResourcePlanResponse::WMCreateResourcePlanResponse(const WMCreateResourcePlanResponse& other874) {
-  (void) other874;
-}
-WMCreateResourcePlanResponse& WMCreateResourcePlanResponse::operator=(const WMCreateResourcePlanResponse& other875) {
-  (void) other875;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMCreateResourcePlanResponse& WMCreateResourcePlanResponse::operator=(const WMCreateResourcePlanResponse& other897) {
+  (void) other897;
   return *this;
 }
 void WMCreateResourcePlanResponse::printTo(std::ostream& out) const {
@@ -22666,23 +22578,13 @@ void swap(WMGetResourcePlanRequest &a, WMGetResourcePlanRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-UnknownDBException::UnknownDBException(const UnknownDBException& other897) : TException() {
-  message = other897.message;
-  __isset = other897.__isset;
-}
-UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other898) {
-  message = other898.message;
+WMGetResourcePlanRequest::WMGetResourcePlanRequest(const WMGetResourcePlanRequest& other898) {
+  resourcePlanName = other898.resourcePlanName;
   __isset = other898.__isset;
-=======
-WMGetResourcePlanRequest::WMGetResourcePlanRequest(const WMGetResourcePlanRequest& other876) {
-  resourcePlanName = other876.resourcePlanName;
-  __isset = other876.__isset;
 }
-WMGetResourcePlanRequest& WMGetResourcePlanRequest::operator=(const WMGetResourcePlanRequest& other877) {
-  resourcePlanName = other877.resourcePlanName;
-  __isset = other877.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMGetResourcePlanRequest& WMGetResourcePlanRequest::operator=(const WMGetResourcePlanRequest& other899) {
+  resourcePlanName = other899.resourcePlanName;
+  __isset = other899.__isset;
   return *this;
 }
 void WMGetResourcePlanRequest::printTo(std::ostream& out) const {
@@ -22764,23 +22666,13 @@ void swap(WMGetResourcePlanResponse &a, WMGetResourcePlanResponse &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other899) : TException() {
-  message = other899.message;
-  __isset = other899.__isset;
-}
-AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other900) {
-  message = other900.message;
+WMGetResourcePlanResponse::WMGetResourcePlanResponse(const WMGetResourcePlanResponse& other900) {
+  resourcePlan = other900.resourcePlan;
   __isset = other900.__isset;
-=======
-WMGetResourcePlanResponse::WMGetResourcePlanResponse(const WMGetResourcePlanResponse& other878) {
-  resourcePlan = other878.resourcePlan;
-  __isset = other878.__isset;
 }
-WMGetResourcePlanResponse& WMGetResourcePlanResponse::operator=(const WMGetResourcePlanResponse& other879) {
-  resourcePlan = other879.resourcePlan;
-  __isset = other879.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMGetResourcePlanResponse& WMGetResourcePlanResponse::operator=(const WMGetResourcePlanResponse& other901) {
+  resourcePlan = other901.resourcePlan;
+  __isset = other901.__isset;
   return *this;
 }
 void WMGetResourcePlanResponse::printTo(std::ostream& out) const {
@@ -22839,21 +22731,11 @@ void swap(WMGetAllResourcePlanRequest &a, WMGetAllResourcePlanRequest &b) {
   (void) b;
 }
 
-<<<<<<< HEAD
-InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other901) : TException() {
-  message = other901.message;
-  __isset = other901.__isset;
+WMGetAllResourcePlanRequest::WMGetAllResourcePlanRequest(const WMGetAllResourcePlanRequest& other902) {
+  (void) other902;
 }
-InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other902) {
-  message = other902.message;
-  __isset = other902.__isset;
-=======
-WMGetAllResourcePlanRequest::WMGetAllResourcePlanRequest(const WMGetAllResourcePlanRequest& other880) {
-  (void) other880;
-}
-WMGetAllResourcePlanRequest& WMGetAllResourcePlanRequest::operator=(const WMGetAllResourcePlanRequest& other881) {
-  (void) other881;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+WMGetAllResourcePlanRequest& WMGetAllResourcePlanRequest::operator=(const WMGetAllResourcePlanRequest& other903) {
+  (void) other903;
   return *this;
 }
 void WMGetAllResourcePlanRequest::printTo(std::ostream& out) const {
@@ -22897,14 +22779,14 @@ uint32_t WMGetAllResourcePlanResponse::read(::apache::thrift::protocol::TProtoco
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->resourcePlans.clear();
-            uint32_t _size882;
-            ::apache::thrift::protocol::TType _etype885;
-            xfer += iprot->readListBegin(_etype885, _size882);
-            this->resourcePlans.resize(_size882);
-            uint32_t _i886;
-            for (_i886 = 0; _i886 < _size882; ++_i886)
+            uint32_t _size904;
+            ::apache::thrift::protocol::TType _etype907;
+            xfer += iprot->readListBegin(_etype907, _size904);
+            this->resourcePlans.resize(_size904);
+            uint32_t _i908;
+            for (_i908 = 0; _i908 < _size904; ++_i908)
             {
-              xfer += this->resourcePlans[_i886].read(iprot);
+              xfer += this->resourcePlans[_i908].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
@@ -22934,10 +22816,10 @@ uint32_t WMGetAllResourcePlanResponse::write(::apache::thrift::protocol::TProtoc
     xfer += oprot->writeFieldBegin("resourcePlans", ::apache::thrift::protocol::T_LIST, 1);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->resourcePlans.size()));
-      std::vector<WMResourcePlan> ::const_iterator _iter887;
-      for (_iter887 = this->resourcePlans.begin(); _iter887 != this->resourcePlans.end(); ++_iter887)
+      std::vector<WMResourcePlan> ::const_iterator _iter909;
+      for (_iter909 = this->resourcePlans.begin(); _iter909 != this->resourcePlans.end(); ++_iter909)
       {
-        xfer += (*_iter887).write(oprot);
+        xfer += (*_iter909).write(oprot);
       }
       xfer += oprot->writeListEnd();
     }
@@ -22954,13 +22836,13 @@ void swap(WMGetAllResourcePlanResponse &a, WMGetAllResourcePlanResponse &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMGetAllResourcePlanResponse::WMGetAllResourcePlanResponse(const WMGetAllResourcePlanResponse& other888) {
-  resourcePlans = other888.resourcePlans;
-  __isset = other888.__isset;
+WMGetAllResourcePlanResponse::WMGetAllResourcePlanResponse(const WMGetAllResourcePlanResponse& other910) {
+  resourcePlans = other910.resourcePlans;
+  __isset = other910.__isset;
 }
-WMGetAllResourcePlanResponse& WMGetAllResourcePlanResponse::operator=(const WMGetAllResourcePlanResponse& other889) {
-  resourcePlans = other889.resourcePlans;
-  __isset = other889.__isset;
+WMGetAllResourcePlanResponse& WMGetAllResourcePlanResponse::operator=(const WMGetAllResourcePlanResponse& other911) {
+  resourcePlans = other911.resourcePlans;
+  __isset = other911.__isset;
   return *this;
 }
 void WMGetAllResourcePlanResponse::printTo(std::ostream& out) const {
@@ -23061,15 +22943,15 @@ void swap(WMAlterResourcePlanRequest &a, WMAlterResourcePlanRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMAlterResourcePlanRequest::WMAlterResourcePlanRequest(const WMAlterResourcePlanRequest& other890) {
-  resourcePlanName = other890.resourcePlanName;
-  resourcePlan = other890.resourcePlan;
-  __isset = other890.__isset;
+WMAlterResourcePlanRequest::WMAlterResourcePlanRequest(const WMAlterResourcePlanRequest& other912) {
+  resourcePlanName = other912.resourcePlanName;
+  resourcePlan = other912.resourcePlan;
+  __isset = other912.__isset;
 }
-WMAlterResourcePlanRequest& WMAlterResourcePlanRequest::operator=(const WMAlterResourcePlanRequest& other891) {
-  resourcePlanName = other891.resourcePlanName;
-  resourcePlan = other891.resourcePlan;
-  __isset = other891.__isset;
+WMAlterResourcePlanRequest& WMAlterResourcePlanRequest::operator=(const WMAlterResourcePlanRequest& other913) {
+  resourcePlanName = other913.resourcePlanName;
+  resourcePlan = other913.resourcePlan;
+  __isset = other913.__isset;
   return *this;
 }
 void WMAlterResourcePlanRequest::printTo(std::ostream& out) const {
@@ -23129,11 +23011,11 @@ void swap(WMAlterResourcePlanResponse &a, WMAlterResourcePlanResponse &b) {
   (void) b;
 }
 
-WMAlterResourcePlanResponse::WMAlterResourcePlanResponse(const WMAlterResourcePlanResponse& other892) {
-  (void) other892;
+WMAlterResourcePlanResponse::WMAlterResourcePlanResponse(const WMAlterResourcePlanResponse& other914) {
+  (void) other914;
 }
-WMAlterResourcePlanResponse& WMAlterResourcePlanResponse::operator=(const WMAlterResourcePlanResponse& other893) {
-  (void) other893;
+WMAlterResourcePlanResponse& WMAlterResourcePlanResponse::operator=(const WMAlterResourcePlanResponse& other915) {
+  (void) other915;
   return *this;
 }
 void WMAlterResourcePlanResponse::printTo(std::ostream& out) const {
@@ -23214,13 +23096,13 @@ void swap(WMValidateResourcePlanRequest &a, WMValidateResourcePlanRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMValidateResourcePlanRequest::WMValidateResourcePlanRequest(const WMValidateResourcePlanRequest& other894) {
-  resourcePlanName = other894.resourcePlanName;
-  __isset = other894.__isset;
+WMValidateResourcePlanRequest::WMValidateResourcePlanRequest(const WMValidateResourcePlanRequest& other916) {
+  resourcePlanName = other916.resourcePlanName;
+  __isset = other916.__isset;
 }
-WMValidateResourcePlanRequest& WMValidateResourcePlanRequest::operator=(const WMValidateResourcePlanRequest& other895) {
-  resourcePlanName = other895.resourcePlanName;
-  __isset = other895.__isset;
+WMValidateResourcePlanRequest& WMValidateResourcePlanRequest::operator=(const WMValidateResourcePlanRequest& other917) {
+  resourcePlanName = other917.resourcePlanName;
+  __isset = other917.__isset;
   return *this;
 }
 void WMValidateResourcePlanRequest::printTo(std::ostream& out) const {
@@ -23302,13 +23184,13 @@ void swap(WMValidateResourcePlanResponse &a, WMValidateResourcePlanResponse &b) 
   swap(a.__isset, b.__isset);
 }
 
-WMValidateResourcePlanResponse::WMValidateResourcePlanResponse(const WMValidateResourcePlanResponse& other896) {
-  isValid = other896.isValid;
-  __isset = other896.__isset;
+WMValidateResourcePlanResponse::WMValidateResourcePlanResponse(const WMValidateResourcePlanResponse& other918) {
+  isValid = other918.isValid;
+  __isset = other918.__isset;
 }
-WMValidateResourcePlanResponse& WMValidateResourcePlanResponse::operator=(const WMValidateResourcePlanResponse& other897) {
-  isValid = other897.isValid;
-  __isset = other897.__isset;
+WMValidateResourcePlanResponse& WMValidateResourcePlanResponse::operator=(const WMValidateResourcePlanResponse& other919) {
+  isValid = other919.isValid;
+  __isset = other919.__isset;
   return *this;
 }
 void WMValidateResourcePlanResponse::printTo(std::ostream& out) const {
@@ -23390,13 +23272,13 @@ void swap(WMDropResourcePlanRequest &a, WMDropResourcePlanRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMDropResourcePlanRequest::WMDropResourcePlanRequest(const WMDropResourcePlanRequest& other898) {
-  resourcePlanName = other898.resourcePlanName;
-  __isset = other898.__isset;
+WMDropResourcePlanRequest::WMDropResourcePlanRequest(const WMDropResourcePlanRequest& other920) {
+  resourcePlanName = other920.resourcePlanName;
+  __isset = other920.__isset;
 }
-WMDropResourcePlanRequest& WMDropResourcePlanRequest::operator=(const WMDropResourcePlanRequest& other899) {
-  resourcePlanName = other899.resourcePlanName;
-  __isset = other899.__isset;
+WMDropResourcePlanRequest& WMDropResourcePlanRequest::operator=(const WMDropResourcePlanRequest& other921) {
+  resourcePlanName = other921.resourcePlanName;
+  __isset = other921.__isset;
   return *this;
 }
 void WMDropResourcePlanRequest::printTo(std::ostream& out) const {
@@ -23455,11 +23337,11 @@ void swap(WMDropResourcePlanResponse &a, WMDropResourcePlanResponse &b) {
   (void) b;
 }
 
-WMDropResourcePlanResponse::WMDropResourcePlanResponse(const WMDropResourcePlanResponse& other900) {
-  (void) other900;
+WMDropResourcePlanResponse::WMDropResourcePlanResponse(const WMDropResourcePlanResponse& other922) {
+  (void) other922;
 }
-WMDropResourcePlanResponse& WMDropResourcePlanResponse::operator=(const WMDropResourcePlanResponse& other901) {
-  (void) other901;
+WMDropResourcePlanResponse& WMDropResourcePlanResponse::operator=(const WMDropResourcePlanResponse& other923) {
+  (void) other923;
   return *this;
 }
 void WMDropResourcePlanResponse::printTo(std::ostream& out) const {
@@ -23538,13 +23420,13 @@ void swap(MetaException &a, MetaException &b) {
   swap(a.__isset, b.__isset);
 }
 
-MetaException::MetaException(const MetaException& other902) : TException() {
-  message = other902.message;
-  __isset = other902.__isset;
+MetaException::MetaException(const MetaException& other924) : TException() {
+  message = other924.message;
+  __isset = other924.__isset;
 }
-MetaException& MetaException::operator=(const MetaException& other903) {
-  message = other903.message;
-  __isset = other903.__isset;
+MetaException& MetaException::operator=(const MetaException& other925) {
+  message = other925.message;
+  __isset = other925.__isset;
   return *this;
 }
 void MetaException::printTo(std::ostream& out) const {
@@ -23635,13 +23517,13 @@ void swap(UnknownTableException &a, UnknownTableException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownTableException::UnknownTableException(const UnknownTableException& other904) : TException() {
-  message = other904.message;
-  __isset = other904.__isset;
+UnknownTableException::UnknownTableException(const UnknownTableException& other926) : TException() {
+  message = other926.message;
+  __isset = other926.__isset;
 }
-UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other905) {
-  message = other905.message;
-  __isset = other905.__isset;
+UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other927) {
+  message = other927.message;
+  __isset = other927.__isset;
   return *this;
 }
 void UnknownTableException::printTo(std::ostream& out) const {
@@ -23732,13 +23614,13 @@ void swap(UnknownDBException &a, UnknownDBException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownDBException::UnknownDBException(const UnknownDBException& other906) : TException() {
-  message = other906.message;
-  __isset = other906.__isset;
+UnknownDBException::UnknownDBException(const UnknownDBException& other928) : TException() {
+  message = other928.message;
+  __isset = other928.__isset;
 }
-UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other907) {
-  message = other907.message;
-  __isset = other907.__isset;
+UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other929) {
+  message = other929.message;
+  __isset = other929.__isset;
   return *this;
 }
 void UnknownDBException::printTo(std::ostream& out) const {
@@ -23829,13 +23711,13 @@ void swap(AlreadyExistsException &a, AlreadyExistsException &b) {
   swap(a.__isset, b.__isset);
 }
 
-AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other908) : TException() {
-  message = other908.message;
-  __isset = other908.__isset;
+AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other930) : TException() {
+  message = other930.message;
+  __isset = other930.__isset;
 }
-AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other909) {
-  message = other909.message;
-  __isset = other909.__isset;
+AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other931) {
+  message = other931.message;
+  __isset = other931.__isset;
   return *this;
 }
 void AlreadyExistsException::printTo(std::ostream& out) const {
@@ -23926,13 +23808,13 @@ void swap(InvalidPartitionException &a, InvalidPartitionException &b) {
   swap(a.__isset, b.__isset);
 }
 
-InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other910) : TException() {
-  message = other910.message;
-  __isset = other910.__isset;
+InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other932) : TException() {
+  message = other932.message;
+  __isset = other932.__isset;
 }
-InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other911) {
-  message = other911.message;
-  __isset = other911.__isset;
+InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other933) {
+  message = other933.message;
+  __isset = other933.__isset;
   return *this;
 }
 void InvalidPartitionException::printTo(std::ostream& out) const {
@@ -24023,23 +23905,13 @@ void swap(UnknownPartitionException &a, UnknownPartitionException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other903) : TException() {
-  message = other903.message;
-  __isset = other903.__isset;
+UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other934) : TException() {
+  message = other934.message;
+  __isset = other934.__isset;
 }
-UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other904) {
-  message = other904.message;
-  __isset = other904.__isset;
-=======
-UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other912) : TException() {
-  message = other912.message;
-  __isset = other912.__isset;
-}
-UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other913) {
-  message = other913.message;
-  __isset = other913.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other935) {
+  message = other935.message;
+  __isset = other935.__isset;
   return *this;
 }
 void UnknownPartitionException::printTo(std::ostream& out) const {
@@ -24130,23 +24002,13 @@ void swap(InvalidObjectException &a, InvalidObjectException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-InvalidObjectException::InvalidObjectException(const InvalidObjectException& other905) : TException() {
-  message = other905.message;
-  __isset = other905.__isset;
+InvalidObjectException::InvalidObjectException(const InvalidObjectException& other936) : TException() {
+  message = other936.message;
+  __isset = other936.__isset;
 }
-InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other906) {
-  message = other906.message;
-  __isset = other906.__isset;
-=======
-InvalidObjectException::InvalidObjectException(const InvalidObjectException& other914) : TException() {
-  message = other914.message;
-  __isset = other914.__isset;
-}
-InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other915) {
-  message = other915.message;
-  __isset = other915.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other937) {
+  message = other937.message;
+  __isset = other937.__isset;
   return *this;
 }
 void InvalidObjectException::printTo(std::ostream& out) const {
@@ -24237,23 +24099,13 @@ void swap(NoSuchObjectException &a, NoSuchObjectException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other907) : TException() {
-  message = other907.message;
-  __isset = other907.__isset;
+NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other938) : TException() {
+  message = other938.message;
+  __isset = other938.__isset;
 }
-NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other908) {
-  message = other908.message;
-  __isset = other908.__isset;
-=======
-NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other916) : TException() {
-  message = other916.message;
-  __isset = other916.__isset;
-}
-NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other917) {
-  message = other917.message;
-  __isset = other917.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other939) {
+  message = other939.message;
+  __isset = other939.__isset;
   return *this;
 }
 void NoSuchObjectException::printTo(std::ostream& out) const {
@@ -24344,23 +24196,13 @@ void swap(IndexAlreadyExistsException &a, IndexAlreadyExistsException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other909) : TException() {
-  message = other909.message;
-  __isset = other909.__isset;
+IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other940) : TException() {
+  message = other940.message;
+  __isset = other940.__isset;
 }
-IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other910) {
-  message = other910.message;
-  __isset = other910.__isset;
-=======
-IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other918) : TException() {
-  message = other918.message;
-  __isset = other918.__isset;
-}
-IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other919) {
-  message = other919.message;
-  __isset = other919.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other941) {
+  message = other941.message;
+  __isset = other941.__isset;
   return *this;
 }
 void IndexAlreadyExistsException::printTo(std::ostream& out) const {
@@ -24451,23 +24293,13 @@ void swap(InvalidOperationException &a, InvalidOperationException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-InvalidOperationException::InvalidOperationException(const InvalidOperationException& other911) : TException() {
-  message = other911.message;
-  __isset = other911.__isset;
+InvalidOperationException::InvalidOperationException(const InvalidOperationException& other942) : TException() {
+  message = other942.message;
+  __isset = other942.__isset;
 }
-InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other912) {
-  message = other912.message;
-  __isset = other912.__isset;
-=======
-InvalidOperationException::InvalidOperationException(const InvalidOperationException& other920) : TException() {
-  message = other920.message;
-  __isset = other920.__isset;
-}
-InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other921) {
-  message = other921.message;
-  __isset = other921.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other943) {
+  message = other943.message;
+  __isset = other943.__isset;
   return *this;
 }
 void InvalidOperationException::printTo(std::ostream& out) const {
@@ -24558,23 +24390,13 @@ void swap(ConfigValSecurityException &a, ConfigValSecurityException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other913) : TException() {
-  message = other913.message;
-  __isset = other913.__isset;
+ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other944) : TException() {
+  message = other944.message;
+  __isset = other944.__isset;
 }
-ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other914) {
-  message = other914.message;
-  __isset = other914.__isset;
-=======
-ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other922) : TException() {
-  message = other922.message;
-  __isset = other922.__isset;
-}
-ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other923) {
-  message = other923.message;
-  __isset = other923.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other945) {
+  message = other945.message;
+  __isset = other945.__isset;
   return *this;
 }
 void ConfigValSecurityException::printTo(std::ostream& out) const {
@@ -24665,23 +24487,13 @@ void swap(InvalidInputException &a, InvalidInputException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-InvalidInputException::InvalidInputException(const InvalidInputException& other915) : TException() {
-  message = other915.message;
-  __isset = other915.__isset;
+InvalidInputException::InvalidInputException(const InvalidInputException& other946) : TException() {
+  message = other946.message;
+  __isset = other946.__isset;
 }
-InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other916) {
-  message = other916.message;
-  __isset = other916.__isset;
-=======
-InvalidInputException::InvalidInputException(const InvalidInputException& other924) : TException() {
-  message = other924.message;
-  __isset = other924.__isset;
-}
-InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other925) {
-  message = other925.message;
-  __isset = other925.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other947) {
+  message = other947.message;
+  __isset = other947.__isset;
   return *this;
 }
 void InvalidInputException::printTo(std::ostream& out) const {
@@ -24772,23 +24584,13 @@ void swap(NoSuchTxnException &a, NoSuchTxnException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other917) : TException() {
-  message = other917.message;
-  __isset = other917.__isset;
+NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other948) : TException() {
+  message = other948.message;
+  __isset = other948.__isset;
 }
-NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other918) {
-  message = other918.message;
-  __isset = other918.__isset;
-=======
-NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other926) : TException() {
-  message = other926.message;
-  __isset = other926.__isset;
-}
-NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other927) {
-  message = other927.message;
-  __isset = other927.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other949) {
+  message = other949.message;
+  __isset = other949.__isset;
   return *this;
 }
 void NoSuchTxnException::printTo(std::ostream& out) const {
@@ -24879,23 +24681,13 @@ void swap(TxnAbortedException &a, TxnAbortedException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-TxnAbortedException::TxnAbortedException(const TxnAbortedException& other919) : TException() {
-  message = other919.message;
-  __isset = other919.__isset;
+TxnAbortedException::TxnAbortedException(const TxnAbortedException& other950) : TException() {
+  message = other950.message;
+  __isset = other950.__isset;
 }
-TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other920) {
-  message = other920.message;
-  __isset = other920.__isset;
-=======
-TxnAbortedException::TxnAbortedException(const TxnAbortedException& other928) : TException() {
-  message = other928.message;
-  __isset = other928.__isset;
-}
-TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other929) {
-  message = other929.message;
-  __isset = other929.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other951) {
+  message = other951.message;
+  __isset = other951.__isset;
   return *this;
 }
 void TxnAbortedException::printTo(std::ostream& out) const {
@@ -24986,23 +24778,13 @@ void swap(TxnOpenException &a, TxnOpenException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-TxnOpenException::TxnOpenException(const TxnOpenException& other921) : TException() {
-  message = other921.message;
-  __isset = other921.__isset;
+TxnOpenException::TxnOpenException(const TxnOpenException& other952) : TException() {
+  message = other952.message;
+  __isset = other952.__isset;
 }
-TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other922) {
-  message = other922.message;
-  __isset = other922.__isset;
-=======
-TxnOpenException::TxnOpenException(const TxnOpenException& other930) : TException() {
-  message = other930.message;
-  __isset = other930.__isset;
-}
-TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other931) {
-  message = other931.message;
-  __isset = other931.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other953) {
+  message = other953.message;
+  __isset = other953.__isset;
   return *this;
 }
 void TxnOpenException::printTo(std::ostream& out) const {
@@ -25093,23 +24875,13 @@ void swap(NoSuchLockException &a, NoSuchLockException &b) {
   swap(a.__isset, b.__isset);
 }
 
-<<<<<<< HEAD
-NoSuchLockException::NoSuchLockException(const NoSuchLockException& other923) : TException() {
-  message = other923.message;
-  __isset = other923.__isset;
+NoSuchLockException::NoSuchLockException(const NoSuchLockException& other954) : TException() {
+  message = other954.message;
+  __isset = other954.__isset;
 }
-NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other924) {
-  message = other924.message;
-  __isset = other924.__isset;
-=======
-NoSuchLockException::NoSuchLockException(const NoSuchLockException& other932) : TException() {
-  message = other932.message;
-  __isset = other932.__isset;
-}
-NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other933) {
-  message = other933.message;
-  __isset = other933.__isset;
->>>>>>> a7e344554a... HIVE-17771 : Implement commands to manage resource plan (Harish Jaiprakash, reviewed by Sergey Shelukhin)
+NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other955) {
+  message = other955.message;
+  __isset = other955.__isset;
   return *this;
 }
 void NoSuchLockException::printTo(std::ostream& out) const {

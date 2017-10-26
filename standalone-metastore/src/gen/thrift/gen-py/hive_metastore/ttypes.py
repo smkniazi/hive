@@ -15856,11 +15856,11 @@ class WMGetAllResourcePlanResponse:
       if fid == 1:
         if ftype == TType.LIST:
           self.resourcePlans = []
-          (_etype653, _size650) = iprot.readListBegin()
-          for _i654 in xrange(_size650):
-            _elem655 = WMResourcePlan()
-            _elem655.read(iprot)
-            self.resourcePlans.append(_elem655)
+          (_etype660, _size657) = iprot.readListBegin()
+          for _i661 in xrange(_size657):
+            _elem662 = WMResourcePlan()
+            _elem662.read(iprot)
+            self.resourcePlans.append(_elem662)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -15877,8 +15877,8 @@ class WMGetAllResourcePlanResponse:
     if self.resourcePlans is not None:
       oprot.writeFieldBegin('resourcePlans', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.resourcePlans))
-      for iter656 in self.resourcePlans:
-        iter656.write(oprot)
+      for iter663 in self.resourcePlans:
+        iter663.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
