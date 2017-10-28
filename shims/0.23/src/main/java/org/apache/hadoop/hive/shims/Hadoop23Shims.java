@@ -295,8 +295,8 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       JobConf jConf = new JobConf(conf);
       jConf.set("yarn.scheduler.capacity.root.queues", "default");
       jConf.set("yarn.scheduler.capacity.root.default.capacity", "100");
-      jConf.setInt(MRJobConfig.MAP_MEMORY_MB, 128);
-      jConf.setInt(MRJobConfig.REDUCE_MEMORY_MB, 128);
+      jConf.setInt(MRJobConfig.MAP_MEMORY_MB, 512);
+      jConf.setInt(MRJobConfig.REDUCE_MEMORY_MB, 512);
       jConf.setInt(MRJobConfig.MR_AM_VMEM_MB, 128);
       jConf.setInt(YarnConfiguration.YARN_MINICLUSTER_NM_PMEM_MB, 512);
       jConf.setInt(YarnConfiguration.RM_SCHEDULER_MINIMUM_ALLOCATION_MB, 128);
@@ -328,8 +328,8 @@ public class Hadoop23Shims extends HadoopShimsSecure {
       for (Map.Entry<String, String> pair: jConf) {
         conf.set(pair.getKey(), pair.getValue());
       }
-      conf.setInt(MRJobConfig.MAP_MEMORY_MB, 128);
-      conf.setInt(MRJobConfig.REDUCE_MEMORY_MB, 128);
+      conf.setInt(MRJobConfig.MAP_MEMORY_MB, 512);
+      conf.setInt(MRJobConfig.REDUCE_MEMORY_MB, 512);
       conf.setInt(MRJobConfig.MR_AM_VMEM_MB, 128);
     }
   }
@@ -1077,10 +1077,11 @@ public class Hadoop23Shims extends HadoopShimsSecure {
 
   @Override
   public boolean runDistCp(List<Path> srcPaths, Path dst, Configuration conf) throws IOException {
-    DistCpOptions options = new DistCpOptions(srcPaths, dst);
-    options.setSyncFolder(true);
-    options.setSkipCRC(true);
-    options.preserve(FileAttribute.BLOCKSIZE);
+       DistCpOptions options = new DistCpOptions.Builder(srcPaths, dst)
+        .withSyncFolder(true)
+        .withCRC(true)
+        .preserve(FileAttribute.BLOCKSIZE)
+        .build();
 
     // Creates the command-line parameters for distcp
     List<String> params = constructDistCpParams(srcPaths, dst, conf);
