@@ -531,6 +531,23 @@ public class FileSinkDesc extends AbstractOperatorDesc {
     return isMmCtas;
   }
 
+  public class FileSinkOperatorExplainVectorization extends OperatorExplainVectorization {
+
+    public FileSinkOperatorExplainVectorization(VectorFileSinkDesc vectorFileSinkDesc) {
+      // Native vectorization not supported.
+      super(vectorFileSinkDesc, false);
+    }
+  }
+
+  @Explain(vectorization = Vectorization.OPERATOR, displayName = "File Sink Vectorization", explainLevels = { Level.DEFAULT, Level.EXTENDED })
+  public FileSinkOperatorExplainVectorization getFileSinkVectorization() {
+    VectorFileSinkDesc vectorFileSinkDesc = (VectorFileSinkDesc) getVectorDesc();
+    if (vectorFileSinkDesc == null) {
+      return null;
+    }
+    return new FileSinkOperatorExplainVectorization(vectorFileSinkDesc);
+  }
+
   public void setInsertOverwrite(boolean isInsertOverwrite) {
     this.isInsertOverwrite = isInsertOverwrite;
   }
