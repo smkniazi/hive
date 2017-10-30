@@ -42,6 +42,7 @@ import org.apache.hadoop.hive.metastore.RawStore;
 import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.Warehouse;
 import org.apache.hadoop.hive.metastore.api.AggrStats;
+import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsDesc;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
@@ -70,6 +71,7 @@ import org.apache.hadoop.hive.metastore.api.PrincipalPrivilegeSet;
 import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.PrivilegeBag;
 import org.apache.hadoop.hive.metastore.api.WMResourcePlan;
+import org.apache.hadoop.hive.metastore.api.WMTrigger;
 import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.RolePrincipalGrant;
 import org.apache.hadoop.hive.metastore.api.SQLForeignKey;
@@ -2238,7 +2240,8 @@ public class CachedStore implements RawStore, Configurable {
   }
 
   @Override
-  public void createResourcePlan(WMResourcePlan resourcePlan) throws MetaException {
+  public void createResourcePlan(WMResourcePlan resourcePlan)
+      throws AlreadyExistsException, MetaException {
     rawStore.createResourcePlan(resourcePlan);
   }
 
@@ -2254,7 +2257,8 @@ public class CachedStore implements RawStore, Configurable {
 
   @Override
   public void alterResourcePlan(String name, WMResourcePlan resourcePlan)
-      throws NoSuchObjectException, InvalidOperationException, MetaException {
+      throws AlreadyExistsException, NoSuchObjectException, InvalidOperationException,
+          MetaException {
     rawStore.alterResourcePlan(name, resourcePlan);
   }
 
@@ -2267,5 +2271,30 @@ public class CachedStore implements RawStore, Configurable {
   @Override
   public void dropResourcePlan(String name) throws NoSuchObjectException, MetaException {
     rawStore.dropResourcePlan(name);
+  }
+
+  @Override
+  public void createWMTrigger(WMTrigger trigger)
+      throws AlreadyExistsException, MetaException, NoSuchObjectException,
+          InvalidOperationException {
+    rawStore.createWMTrigger(trigger);
+  }
+
+  @Override
+  public void alterWMTrigger(WMTrigger trigger)
+      throws NoSuchObjectException, InvalidOperationException, MetaException {
+    rawStore.alterWMTrigger(trigger);
+  }
+
+  @Override
+  public void dropWMTrigger(String resourcePlanName, String triggerName)
+      throws NoSuchObjectException, InvalidOperationException, MetaException {
+    rawStore.dropWMTrigger(resourcePlanName, triggerName);
+  }
+
+  @Override
+  public List<WMTrigger> getTriggersForResourcePlan(String resourcePlanName)
+      throws NoSuchObjectException, MetaException {
+    return rawStore.getTriggersForResourcePlan(resourcePlanName);
   }
 }
