@@ -169,6 +169,7 @@ public class FileSinkDesc extends AbstractOperatorDesc {
     ret.setDpSortState(dpSortState);
     ret.setWriteType(writeType);
     ret.setTransactionId(txnId);
+    ret.setStatementId(statementId);
     ret.setStatsTmpDir(statsTmpDir);
     ret.setIsMerge(isMerge);
     return ret;
@@ -206,8 +207,11 @@ public class FileSinkDesc extends AbstractOperatorDesc {
   /** getFinalDirName that takes into account MM, but not DP, LB or buckets. */
   public Path getMergeInputDirName() {
     Path root = getFinalDirName();
-    if (mmWriteId == null) return root;
-    return new Path(root, ValidWriteIds.getMmFilePrefix(mmWriteId));
+    if (isMmTable()) {
+      return new Path(root, AcidUtils.deltaSubdir(txnId, txnId, statementId));
+    } else {
+      return root;
+    }
   }
 
   @Explain(displayName = "table", explainLevels = { Level.USER, Level.DEFAULT, Level.EXTENDED })
