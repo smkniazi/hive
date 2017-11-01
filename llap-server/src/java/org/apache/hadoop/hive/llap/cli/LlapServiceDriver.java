@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import javax.servlet.HttpConstraintElement;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hive.llap.LlapUtil;
@@ -51,9 +52,18 @@ import org.apache.hadoop.hive.llap.daemon.impl.StaticPermanentFunctionChecker;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos;
 import org.apache.hadoop.hive.llap.tezplugins.LlapTezUtils;
 import org.apache.hadoop.registry.client.binding.RegistryUtils;
+import org.apache.hive.http.HttpServer;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jetty.http.HttpField;
+import org.eclipse.jetty.io.EofException;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.xml.XmlParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -379,8 +389,18 @@ public class LlapServiceDriver {
               LlapTezUtils.class, // llap-tez
               LlapInputFormat.class, // llap-server
               HiveInputFormat.class, // hive-exec
+              HttpServer.class, // hive-common
               SslContextFactory.class, // hive-common (https deps)
+              Connector.class, // jetty stuff
+              Handler.class, // jetty stuff
+              HttpField.class,
+              WebAppContext.class,
+              ServletContextHandler.class,
+              SecurityHandler.class,
               Rule.class, // Jetty rewrite class
+              HttpConstraintElement.class,
+              EofException.class,
+              XmlParser.class,
               RegistryUtils.ServiceRecordMarshal.class, // ZK registry
               // log4j2
               com.lmax.disruptor.RingBuffer.class, // disruptor
