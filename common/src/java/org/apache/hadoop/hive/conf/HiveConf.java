@@ -1915,7 +1915,9 @@ public class HiveConf extends Configuration {
         "hive.lock.numretries and hive.lock.sleep.between.retries."),
 
     HIVE_TXN_OPERATIONAL_PROPERTIES("hive.txn.operational.properties", 1,
-        "This is intended to be used as an internal property for future versions of ACID. (See\n" +
+      "1: Enable split-update feature found in the newer version of Hive ACID subsystem\n" +
+      "4: Make the table 'quarter-acid' as it only supports insert. But it doesn't require ORC or bucketing.\n" +
+      "This is intended to be used as an internal property for future versions of ACID. (See\n" +
         "HIVE-14035 for details.)"),
 
     HIVE_MAX_OPEN_TXNS("hive.max.open.txns", 100000, "Maximum number of open transactions. If \n" +
