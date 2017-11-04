@@ -236,8 +236,9 @@ public class Driver implements CommandProcessor {
     }
 
     public static void removeLockedDriverState() {
-      if (lds != null)
+      if (lds != null) {
         lds.remove();
+      }
     }
   }
 
@@ -248,11 +249,6 @@ public class Driver implements CommandProcessor {
       return false;
     }
     return true;
-  }
-
-  @Override
-  public void init() {
-    // Nothing for now.
   }
 
   /**
@@ -1617,25 +1613,16 @@ public class Driver implements CommandProcessor {
       // same instance of Driver, which can run multiple queries.
       ctx.setHiveTxnManager(queryTxnMgr);
 
-      if (requiresLock()) {
-        // a checkpoint to see if the thread is interrupted or not before an expensive operation
-        if (isInterrupted()) {
-          ret = handleInterruption("at acquiring the lock.");
-        } else {
-          ret = acquireLocks();
-        }
-        if (ret != 0) {
-          return rollback(createProcessorResponse(ret));
-        }
+      if (isInterrupted()) {
+        return createProcessorResponse(handleInterruption("at acquiring the lock."));
       }
 
-      try {
-        acquireWriteIds(plan, conf);
-      } catch (HiveException e) {
-        return handleHiveException(e, 1);
+      CommandProcessorResponse resp = lockAndRespond();
+      if (resp.failed()) {
+        return resp;
       }
 
-      ret = execute(true);
+      ret = execute();
       if (ret != 0) {
         //if needRequireLock is false, the release here will do nothing because there is no lock
         return rollback(createProcessorResponse(ret));
@@ -1739,6 +1726,7 @@ public class Driver implements CommandProcessor {
   }
 
   private CommandProcessorResponse rollback(CommandProcessorResponse cpr) {
+
     //console.printError(cpr.toString());
     try {
       releaseLocksAndCommitOrRollback(false);
@@ -1823,11 +1811,7 @@ public class Driver implements CommandProcessor {
     return new CommandProcessorResponse(ret, errorMessage, SQLState, downstreamError);
   }
 
-  public int execute() throws CommandNeedRetryException {
-    return execute(false);
-  }
-
-  public int execute(boolean deferClose) throws CommandNeedRetryException {
+  private int execute() throws CommandNeedRetryException {
     PerfLogger perfLogger = SessionState.getPerfLogger();
     perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.DRIVER_EXECUTE);
 
@@ -2170,15 +2154,9 @@ public class Driver implements CommandProcessor {
         console.printInfo("Total MapReduce CPU Time Spent: " + Utilities.formatMsecToStr(totalCpu));
       }
       boolean isInterrupted = isInterrupted();
-      if (isInterrupted && !deferClose) {
-        closeInProcess(true);
-      }
       lDrvState.stateLock.lock();
       try {
         if (isInterrupted) {
-          if (!deferClose) {
-            lDrvState.driverState = DriverState.ERROR;
-          }
         } else {
           lDrvState.driverState = executionError ? DriverState.ERROR : DriverState.EXECUTED;
         }
