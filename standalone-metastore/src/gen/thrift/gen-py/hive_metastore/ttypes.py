@@ -15180,8 +15180,7 @@ class WMPool:
   """
   Attributes:
    - resourcePlanName
-   - poolName
-   - parentPoolName
+   - poolPath
    - allocFraction
    - queryParallelism
    - schedulingPolicy
@@ -15190,17 +15189,15 @@ class WMPool:
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'resourcePlanName', None, None, ), # 1
-    (2, TType.STRING, 'poolName', None, None, ), # 2
-    (3, TType.STRING, 'parentPoolName', None, None, ), # 3
-    (4, TType.DOUBLE, 'allocFraction', None, None, ), # 4
-    (5, TType.I32, 'queryParallelism', None, None, ), # 5
-    (6, TType.STRING, 'schedulingPolicy', None, None, ), # 6
+    (2, TType.STRING, 'poolPath', None, None, ), # 2
+    (3, TType.DOUBLE, 'allocFraction', None, None, ), # 3
+    (4, TType.I32, 'queryParallelism', None, None, ), # 4
+    (5, TType.STRING, 'schedulingPolicy', None, None, ), # 5
   )
 
-  def __init__(self, resourcePlanName=None, poolName=None, parentPoolName=None, allocFraction=None, queryParallelism=None, schedulingPolicy=None,):
+  def __init__(self, resourcePlanName=None, poolPath=None, allocFraction=None, queryParallelism=None, schedulingPolicy=None,):
     self.resourcePlanName = resourcePlanName
-    self.poolName = poolName
-    self.parentPoolName = parentPoolName
+    self.poolPath = poolPath
     self.allocFraction = allocFraction
     self.queryParallelism = queryParallelism
     self.schedulingPolicy = schedulingPolicy
@@ -15221,25 +15218,20 @@ class WMPool:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
-          self.poolName = iprot.readString()
+          self.poolPath = iprot.readString()
         else:
           iprot.skip(ftype)
       elif fid == 3:
-        if ftype == TType.STRING:
-          self.parentPoolName = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      elif fid == 4:
         if ftype == TType.DOUBLE:
           self.allocFraction = iprot.readDouble()
         else:
           iprot.skip(ftype)
-      elif fid == 5:
+      elif fid == 4:
         if ftype == TType.I32:
           self.queryParallelism = iprot.readI32()
         else:
           iprot.skip(ftype)
-      elif fid == 6:
+      elif fid == 5:
         if ftype == TType.STRING:
           self.schedulingPolicy = iprot.readString()
         else:
@@ -15258,24 +15250,20 @@ class WMPool:
       oprot.writeFieldBegin('resourcePlanName', TType.STRING, 1)
       oprot.writeString(self.resourcePlanName)
       oprot.writeFieldEnd()
-    if self.poolName is not None:
-      oprot.writeFieldBegin('poolName', TType.STRING, 2)
-      oprot.writeString(self.poolName)
-      oprot.writeFieldEnd()
-    if self.parentPoolName is not None:
-      oprot.writeFieldBegin('parentPoolName', TType.STRING, 3)
-      oprot.writeString(self.parentPoolName)
+    if self.poolPath is not None:
+      oprot.writeFieldBegin('poolPath', TType.STRING, 2)
+      oprot.writeString(self.poolPath)
       oprot.writeFieldEnd()
     if self.allocFraction is not None:
-      oprot.writeFieldBegin('allocFraction', TType.DOUBLE, 4)
+      oprot.writeFieldBegin('allocFraction', TType.DOUBLE, 3)
       oprot.writeDouble(self.allocFraction)
       oprot.writeFieldEnd()
     if self.queryParallelism is not None:
-      oprot.writeFieldBegin('queryParallelism', TType.I32, 5)
+      oprot.writeFieldBegin('queryParallelism', TType.I32, 4)
       oprot.writeI32(self.queryParallelism)
       oprot.writeFieldEnd()
     if self.schedulingPolicy is not None:
-      oprot.writeFieldBegin('schedulingPolicy', TType.STRING, 6)
+      oprot.writeFieldBegin('schedulingPolicy', TType.STRING, 5)
       oprot.writeString(self.schedulingPolicy)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -15284,16 +15272,15 @@ class WMPool:
   def validate(self):
     if self.resourcePlanName is None:
       raise TProtocol.TProtocolException(message='Required field resourcePlanName is unset!')
-    if self.poolName is None:
-      raise TProtocol.TProtocolException(message='Required field poolName is unset!')
+    if self.poolPath is None:
+      raise TProtocol.TProtocolException(message='Required field poolPath is unset!')
     return
 
 
   def __hash__(self):
     value = 17
     value = (value * 31) ^ hash(self.resourcePlanName)
-    value = (value * 31) ^ hash(self.poolName)
-    value = (value * 31) ^ hash(self.parentPoolName)
+    value = (value * 31) ^ hash(self.poolPath)
     value = (value * 31) ^ hash(self.allocFraction)
     value = (value * 31) ^ hash(self.queryParallelism)
     value = (value * 31) ^ hash(self.schedulingPolicy)
@@ -15541,6 +15528,246 @@ class WMMapping:
   def __ne__(self, other):
     return not (self == other)
 
+class WMPoolTrigger:
+  """
+  Attributes:
+   - pool
+   - trigger
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'pool', None, None, ), # 1
+    (2, TType.STRING, 'trigger', None, None, ), # 2
+  )
+
+  def __init__(self, pool=None, trigger=None,):
+    self.pool = pool
+    self.trigger = trigger
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.pool = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.trigger = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('WMPoolTrigger')
+    if self.pool is not None:
+      oprot.writeFieldBegin('pool', TType.STRING, 1)
+      oprot.writeString(self.pool)
+      oprot.writeFieldEnd()
+    if self.trigger is not None:
+      oprot.writeFieldBegin('trigger', TType.STRING, 2)
+      oprot.writeString(self.trigger)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.pool is None:
+      raise TProtocol.TProtocolException(message='Required field pool is unset!')
+    if self.trigger is None:
+      raise TProtocol.TProtocolException(message='Required field trigger is unset!')
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.pool)
+    value = (value * 31) ^ hash(self.trigger)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class WMFullResourcePlan:
+  """
+  Attributes:
+   - plan
+   - pools
+   - mappings
+   - triggers
+   - poolTriggers
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'plan', (WMResourcePlan, WMResourcePlan.thrift_spec), None, ), # 1
+    (2, TType.LIST, 'pools', (TType.STRUCT,(WMPool, WMPool.thrift_spec)), None, ), # 2
+    (3, TType.LIST, 'mappings', (TType.STRUCT,(WMMapping, WMMapping.thrift_spec)), None, ), # 3
+    (4, TType.LIST, 'triggers', (TType.STRUCT,(WMTrigger, WMTrigger.thrift_spec)), None, ), # 4
+    (5, TType.LIST, 'poolTriggers', (TType.STRUCT,(WMPoolTrigger, WMPoolTrigger.thrift_spec)), None, ), # 5
+  )
+
+  def __init__(self, plan=None, pools=None, mappings=None, triggers=None, poolTriggers=None,):
+    self.plan = plan
+    self.pools = pools
+    self.mappings = mappings
+    self.triggers = triggers
+    self.poolTriggers = poolTriggers
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.plan = WMResourcePlan()
+          self.plan.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.pools = []
+          (_etype660, _size657) = iprot.readListBegin()
+          for _i661 in xrange(_size657):
+            _elem662 = WMPool()
+            _elem662.read(iprot)
+            self.pools.append(_elem662)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.mappings = []
+          (_etype666, _size663) = iprot.readListBegin()
+          for _i667 in xrange(_size663):
+            _elem668 = WMMapping()
+            _elem668.read(iprot)
+            self.mappings.append(_elem668)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.LIST:
+          self.triggers = []
+          (_etype672, _size669) = iprot.readListBegin()
+          for _i673 in xrange(_size669):
+            _elem674 = WMTrigger()
+            _elem674.read(iprot)
+            self.triggers.append(_elem674)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.LIST:
+          self.poolTriggers = []
+          (_etype678, _size675) = iprot.readListBegin()
+          for _i679 in xrange(_size675):
+            _elem680 = WMPoolTrigger()
+            _elem680.read(iprot)
+            self.poolTriggers.append(_elem680)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('WMFullResourcePlan')
+    if self.plan is not None:
+      oprot.writeFieldBegin('plan', TType.STRUCT, 1)
+      self.plan.write(oprot)
+      oprot.writeFieldEnd()
+    if self.pools is not None:
+      oprot.writeFieldBegin('pools', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.pools))
+      for iter681 in self.pools:
+        iter681.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.mappings is not None:
+      oprot.writeFieldBegin('mappings', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRUCT, len(self.mappings))
+      for iter682 in self.mappings:
+        iter682.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.triggers is not None:
+      oprot.writeFieldBegin('triggers', TType.LIST, 4)
+      oprot.writeListBegin(TType.STRUCT, len(self.triggers))
+      for iter683 in self.triggers:
+        iter683.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.poolTriggers is not None:
+      oprot.writeFieldBegin('poolTriggers', TType.LIST, 5)
+      oprot.writeListBegin(TType.STRUCT, len(self.poolTriggers))
+      for iter684 in self.poolTriggers:
+        iter684.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.plan is None:
+      raise TProtocol.TProtocolException(message='Required field plan is unset!')
+    if self.pools is None:
+      raise TProtocol.TProtocolException(message='Required field pools is unset!')
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.plan)
+    value = (value * 31) ^ hash(self.pools)
+    value = (value * 31) ^ hash(self.mappings)
+    value = (value * 31) ^ hash(self.triggers)
+    value = (value * 31) ^ hash(self.poolTriggers)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class WMCreateResourcePlanRequest:
   """
   Attributes:
@@ -15640,6 +15867,118 @@ class WMCreateResourcePlanResponse:
 
   def __hash__(self):
     value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class WMGetActiveResourcePlanRequest:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('WMGetActiveResourcePlanRequest')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class WMGetActiveResourcePlanResponse:
+  """
+  Attributes:
+   - resourcePlan
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'resourcePlan', (WMFullResourcePlan, WMFullResourcePlan.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, resourcePlan=None,):
+    self.resourcePlan = resourcePlan
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.resourcePlan = WMFullResourcePlan()
+          self.resourcePlan.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('WMGetActiveResourcePlanResponse')
+    if self.resourcePlan is not None:
+      oprot.writeFieldBegin('resourcePlan', TType.STRUCT, 1)
+      self.resourcePlan.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.resourcePlan)
     return value
 
   def __repr__(self):
@@ -15856,11 +16195,11 @@ class WMGetAllResourcePlanResponse:
       if fid == 1:
         if ftype == TType.LIST:
           self.resourcePlans = []
-          (_etype660, _size657) = iprot.readListBegin()
-          for _i661 in xrange(_size657):
-            _elem662 = WMResourcePlan()
-            _elem662.read(iprot)
-            self.resourcePlans.append(_elem662)
+          (_etype688, _size685) = iprot.readListBegin()
+          for _i689 in xrange(_size685):
+            _elem690 = WMResourcePlan()
+            _elem690.read(iprot)
+            self.resourcePlans.append(_elem690)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -15877,8 +16216,8 @@ class WMGetAllResourcePlanResponse:
     if self.resourcePlans is not None:
       oprot.writeFieldBegin('resourcePlans', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.resourcePlans))
-      for iter663 in self.resourcePlans:
-        iter663.write(oprot)
+      for iter691 in self.resourcePlans:
+        iter691.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -15909,17 +16248,20 @@ class WMAlterResourcePlanRequest:
   Attributes:
    - resourcePlanName
    - resourcePlan
+   - isEnableAndActivate
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'resourcePlanName', None, None, ), # 1
     (2, TType.STRUCT, 'resourcePlan', (WMResourcePlan, WMResourcePlan.thrift_spec), None, ), # 2
+    (3, TType.BOOL, 'isEnableAndActivate', None, None, ), # 3
   )
 
-  def __init__(self, resourcePlanName=None, resourcePlan=None,):
+  def __init__(self, resourcePlanName=None, resourcePlan=None, isEnableAndActivate=None,):
     self.resourcePlanName = resourcePlanName
     self.resourcePlan = resourcePlan
+    self.isEnableAndActivate = isEnableAndActivate
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -15941,6 +16283,11 @@ class WMAlterResourcePlanRequest:
           self.resourcePlan.read(iprot)
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.BOOL:
+          self.isEnableAndActivate = iprot.readBool()
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -15959,6 +16306,10 @@ class WMAlterResourcePlanRequest:
       oprot.writeFieldBegin('resourcePlan', TType.STRUCT, 2)
       self.resourcePlan.write(oprot)
       oprot.writeFieldEnd()
+    if self.isEnableAndActivate is not None:
+      oprot.writeFieldBegin('isEnableAndActivate', TType.BOOL, 3)
+      oprot.writeBool(self.isEnableAndActivate)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -15970,6 +16321,7 @@ class WMAlterResourcePlanRequest:
     value = 17
     value = (value * 31) ^ hash(self.resourcePlanName)
     value = (value * 31) ^ hash(self.resourcePlan)
+    value = (value * 31) ^ hash(self.isEnableAndActivate)
     return value
 
   def __repr__(self):
@@ -15984,9 +16336,18 @@ class WMAlterResourcePlanRequest:
     return not (self == other)
 
 class WMAlterResourcePlanResponse:
+  """
+  Attributes:
+   - fullResourcePlan
+  """
 
   thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'fullResourcePlan', (WMFullResourcePlan, WMFullResourcePlan.thrift_spec), None, ), # 1
   )
+
+  def __init__(self, fullResourcePlan=None,):
+    self.fullResourcePlan = fullResourcePlan
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -15997,6 +16358,12 @@ class WMAlterResourcePlanResponse:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.fullResourcePlan = WMFullResourcePlan()
+          self.fullResourcePlan.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -16007,6 +16374,10 @@ class WMAlterResourcePlanResponse:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('WMAlterResourcePlanResponse')
+    if self.fullResourcePlan is not None:
+      oprot.writeFieldBegin('fullResourcePlan', TType.STRUCT, 1)
+      self.fullResourcePlan.write(oprot)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -16016,6 +16387,7 @@ class WMAlterResourcePlanResponse:
 
   def __hash__(self):
     value = 17
+    value = (value * 31) ^ hash(self.fullResourcePlan)
     return value
 
   def __repr__(self):
@@ -16709,11 +17081,11 @@ class WMGetTriggersForResourePlanResponse:
       if fid == 1:
         if ftype == TType.LIST:
           self.triggers = []
-          (_etype667, _size664) = iprot.readListBegin()
-          for _i668 in xrange(_size664):
-            _elem669 = WMTrigger()
-            _elem669.read(iprot)
-            self.triggers.append(_elem669)
+          (_etype695, _size692) = iprot.readListBegin()
+          for _i696 in xrange(_size692):
+            _elem697 = WMTrigger()
+            _elem697.read(iprot)
+            self.triggers.append(_elem697)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -16730,8 +17102,8 @@ class WMGetTriggersForResourePlanResponse:
     if self.triggers is not None:
       oprot.writeFieldBegin('triggers', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.triggers))
-      for iter670 in self.triggers:
-        iter670.write(oprot)
+      for iter698 in self.triggers:
+        iter698.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
