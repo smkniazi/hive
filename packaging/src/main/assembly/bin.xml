@@ -42,13 +42,13 @@
         <exclude>io.hops:*</exclude>
         <exclude>io.hops.gpu:*</exclude>
         <exclude>io.hops.streaming:*</exclude>
-        <exclude>org.apache.hive.hcatalog:*</exclude>
+        <exclude>io.hops.hive.hcatalog:*</exclude>
         <exclude>org.slf4j:*</exclude>
         <exclude>log4j:*</exclude>
         <exclude>junit:*</exclude>
         <exclude>co.cask.tephra:*</exclude>
         <exclude>commons-configuration:commons-configuration</exclude>
-        <exclude>org.apache.hive:hive-jdbc:*:standalone</exclude>
+        <exclude>io.hops.hive:hive-jdbc:*:standalone</exclude>
       </excludes>
     </dependencySet>
     <dependencySet>
@@ -57,7 +57,7 @@
       <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <includes>
-        <include>org.apache.hive:hive-jdbc:*:standalone</include>
+        <include>io.hops.hive:hive-jdbc:*:standalone</include>
       </includes>
     </dependencySet>
     <dependencySet>
@@ -66,8 +66,8 @@
       <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <includes>
-        <include>org.apache.hive.hcatalog:hive-hcatalog-core</include>
-        <include>org.apache.hive.hcatalog:hive-hcatalog-server-extensions</include>
+        <include>io.hops.hive.hcatalog:hive-hcatalog-core</include>
+        <include>io.hops.hive.hcatalog:hive-hcatalog-server-extensions</include>
       </includes>
     </dependencySet>
     <dependencySet>
@@ -76,10 +76,10 @@
       <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <includes>
-        <include>org.apache.hive.hcatalog:hive-hcatalog-core</include>
-        <include>org.apache.hive.hcatalog:hive-hcatalog-pig-adapter</include>
-        <include>org.apache.hive.hcatalog:hive-hcatalog-server-extensions</include>
-        <include>org.apache.hive.hcatalog:hive-hcatalog-streaming</include>
+        <include>io.hops.hive.hcatalog:hive-hcatalog-core</include>
+        <include>io.hops.hive.hcatalog:hive-hcatalog-pig-adapter</include>
+        <include>io.hops.hive.hcatalog:hive-hcatalog-server-extensions</include>
+        <include>io.hops.hive.hcatalog:hive-hcatalog-streaming</include>
       </includes>
     </dependencySet>
     <!-- TODO 0.12 release the webhcat server lib directory had all transitive jars
@@ -95,7 +95,7 @@
         <exclude>io.hops:*</exclude>
       </excludes>
       <includes>
-        <include>org.apache.hive.hcatalog:hive-webhcat:*</include>
+        <include>io.hops.hive.hcatalog:hive-webhcat:*</include>
       </includes>
     </dependencySet>
     <dependencySet>
@@ -104,7 +104,7 @@
       <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <includes>
-        <include>org.apache.hive.hcatalog:hive-webhcat-java-client</include>
+        <include>io.hops.hive.hcatalog:hive-webhcat-java-client</include>
       </includes>
     </dependencySet>
   </dependencySets>

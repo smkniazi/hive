@@ -17,7 +17,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.apache.hive</groupId>
+    <groupId>io.hops.hive</groupId>
     <artifactId>hive</artifactId>
     <version>2.3.0</version>
     <relativePath>../pom.xml</relativePath>
@@ -36,12 +36,12 @@
     <!-- intra-project -->
     <!-- used for vector code-gen -->
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-vector-code-gen</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-common</artifactId>
       <version>${project.version}</version>
       <exclusions>
@@ -52,44 +52,44 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-common</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-metastore</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-serde</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-service-rpc</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-llap-client</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-llap-tez</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>hive-shims</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hive</groupId>
+      <groupId>io.hops.hive</groupId>
       <artifactId>spark-client</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -907,13 +907,13 @@
               <artifactSet>
                 <includes>
                   <!-- order is meant to be the same as the ant build -->
-                  <include>org.apache.hive:hive-common</include>
-                  <include>org.apache.hive:hive-exec</include>
-                  <include>org.apache.hive:hive-serde</include>
-                  <include>org.apache.hive:hive-llap-common</include>
-                  <include>org.apache.hive:hive-llap-client</include>
-                  <include>org.apache.hive:hive-metastore</include>
-                  <include>org.apache.hive:hive-service-rpc</include>
+                  <include>io.hops.hive:hive-common</include>
+                  <include>io.hops.hive:hive-exec</include>
+                  <include>io.hops.hive:hive-serde</include>
+                  <include>io.hops.hive:hive-llap-common</include>
+                  <include>io.hops.hive:hive-llap-client</include>
+                  <include>io.hops.hive:hive-metastore</include>
+                  <include>io.hops.hive:hive-service-rpc</include>
                   <include>com.esotericsoftware:kryo-shaded</include>
 		  <include>com.esotericsoftware:minlog</include>
 		  <include>org.objenesis:objenesis</include>
@@ -927,9 +927,9 @@
                   <include>com.tdunning:json</include>
                   <include>org.apache.avro:avro</include>
                   <include>org.apache.avro:avro-mapred</include>
-                  <include>org.apache.hive.shims:hive-shims-0.23</include>
-                  <include>org.apache.hive.shims:hive-shims-0.23</include>
-                  <include>org.apache.hive.shims:hive-shims-common</include>
+                  <include>io.hops.hive.shims:hive-shims-0.23</include>
+                  <include>io.hops.hive.shims:hive-shims-0.23</include>
+                  <include>io.hops.hive.shims:hive-shims-common</include>
                   <include>com.googlecode.javaewah:JavaEWAH</include>
                   <include>javolution:javolution</include>
                   <include>com.google.protobuf:protobuf-java</include>
@@ -938,7 +938,7 @@
                   <include>org.codehaus.jackson:jackson-mapper-asl</include>
                   <include>com.google.guava:guava</include>
                   <include>net.sf.opencsv:opencsv</include>
-                  <include>org.apache.hive:spark-client</include>
+                  <include>io.hops.hive:spark-client</include>
                   <include>org.apache.hive:hive-storage-api</include>
                   <include>org.apache.orc:orc-core</include>
                   <include>org.apache.orc:orc-tools</include>
@@ -948,11 +948,11 @@
               <relocations>
                 <relocation>
                   <pattern>com.esotericsoftware</pattern>
-                  <shadedPattern>org.apache.hive.com.esotericsoftware</shadedPattern>
+                  <shadedPattern>io.hops.hive.com.esotericsoftware</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.objenesis</pattern>
-                  <shadedPattern>org.apache.hive.org.objenesis</shadedPattern>
+                  <shadedPattern>io.hops.hive.org.objenesis</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

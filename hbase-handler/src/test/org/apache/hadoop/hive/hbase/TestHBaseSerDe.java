@@ -1250,7 +1250,6 @@ public class TestHBaseSerDe extends TestCase {
     p.add(new KeyValue(rowKey, cfa, qualAvro, avroData));
 
     Object[] expectedFieldsData = {new String("test-row1"), new String("[[42, true, 42432234234]]")};
-t
     MiniDFSCluster miniDfs = null;
 
     try {
