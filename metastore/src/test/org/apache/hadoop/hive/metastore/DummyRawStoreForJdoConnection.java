@@ -1001,7 +1001,8 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   }
 
   @Override
-  public void createResourcePlan(WMResourcePlan resourcePlan) throws MetaException {
+  public void createResourcePlan(
+      WMResourcePlan resourcePlan, int defaultPoolSize) throws MetaException {
   }
 
   @Override

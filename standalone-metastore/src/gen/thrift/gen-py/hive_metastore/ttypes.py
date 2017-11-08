@@ -15089,6 +15089,7 @@ class WMResourcePlan:
    - name
    - status
    - queryParallelism
+   - defaultPoolPath
   """
 
   thrift_spec = (
@@ -15096,12 +15097,14 @@ class WMResourcePlan:
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.I32, 'status', None, None, ), # 2
     (3, TType.I32, 'queryParallelism', None, None, ), # 3
+    (4, TType.STRING, 'defaultPoolPath', None, None, ), # 4
   )
 
-  def __init__(self, name=None, status=None, queryParallelism=None,):
+  def __init__(self, name=None, status=None, queryParallelism=None, defaultPoolPath=None,):
     self.name = name
     self.status = status
     self.queryParallelism = queryParallelism
+    self.defaultPoolPath = defaultPoolPath
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -15127,6 +15130,11 @@ class WMResourcePlan:
           self.queryParallelism = iprot.readI32()
         else:
           iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.defaultPoolPath = iprot.readString()
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -15149,6 +15157,10 @@ class WMResourcePlan:
       oprot.writeFieldBegin('queryParallelism', TType.I32, 3)
       oprot.writeI32(self.queryParallelism)
       oprot.writeFieldEnd()
+    if self.defaultPoolPath is not None:
+      oprot.writeFieldBegin('defaultPoolPath', TType.STRING, 4)
+      oprot.writeString(self.defaultPoolPath)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -15163,6 +15175,7 @@ class WMResourcePlan:
     value = (value * 31) ^ hash(self.name)
     value = (value * 31) ^ hash(self.status)
     value = (value * 31) ^ hash(self.queryParallelism)
+    value = (value * 31) ^ hash(self.defaultPoolPath)
     return value
 
   def __repr__(self):
