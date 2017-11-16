@@ -51,23 +51,23 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
     this.createViewDesc = o.createViewDesc;
   }
 
-  public LoadFileDesc(final CreateTableDesc createTableDesc, final CreateViewDesc  createViewDesc,
-                      final Path sourcePath, final Path targetDir, final boolean isDfsDir,
-                      final String columns, final String columnTypes, AcidUtils.Operation writeType, boolean isMmCtas) {
-      this(sourcePath, targetDir, isDfsDir, columns, columnTypes, writeType, isMmCtas);
-    if (createTableDesc != null && createTableDesc.getDatabaseName() != null
-        && createTableDesc.getTableName() != null) {
+
+  public LoadFileDesc(final CreateTableDesc createTableDesc, final CreateViewDesc createViewDesc,
+      final Path sourcePath, final Path targetDir, final boolean isDfsDir,
+      final String columns, final String columnTypes, AcidUtils.Operation writeType, boolean isMmCtas) {
+    this(sourcePath, targetDir, isDfsDir, columns, columnTypes, writeType, isMmCtas);
+    if (createTableDesc != null && createTableDesc.isCTAS()) {
       this.ctasCreateTableDesc = createTableDesc;
-    } else if (createViewDesc != null) {
+    }
+    if (createViewDesc != null && createViewDesc.isMaterialized()) {
       this.createViewDesc = createViewDesc;
     }
   }
 
-  public LoadFileDesc(final Path sourcePath, final Path targetDir, final boolean isDfsDir,
-      final String columns, final String columnTypes, boolean isMmCtas) {
+  public LoadFileDesc(final Path sourcePath, final Path targetDir,
+      final boolean isDfsDir, final String columns, final String columnTypes, boolean isMmCtas) {
     this(sourcePath, targetDir, isDfsDir, columns, columnTypes, AcidUtils.Operation.NOT_ACID, isMmCtas);
   }
-
 
   private LoadFileDesc(final Path sourcePath, final Path targetDir,
       final boolean isDfsDir, final String columns,
@@ -134,6 +134,10 @@ public class LoadFileDesc extends LoadDesc implements Serializable {
 
   public CreateTableDesc getCtasCreateTableDesc() {
     return ctasCreateTableDesc;
+  }
+
+  public CreateViewDesc getCreateViewDesc() {
+    return createViewDesc;
   }
 
   public boolean isMmCtas() {

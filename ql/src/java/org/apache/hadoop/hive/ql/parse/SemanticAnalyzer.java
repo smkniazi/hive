@@ -11355,6 +11355,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     // 3. analyze create view command
     if (ast.getToken().getType() == HiveParser.TOK_CREATEVIEW ||
         ast.getToken().getType() == HiveParser.TOK_CREATE_MATERIALIZED_VIEW ||
+        (ast.getToken().getType() == HiveParser.TOK_ALTER_MATERIALIZED_VIEW &&
+            ast.getChild(1).getType() == HiveParser.TOK_ALTER_MATERIALIZED_VIEW_REBUILD) ||
         (ast.getToken().getType() == HiveParser.TOK_ALTERVIEW &&
             ast.getChild(1).getType() == HiveParser.TOK_QUERY)) {
       child = analyzeCreateView(ast, qb, plannerCtx);
@@ -11740,6 +11742,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   protected void saveViewDefinition() throws SemanticException {
+    if (createVwDesc.isMaterialized() && createVwDesc.isReplace()) {
+      // This is a rebuild, there's nothing to do here.
+      return;
+    }
+
     // Make a copy of the statement's result schema, since we may
     // modify it below as part of imposing view column names.
     List<FieldSchema> derivedSchema =
@@ -12584,6 +12591,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     Map<String, String> tblProps = null;
     List<String> partColNames = null;
     boolean isMaterialized = ast.getToken().getType() == HiveParser.TOK_CREATE_MATERIALIZED_VIEW;
+    boolean isRebuild = false;
     String location = null;
     RowFormatParams rowFormatParams = new RowFormatParams();
     StorageFormat storageFormat = new StorageFormat(conf);
@@ -12605,6 +12613,10 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         break;
       case HiveParser.TOK_ORREPLACE:
         orReplace = true;
+        break;
+      case HiveParser.TOK_ALTER_MATERIALIZED_VIEW_REBUILD:
+        isMaterialized = true;
+        isRebuild = true;
         break;
       case HiveParser.TOK_QUERY:
         // For CBO
@@ -12663,7 +12675,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     if (isMaterialized) {
       createVwDesc = new CreateViewDesc(
           dbDotTable, cols, comment, tblProps, partColNames,
-          ifNotExists, orReplace, rewriteEnabled, isAlterViewAs,
+          ifNotExists, isRebuild, rewriteEnabled, isAlterViewAs,
           storageFormat.getInputFormat(), storageFormat.getOutputFormat(),
           location, storageFormat.getSerde(), storageFormat.getStorageHandler(),
           storageFormat.getSerdeProps());
@@ -12680,6 +12692,25 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       queryState.setCommandType(HiveOperation.CREATEVIEW);
     }
     qb.setViewDesc(createVwDesc);
+
+    if (isRebuild) {
+      // We need to go lookup the table and get the select statement and then parse it.
+      try {
+        Table tab = getTableObjectByName(dbDotTable, true);
+        String viewText = tab.getViewOriginalText();
+        if (viewText.trim().isEmpty()) {
+          throw new SemanticException(ErrorMsg.MATERIALIZED_VIEW_DEF_EMPTY);
+        }
+        Context ctx = new Context(queryState.getConf());
+        selectStmt = ParseUtils.parse(viewText, ctx);
+        // For CBO
+        if (plannerCtx != null) {
+          plannerCtx.setViewToken(selectStmt);
+        }
+      } catch (Exception e) {
+        throw new SemanticException(e);
+      }
+    }
 
     return selectStmt;
   }
@@ -12717,7 +12748,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
 
       //replace view
-      if (createVwDesc.getOrReplace() && oldView != null) {
+      if (createVwDesc.isReplace() && oldView != null) {
 
         // Don't allow swapping between virtual and materialized view in replace
         if (oldView.getTableType().equals(TableType.VIRTUAL_VIEW) && createVwDesc.isMaterialized()) {

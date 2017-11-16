@@ -160,6 +160,7 @@ PREHOOK: query: show tblproperties cmv_mat_view5
 PREHOOK: type: SHOW_TBLPROPERTIES
 POSTHOOK: query: show tblproperties cmv_mat_view5
 POSTHOOK: type: SHOW_TBLPROPERTIES
+COLUMN_STATS_ACCURATE	{}
 key	value
 numFiles	1
 totalSize	710
