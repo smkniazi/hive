@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.io.orc;
 
+import org.apache.hadoop.hive.ql.plan.DynamicValue.NoDynamicValuesException;
+
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 
 import java.io.IOException;
