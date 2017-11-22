@@ -116,6 +116,7 @@ resources = """
       "yarn.component.instances": "%(instances)d",
       "yarn.resource.normalization.enabled": "false",
       "yarn.memory": "%(container.mb)d",
+      "yarn.vcores": "%(container.cores)d",
       "yarn.component.placement.policy" : "%(placement)d"
     }
   }
