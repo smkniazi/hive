@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.api.AggrStats;
+import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
@@ -68,7 +69,12 @@ import org.apache.hadoop.hive.metastore.api.Type;
 import org.apache.hadoop.hive.metastore.api.UnknownDBException;
 import org.apache.hadoop.hive.metastore.api.UnknownPartitionException;
 import org.apache.hadoop.hive.metastore.api.UnknownTableException;
+<<<<<<< HEAD
 import org.apache.hadoop.hive.metastore.model.MTableWrite;
+=======
+import org.apache.hadoop.hive.metastore.api.WMMapping;
+import org.apache.hadoop.hive.metastore.api.WMPool;
+>>>>>>> 44ef599155... HIVE-17954 : Implement pool, user, group and trigger to pool management API's (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.thrift.TException;
@@ -1054,5 +1060,42 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   public List<WMTrigger> getTriggersForResourcePlan(String resourcePlanName)
       throws NoSuchObjectException, MetaException {
     return null;
+  }
+
+  @Override
+  public void createPool(WMPool pool) throws AlreadyExistsException, NoSuchObjectException,
+      InvalidOperationException, MetaException {
+  }
+
+  @Override
+  public void alterPool(WMPool pool, String poolPath) throws AlreadyExistsException,
+      NoSuchObjectException, InvalidOperationException, MetaException {
+  }
+
+  @Override
+  public void dropWMPool(String resourcePlanName, String poolPath)
+      throws NoSuchObjectException, InvalidOperationException, MetaException {
+  }
+
+  @Override
+  public void createOrUpdateWMMapping(WMMapping mapping, boolean update)
+      throws AlreadyExistsException, NoSuchObjectException, InvalidOperationException,
+      MetaException {
+  }
+
+  @Override
+  public void dropWMMapping(WMMapping mapping)
+      throws NoSuchObjectException, InvalidOperationException, MetaException {
+  }
+
+  @Override
+  public void createWMTriggerToPoolMapping(String resourcePlanName, String triggerName,
+      String poolPath) throws AlreadyExistsException, NoSuchObjectException,
+      InvalidOperationException, MetaException {
+  }
+
+  @Override
+  public void dropWMTriggerToPoolMapping(String resourcePlanName, String triggerName,
+      String poolPath) throws NoSuchObjectException, InvalidOperationException, MetaException {
   }
 }
