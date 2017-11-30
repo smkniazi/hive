@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -241,7 +242,11 @@ public class HiveServer2 extends CompositeService {
       String wmQueue = HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_TEZ_INTERACTIVE_QUEUE);
       if (wmQueue != null && !wmQueue.isEmpty()) {
         LOG.info("Initializing workload management");
-        wm = WorkloadManager.create(wmQueue, hiveConf, resourcePlan);
+        try {
+          wm = WorkloadManager.create(wmQueue, hiveConf, resourcePlan);
+        } catch (ExecutionException | InterruptedException e) {
+          throw new ServiceException("Unable to instantiate Workload Manager", e);
+        }
       }
       tezSessionPoolManager.updateTriggers(resourcePlan);
       LOG.info("Updated tez session pool manager with active resource plan: {}", resourcePlan.getPlan().getName());
