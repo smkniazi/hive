@@ -200,7 +200,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
     MetaData rv = new MetaData();
     try {
-      rv =  EximUtil.readMetaData(fs, new Path(fromPath, EximUtil.METADATA_NAME));
+      rv = EximUtil.readMetaData(fs, new Path(fromPath, EximUtil.METADATA_NAME));
     } catch (IOException e) {
       throw new SemanticException(ErrorMsg.INVALID_PATH.getMsg(), e);
     }
@@ -211,10 +211,10 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     ReplicationSpec replicationSpec = rv.getReplicationSpec();
-    if (replicationSpec.isNoop()){
+    if (replicationSpec.isNoop()) {
       // nothing to do here, silently return.
       x.getLOG().debug("Current update with ID:{} is noop",
-                                  replicationSpec.getCurrentReplicationState());
+          replicationSpec.getCurrentReplicationState());
       return false;
     }
 
@@ -223,7 +223,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     String dbname = SessionState.get().getCurrentDatabase();
-    if ((parsedDbName !=null) && (!parsedDbName.isEmpty())){
+    if ((parsedDbName != null) && (!parsedDbName.isEmpty())) {
       // If the parsed statement contained a db.tablename specification, prefer that.
       dbname = parsedDbName;
     }
@@ -238,12 +238,12 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
     boolean isSourceMm = AcidUtils.isInsertOnlyTable(tblDesc.getTblProps());
 
-    if ((replicationSpec != null) && replicationSpec.isInReplicationScope()){
+    if ((replicationSpec != null) && replicationSpec.isInReplicationScope()) {
       tblDesc.setReplicationSpec(replicationSpec);
       StatsSetupConst.setBasicStatsState(tblDesc.getTblProps(), StatsSetupConst.FALSE);
     }
 
-    if (isExternalSet){
+    if (isExternalSet) {
       //TODO(Fabio): this should check if the table is insertonly
       if (true) {
         throw new SemanticException("Cannot import an MM table as external");
@@ -254,12 +254,12 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       // TODO:cleanup after verification that the outer if isn't really needed here
     }
 
-    if (isLocationSet){
+    if (isLocationSet) {
       tblDesc.setLocation(parsedLocation);
       x.getInputs().add(toReadEntity(new Path(parsedLocation), x.getConf()));
     }
 
-    if ((parsedTableName!= null) && (!parsedTableName.isEmpty())){
+    if ((parsedTableName != null) && (!parsedTableName.isEmpty())) {
       tblDesc.setTableName(parsedTableName);
     }
 
@@ -268,18 +268,18 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     for (Partition partition : partitions) {
       // TODO: this should ideally not create AddPartitionDesc per partition
       AddPartitionDesc partsDesc = getBaseAddPartitionDescFromPartition(fromPath, dbname, tblDesc, partition);
-      if ((replicationSpec != null) && replicationSpec.isInReplicationScope()){
+      if ((replicationSpec != null) && replicationSpec.isInReplicationScope()) {
         StatsSetupConst.setBasicStatsState(partsDesc.getPartition(0).getPartParams(), StatsSetupConst.FALSE);
       }
       partitionDescs.add(partsDesc);
     }
 
-    if (isPartSpecSet){
+    if (isPartSpecSet) {
       // The import specification asked for only a particular partition to be loaded
       // We load only that, and ignore all the others.
       boolean found = false;
       for (Iterator<AddPartitionDesc> partnIter = partitionDescs
-          .listIterator(); partnIter.hasNext();) {
+          .listIterator(); partnIter.hasNext(); ) {
         AddPartitionDesc addPartitionDesc = partnIter.next();
         if (!found && addPartitionDesc.getPartition(0).getPartSpec().equals(parsedPartSpec)) {
           found = true;
@@ -309,8 +309,8 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     Table table = tableIfExists(tblDesc, x.getHive());
     boolean tableExists = false;
 
-    if (table != null){
-      checkTable(table, tblDesc,replicationSpec, x.getConf());
+    if (table != null) {
+      checkTable(table, tblDesc, replicationSpec, x.getConf());
       x.getLOG().debug("table " + tblDesc.getTableName() + " exists: metadata checked");
       tableExists = true;
     }
@@ -336,6 +336,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
           fromURI, fs, wh, x, updatedMetadata);
     }
     return tableExists;
+  } */
   }
 
   private static AddPartitionDesc getBaseAddPartitionDescFromPartition(
@@ -419,13 +420,16 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     }
 
     LoadTableDesc loadTableWork = new LoadTableDesc(destPath,
-        Utilities.getTableDesc(table), new TreeMap<String, String>(), replace, mmWriteId);
-    MoveWork mv = new MoveWork(x.getInputs(), x.getOutputs(), loadTableWork, null, false);
+        Utilities.getTableDesc(table), new TreeMap<>(),
+        replace ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING, txnId);
+    loadTableWork.setStmtId(stmtId);
+    MoveWork mv = new MoveWork(x.getInputs(), x.getOutputs(), loadTableWork, null, false, SessionState.get().getLineageState());
     Task<?> loadTableTask = TaskFactory.get(mv, x.getConf());
     copyTask.addDependentTask(loadTableTask);
     x.getTasks().add(copyTask);
     return loadTableTask;
   }
+
 
   private static Task<?> createTableTask(ImportTableDesc tableDesc, EximUtil.SemanticAnalyzerWrapperContext x){
     return tableDesc.getCreateTableTask(x.getInputs(), x.getOutputs(), x.getConf());
@@ -511,7 +515,9 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
       LoadTableDesc loadTableWork = new LoadTableDesc(tmpPath,
           Utilities.getTableDesc(table),
           partSpec.getPartSpec(),
-          replicationSpec.isReplace() ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING);
+          replicationSpec.isReplace() ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING,
+          txnId);
+      loadTableWork.setStmtId(stmtId);
       loadTableWork.setInheritTableSpecs(false);
       Task<?> loadPartTask = TaskFactory.get(new MoveWork(
               x.getInputs(), x.getOutputs(), loadTableWork, null, false,

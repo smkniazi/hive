@@ -26,6 +26,7 @@ import org.apache.hadoop.hive.ql.plan.LockDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.LockTableDesc;
 import org.apache.hadoop.hive.ql.plan.UnlockDatabaseDesc;
 import org.apache.hadoop.hive.ql.plan.UnlockTableDesc;
+import org.apache.hadoop.hive.ql.plan.api.Query;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hive.common.util.ShutdownHookManager;
 import org.slf4j.Logger;
@@ -194,7 +195,103 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
   }
 
   /**
-   * This is for testing only.  Normally client should call {@link #acquireLocks(org.apache.hadoop.hive.ql.QueryPlan, org.apache.hadoop.hive.ql.Context, String)}
+   * Watermark to include in error msgs and logs
+   * @param queryPlan
+   * @return
+   */
+  private static String getQueryIdWaterMark(QueryPlan queryPlan) {
+    return "queryId=" + queryPlan.getQueryId();
+  }
+
+  private void markExplicitTransaction(QueryPlan queryPlan) throws LockException {
+    isExplicitTransaction = true;
+    if(++startTransactionCount > 1) {
+      throw new LockException(null, ErrorMsg.OP_NOT_ALLOWED_IN_TXN, queryPlan.getOperationName(),
+        JavaUtils.txnIdToString(getCurrentTxnId()), queryPlan.getQueryId());
+    }
+
+  }
+  /**
+   * Ensures that the current SQL statement is appropriate for the current state of the
+   * Transaction Manager (e.g. can call commit unless you called start transaction)
+   * 
+   * Note that support for multi-statement txns is a work-in-progress so it's only supported in
+   * HiveConf#HIVE_IN_TEST/HiveConf#TEZ_HIVE_IN_TEST.
+   * @param queryPlan
+   * @throws LockException
+   */
+  private void verifyState(QueryPlan queryPlan) throws LockException {
+    if(!isTxnOpen()) {
+      throw new LockException("No transaction context for operation: " + queryPlan.getOperationName() + 
+        " for " + getQueryIdWaterMark(queryPlan));
+    }
+    if(queryPlan.getOperation() == null) {
+      throw new IllegalStateException("Unkown HiverOperation for " + getQueryIdWaterMark(queryPlan));
+    }
+    numStatements++;
+    switch (queryPlan.getOperation()) {
+      case START_TRANSACTION:
+        markExplicitTransaction(queryPlan);
+        break;
+      case COMMIT:
+      case ROLLBACK:
+        if(!isTxnOpen()) {
+          throw new LockException(null, ErrorMsg.OP_NOT_ALLOWED_WITHOUT_TXN, queryPlan.getOperationName());
+        }
+        if(!isExplicitTransaction) {
+          throw new LockException(null, ErrorMsg.OP_NOT_ALLOWED_IN_IMPLICIT_TXN, queryPlan.getOperationName());
+        }
+        break;
+      default:
+        if(!queryPlan.getOperation().isAllowedInTransaction() && isExplicitTransaction) {
+          if(allowOperationInATransaction(queryPlan)) {
+            break;
+          }
+          //look at queryPlan.outputs(WriteEntity.t - that's the table)
+          //for example, drop table in an explicit txn is not allowed
+          //in some cases this requires looking at more than just the operation
+          //for example HiveOperation.LOAD - OK if target is MM table but not OK if non-acid table
+          throw new LockException(null, ErrorMsg.OP_NOT_ALLOWED_IN_TXN, queryPlan.getOperationName(),
+            JavaUtils.txnIdToString(getCurrentTxnId()), queryPlan.getQueryId());
+        }
+    }
+    /*
+    Should we allow writing to non-transactional tables in an explicit transaction?  The user may
+    issue ROLLBACK but these tables won't rollback.
+    Can do this by checking ReadEntity/WriteEntity to determine whether it's reading/writing
+    any non acid and raise an appropriate error
+    * Driver.acidSinks and Driver.acidInQuery can be used if any acid is in the query*/
+  }
+
+  /**
+   * This modifies the logic wrt what operations are allowed in a transaction.  Multi-statement
+   * transaction support is incomplete but it makes some Acid tests cases much easier to write.
+   */
+  private boolean allowOperationInATransaction(QueryPlan queryPlan) {
+    //Acid and MM tables support Load Data with transactional semantics.  This will allow Load Data
+    //in a txn assuming we can determine the target is a suitable table type.
+    if(queryPlan.getOperation() == HiveOperation.LOAD && queryPlan.getOutputs() != null && queryPlan.getOutputs().size() == 1) {
+      WriteEntity writeEntity = queryPlan.getOutputs().iterator().next();
+      if(AcidUtils.isFullAcidTable(writeEntity.getTable()) || AcidUtils.isInsertOnlyTable(writeEntity.getTable())) {
+        switch (writeEntity.getWriteType()) {
+          case INSERT:
+            //allow operation in a txn
+            return true;
+          case INSERT_OVERWRITE:
+            //see HIVE-18154
+            return false;
+          default:
+            //not relevant for LOAD
+            return false;
+        }
+      }
+    }
+    //todo: handle Insert Overwrite as well: HIVE-18154
+    return false;
+  }
+
+  /**
+   * Normally client should call {@link #acquireLocks(org.apache.hadoop.hive.ql.QueryPlan, org.apache.hadoop.hive.ql.Context, String)}
    * @param isBlocking if false, the method will return immediately; thus the locks may be in LockState.WAITING
    * @return null if no locks were needed
    */

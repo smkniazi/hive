@@ -136,7 +136,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   private List<FileStatus> applyConstraintsAndGetFiles(URI fromURI, Tree ast,
-      boolean isLocal) throws SemanticException {
+      boolean isLocal, Table table) throws SemanticException {
 
     FileStatus[] srcs = null;
 
@@ -158,6 +158,14 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
         if (oneSrc.isDir()) {
           throw new SemanticException(ErrorMsg.INVALID_PATH.getMsg(ast,
               "source contains directory: " + oneSrc.getPath().toString()));
+        }
+        if(AcidUtils.isFullAcidTable(table)) {
+          if(!AcidUtils.originalBucketFilter.accept(oneSrc.getPath())) {
+            //acid files (e.g. bucket_0000) have ROW_ID embedded in them and so can't be simply
+            //copied to a table so only allow non-acid files for now
+            throw new SemanticException(ErrorMsg.ACID_LOAD_DATA_INVALID_FILE_NAME,
+              oneSrc.getPath().getName(), table.getDbName() + "." + table.getTableName());
+          }
         }
       }
     } catch (IOException e) {
@@ -220,15 +228,7 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
         && (ts.partSpec == null || ts.partSpec.size() == 0)) {
       throw new SemanticException(ErrorMsg.NEED_PARTITION_ERROR.getMsg());
     }
-    /* TODO# enable later - fails srcbucket creation in 14990
-    List<String> bucketCols = ts.tableHandle.getBucketCols();
-<<<<<<< HEAD
-    if (bucketCols != null && !bucketCols.isEmpty()
-        && MetaStoreUtils.isInsertOnlyTable(ts.tableHandle.getMetadata())) {
-      throw new SemanticException("Cannot load into a bucketed insert-only table. Please load into"
-          + " an intermediate table and use insert... select to allow Hive to enforce bucketing.");
-    }*/
-=======
+
     if (bucketCols != null && !bucketCols.isEmpty()) {
       String error = StrictChecks.checkBucketing(conf);
       if (error != null) {
@@ -236,13 +236,9 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
             + " and use 'insert... select' to allow Hive to enforce bucketing. " + error);
       }
     }
->>>>>>> ec9cc0bc29... HIVE-16827 : Merge stats task and column stats task into a single task (Zoltan Haindrich via Ashutosh Chauhan)
 
-    if(AcidUtils.isAcidTable(ts.tableHandle) && !AcidUtils.isInsertOnlyTable(ts.tableHandle.getParameters())) {
-      throw new SemanticException(ErrorMsg.LOAD_DATA_ON_ACID_TABLE, ts.tableHandle.getCompleteName());
-    }
     // make sure the arguments make sense
-    List<FileStatus> files = applyConstraintsAndGetFiles(fromURI, fromTree, isLocal);
+    List<FileStatus> files = applyConstraintsAndGetFiles(fromURI, fromTree, isLocal, ts.tableHandle);
 
     // for managed tables, make sure the file formats match
     if (TableType.MANAGED_TABLE.equals(ts.tableHandle.getTableType())
@@ -284,16 +280,18 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
 
-    Long mmWriteId = null;
-    Table tbl = ts.tableHandle;
-    if (AcidUtils.isInsertOnlyTable(tbl.getParameters())) {
+    Long txnId = null;
+    int stmtId = -1;
+    if (AcidUtils.isAcidTable(ts.tableHandle)) {
       txnId = SessionState.get().getTxnMgr().getCurrentTxnId();
+      stmtId = SessionState.get().getTxnMgr().getWriteIdAndIncrement();
     }
 
     LoadTableDesc loadTableWork;
     loadTableWork = new LoadTableDesc(new Path(fromURI),
       Utilities.getTableDesc(ts.tableHandle), partSpec,
-      isOverWrite ? LoadFileType.REPLACE_ALL : LoadFileType.KEEP_EXISTING, mmWriteId);
+      isOverWrite ? LoadFileType.REPLACE_ALL : LoadFileType.KEEP_EXISTING, txnId);
+    loadTableWork.setStmtId(stmtId);
     if (preservePartitionSpecs){
       // Note : preservePartitionSpecs=true implies inheritTableSpecs=false but
       // but preservePartitionSpecs=false(default) here is not sufficient enough
