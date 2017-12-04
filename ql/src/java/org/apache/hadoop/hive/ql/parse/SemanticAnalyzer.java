@@ -6830,7 +6830,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       if (isNonNativeTable || isMmTable) {
         queryTmpdir = dest_path;
       } else {
-        queryTmpdir = ctx.getTempDirForPath(dest_path, true);
+        queryTmpdir = ctx.getTempDirForFinalJobPath(dest_path);
       }
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("create filesink w/DEST_TABLE specifying " + queryTmpdir
@@ -6913,7 +6913,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
           .getAuthority(), partPath.toUri().getPath());
 
       isMmTable = AcidUtils.isInsertOnlyTable(dest_tab.getParameters());
-      queryTmpdir = isMmTable ? dest_path : ctx.getTempDirForPath(dest_path, true);
+      queryTmpdir = isMmTable ? dest_path : ctx.getTempDirForFinalJobPath(dest_path);
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("create filesink w/DEST_PARTITION specifying "
             + queryTmpdir + " from " + dest_path);
@@ -7002,7 +7002,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         // no copy is required. we may want to revisit this policy in future
         try {
           Path qPath = FileUtils.makeQualified(dest_path, conf);
-          queryTmpdir = isMmTable ? qPath : ctx.getTempDirForPath(qPath, true);
+          queryTmpdir = isMmTable ? qPath : ctx.getTempDirForFinalJobPath(qPath);
           if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
             Utilities.FILE_OP_LOGGER.trace("Setting query directory " + queryTmpdir
                   + " from " + dest_path + " (" + isMmTable + ")");
@@ -7293,7 +7293,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     fileSinkDesc.setStatsAggPrefix(fileSinkDesc.getDirName().toString());
     if (!destTableIsMaterialization &&
             HiveConf.getVar(conf, HIVESTATSDBCLASS).equalsIgnoreCase(StatDB.fs.name())) {
-      String statsTmpLoc = ctx.getTempDirForPath(dest_path).toString();
+      String statsTmpLoc = ctx.getTempDirForInterimJobPath(dest_path).toString();
       fileSinkDesc.setStatsTmpDir(statsTmpLoc);
       LOG.debug("Set stats collection dir : " + statsTmpLoc);
     }
@@ -10657,7 +10657,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       tsDesc.setGatherStats(false);
     } else {
       if (HiveConf.getVar(conf, HIVESTATSDBCLASS).equalsIgnoreCase(StatDB.fs.name())) {
-        String statsTmpLoc = ctx.getTempDirForPath(tab.getPath()).toString();
+        String statsTmpLoc = ctx.getTempDirForInterimJobPath(tab.getPath()).toString();
         LOG.debug("Set stats collection dir : " + statsTmpLoc);
         tsDesc.setTmpStatsDir(statsTmpLoc);
       }
