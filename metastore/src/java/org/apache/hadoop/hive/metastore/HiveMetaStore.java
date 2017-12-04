@@ -23,26 +23,13 @@ import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_C
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.DEFAULT_DATABASE_NAME;
 import static org.apache.hadoop.hive.metastore.MetaStoreUtils.validateName;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.PrivilegedExceptionAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -63,6 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimaps;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.FileUtils;
@@ -70,7 +58,7 @@ import org.apache.hadoop.hive.common.JvmPauseMonitor;
 import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.common.LogUtils.LogInitializationException;
 import org.apache.hadoop.hive.common.StatsSetupConst;
-import org.apache.hadoop.hive.common.auth.HiveAuthUtils;
+import org.apache.hadoop.hive.common.auth.TServerSocketFactory;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.common.cli.CommonCliOptions;
@@ -129,6 +117,8 @@ import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.Server.ServerMode;
 import org.apache.hadoop.hive.thrift.HiveDelegationTokenManager;
 import org.apache.hadoop.hive.thrift.TUGIContainingTransport;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
+import org.apache.hadoop.yarn.server.security.CertificateLocalizationService;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.common.util.HiveStringUtils;
@@ -195,6 +185,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
   private static HiveDelegationTokenManager delegationTokenManager;
   private static boolean useSasl;
 
+  private static CertificateLocalizationService certLocService = null;
+
   public static final String NO_FILTER_STRING = "";
   public static final int UNLIMITED_MAX_PARTITIONS = -1;
 
@@ -239,12 +231,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
     private Warehouse wh; // hdfs warehouse
     private static final ThreadLocal<RawStore> threadLocalMS =
-        new ThreadLocal<RawStore>() {
-          @Override
-          protected RawStore initialValue() {
-            return null;
-          }
-        };
+        ThreadLocal.withInitial(() -> null);
+
+    private static final ThreadLocal<Boolean> tlsSetCryptoCalled =
+        ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     private static final ThreadLocal<TxnStore> threadLocalTxn = new ThreadLocal<TxnStore>() {
       @Override
@@ -260,6 +250,12 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     public static void removeRawStore() {
       threadLocalMS.remove();
     }
+
+    public static Boolean getSetCryptoCalled() {
+      return tlsSetCryptoCalled.get();
+    }
+
+    public static void removeSetCryptoCalled() { tlsSetCryptoCalled.remove(); }
 
     // Thread local configuration is needed as many threads could make changes
     // to the conf using the connection hook
@@ -6107,6 +6103,37 @@ public class HiveMetaStore extends ThriftHiveMetastore {
     }
 
     @Override
+    public void set_crypto(ByteBuffer keyStore, String keyStorePassword,
+                           ByteBuffer trustStore, String trustStorePassword) throws MetaException {
+      if (keyStore == null || trustStore == null ||
+          keyStorePassword == null || keyStorePassword.isEmpty() ||
+          trustStorePassword == null || trustStorePassword.isEmpty()) {
+        throw new MetaException("Crypto material not set correctly");
+      }
+
+      // This call happens inside a doAs.
+      try {
+        String username = UserGroupInformation.getCurrentUser().getUserName();
+        try {
+          certLocService.getX509MaterialLocation(username, username);
+          // no exception is thrown, this means that the certificate has been found in the
+          // CertificateMaterializerService. This means the user is updating their certificate
+          certLocService.updateX509(username, username, keyStore, keyStorePassword, trustStore, trustStorePassword);
+        } catch (FileNotFoundException e) {
+          // The exception is thrown if no certificates are present in the CertificateMaterializerService
+          // This means the client has just opened a connection and it's sending the certificate
+          certLocService.materializeCertificates(username, username, keyStore, keyStorePassword,
+            trustStore, trustStorePassword);
+        }
+      } catch (IOException | InterruptedException e) {
+        throw new MetaException(e.getMessage());
+      }
+
+      // Remember that this connection has set the certificates.
+      tlsSetCryptoCalled.set(Boolean.TRUE);
+    }
+
+    @Override
     public boolean partition_name_has_valid_characters(List<String> part_vals,
         boolean throw_exception) throws TException, MetaException {
       startFunction("partition_name_has_valid_characters");
@@ -7117,7 +7144,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       boolean tcpKeepAlive = conf.getBoolVar(HiveConf.ConfVars.METASTORE_TCP_KEEP_ALIVE);
       boolean useFramedTransport = conf.getBoolVar(ConfVars.METASTORE_USE_THRIFT_FRAMED_TRANSPORT);
       boolean useCompactProtocol = conf.getBoolVar(ConfVars.METASTORE_USE_THRIFT_COMPACT_PROTOCOL);
-      boolean useSSL = conf.getBoolVar(ConfVars.HIVE_METASTORE_USE_SSL);
       useSasl = conf.getBoolVar(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL);
 
       TProcessor processor;
@@ -7136,6 +7162,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       IHMSHandler handler = newRetryingHMSHandler(baseHandler, conf);
       TServerSocket serverSocket  = null;
 
+      boolean useSSL = conf.getBoolean(
+              CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+              CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT);
+
       if (useSasl) {
         // we are in secure mode.
         if (useFramedTransport) {
@@ -7153,7 +7183,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
                 MetaStoreUtils.getMetaStoreSaslProperties(conf));
         processor = saslServer.wrapProcessor(
           new ThriftHiveMetastore.Processor<IHMSHandler>(handler));
-        serverSocket = HiveAuthUtils.getServerSocket(null, port);
+        serverSocket = TServerSocketFactory.getServerSocket(conf,
+                TServerSocketFactory.TSocketType.PLAIN, null, port);
 
         LOG.info("Starting DB backed MetaStore Server in Secure Mode");
       } else {
@@ -7173,23 +7204,30 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           LOG.info("Starting DB backed MetaStore Server");
         }
 
-        // enable SSL support for HMS
-        List<String> sslVersionBlacklist = new ArrayList<String>();
-        for (String sslVersion : conf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",")) {
-          sslVersionBlacklist.add(sslVersion);
-        }
         if (!useSSL) {
-          serverSocket = HiveAuthUtils.getServerSocket(null, port);
+          serverSocket = TServerSocketFactory.getServerSocket(conf,
+                  TServerSocketFactory.TSocketType.PLAIN, null, port);
         } else {
-          String keyStorePath = conf.getVar(ConfVars.HIVE_METASTORE_SSL_KEYSTORE_PATH).trim();
-          if (keyStorePath.isEmpty()) {
-            throw new IllegalArgumentException(ConfVars.HIVE_METASTORE_SSL_KEYSTORE_PASSWORD.varname
-                + " Not configured for SSL connection");
-          }
-          String keyStorePassword = ShimLoader.getHadoopShims().getPassword(conf,
-              HiveConf.ConfVars.HIVE_METASTORE_SSL_KEYSTORE_PASSWORD.varname);
-          serverSocket = HiveAuthUtils.getServerSSLSocket(null, port, keyStorePath,
-              keyStorePassword, sslVersionBlacklist);
+          // Create an instance of the CertificateLocalizationService to keep the track
+          // of the certificates sent by the users
+          certLocService = new CertificateLocalizationService(CertificateLocalizationService.ServiceType.HM);
+          certLocService.init(conf);
+          certLocService.start();
+          CertificateLocalizationCtx.getInstance().setCertificateLocalization(certLocService);
+
+          // Add shutdown hook to shutdown the CertificateLocalizationService
+          ShutdownHookManager.addShutdownHook(new Runnable() {
+            @Override
+            public void run() {
+              String shutdownMsg = "Shutting down the CertificateLocalizationService.";
+              HMSHandler.LOG.info(shutdownMsg);
+              certLocService.stop();
+            }
+          });
+
+          serverSocket = TServerSocketFactory.getServerSocket(conf,
+                  TServerSocketFactory.TSocketType.TWOWAYTLS, null, port);
+          processor = new TSSLBasedProcessor<IHMSHandler>(handler, conf);
         }
       }
 
@@ -7225,7 +7263,8 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         }
 
         @Override
-        public void deleteContext(ServerContext serverContext, TProtocol tProtocol, TProtocol tProtocol1) {
+        public void deleteContext(ServerContext serverContext, TProtocol tProtocol, TProtocol tProtocol1)
+        {
           try {
             Metrics metrics = MetricsFactory.getInstance();
             if (metrics != null) {
@@ -7237,6 +7276,21 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           // If the IMetaStoreClient#close was called, HMSHandler#shutdown would have already
           // cleaned up thread local RawStore. Otherwise, do it now.
           cleanupRawStore();
+
+          if (conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+              CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+            // Remove the certificate only if the set_crypto was called
+            if (HMSHandler.getSetCryptoCalled()) {
+              UserGroupInformation ugi = ((TUGIContainingTransport)tProtocol.getTransport()).getClientUGI();
+              if (ugi != null) {
+                try {
+                  certLocService.removeX509Material(ugi.getUserName());
+                } catch (Exception e) {}
+              }
+              // Clean up the flag as the thread is put back in the queue for the next connection
+              HMSHandler.removeSetCryptoCalled();
+            }
+          }
         }
 
         @Override

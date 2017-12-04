@@ -46,7 +46,6 @@ import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -65,7 +64,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
-import javax.security.cert.X509Certificate;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
 
@@ -78,10 +76,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -180,7 +178,12 @@ public class HiveConnection implements java.sql.Connection {
       client = embeddedClient;
 
       // open client session
-      openSession();
+      try {
+        openSession();
+      } catch (IOException e) {
+        // JDBC interface allows only SQLException
+        throw new SQLException(e);
+      }
       executeInitSql();
     } else {
       int maxRetries = 1;
@@ -517,10 +520,10 @@ public class HiveConnection implements java.sql.Connection {
         if (useTwoWaySSL != null && useTwoWaySSL.equalsIgnoreCase(JdbcConnectionParams.TRUE)) {
           String sslKeyStore = sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE);
           String sslKeyStorePassword = sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE_PASSWORD);
-          transport = HiveAuthUtils.getHopsJDBC2WaySSLSocket(host, port, loginTimeout,
+          transport = HiveAuthUtils.get2WayTLSClientSocket(host, port, loginTimeout,
               sslTrustStore, sslTrustStorePassword, sslKeyStore, sslKeyStorePassword);
         } else {
-          transport = HiveAuthUtils.getHopsJDBCSSLSocket(host, port, loginTimeout,
+          transport = HiveAuthUtils.getTLSClientSocket(host, port, loginTimeout,
               sslTrustStore, sslTrustStorePassword);
         }
       }
@@ -660,7 +663,7 @@ public class HiveConnection implements java.sql.Connection {
     return tokenStr;
   }
 
-  private void openSession() throws SQLException {
+  private void openSession() throws SQLException, IOException {
     TOpenSessionReq openReq = new TOpenSessionReq();
 
     Map<String, String> openConf = new HashMap<String, String>();
@@ -690,6 +693,22 @@ public class HiveConnection implements java.sql.Connection {
     if (JdbcConnectionParams.AUTH_SIMPLE.equals(sessConfMap.get(JdbcConnectionParams.AUTH_TYPE))) {
       openReq.setUsername(sessConfMap.get(JdbcConnectionParams.AUTH_USER));
       openReq.setPassword(sessConfMap.get(JdbcConnectionParams.AUTH_PASSWD));
+    }
+
+    if (sessConfMap.get(JdbcConnectionParams.USE_TWO_WAY_SSL) != null &&
+      sessConfMap.get(JdbcConnectionParams.USE_TWO_WAY_SSL).equalsIgnoreCase(JdbcConnectionParams.TRUE)) {
+      // If twoWaySSL -> We are trying to connect to HiveServer with HopsTLS enabled.
+      // We send the trust/keyStore (+ Password) in the openRequest so the HiveServer can extract them and use
+      // them to launch Yarn applications and do HopsFS operations as us.
+
+      // Note that if the file didn't exists, we wouldn't be this far.
+      byte[] keyStore = Files.readAllBytes(Paths.get(sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE)));
+      byte[] trustStore = Files.readAllBytes(Paths.get(sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE)));
+
+      openReq.setKeyStore(keyStore);
+      openReq.setTrustStore(trustStore);
+      openReq.setKeyStorePassword(sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE_PASSWORD));
+      openReq.setTrustStorePassword(sessConfMap.get(JdbcConnectionParams.SSL_TRUST_STORE_PASSWORD));
     }
 
     try {

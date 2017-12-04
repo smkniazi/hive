@@ -128,7 +128,13 @@ message SubmitWorkRequestProto {
 
   // Serialized (and signed) NotTezEvent; used only for external clients for now.
   optional bytes initial_event_bytes = 10;
-  optional bytes initial_event_signature = 11; 
+  optional bytes initial_event_signature = 11;
+
+  // HopsTLS key/trustStore
+  optional bytes key_store = 18;
+  optional bytes trust_store = 19;
+  optional string key_store_password = 20;
+  optional string trust_store_password = 21;
 }
 
 

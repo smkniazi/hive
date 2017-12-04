@@ -4653,6 +4653,26 @@ void TOpenSessionReq::__set_configuration(const std::map<std::string, std::strin
 __isset.configuration = true;
 }
 
+void TOpenSessionReq::__set_keyStore(const std::string& val) {
+  this->keyStore = val;
+__isset.keyStore = true;
+}
+
+void TOpenSessionReq::__set_trustStore(const std::string& val) {
+  this->trustStore = val;
+__isset.trustStore = true;
+}
+
+void TOpenSessionReq::__set_keyStorePassword(const std::string& val) {
+  this->keyStorePassword = val;
+__isset.keyStorePassword = true;
+}
+
+void TOpenSessionReq::__set_trustStorePassword(const std::string& val) {
+  this->trustStorePassword = val;
+__isset.trustStorePassword = true;
+}
+
 uint32_t TOpenSessionReq::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -4724,6 +4744,38 @@ uint32_t TOpenSessionReq::read(::apache::thrift::protocol::TProtocol* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
+      case 5:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readBinary(this->keyStore);
+          this->__isset.keyStore = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 6:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readBinary(this->trustStore);
+          this->__isset.trustStore = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 7:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->keyStorePassword);
+          this->__isset.keyStorePassword = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 8:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->trustStorePassword);
+          this->__isset.trustStorePassword = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -4771,6 +4823,26 @@ uint32_t TOpenSessionReq::write(::apache::thrift::protocol::TProtocol* oprot) co
     }
     xfer += oprot->writeFieldEnd();
   }
+  if (this->__isset.keyStore) {
+    xfer += oprot->writeFieldBegin("keyStore", ::apache::thrift::protocol::T_STRING, 5);
+    xfer += oprot->writeBinary(this->keyStore);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.trustStore) {
+    xfer += oprot->writeFieldBegin("trustStore", ::apache::thrift::protocol::T_STRING, 6);
+    xfer += oprot->writeBinary(this->trustStore);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.keyStorePassword) {
+    xfer += oprot->writeFieldBegin("keyStorePassword", ::apache::thrift::protocol::T_STRING, 7);
+    xfer += oprot->writeString(this->keyStorePassword);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.trustStorePassword) {
+    xfer += oprot->writeFieldBegin("trustStorePassword", ::apache::thrift::protocol::T_STRING, 8);
+    xfer += oprot->writeString(this->trustStorePassword);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -4782,6 +4854,10 @@ void swap(TOpenSessionReq &a, TOpenSessionReq &b) {
   swap(a.username, b.username);
   swap(a.password, b.password);
   swap(a.configuration, b.configuration);
+  swap(a.keyStore, b.keyStore);
+  swap(a.trustStore, b.trustStore);
+  swap(a.keyStorePassword, b.keyStorePassword);
+  swap(a.trustStorePassword, b.trustStorePassword);
   swap(a.__isset, b.__isset);
 }
 
@@ -4790,6 +4866,10 @@ TOpenSessionReq::TOpenSessionReq(const TOpenSessionReq& other190) {
   username = other190.username;
   password = other190.password;
   configuration = other190.configuration;
+  keyStore = other190.keyStore;
+  trustStore = other190.trustStore;
+  keyStorePassword = other190.keyStorePassword;
+  trustStorePassword = other190.trustStorePassword;
   __isset = other190.__isset;
 }
 TOpenSessionReq& TOpenSessionReq::operator=(const TOpenSessionReq& other191) {
@@ -4797,6 +4877,10 @@ TOpenSessionReq& TOpenSessionReq::operator=(const TOpenSessionReq& other191) {
   username = other191.username;
   password = other191.password;
   configuration = other191.configuration;
+  keyStore = other191.keyStore;
+  trustStore = other191.trustStore;
+  keyStorePassword = other191.keyStorePassword;
+  trustStorePassword = other191.trustStorePassword;
   __isset = other191.__isset;
   return *this;
 }
@@ -4807,6 +4891,10 @@ void TOpenSessionReq::printTo(std::ostream& out) const {
   out << ", " << "username="; (__isset.username ? (out << to_string(username)) : (out << "<null>"));
   out << ", " << "password="; (__isset.password ? (out << to_string(password)) : (out << "<null>"));
   out << ", " << "configuration="; (__isset.configuration ? (out << to_string(configuration)) : (out << "<null>"));
+  out << ", " << "keyStore="; (__isset.keyStore ? (out << to_string(keyStore)) : (out << "<null>"));
+  out << ", " << "trustStore="; (__isset.trustStore ? (out << to_string(trustStore)) : (out << "<null>"));
+  out << ", " << "keyStorePassword="; (__isset.keyStorePassword ? (out << to_string(keyStorePassword)) : (out << "<null>"));
+  out << ", " << "trustStorePassword="; (__isset.trustStorePassword ? (out << to_string(trustStorePassword)) : (out << "<null>"));
   out << ")";
 }
 

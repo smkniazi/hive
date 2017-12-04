@@ -81,7 +81,6 @@ import org.apache.hadoop.yarn.webapp.util.WebAppUtils;
 import org.apache.tez.common.TezTaskUmbilicalProtocol;
 import org.apache.tez.common.TezUtils;
 import org.apache.tez.common.security.JobTokenSecretManager;
-import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.TezUncheckedException;
 import org.apache.tez.dag.api.UserPayload;
@@ -122,6 +121,13 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
   private final String user;
   private String amHost;
   private String timelineServerUri;
+
+  // TODO(Fabio) implement a smarter caching mechanisms that takes into account the fact that
+  // user certificates can be rotated
+  private ByteString keyStore = null;
+  private String keyStorePassword = null;
+  private ByteString trustStore = null;
+  private String trustStorePassword = null;
 
   // These two structures track the list of known nodes, and the list of nodes which are sending in keep-alive heartbeats.
   // Primarily for debugging purposes a.t.m, since there's some unexplained TASK_TIMEOUTS which are currently being observed.
@@ -724,6 +730,7 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
     } else {
       credentialsBinary = credentialsBinary.duplicate();
     }
+
     builder.setCredentialsBinary(ByteString.copyFrom(credentialsBinary));
     builder.setWorkSpec(VertexOrBinary.newBuilder().setVertex(Converters.constructSignableVertexSpec(
         taskSpec, currentQueryIdentifierProto, getTokenIdentifier(), user, hiveQueryId)).build());

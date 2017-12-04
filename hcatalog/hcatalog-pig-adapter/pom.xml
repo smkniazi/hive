@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.hops.hive.hcatalog</groupId>
     <artifactId>hive-hcatalog</artifactId>
-    <version>2.3.0.1</version>
+    <version>2.3.0.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -44,12 +44,6 @@
       <groupId>io.hops.hive.hcatalog</groupId>
       <artifactId>hive-hcatalog-core</artifactId>
       <version>${project.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- inter-project -->
     <dependency>
@@ -94,12 +88,6 @@
       <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
-       <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>jline</groupId>

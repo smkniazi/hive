@@ -27,13 +27,6 @@ import org.apache.thrift.transport.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLSocket;
-import java.net.InetAddress;
-import java.net.Socket;
-import javax.security.cert.X509Certificate;
-
 /**
  * This class is responsible for setting the ipAddress for operations executed via HiveServer2.
  * <p>
@@ -67,57 +60,18 @@ public class TSetIpAddressProcessor<I extends Iface> extends TCLIService.Process
     }
   }
 
-  private void setUserName(final TProtocol in) throws TException {
+  /**
+   * In Hops authentication mode (In non-SSL authentication mode) the username is not set
+   * until the opening of the session. When the session is open a request is made to HopsWorks to
+   * get the username of the user and the project specific username is built.
+   * @param in
+   */
+  protected void setUserName(final TProtocol in) throws TException {
     TTransport transport = in.getTransport();
-    Socket socket = getUnderlyingSocketFromTransport(transport).getSocket();
     if (transport instanceof TSaslServerTransport) {
       String userName = ((TSaslServerTransport) transport).getSaslServer().getAuthorizationID();
       THREAD_LOCAL_USER_NAME.set(userName);
-    } else if (socket instanceof SSLSocket){
-      try {
-        X509Certificate[] certs = ((SSLSocket) socket).getSession().getPeerCertificateChain();
-
-        // Make sure it's 2 way ssl, i.e. client certificate is available
-        if (certs.length == 0) {
-          return;
-        }
-        // Client certificate is always the first
-        String DN = certs[0].getSubjectDN().getName();
-        String[] dnTokens = DN.split(",");
-        String[] cnTokens = dnTokens[0].split("=", 2);
-        if (cnTokens.length != 2) {
-          throw new TException("Cannot authenticate the user: Unrecognized CN format");
-        }
-
-        if (cnTokens[1].contains("__")) {
-          // The certificate is in the format projectName__userName
-          THREAD_LOCAL_USER_NAME.set(cnTokens[1]);
-        } else {
-          InetAddress hostnameIp = null;
-          try {
-            // Hostname resolution and check against the ip of the machine doing the request
-            hostnameIp = InetAddress.getByName(cnTokens[1]);
-          } catch (java.net.UnknownHostException ex) {
-            LOGGER.error("Cannot resolve machine address: ", ex);
-            throw new TException("Cannot authenticate the user");
-          }
-
-          if (!hostnameIp.getHostAddress().equals(THREAD_LOCAL_IP_ADDRESS.get())) {
-            // The requests doesn't come from the same machine of the certificate.
-            // Something shady is happening here. Do not authenticate the user.
-            LOGGER.error("Superuser request coming from a different host");
-            throw new TException("Cannot authenticate the user");
-          }
-
-          // Operate as superuser
-          THREAD_LOCAL_USER_NAME.set(hiveConf.getVar(HiveConf.ConfVars.HIVE_SUPER_USER));
-        }
-      } catch (SSLException e) {
-        /* Peer not verified. If HOPS auth method, user might be trying to authenticate using username/password
-        * Don't set the username, if no username/password is provide during open session then throws an exception */
-      }
     }
-
   }
 
   protected void setIpAddress(final TProtocol in) {
@@ -130,7 +84,7 @@ public class TSetIpAddressProcessor<I extends Iface> extends TCLIService.Process
     }
   }
 
-  private TSocket getUnderlyingSocketFromTransport(TTransport transport) {
+  protected TSocket getUnderlyingSocketFromTransport(TTransport transport) {
     while (transport != null) {
       if (transport instanceof TSaslServerTransport) {
         transport = ((TSaslServerTransport) transport).getUnderlyingTransport();
@@ -145,14 +99,14 @@ public class TSetIpAddressProcessor<I extends Iface> extends TCLIService.Process
     return null;
   }
 
-  private static final ThreadLocal<String> THREAD_LOCAL_IP_ADDRESS = new ThreadLocal<String>() {
+  protected static final ThreadLocal<String> THREAD_LOCAL_IP_ADDRESS = new ThreadLocal<String>() {
     @Override
     protected String initialValue() {
       return null;
     }
   };
 
-  private static final ThreadLocal<String> THREAD_LOCAL_USER_NAME = new ThreadLocal<String>() {
+  protected static final ThreadLocal<String> THREAD_LOCAL_USER_NAME = new ThreadLocal<String>() {
     @Override
     protected String initialValue() {
       return null;

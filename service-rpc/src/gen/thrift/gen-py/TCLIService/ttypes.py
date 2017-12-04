@@ -3519,6 +3519,10 @@ class TOpenSessionReq:
    - username
    - password
    - configuration
+   - keyStore
+   - trustStore
+   - keyStorePassword
+   - trustStorePassword
   """
 
   thrift_spec = (
@@ -3527,13 +3531,21 @@ class TOpenSessionReq:
     (2, TType.STRING, 'username', None, None, ), # 2
     (3, TType.STRING, 'password', None, None, ), # 3
     (4, TType.MAP, 'configuration', (TType.STRING,None,TType.STRING,None), None, ), # 4
+    (5, TType.STRING, 'keyStore', None, None, ), # 5
+    (6, TType.STRING, 'trustStore', None, None, ), # 6
+    (7, TType.STRING, 'keyStorePassword', None, None, ), # 7
+    (8, TType.STRING, 'trustStorePassword', None, None, ), # 8
   )
 
-  def __init__(self, client_protocol=thrift_spec[1][4], username=None, password=None, configuration=None,):
+  def __init__(self, client_protocol=thrift_spec[1][4], username=None, password=None, configuration=None, keyStore=None, trustStore=None, keyStorePassword=None, trustStorePassword=None,):
     self.client_protocol = client_protocol
     self.username = username
     self.password = password
     self.configuration = configuration
+    self.keyStore = keyStore
+    self.trustStore = trustStore
+    self.keyStorePassword = keyStorePassword
+    self.trustStorePassword = trustStorePassword
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -3570,6 +3582,26 @@ class TOpenSessionReq:
           iprot.readMapEnd()
         else:
           iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.keyStore = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 6:
+        if ftype == TType.STRING:
+          self.trustStore = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
+        if ftype == TType.STRING:
+          self.keyStorePassword = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 8:
+        if ftype == TType.STRING:
+          self.trustStorePassword = iprot.readString()
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3600,6 +3632,22 @@ class TOpenSessionReq:
         oprot.writeString(viter133)
       oprot.writeMapEnd()
       oprot.writeFieldEnd()
+    if self.keyStore is not None:
+      oprot.writeFieldBegin('keyStore', TType.STRING, 5)
+      oprot.writeString(self.keyStore)
+      oprot.writeFieldEnd()
+    if self.trustStore is not None:
+      oprot.writeFieldBegin('trustStore', TType.STRING, 6)
+      oprot.writeString(self.trustStore)
+      oprot.writeFieldEnd()
+    if self.keyStorePassword is not None:
+      oprot.writeFieldBegin('keyStorePassword', TType.STRING, 7)
+      oprot.writeString(self.keyStorePassword)
+      oprot.writeFieldEnd()
+    if self.trustStorePassword is not None:
+      oprot.writeFieldBegin('trustStorePassword', TType.STRING, 8)
+      oprot.writeString(self.trustStorePassword)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -3615,6 +3663,10 @@ class TOpenSessionReq:
     value = (value * 31) ^ hash(self.username)
     value = (value * 31) ^ hash(self.password)
     value = (value * 31) ^ hash(self.configuration)
+    value = (value * 31) ^ hash(self.keyStore)
+    value = (value * 31) ^ hash(self.trustStore)
+    value = (value * 31) ^ hash(self.keyStorePassword)
+    value = (value * 31) ^ hash(self.trustStorePassword)
     return value
 
   def __repr__(self):

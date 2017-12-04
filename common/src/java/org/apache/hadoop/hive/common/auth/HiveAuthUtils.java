@@ -19,6 +19,8 @@ package org.apache.hadoop.hive.common.auth;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,24 +67,22 @@ public class HiveAuthUtils {
     return getSSLSocketWithHttps(tSSLSocket);
   }
 
-   public static TTransport getHopsJDBCSSLSocket(String host, int port, int loginTimeout,
+   public static TTransport getTLSClientSocket(String host, int port, int loginTimeout,
     String trustStorePath, String trustStorePassWord) throws TTransportException {
     TSSLTransportFactory.TSSLTransportParameters params =
       new TSSLTransportFactory.TSSLTransportParameters();
     params.setTrustStore(trustStorePath, trustStorePassWord);
-    params.requireClientAuth(true);
     return TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
   }
 
-  public static TTransport getHopsJDBC2WaySSLSocket(String host, int port, int loginTimeout,
-    String trustStorePath, String trustStorePassword, String keyStorePath,
-    String keyStorePassword) throws TTransportException {
+  public static TTransport get2WayTLSClientSocket(String host, int port, int loginTimeout,
+                                            String trustStorePath, String trustStorePassword, String keyStorePath,
+                                            String keyStorePassword) throws TTransportException {
     TSSLTransportFactory.TSSLTransportParameters params =
       new TSSLTransportFactory.TSSLTransportParameters();
 
     params.setTrustStore(trustStorePath, trustStorePassword);
     params.setKeyStore(keyStorePath, keyStorePassword);
-    params.requireClientAuth(true);
     return TSSLTransportFactory.getClientSocket(host, port, loginTimeout, params);
   }
 
@@ -94,80 +94,5 @@ public class HiveAuthUtils {
     sslParams.setEndpointIdentificationAlgorithm("HTTPS");
     sslSocket.setSSLParameters(sslParams);
     return new TSocket(sslSocket);
-  }
-
-  public static TServerSocket getServerSocket(String hiveHost, int portNum)
-    throws TTransportException {
-    InetSocketAddress serverAddress;
-    if (hiveHost == null || hiveHost.isEmpty()) {
-      // Wildcard bind
-      serverAddress = new InetSocketAddress(portNum);
-    } else {
-      serverAddress = new InetSocketAddress(hiveHost, portNum);
-    }
-    return new TServerSocket(serverAddress);
-  }
-
-  public static TServerSocket getServerSSLSocket(String hiveHost, int portNum, String keyStorePath,
-      String keyStorePassWord, List<String> sslVersionBlacklist) throws TTransportException,
-      UnknownHostException {
-    TSSLTransportFactory.TSSLTransportParameters params =
-        new TSSLTransportFactory.TSSLTransportParameters();
-    params.setKeyStore(keyStorePath, keyStorePassWord);
-    InetSocketAddress serverAddress;
-    if (hiveHost == null || hiveHost.isEmpty()) {
-      // Wildcard bind
-      serverAddress = new InetSocketAddress(portNum);
-    } else {
-      serverAddress = new InetSocketAddress(hiveHost, portNum);
-    }
-
-    return getServerSSLSocketInternal(serverAddress, portNum, params, sslVersionBlacklist);
-  }
-
-
-  public static TServerSocket getServer2WaySSLSocket(String hiveHost, int portNum, String keyStorePath,
-      String keyStorePassword, String trustStorePath, String trustStorePassword,
-      List<String> sslVersionBlacklist) throws TTransportException, UnknownHostException {
-    TSSLTransportFactory.TSSLTransportParameters params =
-        new TSSLTransportFactory.TSSLTransportParameters();
-    params.setKeyStore(keyStorePath, keyStorePassword);
-    params.setTrustStore(trustStorePath, trustStorePassword);
-    params.requireClientAuth(true);
-    InetSocketAddress serverAddress;
-    if (hiveHost == null || hiveHost.isEmpty()) {
-      // Wildcard bind
-      serverAddress = new InetSocketAddress(portNum);
-    } else {
-      serverAddress = new InetSocketAddress(hiveHost, portNum);
-    }
-
-    return getServerSSLSocketInternal(serverAddress, portNum, params, sslVersionBlacklist);
-  }
-
-  private static TServerSocket getServerSSLSocketInternal(InetSocketAddress serverAddress, int portNum,
-      TSSLTransportFactory.TSSLTransportParameters params, List<String> sslVersionBlacklist) throws TTransportException,
-      UnknownHostException {
-    TServerSocket thriftServerSocket =
-        TSSLTransportFactory.getServerSocket(portNum, 0, serverAddress.getAddress(), params);
-    if (thriftServerSocket.getServerSocket() instanceof SSLServerSocket) {
-      List<String> sslVersionBlacklistLocal = new ArrayList<String>();
-      for (String sslVersion : sslVersionBlacklist) {
-        sslVersionBlacklistLocal.add(sslVersion.trim().toLowerCase());
-      }
-      SSLServerSocket sslServerSocket = (SSLServerSocket) thriftServerSocket.getServerSocket();
-      List<String> enabledProtocols = new ArrayList<String>();
-      for (String protocol : sslServerSocket.getEnabledProtocols()) {
-        if (sslVersionBlacklistLocal.contains(protocol.toLowerCase())) {
-          LOG.debug("Disabling SSL Protocol: " + protocol);
-        } else {
-          enabledProtocols.add(protocol);
-        }
-      }
-      sslServerSocket.setEnabledProtocols(enabledProtocols.toArray(new String[0]));
-      LOG.info("SSL Server Socket Enabled Protocols: "
-          + Arrays.toString(sslServerSocket.getEnabledProtocols()));
-    }
-    return thriftServerSocket;
   }
 }

@@ -575,6 +575,12 @@ struct TOpenSessionReq {
   // Configuration overlay which is applied when the session is
   // first created.
   4: optional map<string, string> configuration
+
+  // Hops TLS - Cryptomaterial
+  5: optional binary keyStore
+  6: optional binary trustStore
+  7: optional string keyStorePassword
+  8: optional string trustStorePassword
 }
 
 struct TOpenSessionResp {

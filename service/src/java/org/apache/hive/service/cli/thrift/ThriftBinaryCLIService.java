@@ -18,19 +18,16 @@
 
 package org.apache.hive.service.cli.thrift;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.hadoop.hive.common.auth.HiveAuthUtils;
+import org.apache.hadoop.hive.common.auth.TServerSocketFactory;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.CLIService;
 import org.apache.hive.service.cli.HiveSQLException;
@@ -44,17 +41,17 @@ import org.apache.thrift.server.TServerEventHandler;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TTransportException;
 import org.apache.thrift.transport.TTransportFactory;
 
 
 public class ThriftBinaryCLIService extends ThriftCLIService {
   private final Runnable oomHook;
 
-  public ThriftBinaryCLIService(CLIService cliService, boolean twoWaySSL, Runnable oomHook) {
+  public ThriftBinaryCLIService(CLIService cliService, boolean tls, boolean hops2WayTLS, Runnable oomHook) {
     super(cliService, ThriftBinaryCLIService.class.getSimpleName());
     this.oomHook = oomHook;
-    this.twoWaySSL = twoWaySSL;
+    this.tls = tls;
+    this.hops2WayTLS = hops2WayTLS;
   }
 
   @Override
@@ -66,12 +63,7 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
           maxWorkerThreads, workerKeepAliveTime, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactoryWithGarbageCleanup(threadPoolName),
           oomHook);
-
-      if (twoWaySSL) {
-        startThriftBinary2WaySSL(executorService);
-      } else {
-        startThriftBinary(executorService);
-      }
+      startThriftBinary(executorService, tls, hops2WayTLS);
     } catch (Throwable t) {
       LOG.error(
           "Error starting HiveServer2: could not start "
@@ -80,27 +72,21 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
     }
   }
 
-  private void startThriftBinary (ExecutorService executorService) throws Throwable {
+  private void startThriftBinary(ExecutorService executorService, boolean tls, boolean hops2WayTLS) throws Throwable {
       hiveAuthFactory = new HiveAuthFactory(hiveConf);
       TTransportFactory transportFactory = hiveAuthFactory.getAuthTransFactory();
-      TProcessorFactory processorFactory = hiveAuthFactory.getAuthProcFactory(this);
+      TProcessorFactory processorFactory = hiveAuthFactory.getAuthProcFactory(this, hiveConf, hops2WayTLS);
       TServerSocket serverSocket = null;
-      List<String> sslVersionBlacklist = new ArrayList<String>();
-      for (String sslVersion : hiveConf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",")) {
-        sslVersionBlacklist.add(sslVersion);
-      }
-      if (!hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)) {
-        serverSocket = HiveAuthUtils.getServerSocket(hiveHost, portNum);
+
+      if (hops2WayTLS) {
+          serverSocket = TServerSocketFactory.getServerSocket(hiveConf,
+                  TServerSocketFactory.TSocketType.TWOWAYTLS, hiveHost, portNum);
+      } else if (tls) {
+          serverSocket = TServerSocketFactory.getServerSocket(hiveConf,
+                  TServerSocketFactory.TSocketType.TLS, hiveHost, portNum);
       } else {
-        String keyStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH).trim();
-        if (keyStorePath.isEmpty()) {
-          throw new IllegalArgumentException(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname
-              + " Not configured for SSL connection");
-        }
-        String keyStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
-            HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname);
-        serverSocket = HiveAuthUtils.getServerSSLSocket(hiveHost, portNum, keyStorePath,
-            keyStorePassword, sslVersionBlacklist);
+          serverSocket = TServerSocketFactory.getServerSocket(hiveConf,
+                  TServerSocketFactory.TSocketType.PLAIN, hiveHost, portNum);
       }
 
       // Server args
@@ -177,111 +163,5 @@ public class ThriftBinaryCLIService extends ThriftCLIService {
           + portNum + " with " + minWorkerThreads + "..." + maxWorkerThreads + " worker threads";
       LOG.info(msg);
       server.serve();
-  }
-
-  private void startThriftBinary2WaySSL (ExecutorService executorService) throws Throwable {
-      hiveAuthFactory = new HiveAuthFactory(hiveConf);
-      TTransportFactory transportFactory = hiveAuthFactory.getAuthTransFactory();
-      TProcessorFactory processorFactory = hiveAuthFactory.getAuthProcFactory(this);
-      TServerSocket serverSocket = null;
-      List<String> sslVersionBlacklist = new ArrayList<String>();
-      for (String sslVersion : hiveConf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",")) {
-        sslVersionBlacklist.add(sslVersion);
-      }
-      if (!hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)) {
-        serverSocket = HiveAuthUtils.getServerSocket(hiveHost, portNum);
-      } else {
-        String keyStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH).trim();
-        String trustStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PATH).trim();
-        if (keyStorePath.isEmpty()) {
-          throw new IllegalArgumentException(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname
-              + " Not configured for SSL connection");
-        }
-        if (trustStorePath.isEmpty()) {
-          throw new IllegalArgumentException(ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PATH.varname
-              + " Not configured for SSL connection");
-        }
-        String keyStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
-            HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname);
-        String trustStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
-            HiveConf.ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD.varname);
-        serverSocket = HiveAuthUtils.getServer2WaySSLSocket(hiveHost, portNum, keyStorePath,
-            keyStorePassword, trustStorePath, trustStorePassword, sslVersionBlacklist);
-      }
-
-      // Server args
-      int maxMessageSize = hiveConf.getIntVar(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_MAX_MESSAGE_SIZE);
-      int requestTimeout = (int) hiveConf.getTimeVar(
-          HiveConf.ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT, TimeUnit.SECONDS);
-      int beBackoffSlotLength = (int) hiveConf.getTimeVar(
-          HiveConf.ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH, TimeUnit.MILLISECONDS);
-      TThreadPoolServer.Args sargs = new TThreadPoolServer.Args(serverSocket)
-          .processorFactory(processorFactory).transportFactory(transportFactory)
-          .protocolFactory(new TBinaryProtocol.Factory())
-          .inputProtocolFactory(new TBinaryProtocol.Factory(true, true, maxMessageSize, maxMessageSize))
-          .requestTimeout(requestTimeout).requestTimeoutUnit(TimeUnit.SECONDS)
-          .beBackoffSlotLength(beBackoffSlotLength).beBackoffSlotLengthUnit(TimeUnit.MILLISECONDS)
-          .executorService(executorService);
-
-      // TCP Server
-      server2WaySSL = new TThreadPoolServer(sargs);
-      server2WaySSL.setServerEventHandler(new TServerEventHandler() {
-        @Override
-        public ServerContext createContext(
-          TProtocol input, TProtocol output) {
-          Metrics metrics = MetricsFactory.getInstance();
-          if (metrics != null) {
-            try {
-              metrics.incrementCounter(MetricsConstant.OPEN_CONNECTIONS);
-              metrics.incrementCounter(MetricsConstant.CUMULATIVE_CONNECTION_COUNT);
-            } catch (Exception e) {
-              LOG.warn("Error Reporting JDO operation to Metrics system", e);
-            }
-          }
-          return new ThriftCLIServerContext();
-        }
-
-        @Override
-        public void deleteContext(ServerContext serverContext,
-          TProtocol input, TProtocol output) {
-          Metrics metrics = MetricsFactory.getInstance();
-          if (metrics != null) {
-            try {
-              metrics.decrementCounter(MetricsConstant.OPEN_CONNECTIONS);
-            } catch (Exception e) {
-              LOG.warn("Error Reporting JDO operation to Metrics system", e);
-            }
-          }
-          ThriftCLIServerContext context = (ThriftCLIServerContext) serverContext;
-          SessionHandle sessionHandle = context.getSessionHandle();
-          if (sessionHandle != null) {
-            LOG.info("Session disconnected without closing properly. ");
-            try {
-              boolean close = cliService.getSessionManager().getSession(sessionHandle).getHiveConf()
-                .getBoolVar(ConfVars.HIVE_SERVER2_CLOSE_SESSION_ON_DISCONNECT);
-              LOG.info((close ? "" : "Not ") + "Closing the session: " + sessionHandle);
-              if (close) {
-                cliService.closeSession(sessionHandle);
-              }
-            } catch (HiveSQLException e) {
-              LOG.warn("Failed to close session: " + e, e);
-            }
-          }
-        }
-
-        @Override
-        public void preServe() {
-        }
-
-        @Override
-        public void processContext(ServerContext serverContext,
-          TTransport input, TTransport output) {
-          currentServerContext.set(serverContext);
-        }
-      });
-      String msg = "Starting " + ThriftBinaryCLIService.class.getSimpleName() + " on port "
-          + portNum + " with " + minWorkerThreads + "..." + maxWorkerThreads + " worker threads";
-      LOG.info(msg);
-      server2WaySSL.serve();
   }
 }

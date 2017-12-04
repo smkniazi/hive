@@ -18,8 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.tez;
 
-import java.io.Serializable;
-import org.apache.hadoop.hive.ql.exec.ConditionalTask;
+
 import org.apache.hadoop.hive.ql.exec.FileSinkOperator;
 
 import java.io.IOException;
@@ -167,7 +166,8 @@ public class TezTask extends Task<TezWork> {
         // Ensure the session is open and has the necessary local resources
         updateSession(session, jobConf, scratchDir, inputOutputJars, inputOutputLocalResources);
 
-        List<LocalResource> additionalLr = session.getLocalizedResources();
+        Map<String, LocalResource> additionalLr = session.getLocalizedResources();
+
         logResources(additionalLr);
 
         // unless already installed on all the cluster nodes, we'll have to
@@ -257,14 +257,14 @@ public class TezTask extends Task<TezWork> {
     return rc;
   }
 
-  private void logResources(List<LocalResource> additionalLr) {
+  private void logResources(Map<String, LocalResource> additionalLr) {
     // log which resources we're adding (apart from the hive exec)
     if (!LOG.isDebugEnabled()) return;
     if (additionalLr == null || additionalLr.size() == 0) {
       LOG.debug("No local resources to process (other than hive-exec)");
     } else {
-      for (LocalResource lr: additionalLr) {
-        LOG.debug("Adding local resource: " + lr.getResource());
+      for (Map.Entry<String, LocalResource> lr: additionalLr.entrySet()) {
+        LOG.debug("Adding local resource: " + lr.getValue() + " materialized as: " + lr.getKey());
       }
     }
   }
@@ -337,7 +337,7 @@ public class TezTask extends Task<TezWork> {
   }
 
   DAG build(JobConf conf, TezWork work, Path scratchDir,
-      LocalResource appJarLr, List<LocalResource> additionalLr, Context ctx)
+      LocalResource appJarLr, Map<String, LocalResource> additionalLr, Context ctx)
       throws Exception {
 
     perfLogger.PerfLogBegin(CLASS_NAME, PerfLogger.TEZ_BUILD_DAG);
@@ -481,7 +481,7 @@ public class TezTask extends Task<TezWork> {
 
   DAGClient submit(JobConf conf, DAG dag, Path scratchDir,
       LocalResource appJarLr, TezSessionState sessionState,
-      List<LocalResource> additionalLr, String[] inputOutputJars,
+      Map<String, LocalResource> additionalLr, String[] inputOutputJars,
       Map<String,LocalResource> inputOutputLocalResources)
       throws Exception {
 
@@ -490,10 +490,10 @@ public class TezTask extends Task<TezWork> {
 
     Map<String, LocalResource> resourceMap = new HashMap<String, LocalResource>();
     if (additionalLr != null) {
-      for (LocalResource lr: additionalLr) {
-        if (lr.getType() == LocalResourceType.FILE) {
+      for (Map.Entry<String, LocalResource> lr : additionalLr.entrySet()) {
+        if (lr.getValue().getType() == LocalResourceType.FILE) {
           // TEZ AM will only localize FILE (no script operators in the AM)
-          resourceMap.put(utils.getBaseName(lr), lr);
+          resourceMap.put(lr.getKey(), lr.getValue());
         }
       }
     }

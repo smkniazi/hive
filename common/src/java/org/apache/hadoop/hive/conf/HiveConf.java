@@ -22,6 +22,7 @@ import com.google.common.base.Joiner;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience.LimitedPrivate;
@@ -37,7 +38,8 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.lib.input.CombineFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.apache.hadoop.util.Shell;
+import org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory;
+import org.apache.hadoop.security.ssl.SSLFactory;
 import org.apache.hive.common.HiveCompat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -970,17 +972,14 @@ public class HiveConf extends Configuration {
     METASTORE_INIT_METADATA_COUNT_ENABLED("hive.metastore.initial.metadata.count.enabled", true,
       "Enable a metadata count at metastore startup for metrics."),
 
-    // Metastore SSL settings
-    HIVE_METASTORE_USE_SSL("hive.metastore.use.SSL", false,
-        "Set this to true for using SSL encryption in HMS server."),
-    HIVE_METASTORE_SSL_KEYSTORE_PATH("hive.metastore.keystore.path", "",
-        "Metastore SSL certificate keystore location."),
-    HIVE_METASTORE_SSL_KEYSTORE_PASSWORD("hive.metastore.keystore.password", "",
-        "Metastore SSL certificate keystore password."),
-    HIVE_METASTORE_SSL_TRUSTSTORE_PATH("hive.metastore.truststore.path", "",
-        "Metastore SSL certificate truststore location."),
-    HIVE_METASTORE_SSL_TRUSTSTORE_PASSWORD("hive.metastore.truststore.password", "",
-        "Metastore SSL certificate truststore password."),
+    // SSL settings
+    // Keystore and truststore information are read from the ssl-server.xml file which contains the information
+    // about the machine certificates.
+    HIVE_SERVER2_USE_SSL("hive.server2.use.SSL", false,
+        "Set this to true for using SSL encryption in HiveServer2."),
+    TLS_USER_CERTS_REMOTE_PATH("hive.tls.user.cert.remote.path", "hdfs:///user/hdfs/kafkacerts/",
+        "The remote location where to materialize the certificates to be then materialized by the node managers"),
+
 
     // Parameters for exporting metadata on table drop (requires the use of the)
     // org.apache.hadoop.hive.ql.parse.MetaDataExportListener preevent listener
@@ -2289,7 +2288,7 @@ public class HiveConf extends Configuration {
         "table. From 0.12 onwards, they are displayed separately. This flag will let you\n" +
         "get old behavior, if desired. See, test-case in patch for HIVE-6689."),
 
-    HIVE_SSL_PROTOCOL_BLACKLIST("hive.ssl.protocol.blacklist", "SSLv2,SSLv3",
+    HIVE_HTTPS_SSL_PROTOCOL_BLACKLIST("hive.https.ssl.protocol.blacklist", "SSLv2,SSLv3",
         "SSL Versions to disable for all Hive Servers"),
 
      // HiveServer2 specific configs
@@ -2445,8 +2444,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_THRIFT_PORT("hive.server2.thrift.port", 10000,
         "Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'."),
     HIVE_SERVER2_THRIFT_PORT_2WSSL("hive.server2.thrift.port.ssl", 9999,
-        "Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary' and SSL two way." +
-        " Set to negative to not activate this second port."),
+        "Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary' and SSL two way."),
     HIVE_SERVER2_THRIFT_SASL_QOP("hive.server2.thrift.sasl.qop", "auth",
         new StringSet("auth", "auth-int", "auth-conf"),
         "Sasl QOP value; set it to one of following values to enable higher levels of\n" +
@@ -2498,7 +2496,7 @@ public class HiveConf extends Configuration {
 
     // HiveServer2 auth configuration
     HIVE_SERVER2_AUTHENTICATION("hive.server2.authentication", "NONE",
-      new StringSet("NOSASL", "NONE", "LDAP", "KERBEROS", "PAM", "CERTIFICATE", "HOPS","CUSTOM"),
+      new StringSet("NOSASL", "NONE", "LDAP", "KERBEROS", "PAM", "CERTIFICATES", "HOPS", "EXTERNAL", "CUSTOM"),
         "Client authentication types.\n" +
         "  NONE: no authentication check\n" +
         "  LDAP: LDAP/AD based authentication\n" +
@@ -2506,8 +2504,9 @@ public class HiveConf extends Configuration {
         "  CUSTOM: Custom authentication provider\n" +
         "          (Use with property hive.server2.custom.authentication.class)\n" +
         "  PAM: Pluggable authentication module\n" +
-        "  CERTIFICATE: Authenticate using the CN of the client X.509 certificate\n" +
+        "  CERTIFICATES: Authenticate using the CN of the client X.509 certificate\n" +
         "  HOPS: Certificate + Password authentication\n" +
+        "  EXTERNAL: Hops external users password authentication\n" +
         "  NOSASL:  Raw transport"),
     HIVE_SERVER2_ALLOW_USER_SUBSTITUTION("hive.server2.allow.user.substitution", true,
         "Allow alternate user to be specified as part of HiveServer2 open connection request."),
@@ -2599,17 +2598,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_SESSION_HOOK("hive.server2.session.hook", "", ""),
 
     // SSL settings
-    HIVE_SERVER2_USE_SSL("hive.server2.use.SSL", false,
-        "Set this to true for using SSL encryption in HiveServer2."),
-    HIVE_SERVER2_SSL_KEYSTORE_PATH("hive.server2.keystore.path", "",
-        "SSL certificate keystore location."),
-    HIVE_SERVER2_SSL_KEYSTORE_PASSWORD("hive.server2.keystore.password", "",
-        "SSL certificate keystore password."),
-    HIVE_SERVER2_SSL_TRUSTSTORE_PATH("hive.server2.truststore.path", "",
-        "SSL certificate truststore location. If not set, one way ssl is used"),
-    HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD("hive.server2.truststore.password", "",
-        "SSL certificate truststore password."),
-    HIVE_SUPER_USER( "hive.server2.superuser", "hive", "The user to use to create databases"),
+    HIVE_SUPER_USER("hive.server2.superuser", "hive", "The user to use to create databases"),
     HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE("hive.server2.map.fair.scheduler.queue", true,
         "If the YARN fair scheduler is configured and HiveServer2 is running in non-impersonation mode,\n" +
         "this setting determines the user for fair scheduler queue mapping.\n" +
@@ -2623,7 +2612,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_BUILTIN_UDF_BLACKLIST("hive.server2.builtin.udf.blacklist", "",
          "Comma separated list of udfs names. These udfs will not be allowed in queries." +
          " The udf black list takes precedence over udf white list"),
-     HIVE_ALLOW_UDF_LOAD_ON_DEMAND("hive.allow.udf.load.on.demand", false,
+    HIVE_ALLOW_UDF_LOAD_ON_DEMAND("hive.allow.udf.load.on.demand", false,
          "Whether enable loading UDFs from metastore on demand; this is mostly relevant for\n" +
          "HS2 and was the default behavior before Hive 1.2. Off by default."),
 
@@ -3353,7 +3342,6 @@ public class HiveConf extends Configuration {
         "Log tracing id that can be used by upstream clients for tracking respective logs. " +
         "Truncated to " + LOG_PREFIX_LENGTH + " characters. Defaults to use auto-generated session id."),
 
-
     HIVE_CONF_RESTRICTED_LIST("hive.conf.restricted.list",
         "hive.security.authenticator.manager,hive.security.authorization.manager," +
         "hive.security.metastore.authorization.manager,hive.security.metastore.authenticator.manager," +
@@ -3371,9 +3359,18 @@ public class HiveConf extends Configuration {
             "hive.server2.authentication.ldap.customLDAPQuery",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
-        METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname
-        + "," + HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD.varname
+        METASTOREPWD.varname
         + "," + HIVE_SUPER_USER.varname
+        // Add ssl-server.xml conf properties
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_LOCATION_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_PASSWORD_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_KEYPASSWORD_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_TYPE_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_LOCATION_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_PASSWORD_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_RELOAD_INTERVAL_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_TYPE_TPL_KEY)
+        + "," + FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_EXCLUDE_CIPHER_LIST)
         // Adding the S3 credentials from Hadoop config to be hidden
         + ",fs.s3.awsAccessKeyId"
         + ",fs.s3.awsSecretAccessKey"
@@ -3381,7 +3378,9 @@ public class HiveConf extends Configuration {
         + ",fs.s3n.awsSecretAccessKey"
         + ",fs.s3a.access.key"
         + ",fs.s3a.secret.key"
-        + ",fs.s3a.proxy.password",
+        + ",fs.s3a.proxy.password"
+        // HopsTLS config
+        + "," + TLS_USER_CERTS_REMOTE_PATH.varname,
         "Comma separated list of configuration options which should not be read by normal user like passwords"),
     HIVE_CONF_INTERNAL_VARIABLE_LIST("hive.conf.internal.variable.list",
         "hive.added.files.path,hive.added.jars.path,hive.added.archives.path",
@@ -4031,17 +4030,38 @@ public class HiveConf extends Configuration {
 
   public HiveConf() {
     super();
-    initialize(this.getClass());
+    initialize(this.getClass(), false);
+  }
+
+  // Hops related code. Call this method from within a client.
+  // This method will not try to load the ssl-server.xml
+  public HiveConf(boolean client) {
+    super();
+    initialize(this.getClass(), client);
   }
 
   public HiveConf(Class<?> cls) {
     super();
-    initialize(cls);
+    initialize(cls, false);
+  }
+
+  // Hops related code. Call this method from within a client.
+  // This method will not try to load the ssl-server.xml
+  public HiveConf(Class<?> cls, boolean client) {
+    super();
+    initialize(cls, client);
   }
 
   public HiveConf(Configuration other, Class<?> cls) {
     super(other);
-    initialize(cls);
+    initialize(cls, false);
+  }
+
+  // Hops related code. Call this method from within a client.
+  // This method will not try to load the ssl-server.xml
+  public HiveConf(Configuration other, Class<?> cls, boolean client) {
+    super(other);
+    initialize(cls, client);
   }
 
   /**
@@ -4072,7 +4092,7 @@ public class HiveConf extends Configuration {
     return p;
   }
 
-  private void initialize(Class<?> cls) {
+  private void initialize(Class<?> cls, boolean client) {
     hiveJar = (new JobConf(cls)).getJar();
 
     // preserve the original configuration
@@ -4104,6 +4124,13 @@ public class HiveConf extends Configuration {
     // in hivemetastore-site.xml
     if (isLoadHiveServer2Config() && hiveServer2SiteUrl != null) {
       addResource(hiveServer2SiteUrl);
+    }
+
+    // Load ssl-server.xml (in HADOOP_CONF_DIR) if SSL is enabled
+    // and we are not in the context of a client
+    if (!client && getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      addResource(get(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml"));
     }
 
     // Overlay the values of any system properties whose names appear in the list of ConfVars

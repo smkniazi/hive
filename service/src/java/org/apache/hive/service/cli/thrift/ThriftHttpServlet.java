@@ -162,7 +162,7 @@ public class ThriftHttpServlet extends TServlet {
           } else {
             clientUserName = doKerberosAuth(request);
           }
-        } else if (authType.equals("CERTIFICATE")) {
+        } else if (authType.equals("CERTIFICATES")) {
           // Certificate based authentication
           clientUserName = doCertAuth(request);
         } else {

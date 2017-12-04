@@ -350,7 +350,7 @@ public class HttpServer {
       sslContextFactory.setKeyStorePath(b.keyStorePath);
       Set<String> excludedSSLProtocols = Sets.newHashSet(
         Splitter.on(",").trimResults().omitEmptyStrings().split(
-          Strings.nullToEmpty(b.conf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST))));
+          Strings.nullToEmpty(b.conf.getVar(ConfVars.HIVE_HTTPS_SSL_PROTOCOL_BLACKLIST))));
       sslContextFactory.addExcludeProtocols(excludedSSLProtocols.toArray(
           new String[excludedSSLProtocols.size()]));
       sslContextFactory.setKeyStorePassword(b.keyStorePassword);

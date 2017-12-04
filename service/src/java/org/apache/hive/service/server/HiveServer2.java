@@ -20,12 +20,7 @@ package org.apache.hive.service.server;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,6 +41,7 @@ import org.apache.curator.framework.api.CuratorEvent;
 import org.apache.curator.framework.api.CuratorEventType;
 import org.apache.curator.framework.recipes.nodes.PersistentEphemeralNode;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.JvmPauseMonitor;
 import org.apache.hadoop.hive.common.LogUtils;
 import org.apache.hadoop.hive.common.LogUtils.LogInitializationException;
@@ -66,6 +62,8 @@ import org.apache.hadoop.hive.ql.util.ZooKeeperHiveHelper;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
+import org.apache.hadoop.yarn.server.security.CertificateLocalizationService;
 import org.apache.hive.common.util.HiveStringUtils;
 import org.apache.hive.common.util.HiveVersionInfo;
 import org.apache.hive.common.util.ShutdownHookManager;
@@ -92,7 +90,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 
 /**
  * HiveServer2.
@@ -108,6 +105,7 @@ public class HiveServer2 extends CompositeService {
   private CuratorFramework zooKeeperClient;
   private boolean deregisteredWithZooKeeper = false; // Set to true only when deregistration happens
   private HttpServer webServer; // Web UI
+  private CertificateLocalizationService certLocService = null;
 
   public HiveServer2() {
     super(HiveServer2.class.getSimpleName());
@@ -140,13 +138,40 @@ public class HiveServer2 extends CompositeService {
     if (isHTTPTransportMode(hiveConf)) {
       thriftCLIServices.add(new ThriftHttpCLIService(cliService, oomHook));
     } else {
-      // Start Thrift service with, optionally, one way ssl.
-      thriftCLIServices.add(new ThriftBinaryCLIService(cliService, false,  oomHook));
+        // If HOPS or EXTERNAL MODE create a ThriftBinaryCLIService with one way TLS
+      if (HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS") ||
+          HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("EXTERNAL")) {
+        // Start Thrift service with, optionally, one way ssl.
+        thriftCLIServices.add(new ThriftBinaryCLIService(cliService, true, false,  oomHook));
+      }
 
-      if (hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT_2WSSL) > 0) {
-        thriftCLIServices.add(new ThriftBinaryCLIService(cliService, true,  oomHook));
+        // If HOPS or CERTIFICATES create a ThriftBinaryCLIService with 2 way TLS for certificate based authentication
+      if (HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("CERTIFICATES") ||
+          HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS") ) {
+        // In case of Certificates authentication only or Hops authentication,
+        // start listening for 2 ways ssl connections.
+        thriftCLIServices.add(new ThriftBinaryCLIService(cliService, true, true,  oomHook));
+      }
+
+       // In any other case create a ThriftBinaryCLIService without any TLS enabled
+      if (!HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS") &&
+         !HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("CERTIFICATES") &&
+         !HiveConf.getVar(hiveConf, ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("EXTERNAL")) {
+        thriftCLIServices.add(new ThriftBinaryCLIService(cliService, false, false, oomHook));
       }
     }
+
+    // If we are running with HopsTLS we need to create a directory to keep the materialized certificates
+    // sent by the users.
+    if (hiveConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+          CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      certLocService = new CertificateLocalizationService(CertificateLocalizationService.ServiceType.HS2);
+      CertificateLocalizationCtx.getInstance().setCertificateLocalization
+          (certLocService);
+      certLocService.init(hiveConf);
+      certLocService.start();
+    }
+
     addServices(thriftCLIServices);
     super.init(hiveConf);
     // Set host name in hiveConf
@@ -595,6 +620,13 @@ public class HiveServer2 extends CompositeService {
       } catch(Exception ex) {
         LOG.error("Spark session pool manager failed to stop during HiveServer2 shutdown.", ex);
       }
+    }
+
+
+    if (hiveConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      // Stop the CertificateLocalizationService
+      certLocService.stop();
     }
   }
 

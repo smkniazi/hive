@@ -22,10 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.UgiFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
@@ -62,9 +64,12 @@ import org.apache.hadoop.hive.llap.tezplugins.LlapTezUtils;
 import org.apache.hadoop.io.DataInputBuffer;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.ssl.CertificateLocalization;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.service.CompositeService;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
+import org.apache.hadoop.yarn.api.records.impl.pb.ProtoUtils;
 import org.apache.hadoop.yarn.util.AuxiliaryServiceHelper;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
@@ -112,6 +117,8 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
   private final UgiFactory fsUgiFactory;
   private final SocketFactory socketFactory;
 
+  private boolean hopsTLS = false;
+
   public ContainerRunnerImpl(Configuration conf, int numExecutors, int waitQueueSize,
       boolean enablePreemption, String[] localDirsBase, AtomicReference<Integer> localShufflePort,
       AtomicReference<InetSocketAddress> localAddress,
@@ -156,9 +163,13 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
     );
     tezHadoopShim = new HadoopShimsLoader(conf).getHadoopShim();
 
+    this.hopsTLS = conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT);
+
     LOG.info("ContainerRunnerImpl config: " +
             "memoryPerExecutorDerviced=" + memoryPerExecutor
     );
+
   }
 
   public void serviceInit(Configuration conf) throws Exception {
@@ -181,6 +192,8 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
 
   @Override
   public SubmitWorkResponseProto submitWork(SubmitWorkRequestProto request) throws IOException {
+
+
     LlapTokenInfo tokenInfo = null;
     try {
       tokenInfo = LlapTokenChecker.getTokenInfo(clusterId);
@@ -234,6 +247,25 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
 
       QueryIdentifier queryIdentifier = new QueryIdentifier(
           qIdProto.getApplicationIdString(), dagIdentifier);
+
+      // If HopsTLS is enabled, the client has put key/trustStore in the protobuf.
+      // Extract it and materialize the certificate
+      if (hopsTLS) {
+        if (request.hasKeyStore()) {
+          CertificateLocalization certificateLocalization =
+              CertificateLocalizationCtx.getInstance().getCertificateLocalization();
+          String username = UserGroupInformation.getCurrentUser().getUserName();
+          try {
+            certificateLocalization.materializeCertificates(username, queryIdentifier.getAppIdentifier(), username,
+                    ProtoUtils.convertFromProtoFormat(request.getKeyStore()), request.getKeyStorePassword(),
+                    ProtoUtils.convertFromProtoFormat(request.getTrustStore()), request.getTrustStorePassword());
+          } catch (InterruptedException e) {
+            throw new IOException("Error materializing the certificates", e);
+          }
+        } else {
+          throw new IOException("Certificates not provided");
+        }
+      }
 
       Credentials credentials = new Credentials();
       DataInputBuffer dib = new DataInputBuffer();
@@ -402,6 +434,16 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
         executorService.killFragment(fragmentInfo.getFragmentIdentifierString());
       }
       amReporter.queryComplete(queryIdentifier);
+
+      if (hopsTLS) {
+        String user = UserGroupInformation.getCurrentUser().getUserName();
+        try {
+          CertificateLocalizationCtx.getInstance().getCertificateLocalization().removeX509Material(user,
+              queryIdentifier.getAppIdentifier());
+        } catch (InterruptedException e) {
+          throw new IOException(e);
+        }
+      }
     }
     return QueryCompleteResponseProto.getDefaultInstance();
   }
@@ -502,6 +544,17 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
       LOG.info("DBG: Issuing killFragment for failed query {} {}", queryIdentifier,
           fragmentInfo.getFragmentIdentifierString());
       executorService.killFragment(fragmentInfo.getFragmentIdentifierString());
+    }
+
+    if (hopsTLS) {
+      try {
+        String user = UserGroupInformation.getCurrentUser().getUserName();
+        CertificateLocalizationCtx.getInstance().getCertificateLocalization().removeX509Material(user,
+            queryIdentifier.getAppIdentifier());
+      } catch (IOException | InterruptedException e) {
+        LOG.error(e.getMessage(), e);
+        // Not much else we can do here.
+      }
     }
   }
 

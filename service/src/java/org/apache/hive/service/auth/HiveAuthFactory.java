@@ -63,7 +63,9 @@ public class HiveAuthFactory {
     LDAP("LDAP"),
     KERBEROS("KERBEROS"),
     CUSTOM("CUSTOM"),
+    CERTIFICATES("CERTIFICATES"),
     HOPS("HOPS"),
+    EXTERNAL("EXTERNAL"),
     PAM("PAM");
 
     private final String authType;
@@ -180,7 +182,9 @@ public class HiveAuthFactory {
           authTypeStr.equalsIgnoreCase(AuthTypes.CUSTOM.getAuthName())) {
        transportFactory = PlainSaslHelper.getPlainTransportFactory(authTypeStr);
     } else if (authTypeStr.equalsIgnoreCase(AuthTypes.NOSASL.getAuthName()) ||
-          authTypeStr.equalsIgnoreCase(AuthTypes.HOPS.getAuthName())) {
+          authTypeStr.equalsIgnoreCase(AuthTypes.HOPS.getAuthName()) ||
+          authTypeStr.equalsIgnoreCase(AuthTypes.CERTIFICATES.getAuthName()) ||
+          authTypeStr.equalsIgnoreCase(AuthTypes.EXTERNAL.getAuthName())) {
       transportFactory = new TTransportFactory();
     } else {
       throw new LoginException("Unsupported authentication type " + authTypeStr);
@@ -194,11 +198,11 @@ public class HiveAuthFactory {
    * @return
    * @throws LoginException
    */
-  public TProcessorFactory getAuthProcFactory(ThriftCLIService service) throws LoginException {
+  public TProcessorFactory getAuthProcFactory(ThriftCLIService service, HiveConf hiveConf, boolean isHopsSSL) throws LoginException {
     if (isSASLWithKerberizedHadoop()) {
       return KerberosSaslHelper.getKerberosProcessorFactory(saslServer, service);
     } else {
-      return PlainSaslHelper.getPlainProcessorFactory(service);
+      return PlainSaslHelper.getPlainProcessorFactory(service, hiveConf, isHopsSSL);
     }
   }
 

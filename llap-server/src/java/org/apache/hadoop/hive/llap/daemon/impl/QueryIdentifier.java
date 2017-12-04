@@ -51,7 +51,12 @@ public final class QueryIdentifier {
       return false;
     }
     return appIdentifier.equals(that.appIdentifier);
+  }
 
+  // HopsTLS code. In Hops certificates are based on Application ID.
+  // This getter is used for the CertificateLocalizationService in LLAP
+  public String getAppIdentifier() {
+    return appIdentifier;
   }
 
   @Override

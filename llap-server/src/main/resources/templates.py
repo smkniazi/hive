@@ -69,7 +69,7 @@ appConfig = """
   "metadata": {
   },
   "global": {
-    "application.def": ".slider/package/LLAP/llap-%(version)s.zip",
+    "application.def": "%(remote_dir)s/package/LLAP/llap-%(version)s.zip",
     "java_home": "%(java_home)s",
     "site.global.app_user": "yarn",
     "site.global.app_root": "${AGENT_WORK_ROOT}/app/install/",

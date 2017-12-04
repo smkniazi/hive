@@ -45,6 +45,7 @@ import java.util.concurrent.Future;
 import javax.servlet.HttpConstraintElement;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.hive.llap.LlapUtil;
 import org.apache.hadoop.hive.llap.configuration.LlapDaemonConfiguration;
 import org.apache.hadoop.hive.llap.daemon.impl.LlapConstants;
@@ -52,7 +53,10 @@ import org.apache.hadoop.hive.llap.daemon.impl.StaticPermanentFunctionChecker;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos;
 import org.apache.hadoop.hive.llap.tezplugins.LlapTezUtils;
 import org.apache.hadoop.registry.client.binding.RegistryUtils;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
+import org.apache.hadoop.yarn.server.security.CertificateLocalizationService;
 import org.apache.hive.http.HttpServer;
+import org.apache.slider.common.SliderXmlConfKeys;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -102,7 +106,6 @@ public class LlapServiceDriver {
   "org.apache.hive.hcatalog.data.JsonSerDe","org.apache.hadoop.hive.druid.DruidStorageHandler" };
   private static final String HBASE_SERDE_CLASS = "org.apache.hadoop.hive.hbase.HBaseSerDe";
   private static final String[] NEEDED_CONFIGS = LlapDaemonConfiguration.DAEMON_CONFIGS;
-  private static final String[] OPTIONAL_CONFIGS = LlapDaemonConfiguration.SSL_DAEMON_CONFIGS;
   private static final String OUTPUT_DIR_PREFIX = "llap-slider-";
 
   // This is not a config that users set in hive-site. It's only use is to share information
@@ -223,9 +226,6 @@ public class LlapServiceDriver {
         if (conf.getResource(f) == null) {
           throw new Exception("Unable to find required config file: " + f);
         }
-      }
-      for (String f : OPTIONAL_CONFIGS) {
-        conf.addResource(f);
       }
 
       conf.reloadConfiguration();
@@ -539,13 +539,6 @@ public class LlapServiceDriver {
           for (String f : NEEDED_CONFIGS) {
             copyConfig(lfs, confPath, f);
           }
-          for (String f : OPTIONAL_CONFIGS) {
-            try {
-              copyConfig(lfs, confPath, f);
-            } catch (Throwable t) {
-              LOG.info("Error getting an optional config " + f + "; ignoring: " + t.getMessage());
-            }
-          }
           createLlapDaemonConfig(lfs, confPath, conf, propsDirectOptions, options.getConfig());
           setUpLogAndMetricConfigs(lfs, logger, confPath);
           return null;
@@ -596,7 +589,9 @@ public class LlapServiceDriver {
         } else {
           packageDir = new Path(outputDir);
         }
-        rc = runPackagePy(args, tmpDir, scriptParent, version, outputDir);
+
+        String remoteDir = conf.get(SliderXmlConfKeys.KEY_SLIDER_BASE_PATH);
+        rc = runPackagePy(args, tmpDir, scriptParent, version, outputDir, remoteDir);
         if (rc == 0) {
           LlapSliderUtils.startCluster(conf, options.getName(), "llap-" + version + ".zip",
               packageDir, HiveConf.getVar(conf, ConfVars.LLAP_DAEMON_QUEUE_NAME));
@@ -621,7 +616,7 @@ public class LlapServiceDriver {
   }
 
   private int runPackagePy(String[] args, Path tmpDir, Path scriptParent,
-      String version, String outputDir) throws IOException, InterruptedException {
+      String version, String outputDir, String remoteDir) throws IOException, InterruptedException {
     Path scriptPath = new Path(new Path(scriptParent, "slider"), "package.py");
     List<String> scriptArgs = new ArrayList<>(args.length + 7);
     scriptArgs.add("python");
@@ -630,6 +625,8 @@ public class LlapServiceDriver {
     scriptArgs.add(tmpDir.toString());
     scriptArgs.add("--output");
     scriptArgs.add(outputDir);
+    scriptArgs.add("--remote_dir");
+    scriptArgs.add(remoteDir);
     scriptArgs.add("--javaChild");
     for (String arg : args) {
       scriptArgs.add(arg);
@@ -705,6 +702,16 @@ public class LlapServiceDriver {
       URISyntaxException, IOException {
     Map<String,String> udfs = new HashMap<String, String>();
     HiveConf hiveConf = new HiveConf();
+
+    if (conf.getBoolean(CommonConfigurationKeys.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeys.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      CertificateLocalizationService certificateLocalizationService
+          = new CertificateLocalizationService(CertificateLocalizationService.ServiceType.LLAP);
+      // No need to start the service as we need only the superuser certificates
+      certificateLocalizationService.init(conf);
+      CertificateLocalizationCtx.getInstance().setCertificateLocalization(certificateLocalizationService);
+    }
+
     // disable expensive operations on the metastore
     hiveConf.setBoolVar(HiveConf.ConfVars.METASTORE_INIT_METADATA_COUNT_ENABLED, false);
     hiveConf.setBoolVar(HiveConf.ConfVars.METASTORE_METRICS, false);

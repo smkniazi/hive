@@ -30,6 +30,7 @@ import org.apache.slider.common.params.ActionCreateArgs;
 import org.apache.slider.common.params.ActionDestroyArgs;
 import org.apache.slider.common.params.ActionFreezeArgs;
 import org.apache.slider.common.params.ActionInstallPackageArgs;
+import org.apache.slider.common.tools.CoreFileSystem;
 import org.apache.slider.common.tools.SliderUtils;
 import org.apache.slider.core.exceptions.UnknownApplicationInstanceException;
 import org.slf4j.Logger;

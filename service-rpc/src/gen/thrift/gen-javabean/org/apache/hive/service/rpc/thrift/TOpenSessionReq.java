@@ -42,6 +42,10 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
   private static final org.apache.thrift.protocol.TField USERNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("username", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField PASSWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("password", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField CONFIGURATION_FIELD_DESC = new org.apache.thrift.protocol.TField("configuration", org.apache.thrift.protocol.TType.MAP, (short)4);
+  private static final org.apache.thrift.protocol.TField KEY_STORE_FIELD_DESC = new org.apache.thrift.protocol.TField("keyStore", org.apache.thrift.protocol.TType.STRING, (short)5);
+  private static final org.apache.thrift.protocol.TField TRUST_STORE_FIELD_DESC = new org.apache.thrift.protocol.TField("trustStore", org.apache.thrift.protocol.TType.STRING, (short)6);
+  private static final org.apache.thrift.protocol.TField KEY_STORE_PASSWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("keyStorePassword", org.apache.thrift.protocol.TType.STRING, (short)7);
+  private static final org.apache.thrift.protocol.TField TRUST_STORE_PASSWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("trustStorePassword", org.apache.thrift.protocol.TType.STRING, (short)8);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -53,6 +57,10 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
   private String username; // optional
   private String password; // optional
   private Map<String,String> configuration; // optional
+  private ByteBuffer keyStore; // optional
+  private ByteBuffer trustStore; // optional
+  private String keyStorePassword; // optional
+  private String trustStorePassword; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -63,7 +71,11 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
     CLIENT_PROTOCOL((short)1, "client_protocol"),
     USERNAME((short)2, "username"),
     PASSWORD((short)3, "password"),
-    CONFIGURATION((short)4, "configuration");
+    CONFIGURATION((short)4, "configuration"),
+    KEY_STORE((short)5, "keyStore"),
+    TRUST_STORE((short)6, "trustStore"),
+    KEY_STORE_PASSWORD((short)7, "keyStorePassword"),
+    TRUST_STORE_PASSWORD((short)8, "trustStorePassword");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -86,6 +98,14 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
           return PASSWORD;
         case 4: // CONFIGURATION
           return CONFIGURATION;
+        case 5: // KEY_STORE
+          return KEY_STORE;
+        case 6: // TRUST_STORE
+          return TRUST_STORE;
+        case 7: // KEY_STORE_PASSWORD
+          return KEY_STORE_PASSWORD;
+        case 8: // TRUST_STORE_PASSWORD
+          return TRUST_STORE_PASSWORD;
         default:
           return null;
       }
@@ -126,7 +146,7 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
   }
 
   // isset id assignments
-  private static final _Fields optionals[] = {_Fields.USERNAME,_Fields.PASSWORD,_Fields.CONFIGURATION};
+  private static final _Fields optionals[] = {_Fields.USERNAME,_Fields.PASSWORD,_Fields.CONFIGURATION,_Fields.KEY_STORE,_Fields.TRUST_STORE,_Fields.KEY_STORE_PASSWORD,_Fields.TRUST_STORE_PASSWORD};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -140,6 +160,14 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+    tmpMap.put(_Fields.KEY_STORE, new org.apache.thrift.meta_data.FieldMetaData("keyStore", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
+    tmpMap.put(_Fields.TRUST_STORE, new org.apache.thrift.meta_data.FieldMetaData("trustStore", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
+    tmpMap.put(_Fields.KEY_STORE_PASSWORD, new org.apache.thrift.meta_data.FieldMetaData("keyStorePassword", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.TRUST_STORE_PASSWORD, new org.apache.thrift.meta_data.FieldMetaData("trustStorePassword", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TOpenSessionReq.class, metaDataMap);
   }
@@ -173,6 +201,18 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
       Map<String,String> __this__configuration = new HashMap<String,String>(other.configuration);
       this.configuration = __this__configuration;
     }
+    if (other.isSetKeyStore()) {
+      this.keyStore = org.apache.thrift.TBaseHelper.copyBinary(other.keyStore);
+    }
+    if (other.isSetTrustStore()) {
+      this.trustStore = org.apache.thrift.TBaseHelper.copyBinary(other.trustStore);
+    }
+    if (other.isSetKeyStorePassword()) {
+      this.keyStorePassword = other.keyStorePassword;
+    }
+    if (other.isSetTrustStorePassword()) {
+      this.trustStorePassword = other.trustStorePassword;
+    }
   }
 
   public TOpenSessionReq deepCopy() {
@@ -186,6 +226,10 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
     this.username = null;
     this.password = null;
     this.configuration = null;
+    this.keyStore = null;
+    this.trustStore = null;
+    this.keyStorePassword = null;
+    this.trustStorePassword = null;
   }
 
   /**
@@ -299,6 +343,116 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
     }
   }
 
+  public byte[] getKeyStore() {
+    setKeyStore(org.apache.thrift.TBaseHelper.rightSize(keyStore));
+    return keyStore == null ? null : keyStore.array();
+  }
+
+  public ByteBuffer bufferForKeyStore() {
+    return org.apache.thrift.TBaseHelper.copyBinary(keyStore);
+  }
+
+  public void setKeyStore(byte[] keyStore) {
+    this.keyStore = keyStore == null ? (ByteBuffer)null : ByteBuffer.wrap(Arrays.copyOf(keyStore, keyStore.length));
+  }
+
+  public void setKeyStore(ByteBuffer keyStore) {
+    this.keyStore = org.apache.thrift.TBaseHelper.copyBinary(keyStore);
+  }
+
+  public void unsetKeyStore() {
+    this.keyStore = null;
+  }
+
+  /** Returns true if field keyStore is set (has been assigned a value) and false otherwise */
+  public boolean isSetKeyStore() {
+    return this.keyStore != null;
+  }
+
+  public void setKeyStoreIsSet(boolean value) {
+    if (!value) {
+      this.keyStore = null;
+    }
+  }
+
+  public byte[] getTrustStore() {
+    setTrustStore(org.apache.thrift.TBaseHelper.rightSize(trustStore));
+    return trustStore == null ? null : trustStore.array();
+  }
+
+  public ByteBuffer bufferForTrustStore() {
+    return org.apache.thrift.TBaseHelper.copyBinary(trustStore);
+  }
+
+  public void setTrustStore(byte[] trustStore) {
+    this.trustStore = trustStore == null ? (ByteBuffer)null : ByteBuffer.wrap(Arrays.copyOf(trustStore, trustStore.length));
+  }
+
+  public void setTrustStore(ByteBuffer trustStore) {
+    this.trustStore = org.apache.thrift.TBaseHelper.copyBinary(trustStore);
+  }
+
+  public void unsetTrustStore() {
+    this.trustStore = null;
+  }
+
+  /** Returns true if field trustStore is set (has been assigned a value) and false otherwise */
+  public boolean isSetTrustStore() {
+    return this.trustStore != null;
+  }
+
+  public void setTrustStoreIsSet(boolean value) {
+    if (!value) {
+      this.trustStore = null;
+    }
+  }
+
+  public String getKeyStorePassword() {
+    return this.keyStorePassword;
+  }
+
+  public void setKeyStorePassword(String keyStorePassword) {
+    this.keyStorePassword = keyStorePassword;
+  }
+
+  public void unsetKeyStorePassword() {
+    this.keyStorePassword = null;
+  }
+
+  /** Returns true if field keyStorePassword is set (has been assigned a value) and false otherwise */
+  public boolean isSetKeyStorePassword() {
+    return this.keyStorePassword != null;
+  }
+
+  public void setKeyStorePasswordIsSet(boolean value) {
+    if (!value) {
+      this.keyStorePassword = null;
+    }
+  }
+
+  public String getTrustStorePassword() {
+    return this.trustStorePassword;
+  }
+
+  public void setTrustStorePassword(String trustStorePassword) {
+    this.trustStorePassword = trustStorePassword;
+  }
+
+  public void unsetTrustStorePassword() {
+    this.trustStorePassword = null;
+  }
+
+  /** Returns true if field trustStorePassword is set (has been assigned a value) and false otherwise */
+  public boolean isSetTrustStorePassword() {
+    return this.trustStorePassword != null;
+  }
+
+  public void setTrustStorePasswordIsSet(boolean value) {
+    if (!value) {
+      this.trustStorePassword = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case CLIENT_PROTOCOL:
@@ -333,6 +487,38 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
       }
       break;
 
+    case KEY_STORE:
+      if (value == null) {
+        unsetKeyStore();
+      } else {
+        setKeyStore((ByteBuffer)value);
+      }
+      break;
+
+    case TRUST_STORE:
+      if (value == null) {
+        unsetTrustStore();
+      } else {
+        setTrustStore((ByteBuffer)value);
+      }
+      break;
+
+    case KEY_STORE_PASSWORD:
+      if (value == null) {
+        unsetKeyStorePassword();
+      } else {
+        setKeyStorePassword((String)value);
+      }
+      break;
+
+    case TRUST_STORE_PASSWORD:
+      if (value == null) {
+        unsetTrustStorePassword();
+      } else {
+        setTrustStorePassword((String)value);
+      }
+      break;
+
     }
   }
 
@@ -349,6 +535,18 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
 
     case CONFIGURATION:
       return getConfiguration();
+
+    case KEY_STORE:
+      return getKeyStore();
+
+    case TRUST_STORE:
+      return getTrustStore();
+
+    case KEY_STORE_PASSWORD:
+      return getKeyStorePassword();
+
+    case TRUST_STORE_PASSWORD:
+      return getTrustStorePassword();
 
     }
     throw new IllegalStateException();
@@ -369,6 +567,14 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
       return isSetPassword();
     case CONFIGURATION:
       return isSetConfiguration();
+    case KEY_STORE:
+      return isSetKeyStore();
+    case TRUST_STORE:
+      return isSetTrustStore();
+    case KEY_STORE_PASSWORD:
+      return isSetKeyStorePassword();
+    case TRUST_STORE_PASSWORD:
+      return isSetTrustStorePassword();
     }
     throw new IllegalStateException();
   }
@@ -422,6 +628,42 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
         return false;
     }
 
+    boolean this_present_keyStore = true && this.isSetKeyStore();
+    boolean that_present_keyStore = true && that.isSetKeyStore();
+    if (this_present_keyStore || that_present_keyStore) {
+      if (!(this_present_keyStore && that_present_keyStore))
+        return false;
+      if (!this.keyStore.equals(that.keyStore))
+        return false;
+    }
+
+    boolean this_present_trustStore = true && this.isSetTrustStore();
+    boolean that_present_trustStore = true && that.isSetTrustStore();
+    if (this_present_trustStore || that_present_trustStore) {
+      if (!(this_present_trustStore && that_present_trustStore))
+        return false;
+      if (!this.trustStore.equals(that.trustStore))
+        return false;
+    }
+
+    boolean this_present_keyStorePassword = true && this.isSetKeyStorePassword();
+    boolean that_present_keyStorePassword = true && that.isSetKeyStorePassword();
+    if (this_present_keyStorePassword || that_present_keyStorePassword) {
+      if (!(this_present_keyStorePassword && that_present_keyStorePassword))
+        return false;
+      if (!this.keyStorePassword.equals(that.keyStorePassword))
+        return false;
+    }
+
+    boolean this_present_trustStorePassword = true && this.isSetTrustStorePassword();
+    boolean that_present_trustStorePassword = true && that.isSetTrustStorePassword();
+    if (this_present_trustStorePassword || that_present_trustStorePassword) {
+      if (!(this_present_trustStorePassword && that_present_trustStorePassword))
+        return false;
+      if (!this.trustStorePassword.equals(that.trustStorePassword))
+        return false;
+    }
+
     return true;
   }
 
@@ -448,6 +690,26 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
     list.add(present_configuration);
     if (present_configuration)
       list.add(configuration);
+
+    boolean present_keyStore = true && (isSetKeyStore());
+    list.add(present_keyStore);
+    if (present_keyStore)
+      list.add(keyStore);
+
+    boolean present_trustStore = true && (isSetTrustStore());
+    list.add(present_trustStore);
+    if (present_trustStore)
+      list.add(trustStore);
+
+    boolean present_keyStorePassword = true && (isSetKeyStorePassword());
+    list.add(present_keyStorePassword);
+    if (present_keyStorePassword)
+      list.add(keyStorePassword);
+
+    boolean present_trustStorePassword = true && (isSetTrustStorePassword());
+    list.add(present_trustStorePassword);
+    if (present_trustStorePassword)
+      list.add(trustStorePassword);
 
     return list.hashCode();
   }
@@ -496,6 +758,46 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
     }
     if (isSetConfiguration()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.configuration, other.configuration);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetKeyStore()).compareTo(other.isSetKeyStore());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetKeyStore()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.keyStore, other.keyStore);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetTrustStore()).compareTo(other.isSetTrustStore());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetTrustStore()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.trustStore, other.trustStore);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetKeyStorePassword()).compareTo(other.isSetKeyStorePassword());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetKeyStorePassword()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.keyStorePassword, other.keyStorePassword);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetTrustStorePassword()).compareTo(other.isSetTrustStorePassword());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetTrustStorePassword()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.trustStorePassword, other.trustStorePassword);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -554,6 +856,46 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
         sb.append("null");
       } else {
         sb.append(this.configuration);
+      }
+      first = false;
+    }
+    if (isSetKeyStore()) {
+      if (!first) sb.append(", ");
+      sb.append("keyStore:");
+      if (this.keyStore == null) {
+        sb.append("null");
+      } else {
+        org.apache.thrift.TBaseHelper.toString(this.keyStore, sb);
+      }
+      first = false;
+    }
+    if (isSetTrustStore()) {
+      if (!first) sb.append(", ");
+      sb.append("trustStore:");
+      if (this.trustStore == null) {
+        sb.append("null");
+      } else {
+        org.apache.thrift.TBaseHelper.toString(this.trustStore, sb);
+      }
+      first = false;
+    }
+    if (isSetKeyStorePassword()) {
+      if (!first) sb.append(", ");
+      sb.append("keyStorePassword:");
+      if (this.keyStorePassword == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.keyStorePassword);
+      }
+      first = false;
+    }
+    if (isSetTrustStorePassword()) {
+      if (!first) sb.append(", ");
+      sb.append("trustStorePassword:");
+      if (this.trustStorePassword == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.trustStorePassword);
       }
       first = false;
     }
@@ -648,6 +990,38 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 5: // KEY_STORE
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.keyStore = iprot.readBinary();
+              struct.setKeyStoreIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 6: // TRUST_STORE
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.trustStore = iprot.readBinary();
+              struct.setTrustStoreIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 7: // KEY_STORE_PASSWORD
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.keyStorePassword = iprot.readString();
+              struct.setKeyStorePasswordIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 8: // TRUST_STORE_PASSWORD
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.trustStorePassword = iprot.readString();
+              struct.setTrustStorePasswordIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -695,6 +1069,34 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
           oprot.writeFieldEnd();
         }
       }
+      if (struct.keyStore != null) {
+        if (struct.isSetKeyStore()) {
+          oprot.writeFieldBegin(KEY_STORE_FIELD_DESC);
+          oprot.writeBinary(struct.keyStore);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.trustStore != null) {
+        if (struct.isSetTrustStore()) {
+          oprot.writeFieldBegin(TRUST_STORE_FIELD_DESC);
+          oprot.writeBinary(struct.trustStore);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.keyStorePassword != null) {
+        if (struct.isSetKeyStorePassword()) {
+          oprot.writeFieldBegin(KEY_STORE_PASSWORD_FIELD_DESC);
+          oprot.writeString(struct.keyStorePassword);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.trustStorePassword != null) {
+        if (struct.isSetTrustStorePassword()) {
+          oprot.writeFieldBegin(TRUST_STORE_PASSWORD_FIELD_DESC);
+          oprot.writeString(struct.trustStorePassword);
+          oprot.writeFieldEnd();
+        }
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -723,7 +1125,19 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
       if (struct.isSetConfiguration()) {
         optionals.set(2);
       }
-      oprot.writeBitSet(optionals, 3);
+      if (struct.isSetKeyStore()) {
+        optionals.set(3);
+      }
+      if (struct.isSetTrustStore()) {
+        optionals.set(4);
+      }
+      if (struct.isSetKeyStorePassword()) {
+        optionals.set(5);
+      }
+      if (struct.isSetTrustStorePassword()) {
+        optionals.set(6);
+      }
+      oprot.writeBitSet(optionals, 7);
       if (struct.isSetUsername()) {
         oprot.writeString(struct.username);
       }
@@ -740,6 +1154,18 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
           }
         }
       }
+      if (struct.isSetKeyStore()) {
+        oprot.writeBinary(struct.keyStore);
+      }
+      if (struct.isSetTrustStore()) {
+        oprot.writeBinary(struct.trustStore);
+      }
+      if (struct.isSetKeyStorePassword()) {
+        oprot.writeString(struct.keyStorePassword);
+      }
+      if (struct.isSetTrustStorePassword()) {
+        oprot.writeString(struct.trustStorePassword);
+      }
     }
 
     @Override
@@ -747,7 +1173,7 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
       TTupleProtocol iprot = (TTupleProtocol) prot;
       struct.client_protocol = org.apache.hive.service.rpc.thrift.TProtocolVersion.findByValue(iprot.readI32());
       struct.setClient_protocolIsSet(true);
-      BitSet incoming = iprot.readBitSet(3);
+      BitSet incoming = iprot.readBitSet(7);
       if (incoming.get(0)) {
         struct.username = iprot.readString();
         struct.setUsernameIsSet(true);
@@ -770,6 +1196,22 @@ public class TOpenSessionReq implements org.apache.thrift.TBase<TOpenSessionReq,
           }
         }
         struct.setConfigurationIsSet(true);
+      }
+      if (incoming.get(3)) {
+        struct.keyStore = iprot.readBinary();
+        struct.setKeyStoreIsSet(true);
+      }
+      if (incoming.get(4)) {
+        struct.trustStore = iprot.readBinary();
+        struct.setTrustStoreIsSet(true);
+      }
+      if (incoming.get(5)) {
+        struct.keyStorePassword = iprot.readString();
+        struct.setKeyStorePasswordIsSet(true);
+      }
+      if (incoming.get(6)) {
+        struct.trustStorePassword = iprot.readString();
+        struct.setTrustStorePasswordIsSet(true);
       }
     }
   }

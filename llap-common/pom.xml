@@ -19,7 +19,7 @@
   <parent>
     <groupId>io.hops.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.3.0.1</version>
+    <version>2.3.0.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -97,7 +97,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-api</artifactId>
       <version>${tez.version}</version>
       <optional>true</optional>
@@ -141,7 +141,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-common</artifactId>
       <version>${tez.version}</version>
       <optional>true</optional>
@@ -163,7 +163,7 @@
             <artifactId>hadoop-yarn-common</artifactId>
         </exclusion>
         <exclusion>
-            <groupId>org.apache.tez</groupId>
+            <groupId>io.hops.tez</groupId>
             <artifactId>hadoop-shim</artifactId>
         </exclusion>
         <exclusion>
@@ -175,13 +175,13 @@
           <artifactId>commons-logging</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.tez</groupId>
+          <groupId>io.hops.tez</groupId>
           <artifactId>tez-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-runtime-internals</artifactId>
       <version>${tez.version}</version>
       <optional>true</optional>
@@ -211,15 +211,15 @@
           <artifactId>commons-logging</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.tez</groupId>
+          <groupId>io.hops.tez</groupId>
           <artifactId>tez-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.tez</groupId>
+          <groupId>io.hops.tez</groupId>
           <artifactId>tez-common</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.tez</groupId>
+          <groupId>io.hops.tez</groupId>
           <artifactId>hadoop-shim</artifactId>
         </exclusion>
       </exclusions>
@@ -274,7 +274,7 @@
                     <property name="protobuf.build.dir"  location="${basedir}/src/gen/protobuf/gen-java"/>
                     <echo>Building LLAP Protobuf</echo>
                     <mkdir dir="${protobuf.build.dir}"/>
-                    <exec executable="protoc" failonerror="true">
+                    <exec executable="${env.PROTOC_PATH}" failonerror="true">
                       <arg value="--java_out=${protobuf.build.dir}"/>
                       <arg value="-I=${protobuf.src.dir}"/>
                       <arg value="${protobuf.src.dir}/LlapDaemonProtocol.proto"/>

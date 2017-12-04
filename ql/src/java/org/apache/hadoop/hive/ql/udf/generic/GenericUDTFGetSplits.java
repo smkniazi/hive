@@ -25,11 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import javax.security.auth.login.LoginException;
 
@@ -306,7 +302,7 @@ public class GenericUDTFGetSplits extends GenericUDTF {
     try {
       LocalResource appJarLr = createJarLocalResource(utils.getExecJarPathLocal(), utils, job);
       Vertex wx = utils.createVertex(wxConf, mapWork, scratchDir, appJarLr,
-          new ArrayList<LocalResource>(), fs, ctx, false, work,
+          new HashMap<String, LocalResource>(), fs, ctx, false, work,
           work.getVertexType(mapWork));
       String vertexName = wx.getName();
       dag.addVertex(wx);

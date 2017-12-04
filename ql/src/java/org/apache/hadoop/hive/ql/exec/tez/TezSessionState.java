@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -109,7 +108,8 @@ public class TezSessionState {
   private AtomicReference<String> ownerThread = new AtomicReference<>(null);
 
   private final Set<String> additionalFilesNotFromConf = new HashSet<String>();
-  private final Set<LocalResource> localizedResources = new HashSet<LocalResource>();
+  private final Map<String, LocalResource> localizedResources = new HashMap<>();
+
   private boolean doAsEnabled;
 
   /**
@@ -250,12 +250,10 @@ public class TezSessionState {
     // localize hive-exec.jar as well.
     appJarLr = createJarLocalResource(utils.getExecJarPathLocal());
 
-    // configuration for the application master
+    // configuration for the application master;;
     final Map<String, LocalResource> commonLocalResources = new HashMap<String, LocalResource>();
     commonLocalResources.put(utils.getBaseName(appJarLr), appJarLr);
-    for (LocalResource lr : localizedResources) {
-      commonLocalResources.put(utils.getBaseName(lr), lr);
-    }
+    commonLocalResources.putAll(localizedResources);
 
     if (llapMode) {
       // localize llap client jars
@@ -309,6 +307,7 @@ public class TezSessionState {
     }
 
     setupSessionAcls(tezConfig, conf);
+
 
     final TezClient session = TezClient.newBuilder("HIVE-" + sessionId, tezConfig)
         .setIsSession(true).setLocalResources(commonLocalResources)
@@ -470,7 +469,9 @@ public class TezSessionState {
     // these are local resources set through add file, jar, etc
     List<LocalResource> lrs = utils.localizeTempFilesFromConf(dir, conf);
     if (lrs != null) {
-      localizedResources.addAll(lrs);
+      for (LocalResource lr : lrs) {
+        localizedResources.put(utils.getBaseName(lr), lr);
+      }
     }
 
     // these are local resources that are set through the mr "tmpjars" property
@@ -478,7 +479,8 @@ public class TezSessionState {
       additionalFilesNotFromConf.toArray(new String[additionalFilesNotFromConf.size()]));
 
     if (handlerLr != null) {
-      localizedResources.addAll(handlerLr);
+      for (LocalResource lr : handlerLr)
+      localizedResources.put(utils.getBaseName(lr), lr);
     }
   }
 
@@ -694,8 +696,8 @@ public class TezSessionState {
     return conf;
   }
 
-  public List<LocalResource> getLocalizedResources() {
-    return new ArrayList<>(localizedResources);
+  public Map<String, LocalResource> getLocalizedResources() {
+    return localizedResources;
   }
 
   public String getUser() {

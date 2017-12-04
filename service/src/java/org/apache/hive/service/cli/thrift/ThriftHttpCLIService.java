@@ -28,6 +28,8 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory;
+import org.apache.hadoop.security.ssl.SSLFactory;
 import org.apache.hadoop.util.Shell;
 import org.apache.hive.service.auth.HiveAuthFactory;
 import org.apache.hive.service.cli.CLIService;
@@ -94,19 +96,27 @@ public class ThriftHttpCLIService extends ThriftCLIService {
 
       // Change connector if SSL is used
       if (useSsl) {
-        String keyStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH).trim();
-        String keyStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
-            HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname);
-        if (keyStorePath.isEmpty()) {
-          throw new IllegalArgumentException(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname
-              + " Not configured for SSL connection");
+        String keyStorePath = hiveConf.get(FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+            FileBasedKeyStoresFactory.SSL_KEYSTORE_LOCATION_TPL_KEY)).trim();
+        String trustStorePath = hiveConf.get(FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+            FileBasedKeyStoresFactory.SSL_TRUSTSTORE_LOCATION_TPL_KEY)).trim();
+        if (keyStorePath == null) {
+          throw new IllegalArgumentException(FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+              FileBasedKeyStoresFactory.SSL_KEYSTORE_LOCATION_TPL_KEY) + " Not configured for SSL connection");
         }
-        String trustStorePath = hiveConf.getVar(ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PATH).trim();
+        if (trustStorePath == null) {
+          throw new IllegalArgumentException(FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+              FileBasedKeyStoresFactory.SSL_TRUSTSTORE_LOCATION_TPL_KEY) + " Not configured for SSL connection");
+        }
+        String keyStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
+            FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+                FileBasedKeyStoresFactory.SSL_KEYSTORE_PASSWORD_TPL_KEY));
         String trustStorePassword = ShimLoader.getHadoopShims().getPassword(hiveConf,
-            HiveConf.ConfVars.HIVE_SERVER2_SSL_TRUSTSTORE_PASSWORD.varname);
+            FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+                FileBasedKeyStoresFactory.SSL_TRUSTSTORE_PASSWORD_TPL_KEY));
 
         SslContextFactory sslContextFactory = new SslContextFactory();
-        String[] excludedProtocols = hiveConf.getVar(ConfVars.HIVE_SSL_PROTOCOL_BLACKLIST).split(",");
+        String[] excludedProtocols = hiveConf.getVar(ConfVars.HIVE_HTTPS_SSL_PROTOCOL_BLACKLIST).split(",");
         LOG.info("HTTP Server SSL: adding excluded protocols: " + Arrays.toString(excludedProtocols));
         sslContextFactory.addExcludeProtocols(excludedProtocols);
         LOG.info("HTTP Server SSL: SslContextFactory.getExcludeProtocols = " +

@@ -4536,6 +4536,22 @@ class TOpenSessionReq {
    * @var array
    */
   public $configuration = null;
+  /**
+   * @var string
+   */
+  public $keyStore = null;
+  /**
+   * @var string
+   */
+  public $trustStore = null;
+  /**
+   * @var string
+   */
+  public $keyStorePassword = null;
+  /**
+   * @var string
+   */
+  public $trustStorePassword = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -4564,6 +4580,22 @@ class TOpenSessionReq {
             'type' => TType::STRING,
             ),
           ),
+        5 => array(
+          'var' => 'keyStore',
+          'type' => TType::STRING,
+          ),
+        6 => array(
+          'var' => 'trustStore',
+          'type' => TType::STRING,
+          ),
+        7 => array(
+          'var' => 'keyStorePassword',
+          'type' => TType::STRING,
+          ),
+        8 => array(
+          'var' => 'trustStorePassword',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -4578,6 +4610,18 @@ class TOpenSessionReq {
       }
       if (isset($vals['configuration'])) {
         $this->configuration = $vals['configuration'];
+      }
+      if (isset($vals['keyStore'])) {
+        $this->keyStore = $vals['keyStore'];
+      }
+      if (isset($vals['trustStore'])) {
+        $this->trustStore = $vals['trustStore'];
+      }
+      if (isset($vals['keyStorePassword'])) {
+        $this->keyStorePassword = $vals['keyStorePassword'];
+      }
+      if (isset($vals['trustStorePassword'])) {
+        $this->trustStorePassword = $vals['trustStorePassword'];
       }
     }
   }
@@ -4642,6 +4686,34 @@ class TOpenSessionReq {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 5:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->keyStore);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 6:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->trustStore);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 7:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->keyStorePassword);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 8:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->trustStorePassword);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -4686,6 +4758,26 @@ class TOpenSessionReq {
         }
         $output->writeMapEnd();
       }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->keyStore !== null) {
+      $xfer += $output->writeFieldBegin('keyStore', TType::STRING, 5);
+      $xfer += $output->writeString($this->keyStore);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->trustStore !== null) {
+      $xfer += $output->writeFieldBegin('trustStore', TType::STRING, 6);
+      $xfer += $output->writeString($this->trustStore);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->keyStorePassword !== null) {
+      $xfer += $output->writeFieldBegin('keyStorePassword', TType::STRING, 7);
+      $xfer += $output->writeString($this->keyStorePassword);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->trustStorePassword !== null) {
+      $xfer += $output->writeFieldBegin('trustStorePassword', TType::STRING, 8);
+      $xfer += $output->writeString($this->trustStorePassword);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

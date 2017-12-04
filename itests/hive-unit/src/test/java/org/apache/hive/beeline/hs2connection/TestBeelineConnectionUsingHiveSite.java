@@ -71,10 +71,10 @@ public class TestBeelineConnectionUsingHiveSite extends BeelineWithHS2Connection
 
   private void setupSSLHs2() throws Exception {
     confOverlay.put(ConfVars.HIVE_SERVER2_USE_SSL.varname, "true");
-    confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname,
-        dataFileDir + File.separator + LOCALHOST_KEY_STORE_NAME);
-    confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname,
-        KEY_STORE_TRUST_STORE_PASSWORD);
+    //confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname,
+    //    dataFileDir + File.separator + LOCALHOST_KEY_STORE_NAME);
+    //confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname,
+    //    KEY_STORE_TRUST_STORE_PASSWORD);
     miniHS2.start(confOverlay);
     createTable();
     System.setProperty(JAVA_TRUST_STORE_PROP, dataFileDir + File.separator + TRUST_STORE_NAME);

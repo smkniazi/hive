@@ -963,12 +963,20 @@ class TOpenSessionReq
   USERNAME = 2
   PASSWORD = 3
   CONFIGURATION = 4
+  KEYSTORE = 5
+  TRUSTSTORE = 6
+  KEYSTOREPASSWORD = 7
+  TRUSTSTOREPASSWORD = 8
 
   FIELDS = {
     CLIENT_PROTOCOL => {:type => ::Thrift::Types::I32, :name => 'client_protocol', :default =>     9, :enum_class => ::TProtocolVersion},
     USERNAME => {:type => ::Thrift::Types::STRING, :name => 'username', :optional => true},
     PASSWORD => {:type => ::Thrift::Types::STRING, :name => 'password', :optional => true},
-    CONFIGURATION => {:type => ::Thrift::Types::MAP, :name => 'configuration', :key => {:type => ::Thrift::Types::STRING}, :value => {:type => ::Thrift::Types::STRING}, :optional => true}
+    CONFIGURATION => {:type => ::Thrift::Types::MAP, :name => 'configuration', :key => {:type => ::Thrift::Types::STRING}, :value => {:type => ::Thrift::Types::STRING}, :optional => true},
+    KEYSTORE => {:type => ::Thrift::Types::STRING, :name => 'keyStore', :binary => true, :optional => true},
+    TRUSTSTORE => {:type => ::Thrift::Types::STRING, :name => 'trustStore', :binary => true, :optional => true},
+    KEYSTOREPASSWORD => {:type => ::Thrift::Types::STRING, :name => 'keyStorePassword', :optional => true},
+    TRUSTSTOREPASSWORD => {:type => ::Thrift::Types::STRING, :name => 'trustStorePassword', :optional => true}
   }
 
   def struct_fields; FIELDS; end

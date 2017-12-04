@@ -139,6 +139,7 @@ class ThriftHiveMetastoreIf : virtual public  ::facebook::fb303::FacebookService
   virtual bool revoke_privileges(const PrivilegeBag& privileges) = 0;
   virtual void grant_revoke_privileges(GrantRevokePrivilegeResponse& _return, const GrantRevokePrivilegeRequest& request) = 0;
   virtual void set_ugi(std::vector<std::string> & _return, const std::string& user_name, const std::vector<std::string> & group_names) = 0;
+  virtual void set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password) = 0;
   virtual void get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name) = 0;
   virtual int64_t renew_delegation_token(const std::string& token_str_form) = 0;
   virtual void cancel_delegation_token(const std::string& token_str_form) = 0;
@@ -576,6 +577,9 @@ class ThriftHiveMetastoreNull : virtual public ThriftHiveMetastoreIf , virtual p
     return;
   }
   void set_ugi(std::vector<std::string> & /* _return */, const std::string& /* user_name */, const std::vector<std::string> & /* group_names */) {
+    return;
+  }
+  void set_crypto(const std::string& /* key_store */, const std::string& /* key_store_password */, const std::string& /* trust_store */, const std::string& /* trust_store_password */) {
     return;
   }
   void get_delegation_token(std::string& /* _return */, const std::string& /* token_owner */, const std::string& /* renewer_kerberos_principal_name */) {
@@ -15832,6 +15836,131 @@ class ThriftHiveMetastore_set_ugi_presult {
 
 };
 
+typedef struct _ThriftHiveMetastore_set_crypto_args__isset {
+  _ThriftHiveMetastore_set_crypto_args__isset() : key_store(false), key_store_password(false), trust_store(false), trust_store_password(false) {}
+  bool key_store :1;
+  bool key_store_password :1;
+  bool trust_store :1;
+  bool trust_store_password :1;
+} _ThriftHiveMetastore_set_crypto_args__isset;
+
+class ThriftHiveMetastore_set_crypto_args {
+ public:
+
+  ThriftHiveMetastore_set_crypto_args(const ThriftHiveMetastore_set_crypto_args&);
+  ThriftHiveMetastore_set_crypto_args& operator=(const ThriftHiveMetastore_set_crypto_args&);
+  ThriftHiveMetastore_set_crypto_args() : key_store(), key_store_password(), trust_store(), trust_store_password() {
+  }
+
+  virtual ~ThriftHiveMetastore_set_crypto_args() throw();
+  std::string key_store;
+  std::string key_store_password;
+  std::string trust_store;
+  std::string trust_store_password;
+
+  _ThriftHiveMetastore_set_crypto_args__isset __isset;
+
+  void __set_key_store(const std::string& val);
+
+  void __set_key_store_password(const std::string& val);
+
+  void __set_trust_store(const std::string& val);
+
+  void __set_trust_store_password(const std::string& val);
+
+  bool operator == (const ThriftHiveMetastore_set_crypto_args & rhs) const
+  {
+    if (!(key_store == rhs.key_store))
+      return false;
+    if (!(key_store_password == rhs.key_store_password))
+      return false;
+    if (!(trust_store == rhs.trust_store))
+      return false;
+    if (!(trust_store_password == rhs.trust_store_password))
+      return false;
+    return true;
+  }
+  bool operator != (const ThriftHiveMetastore_set_crypto_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ThriftHiveMetastore_set_crypto_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ThriftHiveMetastore_set_crypto_pargs {
+ public:
+
+
+  virtual ~ThriftHiveMetastore_set_crypto_pargs() throw();
+  const std::string* key_store;
+  const std::string* key_store_password;
+  const std::string* trust_store;
+  const std::string* trust_store_password;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ThriftHiveMetastore_set_crypto_result__isset {
+  _ThriftHiveMetastore_set_crypto_result__isset() : o1(false) {}
+  bool o1 :1;
+} _ThriftHiveMetastore_set_crypto_result__isset;
+
+class ThriftHiveMetastore_set_crypto_result {
+ public:
+
+  ThriftHiveMetastore_set_crypto_result(const ThriftHiveMetastore_set_crypto_result&);
+  ThriftHiveMetastore_set_crypto_result& operator=(const ThriftHiveMetastore_set_crypto_result&);
+  ThriftHiveMetastore_set_crypto_result() {
+  }
+
+  virtual ~ThriftHiveMetastore_set_crypto_result() throw();
+  MetaException o1;
+
+  _ThriftHiveMetastore_set_crypto_result__isset __isset;
+
+  void __set_o1(const MetaException& val);
+
+  bool operator == (const ThriftHiveMetastore_set_crypto_result & rhs) const
+  {
+    if (!(o1 == rhs.o1))
+      return false;
+    return true;
+  }
+  bool operator != (const ThriftHiveMetastore_set_crypto_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ThriftHiveMetastore_set_crypto_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ThriftHiveMetastore_set_crypto_presult__isset {
+  _ThriftHiveMetastore_set_crypto_presult__isset() : o1(false) {}
+  bool o1 :1;
+} _ThriftHiveMetastore_set_crypto_presult__isset;
+
+class ThriftHiveMetastore_set_crypto_presult {
+ public:
+
+
+  virtual ~ThriftHiveMetastore_set_crypto_presult() throw();
+  MetaException o1;
+
+  _ThriftHiveMetastore_set_crypto_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 typedef struct _ThriftHiveMetastore_get_delegation_token_args__isset {
   _ThriftHiveMetastore_get_delegation_token_args__isset() : token_owner(false), renewer_kerberos_principal_name(false) {}
   bool token_owner :1;
@@ -19963,6 +20092,9 @@ class ThriftHiveMetastoreClient : virtual public ThriftHiveMetastoreIf, public  
   void set_ugi(std::vector<std::string> & _return, const std::string& user_name, const std::vector<std::string> & group_names);
   void send_set_ugi(const std::string& user_name, const std::vector<std::string> & group_names);
   void recv_set_ugi(std::vector<std::string> & _return);
+  void set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password);
+  void send_set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password);
+  void recv_set_crypto();
   void get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name);
   void send_get_delegation_token(const std::string& token_owner, const std::string& renewer_kerberos_principal_name);
   void recv_get_delegation_token(std::string& _return);
@@ -20198,6 +20330,7 @@ class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceP
   void process_revoke_privileges(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_grant_revoke_privileges(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_set_ugi(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_set_crypto(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_get_delegation_token(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_renew_delegation_token(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_cancel_delegation_token(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -20355,6 +20488,7 @@ class ThriftHiveMetastoreProcessor : public  ::facebook::fb303::FacebookServiceP
     processMap_["revoke_privileges"] = &ThriftHiveMetastoreProcessor::process_revoke_privileges;
     processMap_["grant_revoke_privileges"] = &ThriftHiveMetastoreProcessor::process_grant_revoke_privileges;
     processMap_["set_ugi"] = &ThriftHiveMetastoreProcessor::process_set_ugi;
+    processMap_["set_crypto"] = &ThriftHiveMetastoreProcessor::process_set_crypto;
     processMap_["get_delegation_token"] = &ThriftHiveMetastoreProcessor::process_get_delegation_token;
     processMap_["renew_delegation_token"] = &ThriftHiveMetastoreProcessor::process_renew_delegation_token;
     processMap_["cancel_delegation_token"] = &ThriftHiveMetastoreProcessor::process_cancel_delegation_token;
@@ -21546,6 +21680,15 @@ class ThriftHiveMetastoreMultiface : virtual public ThriftHiveMetastoreIf, publi
     return;
   }
 
+  void set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->set_crypto(key_store, key_store_password, trust_store, trust_store_password);
+    }
+    ifaces_[i]->set_crypto(key_store, key_store_password, trust_store, trust_store_password);
+  }
+
   void get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name) {
     size_t sz = ifaces_.size();
     size_t i = 0;
@@ -22258,6 +22401,9 @@ class ThriftHiveMetastoreConcurrentClient : virtual public ThriftHiveMetastoreIf
   void set_ugi(std::vector<std::string> & _return, const std::string& user_name, const std::vector<std::string> & group_names);
   int32_t send_set_ugi(const std::string& user_name, const std::vector<std::string> & group_names);
   void recv_set_ugi(std::vector<std::string> & _return, const int32_t seqid);
+  void set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password);
+  int32_t send_set_crypto(const std::string& key_store, const std::string& key_store_password, const std::string& trust_store, const std::string& trust_store_password);
+  void recv_set_crypto(const int32_t seqid);
   void get_delegation_token(std::string& _return, const std::string& token_owner, const std::string& renewer_kerberos_principal_name);
   int32_t send_get_delegation_token(const std::string& token_owner, const std::string& renewer_kerberos_principal_name);
   void recv_get_delegation_token(std::string& _return, const int32_t seqid);

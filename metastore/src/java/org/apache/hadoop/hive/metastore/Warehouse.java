@@ -102,6 +102,8 @@ public class Warehouse {
    */
   public static FileSystem getFs(Path f, Configuration conf) throws MetaException {
     try {
+      //TODO: tell hdfs client where the certificates are
+
       return f.getFileSystem(conf);
     } catch (IOException e) {
       MetaStoreUtils.logAndThrowMetaException(e);

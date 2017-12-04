@@ -102,7 +102,7 @@ public class TestTezTask {
     when(utils.getTezDir(any(Path.class))).thenReturn(path);
     when(
         utils.createVertex(any(JobConf.class), any(BaseWork.class), any(Path.class),
-            any(LocalResource.class), any(List.class), any(FileSystem.class), any(Context.class),
+            any(LocalResource.class), any(Map.class), any(FileSystem.class), any(Context.class),
             anyBoolean(), any(TezWork.class), any(VertexType.class))).thenAnswer(
         new Answer<Vertex>() {
 
@@ -223,7 +223,7 @@ public class TestTezTask {
   @Test
   public void testSubmit() throws Exception {
     DAG dag = DAG.create("test");
-    task.submit(conf, dag, path, appLr, sessionState, Collections.<LocalResource> emptyList(),
+    task.submit(conf, dag, path, appLr, sessionState, Collections.<String, LocalResource> emptyMap(),
         new String[0], Collections.<String,LocalResource> emptyMap());
     // validate close/reopen
     verify(sessionState, times(1)).open(any(HiveConf.class), any(String[].class));

@@ -31,6 +31,7 @@ import javax.security.sasl.AuthenticationException;
 import javax.security.sasl.AuthorizeCallback;
 import javax.security.sasl.SaslException;
 
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hive.service.auth.AuthenticationProviderFactory.AuthMethods;
 import org.apache.hive.service.auth.PlainSaslServer.SaslPlainProvider;
 import org.apache.hive.service.cli.thrift.ThriftCLIService;
@@ -44,8 +45,12 @@ import org.apache.thrift.transport.TTransportFactory;
 
 public final class PlainSaslHelper {
 
-  public static TProcessorFactory getPlainProcessorFactory(ThriftCLIService service) {
-    return new SQLPlainProcessorFactory(service);
+  public static TProcessorFactory getPlainProcessorFactory(ThriftCLIService service, HiveConf hiveConf, boolean isHopsSSL) {
+    if (isHopsSSL) {
+      return new TSSLBasedProcessorFactory(service, hiveConf);
+    } else {
+      return new TSetIpAddressProcessorFactory(service);
+    }
   }
 
   // Register Plain SASL server provider
@@ -137,11 +142,11 @@ public final class PlainSaslHelper {
     }
   }
 
-  private static final class SQLPlainProcessorFactory extends TProcessorFactory {
+  private static final class TSetIpAddressProcessorFactory extends TProcessorFactory {
 
     private final ThriftCLIService service;
 
-    SQLPlainProcessorFactory(ThriftCLIService service) {
+    TSetIpAddressProcessorFactory(ThriftCLIService service) {
       super(null);
       this.service = service;
     }
@@ -152,4 +157,20 @@ public final class PlainSaslHelper {
     }
   }
 
+  private static final class TSSLBasedProcessorFactory extends TProcessorFactory {
+
+    private final ThriftCLIService service;
+    private final HiveConf hiveConf;
+
+    TSSLBasedProcessorFactory(ThriftCLIService service, HiveConf hiveConf) {
+      super(null);
+      this.service = service;
+      this.hiveConf = hiveConf;
+    }
+
+    @Override
+    public TProcessor getProcessor(TTransport trans) {
+      return new TSSLBasedProcessor<>(service, hiveConf);
+    }
+  }
 }

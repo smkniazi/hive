@@ -27,16 +27,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
@@ -44,6 +40,7 @@ import org.apache.hadoop.hive.common.metrics.common.MetricsVariable;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.hooks.HookUtils;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
@@ -446,6 +443,17 @@ public class SessionManager extends CompositeService {
     LOG.info("Session closed, " + sessionHandle + ", current sessions:" + getOpenSessionCount());
     try {
       session.close();
+      // If TLS is enabled call the CertificateLocalizationService to delete the certificate from the local fs
+      if (hiveConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+          CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+        // Stop the CertificateLocalizationService
+        try {
+          CertificateLocalizationCtx.getInstance().getCertificateLocalization().
+              removeX509Material(session.getUserName());
+        } catch (InterruptedException e) {
+          throw new HiveSQLException(e);
+        }
+      }
     } finally {
       // Shutdown HiveServer2 if it has been deregistered from ZooKeeper and has no active sessions
       if (!(hiveServer2 == null) && (hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY))

@@ -9601,6 +9601,64 @@ public final class LlapDaemonProtocolProtos {
      * <code>optional bytes initial_event_signature = 11;</code>
      */
     com.google.protobuf.ByteString getInitialEventSignature();
+
+    // optional bytes key_store = 18;
+    /**
+     * <code>optional bytes key_store = 18;</code>
+     *
+     * <pre>
+     * HopsTLS key/trustStore
+     * </pre>
+     */
+    boolean hasKeyStore();
+    /**
+     * <code>optional bytes key_store = 18;</code>
+     *
+     * <pre>
+     * HopsTLS key/trustStore
+     * </pre>
+     */
+    com.google.protobuf.ByteString getKeyStore();
+
+    // optional bytes trust_store = 19;
+    /**
+     * <code>optional bytes trust_store = 19;</code>
+     */
+    boolean hasTrustStore();
+    /**
+     * <code>optional bytes trust_store = 19;</code>
+     */
+    com.google.protobuf.ByteString getTrustStore();
+
+    // optional string key_store_password = 20;
+    /**
+     * <code>optional string key_store_password = 20;</code>
+     */
+    boolean hasKeyStorePassword();
+    /**
+     * <code>optional string key_store_password = 20;</code>
+     */
+    java.lang.String getKeyStorePassword();
+    /**
+     * <code>optional string key_store_password = 20;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyStorePasswordBytes();
+
+    // optional string trust_store_password = 21;
+    /**
+     * <code>optional string trust_store_password = 21;</code>
+     */
+    boolean hasTrustStorePassword();
+    /**
+     * <code>optional string trust_store_password = 21;</code>
+     */
+    java.lang.String getTrustStorePassword();
+    /**
+     * <code>optional string trust_store_password = 21;</code>
+     */
+    com.google.protobuf.ByteString
+        getTrustStorePasswordBytes();
   }
   /**
    * Protobuf type {@code SubmitWorkRequestProto}
@@ -9722,6 +9780,26 @@ public final class LlapDaemonProtocolProtos {
             case 90: {
               bitField0_ |= 0x00000400;
               initialEventSignature_ = input.readBytes();
+              break;
+            }
+            case 146: {
+              bitField0_ |= 0x00000800;
+              keyStore_ = input.readBytes();
+              break;
+            }
+            case 154: {
+              bitField0_ |= 0x00001000;
+              trustStore_ = input.readBytes();
+              break;
+            }
+            case 162: {
+              bitField0_ |= 0x00002000;
+              keyStorePassword_ = input.readBytes();
+              break;
+            }
+            case 170: {
+              bitField0_ |= 0x00004000;
+              trustStorePassword_ = input.readBytes();
               break;
             }
           }
@@ -10034,6 +10112,132 @@ public final class LlapDaemonProtocolProtos {
       return initialEventSignature_;
     }
 
+    // optional bytes key_store = 18;
+    public static final int KEY_STORE_FIELD_NUMBER = 18;
+    private com.google.protobuf.ByteString keyStore_;
+    /**
+     * <code>optional bytes key_store = 18;</code>
+     *
+     * <pre>
+     * HopsTLS key/trustStore
+     * </pre>
+     */
+    public boolean hasKeyStore() {
+      return ((bitField0_ & 0x00000800) == 0x00000800);
+    }
+    /**
+     * <code>optional bytes key_store = 18;</code>
+     *
+     * <pre>
+     * HopsTLS key/trustStore
+     * </pre>
+     */
+    public com.google.protobuf.ByteString getKeyStore() {
+      return keyStore_;
+    }
+
+    // optional bytes trust_store = 19;
+    public static final int TRUST_STORE_FIELD_NUMBER = 19;
+    private com.google.protobuf.ByteString trustStore_;
+    /**
+     * <code>optional bytes trust_store = 19;</code>
+     */
+    public boolean hasTrustStore() {
+      return ((bitField0_ & 0x00001000) == 0x00001000);
+    }
+    /**
+     * <code>optional bytes trust_store = 19;</code>
+     */
+    public com.google.protobuf.ByteString getTrustStore() {
+      return trustStore_;
+    }
+
+    // optional string key_store_password = 20;
+    public static final int KEY_STORE_PASSWORD_FIELD_NUMBER = 20;
+    private java.lang.Object keyStorePassword_;
+    /**
+     * <code>optional string key_store_password = 20;</code>
+     */
+    public boolean hasKeyStorePassword() {
+      return ((bitField0_ & 0x00002000) == 0x00002000);
+    }
+    /**
+     * <code>optional string key_store_password = 20;</code>
+     */
+    public java.lang.String getKeyStorePassword() {
+      java.lang.Object ref = keyStorePassword_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          keyStorePassword_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string key_store_password = 20;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyStorePasswordBytes() {
+      java.lang.Object ref = keyStorePassword_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        keyStorePassword_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional string trust_store_password = 21;
+    public static final int TRUST_STORE_PASSWORD_FIELD_NUMBER = 21;
+    private java.lang.Object trustStorePassword_;
+    /**
+     * <code>optional string trust_store_password = 21;</code>
+     */
+    public boolean hasTrustStorePassword() {
+      return ((bitField0_ & 0x00004000) == 0x00004000);
+    }
+    /**
+     * <code>optional string trust_store_password = 21;</code>
+     */
+    public java.lang.String getTrustStorePassword() {
+      java.lang.Object ref = trustStorePassword_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          trustStorePassword_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string trust_store_password = 21;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTrustStorePasswordBytes() {
+      java.lang.Object ref = trustStorePassword_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        trustStorePassword_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       workSpec_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.VertexOrBinary.getDefaultInstance();
       workSpecSignature_ = com.google.protobuf.ByteString.EMPTY;
@@ -10046,6 +10250,10 @@ public final class LlapDaemonProtocolProtos {
       fragmentRuntimeInfo_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.FragmentRuntimeInfo.getDefaultInstance();
       initialEventBytes_ = com.google.protobuf.ByteString.EMPTY;
       initialEventSignature_ = com.google.protobuf.ByteString.EMPTY;
+      keyStore_ = com.google.protobuf.ByteString.EMPTY;
+      trustStore_ = com.google.protobuf.ByteString.EMPTY;
+      keyStorePassword_ = "";
+      trustStorePassword_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10091,6 +10299,18 @@ public final class LlapDaemonProtocolProtos {
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         output.writeBytes(11, initialEventSignature_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        output.writeBytes(18, keyStore_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeBytes(19, trustStore_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        output.writeBytes(20, getKeyStorePasswordBytes());
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        output.writeBytes(21, getTrustStorePasswordBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -10144,6 +10364,22 @@ public final class LlapDaemonProtocolProtos {
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(11, initialEventSignature_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(18, keyStore_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(19, trustStore_);
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(20, getKeyStorePasswordBytes());
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(21, getTrustStorePasswordBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -10223,6 +10459,26 @@ public final class LlapDaemonProtocolProtos {
         result = result && getInitialEventSignature()
             .equals(other.getInitialEventSignature());
       }
+      result = result && (hasKeyStore() == other.hasKeyStore());
+      if (hasKeyStore()) {
+        result = result && getKeyStore()
+            .equals(other.getKeyStore());
+      }
+      result = result && (hasTrustStore() == other.hasTrustStore());
+      if (hasTrustStore()) {
+        result = result && getTrustStore()
+            .equals(other.getTrustStore());
+      }
+      result = result && (hasKeyStorePassword() == other.hasKeyStorePassword());
+      if (hasKeyStorePassword()) {
+        result = result && getKeyStorePassword()
+            .equals(other.getKeyStorePassword());
+      }
+      result = result && (hasTrustStorePassword() == other.hasTrustStorePassword());
+      if (hasTrustStorePassword()) {
+        result = result && getTrustStorePassword()
+            .equals(other.getTrustStorePassword());
+      }
       result = result &&
           getUnknownFields().equals(other.getUnknownFields());
       return result;
@@ -10279,6 +10535,22 @@ public final class LlapDaemonProtocolProtos {
       if (hasInitialEventSignature()) {
         hash = (37 * hash) + INITIAL_EVENT_SIGNATURE_FIELD_NUMBER;
         hash = (53 * hash) + getInitialEventSignature().hashCode();
+      }
+      if (hasKeyStore()) {
+        hash = (37 * hash) + KEY_STORE_FIELD_NUMBER;
+        hash = (53 * hash) + getKeyStore().hashCode();
+      }
+      if (hasTrustStore()) {
+        hash = (37 * hash) + TRUST_STORE_FIELD_NUMBER;
+        hash = (53 * hash) + getTrustStore().hashCode();
+      }
+      if (hasKeyStorePassword()) {
+        hash = (37 * hash) + KEY_STORE_PASSWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getKeyStorePassword().hashCode();
+      }
+      if (hasTrustStorePassword()) {
+        hash = (37 * hash) + TRUST_STORE_PASSWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getTrustStorePassword().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -10421,6 +10693,14 @@ public final class LlapDaemonProtocolProtos {
         bitField0_ = (bitField0_ & ~0x00000200);
         initialEventSignature_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000400);
+        keyStore_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000800);
+        trustStore_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00001000);
+        keyStorePassword_ = "";
+        bitField0_ = (bitField0_ & ~0x00002000);
+        trustStorePassword_ = "";
+        bitField0_ = (bitField0_ & ~0x00004000);
         return this;
       }
 
@@ -10501,6 +10781,22 @@ public final class LlapDaemonProtocolProtos {
           to_bitField0_ |= 0x00000400;
         }
         result.initialEventSignature_ = initialEventSignature_;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000800;
+        }
+        result.keyStore_ = keyStore_;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        result.trustStore_ = trustStore_;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00002000;
+        }
+        result.keyStorePassword_ = keyStorePassword_;
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00004000;
+        }
+        result.trustStorePassword_ = trustStorePassword_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -10553,6 +10849,22 @@ public final class LlapDaemonProtocolProtos {
         }
         if (other.hasInitialEventSignature()) {
           setInitialEventSignature(other.getInitialEventSignature());
+        }
+        if (other.hasKeyStore()) {
+          setKeyStore(other.getKeyStore());
+        }
+        if (other.hasTrustStore()) {
+          setTrustStore(other.getTrustStore());
+        }
+        if (other.hasKeyStorePassword()) {
+          bitField0_ |= 0x00002000;
+          keyStorePassword_ = other.keyStorePassword_;
+          onChanged();
+        }
+        if (other.hasTrustStorePassword()) {
+          bitField0_ |= 0x00004000;
+          trustStorePassword_ = other.trustStorePassword_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -11270,6 +11582,242 @@ public final class LlapDaemonProtocolProtos {
       public Builder clearInitialEventSignature() {
         bitField0_ = (bitField0_ & ~0x00000400);
         initialEventSignature_ = getDefaultInstance().getInitialEventSignature();
+        onChanged();
+        return this;
+      }
+
+      // optional bytes key_store = 18;
+      private com.google.protobuf.ByteString keyStore_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes key_store = 18;</code>
+       *
+       * <pre>
+       * HopsTLS key/trustStore
+       * </pre>
+       */
+      public boolean hasKeyStore() {
+        return ((bitField0_ & 0x00000800) == 0x00000800);
+      }
+      /**
+       * <code>optional bytes key_store = 18;</code>
+       *
+       * <pre>
+       * HopsTLS key/trustStore
+       * </pre>
+       */
+      public com.google.protobuf.ByteString getKeyStore() {
+        return keyStore_;
+      }
+      /**
+       * <code>optional bytes key_store = 18;</code>
+       *
+       * <pre>
+       * HopsTLS key/trustStore
+       * </pre>
+       */
+      public Builder setKeyStore(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000800;
+        keyStore_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes key_store = 18;</code>
+       *
+       * <pre>
+       * HopsTLS key/trustStore
+       * </pre>
+       */
+      public Builder clearKeyStore() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        keyStore_ = getDefaultInstance().getKeyStore();
+        onChanged();
+        return this;
+      }
+
+      // optional bytes trust_store = 19;
+      private com.google.protobuf.ByteString trustStore_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes trust_store = 19;</code>
+       */
+      public boolean hasTrustStore() {
+        return ((bitField0_ & 0x00001000) == 0x00001000);
+      }
+      /**
+       * <code>optional bytes trust_store = 19;</code>
+       */
+      public com.google.protobuf.ByteString getTrustStore() {
+        return trustStore_;
+      }
+      /**
+       * <code>optional bytes trust_store = 19;</code>
+       */
+      public Builder setTrustStore(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00001000;
+        trustStore_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes trust_store = 19;</code>
+       */
+      public Builder clearTrustStore() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        trustStore_ = getDefaultInstance().getTrustStore();
+        onChanged();
+        return this;
+      }
+
+      // optional string key_store_password = 20;
+      private java.lang.Object keyStorePassword_ = "";
+      /**
+       * <code>optional string key_store_password = 20;</code>
+       */
+      public boolean hasKeyStorePassword() {
+        return ((bitField0_ & 0x00002000) == 0x00002000);
+      }
+      /**
+       * <code>optional string key_store_password = 20;</code>
+       */
+      public java.lang.String getKeyStorePassword() {
+        java.lang.Object ref = keyStorePassword_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          keyStorePassword_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string key_store_password = 20;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyStorePasswordBytes() {
+        java.lang.Object ref = keyStorePassword_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          keyStorePassword_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string key_store_password = 20;</code>
+       */
+      public Builder setKeyStorePassword(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00002000;
+        keyStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string key_store_password = 20;</code>
+       */
+      public Builder clearKeyStorePassword() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        keyStorePassword_ = getDefaultInstance().getKeyStorePassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string key_store_password = 20;</code>
+       */
+      public Builder setKeyStorePasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00002000;
+        keyStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional string trust_store_password = 21;
+      private java.lang.Object trustStorePassword_ = "";
+      /**
+       * <code>optional string trust_store_password = 21;</code>
+       */
+      public boolean hasTrustStorePassword() {
+        return ((bitField0_ & 0x00004000) == 0x00004000);
+      }
+      /**
+       * <code>optional string trust_store_password = 21;</code>
+       */
+      public java.lang.String getTrustStorePassword() {
+        java.lang.Object ref = trustStorePassword_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          trustStorePassword_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string trust_store_password = 21;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTrustStorePasswordBytes() {
+        java.lang.Object ref = trustStorePassword_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          trustStorePassword_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string trust_store_password = 21;</code>
+       */
+      public Builder setTrustStorePassword(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00004000;
+        trustStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string trust_store_password = 21;</code>
+       */
+      public Builder clearTrustStorePassword() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        trustStorePassword_ = getDefaultInstance().getTrustStorePassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string trust_store_password = 21;</code>
+       */
+      public Builder setTrustStorePasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00004000;
+        trustStorePassword_ = value;
         onChanged();
         return this;
       }
@@ -17445,7 +17993,7 @@ public final class LlapDaemonProtocolProtos {
       "\002 \001(\005\022\032\n\022app_attempt_number\030\003 \001(\005\"l\n\013Not" +
       "TezEvent\022\037\n\027input_event_proto_bytes\030\001 \002(" +
       "\014\022\023\n\013vertex_name\030\002 \002(\t\022\027\n\017dest_input_nam" +
-      "e\030\003 \002(\t\022\016\n\006key_id\030\004 \001(\005\"\330\002\n\026SubmitWorkRe" +
+      "e\030\003 \002(\t\022\016\n\006key_id\030\004 \001(\005\"\272\003\n\026SubmitWorkRe" +
       "questProto\022\"\n\twork_spec\030\001 \001(\0132\017.VertexOr" +
       "Binary\022\033\n\023work_spec_signature\030\002 \001(\014\022\027\n\017f" +
       "ragment_number\030\003 \001(\005\022\026\n\016attempt_number\030\004" +
@@ -17454,40 +18002,42 @@ public final class LlapDaemonProtocolProtos {
       "ls_binary\030\010 \001(\014\0223\n\025fragment_runtime_info" +
       "\030\t \001(\0132\024.FragmentRuntimeInfo\022\033\n\023initial_" +
       "event_bytes\030\n \001(\014\022\037\n\027initial_event_signa" +
-      "ture\030\013 \001(\014\"b\n\027SubmitWorkResponseProto\022/\n" +
-      "\020submission_state\030\001 \001(\0162\025.SubmissionStat" +
-      "eProto\022\026\n\016unique_node_id\030\002 \001(\t\"\205\001\n\036Sourc" +
-      "eStateUpdatedRequestProto\022/\n\020query_ident" +
-      "ifier\030\001 \001(\0132\025.QueryIdentifierProto\022\020\n\010sr" +
-      "c_name\030\002 \001(\t\022 \n\005state\030\003 \001(\0162\021.SourceStat" +
-      "eProto\"!\n\037SourceStateUpdatedResponseProt",
-      "o\"e\n\031QueryCompleteRequestProto\022/\n\020query_" +
-      "identifier\030\001 \001(\0132\025.QueryIdentifierProto\022" +
-      "\027\n\014delete_delay\030\002 \001(\003:\0010\"\034\n\032QueryComplet" +
-      "eResponseProto\"t\n\035TerminateFragmentReque" +
-      "stProto\022/\n\020query_identifier\030\001 \001(\0132\025.Quer" +
-      "yIdentifierProto\022\"\n\032fragment_identifier_" +
-      "string\030\002 \001(\t\" \n\036TerminateFragmentRespons" +
-      "eProto\"&\n\024GetTokenRequestProto\022\016\n\006app_id" +
-      "\030\001 \001(\t\"&\n\025GetTokenResponseProto\022\r\n\005token" +
-      "\030\001 \001(\014\"A\n\033LlapOutputSocketInitMessage\022\023\n",
-      "\013fragment_id\030\001 \002(\t\022\r\n\005token\030\002 \001(\014*2\n\020Sou" +
-      "rceStateProto\022\017\n\013S_SUCCEEDED\020\001\022\r\n\tS_RUNN" +
-      "ING\020\002*E\n\024SubmissionStateProto\022\014\n\010ACCEPTE" +
-      "D\020\001\022\014\n\010REJECTED\020\002\022\021\n\rEVICTED_OTHER\020\0032\316\002\n" +
-      "\022LlapDaemonProtocol\022?\n\nsubmitWork\022\027.Subm" +
-      "itWorkRequestProto\032\030.SubmitWorkResponseP" +
-      "roto\022W\n\022sourceStateUpdated\022\037.SourceState" +
-      "UpdatedRequestProto\032 .SourceStateUpdated" +
-      "ResponseProto\022H\n\rqueryComplete\022\032.QueryCo" +
-      "mpleteRequestProto\032\033.QueryCompleteRespon",
-      "seProto\022T\n\021terminateFragment\022\036.Terminate" +
-      "FragmentRequestProto\032\037.TerminateFragment" +
-      "ResponseProto2]\n\026LlapManagementProtocol\022" +
-      "C\n\022getDelegationToken\022\025.GetTokenRequestP" +
-      "roto\032\026.GetTokenResponseProtoBH\n&org.apac" +
-      "he.hadoop.hive.llap.daemon.rpcB\030LlapDaem" +
-      "onProtocolProtos\210\001\001\240\001\001"
+      "ture\030\013 \001(\014\022\021\n\tkey_store\030\022 \001(\014\022\023\n\013trust_s" +
+      "tore\030\023 \001(\014\022\032\n\022key_store_password\030\024 \001(\t\022\034" +
+      "\n\024trust_store_password\030\025 \001(\t\"b\n\027SubmitWo" +
+      "rkResponseProto\022/\n\020submission_state\030\001 \001(" +
+      "\0162\025.SubmissionStateProto\022\026\n\016unique_node_" +
+      "id\030\002 \001(\t\"\205\001\n\036SourceStateUpdatedRequestPr" +
+      "oto\022/\n\020query_identifier\030\001 \001(\0132\025.QueryIde",
+      "ntifierProto\022\020\n\010src_name\030\002 \001(\t\022 \n\005state\030" +
+      "\003 \001(\0162\021.SourceStateProto\"!\n\037SourceStateU" +
+      "pdatedResponseProto\"e\n\031QueryCompleteRequ" +
+      "estProto\022/\n\020query_identifier\030\001 \001(\0132\025.Que" +
+      "ryIdentifierProto\022\027\n\014delete_delay\030\002 \001(\003:" +
+      "\0010\"\034\n\032QueryCompleteResponseProto\"t\n\035Term" +
+      "inateFragmentRequestProto\022/\n\020query_ident" +
+      "ifier\030\001 \001(\0132\025.QueryIdentifierProto\022\"\n\032fr" +
+      "agment_identifier_string\030\002 \001(\t\" \n\036Termin" +
+      "ateFragmentResponseProto\"&\n\024GetTokenRequ",
+      "estProto\022\016\n\006app_id\030\001 \001(\t\"&\n\025GetTokenResp" +
+      "onseProto\022\r\n\005token\030\001 \001(\014\"A\n\033LlapOutputSo" +
+      "cketInitMessage\022\023\n\013fragment_id\030\001 \002(\t\022\r\n\005" +
+      "token\030\002 \001(\014*2\n\020SourceStateProto\022\017\n\013S_SUC" +
+      "CEEDED\020\001\022\r\n\tS_RUNNING\020\002*E\n\024SubmissionSta" +
+      "teProto\022\014\n\010ACCEPTED\020\001\022\014\n\010REJECTED\020\002\022\021\n\rE" +
+      "VICTED_OTHER\020\0032\316\002\n\022LlapDaemonProtocol\022?\n" +
+      "\nsubmitWork\022\027.SubmitWorkRequestProto\032\030.S" +
+      "ubmitWorkResponseProto\022W\n\022sourceStateUpd" +
+      "ated\022\037.SourceStateUpdatedRequestProto\032 .",
+      "SourceStateUpdatedResponseProto\022H\n\rquery" +
+      "Complete\022\032.QueryCompleteRequestProto\032\033.Q" +
+      "ueryCompleteResponseProto\022T\n\021terminateFr" +
+      "agment\022\036.TerminateFragmentRequestProto\032\037" +
+      ".TerminateFragmentResponseProto2]\n\026LlapM" +
+      "anagementProtocol\022C\n\022getDelegationToken\022" +
+      "\025.GetTokenRequestProto\032\026.GetTokenRespons" +
+      "eProtoBH\n&org.apache.hadoop.hive.llap.da" +
+      "emon.rpcB\030LlapDaemonProtocolProtos\210\001\001\240\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -17553,7 +18103,7 @@ public final class LlapDaemonProtocolProtos {
           internal_static_SubmitWorkRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SubmitWorkRequestProto_descriptor,
-              new java.lang.String[] { "WorkSpec", "WorkSpecSignature", "FragmentNumber", "AttemptNumber", "ContainerIdString", "AmHost", "AmPort", "CredentialsBinary", "FragmentRuntimeInfo", "InitialEventBytes", "InitialEventSignature", });
+              new java.lang.String[] { "WorkSpec", "WorkSpecSignature", "FragmentNumber", "AttemptNumber", "ContainerIdString", "AmHost", "AmPort", "CredentialsBinary", "FragmentRuntimeInfo", "InitialEventBytes", "InitialEventSignature", "KeyStore", "TrustStore", "KeyStorePassword", "TrustStorePassword", });
           internal_static_SubmitWorkResponseProto_descriptor =
             getDescriptor().getMessageTypes().get(10);
           internal_static_SubmitWorkResponseProto_fieldAccessorTable = new

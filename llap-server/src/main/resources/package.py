@@ -80,6 +80,7 @@ def main(args):
 	parser.add_argument("--instances", type=int, default=1)
 	parser.add_argument("--output", default=output)
 	parser.add_argument("--input", required=True)
+	parser.add_argument("--remote_dir", required=True)
 	parser.add_argument("--args", default="")
 	parser.add_argument("--name", default="llap0")
 	parser.add_argument("--loglevel", default="INFO")
@@ -126,6 +127,8 @@ def main(args):
 		print "Cannot find input files"
 		sys.exit(1)
 		return
+    remote_dir = args.remote_dir
+
 	config = json_parse(open(join(input, "config.json")).read())
 	java_home = config["java.home"]
 	max_direct_memory = config["max_direct_memory"]
@@ -138,6 +141,7 @@ def main(args):
 	vars = {
 		"home" : home,
 		"version" : version,
+		"remote_dir" : remote_dir,
 		"instances" : args.instances,
 		"heap" : resource.heap_size,
 		"container.mb" : resource.container_size,

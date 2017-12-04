@@ -121,8 +121,6 @@ public class TestHiveConf {
     HiveConf conf = new HiveConf();
     // check password configs are hidden
     Assert.assertTrue(conf.isHiddenConfig(HiveConf.ConfVars.METASTOREPWD.varname));
-    Assert.assertTrue(conf.isHiddenConfig(
-        HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname));
     // check change hidden list should fail
     try {
       final String name = HiveConf.ConfVars.HIVE_CONF_HIDDEN_LIST.varname;
@@ -134,10 +132,8 @@ public class TestHiveConf {
     // check stripHiddenConfigurations
     Configuration conf2 = new Configuration(conf);
     conf2.set(HiveConf.ConfVars.METASTOREPWD.varname, "password");
-    conf2.set(HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname, "password");
     conf.stripHiddenConfigurations(conf2);
     Assert.assertEquals("", conf2.get(HiveConf.ConfVars.METASTOREPWD.varname));
-    Assert.assertEquals("", conf2.get(HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname));
   }
 
   @Test

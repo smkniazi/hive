@@ -484,7 +484,7 @@ public class DagUtils {
   }
 
   private Vertex createVertex(JobConf conf, MergeJoinWork mergeJoinWork, LocalResource appJarLr,
-      List<LocalResource> additionalLr, FileSystem fs, Path mrScratchDir, Context ctx,
+      Map<String, LocalResource> additionalLr, FileSystem fs, Path mrScratchDir, Context ctx,
       VertexType vertexType)
       throws Exception {
     Utilities.setMergeWork(conf, mergeJoinWork, mrScratchDir, false);
@@ -533,7 +533,7 @@ public class DagUtils {
    * Helper function to create Vertex from MapWork.
    */
   private Vertex createVertex(JobConf conf, MapWork mapWork,
-      LocalResource appJarLr, List<LocalResource> additionalLr, FileSystem fs,
+      LocalResource appJarLr, Map<String, LocalResource> additionalLr, FileSystem fs,
       Path mrScratchDir, Context ctx, VertexType vertexType)
       throws Exception {
 
@@ -663,9 +663,7 @@ public class DagUtils {
 
     Map<String, LocalResource> localResources = new HashMap<String, LocalResource>();
     localResources.put(getBaseName(appJarLr), appJarLr);
-    for (LocalResource lr: additionalLr) {
-      localResources.put(getBaseName(lr), lr);
-    }
+    localResources.putAll(additionalLr);
 
     map.addTaskLocalFiles(localResources);
     return map;
@@ -707,7 +705,7 @@ public class DagUtils {
    * Helper function to create Vertex for given ReduceWork.
    */
   private Vertex createVertex(JobConf conf, ReduceWork reduceWork,
-      LocalResource appJarLr, List<LocalResource> additionalLr, FileSystem fs,
+      LocalResource appJarLr, Map<String, LocalResource> additionalLr, FileSystem fs,
       Path mrScratchDir, Context ctx) throws Exception {
 
     // set up operator plan
@@ -733,9 +731,7 @@ public class DagUtils {
 
     Map<String, LocalResource> localResources = new HashMap<String, LocalResource>();
     localResources.put(getBaseName(appJarLr), appJarLr);
-    for (LocalResource lr: additionalLr) {
-      localResources.put(getBaseName(lr), lr);
-    }
+    localResources.putAll(additionalLr);
     reducer.addTaskLocalFiles(localResources);
 
     return reducer;
@@ -744,7 +740,7 @@ public class DagUtils {
   /*
    * Helper method to create a yarn local resource.
    */
-  private LocalResource createLocalResource(FileSystem remoteFs, Path file,
+  public LocalResource createLocalResource(FileSystem remoteFs, Path file,
       LocalResourceType type, LocalResourceVisibility visibility) {
 
     FileStatus fstat = null;
@@ -1145,7 +1141,7 @@ public class DagUtils {
   @SuppressWarnings("deprecation")
   public Vertex createVertex(JobConf conf, BaseWork work,
       Path scratchDir, LocalResource appJarLr,
-      List<LocalResource> additionalLr, FileSystem fileSystem, Context ctx, boolean hasChildren,
+      Map<String, LocalResource> additionalLr, FileSystem fileSystem, Context ctx, boolean hasChildren,
       TezWork tezWork, VertexType vertexType) throws Exception {
 
     Vertex v = null;
@@ -1155,8 +1151,7 @@ public class DagUtils {
       v = createVertex(conf, (MapWork) work, appJarLr, additionalLr, fileSystem, scratchDir, ctx,
               vertexType);
     } else if (work instanceof ReduceWork) {
-      v = createVertex(conf, (ReduceWork) work, appJarLr,
-          additionalLr, fileSystem, scratchDir, ctx);
+      v = createVertex(conf, (ReduceWork) work, appJarLr, additionalLr, fileSystem, scratchDir, ctx);
     } else if (work instanceof MergeJoinWork) {
       v = createVertex(conf, (MergeJoinWork) work, appJarLr, additionalLr, fileSystem, scratchDir,
               ctx, vertexType);

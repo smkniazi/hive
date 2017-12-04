@@ -395,8 +395,8 @@ public class TestSSL {
     // This call sets the default ssl params including the correct keystore in the server config
     setSslConfOverlay(confOverlay);
     // Replace default keystore with keystore for www.example.com
-    confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname, dataFileDir + File.separator
-        + EXAMPLEDOTCOM_KEY_STORE_NAME);
+    //confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname, dataFileDir + File.separator
+    //    + EXAMPLEDOTCOM_KEY_STORE_NAME);
     // Binary (TCP) mode
     setBinaryConfOverlay(confOverlay);
     miniHS2.start(confOverlay);
@@ -429,8 +429,8 @@ public class TestSSL {
       assertTrue(e.toString().contains("javax.net.ssl.SSLPeerUnverifiedException"));
     }
     // Revert to default keystore path
-    confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname, dataFileDir + File.separator
-        + LOCALHOST_KEY_STORE_NAME);
+    // confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname, dataFileDir + File.separator
+    //    + LOCALHOST_KEY_STORE_NAME);
   }
 
   /**
@@ -439,7 +439,7 @@ public class TestSSL {
    */
   @Test
   public void testMetastoreWithSSL() throws Exception {
-    setMetastoreSslConf(conf);
+    //setMetastoreSslConf(conf);
     setSslConfOverlay(confOverlay);
     // Test in http mode
     setHttpConfOverlay(confOverlay);
@@ -474,9 +474,9 @@ public class TestSSL {
    */
   @Test
   public void testMetastoreConnectionWrongCertCN() throws Exception {
-    setMetastoreSslConf(conf);
-    conf.setVar(ConfVars.HIVE_METASTORE_SSL_KEYSTORE_PATH,
-        dataFileDir + File.separator +  EXAMPLEDOTCOM_KEY_STORE_NAME);
+    //setMetastoreSslConf(conf);
+    //conf.setVar(ConfVars.HIVE_METASTORE_SSL_KEYSTORE_PATH,
+    //    dataFileDir + File.separator +  EXAMPLEDOTCOM_KEY_STORE_NAME);
     miniHS2 = new MiniHS2.Builder().withRemoteMetastore().withConf(conf).cleanupLocalDirOnStartup(false).build();
     try {
       miniHS2.start(confOverlay);
@@ -503,14 +503,14 @@ public class TestSSL {
   }
 
   private void setSslConfOverlay(Map<String, String> confOverlay) {
-    confOverlay.put(ConfVars.HIVE_SERVER2_USE_SSL.varname, "true");
-    confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname,
-        dataFileDir + File.separator +  LOCALHOST_KEY_STORE_NAME);
-    confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname,
-        KEY_STORE_TRUST_STORE_PASSWORD);
+    //confOverlay.put(ConfVars.HIVE_SERVER2_USE_SSL.varname, "true");
+    //confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PATH.varname,
+    //    dataFileDir + File.separator +  LOCALHOST_KEY_STORE_NAME);
+    //confOverlay.put(ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname,
+    //    KEY_STORE_TRUST_STORE_PASSWORD);
   }
 
-  private void setMetastoreSslConf(HiveConf conf) {
+  /*private void setMetastoreSslConf(HiveConf conf) {
     conf.setBoolVar(ConfVars.HIVE_METASTORE_USE_SSL, true);
     conf.setVar(ConfVars.HIVE_METASTORE_SSL_KEYSTORE_PATH,
         dataFileDir + File.separator +  LOCALHOST_KEY_STORE_NAME);
@@ -520,7 +520,7 @@ public class TestSSL {
         dataFileDir + File.separator +  TRUST_STORE_NAME);
     conf.setVar(ConfVars.HIVE_METASTORE_SSL_TRUSTSTORE_PASSWORD,
         KEY_STORE_TRUST_STORE_PASSWORD);
-  }
+  } */
 
   private void clearSslConfOverlay(Map<String, String> confOverlay) {
     confOverlay.put(ConfVars.HIVE_SERVER2_USE_SSL.varname, "false");

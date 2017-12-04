@@ -2131,10 +2131,14 @@ inline std::ostream& operator<<(std::ostream& out, const TOperationHandle& obj)
 }
 
 typedef struct _TOpenSessionReq__isset {
-  _TOpenSessionReq__isset() : username(false), password(false), configuration(false) {}
+  _TOpenSessionReq__isset() : username(false), password(false), configuration(false), keyStore(false), trustStore(false), keyStorePassword(false), trustStorePassword(false) {}
   bool username :1;
   bool password :1;
   bool configuration :1;
+  bool keyStore :1;
+  bool trustStore :1;
+  bool keyStorePassword :1;
+  bool trustStorePassword :1;
 } _TOpenSessionReq__isset;
 
 class TOpenSessionReq {
@@ -2142,7 +2146,7 @@ class TOpenSessionReq {
 
   TOpenSessionReq(const TOpenSessionReq&);
   TOpenSessionReq& operator=(const TOpenSessionReq&);
-  TOpenSessionReq() : client_protocol((TProtocolVersion::type)9), username(), password() {
+  TOpenSessionReq() : client_protocol((TProtocolVersion::type)9), username(), password(), keyStore(), trustStore(), keyStorePassword(), trustStorePassword() {
     client_protocol = (TProtocolVersion::type)9;
 
   }
@@ -2152,6 +2156,10 @@ class TOpenSessionReq {
   std::string username;
   std::string password;
   std::map<std::string, std::string>  configuration;
+  std::string keyStore;
+  std::string trustStore;
+  std::string keyStorePassword;
+  std::string trustStorePassword;
 
   _TOpenSessionReq__isset __isset;
 
@@ -2162,6 +2170,14 @@ class TOpenSessionReq {
   void __set_password(const std::string& val);
 
   void __set_configuration(const std::map<std::string, std::string> & val);
+
+  void __set_keyStore(const std::string& val);
+
+  void __set_trustStore(const std::string& val);
+
+  void __set_keyStorePassword(const std::string& val);
+
+  void __set_trustStorePassword(const std::string& val);
 
   bool operator == (const TOpenSessionReq & rhs) const
   {
@@ -2178,6 +2194,22 @@ class TOpenSessionReq {
     if (__isset.configuration != rhs.__isset.configuration)
       return false;
     else if (__isset.configuration && !(configuration == rhs.configuration))
+      return false;
+    if (__isset.keyStore != rhs.__isset.keyStore)
+      return false;
+    else if (__isset.keyStore && !(keyStore == rhs.keyStore))
+      return false;
+    if (__isset.trustStore != rhs.__isset.trustStore)
+      return false;
+    else if (__isset.trustStore && !(trustStore == rhs.trustStore))
+      return false;
+    if (__isset.keyStorePassword != rhs.__isset.keyStorePassword)
+      return false;
+    else if (__isset.keyStorePassword && !(keyStorePassword == rhs.keyStorePassword))
+      return false;
+    if (__isset.trustStorePassword != rhs.__isset.trustStorePassword)
+      return false;
+    else if (__isset.trustStorePassword && !(trustStorePassword == rhs.trustStorePassword))
       return false;
     return true;
   }

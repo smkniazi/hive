@@ -19,7 +19,7 @@
   <parent>
     <groupId>io.hops.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.3.0.1</version>
+    <version>2.3.0.2-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -50,8 +50,8 @@
       <groupId>io.hops</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
-         <exclusions>
-              <exclusion>
+      <exclusions>
+         <exclusion>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
           </exclusion>
@@ -74,24 +74,12 @@
     <dependency>
       <groupId>org.apache.curator</groupId>
       <artifactId>curator-framework</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
       <artifactId>zookeeper</artifactId>
       <version>${zookeeper.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+   </dependency>
   </dependencies>
 
   <build>

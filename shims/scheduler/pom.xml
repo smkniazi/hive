@@ -19,7 +19,7 @@
   <parent>
     <groupId>io.hops.hive</groupId>
     <artifactId>hive</artifactId>
-    <version>2.3.0.1</version>
+    <version>2.3.0.2-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -39,12 +39,6 @@
       <groupId>io.hops.hive.shims</groupId>
       <artifactId>hive-shims-common</artifactId>
       <version>${project.version}</version>
-       <exclusions>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- inter-project -->
     <dependency>

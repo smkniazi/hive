@@ -66,7 +66,6 @@ public class TestSetProcessor {
     runSetProcessor("");
     String output = baos.toString();
     Assert.assertFalse(output.contains(HiveConf.ConfVars.METASTOREPWD.varname + "="));
-    Assert.assertFalse(output.contains(HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname + "="));
   }
 
   @Test

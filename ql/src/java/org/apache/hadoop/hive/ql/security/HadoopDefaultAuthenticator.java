@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.security;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,9 +62,8 @@ public class HadoopDefaultAuthenticator implements HiveAuthenticationProvider {
     }
 
     this.userName = ugi.getShortUserName();
-    if (ugi.getGroupNames() != null) {
-      this.groupNames = Arrays.asList(ugi.getGroupNames());
-    }
+    // In Hops the user groups mapping is known only to the Namenode
+    this.groupNames = new ArrayList<>();
   }
 
   @Override

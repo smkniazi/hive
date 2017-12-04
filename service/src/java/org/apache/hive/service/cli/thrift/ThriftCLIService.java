@@ -23,6 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +36,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.ServerUtils;
 import org.apache.hadoop.hive.common.log.ProgressMonitor;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -42,6 +44,7 @@ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.shims.HadoopShims.KerberosNameShim;
 import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hive.service.AbstractService;
 import org.apache.hive.service.ServiceException;
 import org.apache.hive.service.ServiceUtils;
@@ -138,13 +141,14 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
   private static final TStatus OK_STATUS = new TStatus(TStatusCode.SUCCESS_STATUS);
   protected static HiveAuthFactory hiveAuthFactory;
 
-  protected boolean twoWaySSL = false;
+  protected boolean tls = false;
+  // HopsTLS with certificate basead authentication
+  protected boolean hops2WayTLS = false;
+
   protected int portNum;
-  protected int portNum2WaySSL;
   protected InetAddress serverIPAddress;
   protected String hiveHost;
   protected TServer server;
-  protected TServer server2WaySSL;
   protected org.eclipse.jetty.server.Server httpServer;
 
   private boolean isStarted = false;
@@ -209,19 +213,19 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       workerKeepAliveTime =
           hiveConf.getTimeVar(ConfVars.HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME, TimeUnit.SECONDS);
 
-      portString = twoWaySSL ? System.getenv("HIVE_SERVER2_THRIFT_PORT_SSL") : System.getenv("HIVE_SERVER2_THRIFT_PORT");
+      portString = tls ? System.getenv("HIVE_SERVER2_THRIFT_PORT_SSL") : System.getenv("HIVE_SERVER2_THRIFT_PORT");
       if (portString != null) {
         portNum = Integer.parseInt(portString);
       } else {
-        portNum = twoWaySSL ? hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT_2WSSL) :
+        portNum = hops2WayTLS ? hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT_2WSSL) :
             hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_PORT);
       }
     }
     minWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MIN_WORKER_THREADS);
     maxWorkerThreads = hiveConf.getIntVar(ConfVars.HIVE_SERVER2_THRIFT_MAX_WORKER_THREADS);
 
-    if (hiveConf.getVar(
-        ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS")){
+    if (hiveConf.getVar(ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("HOPS") ||
+         hiveConf.getVar(ConfVars.HIVE_SERVER2_AUTHENTICATION).equalsIgnoreCase("EXTERNALS")){
         httpClient = new OkHttpClient();
         hopsworksEndpoint = cliService.getHiveConf().getVar(HiveConf.ConfVars.HOPSWORKS_ENDPOINT) + "/hopsworks-api/api";
     }
@@ -244,10 +248,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
         server.stop();
         LOG.info("Thrift server has stopped");
       }
-      if (server2WaySSL != null) {
-        server2WaySSL.stop();
-        LOG.info("Thrift 2 Way SSL server has stopped");
-      }
+
       if((httpServer != null) && httpServer.isStarted()) {
         try {
           httpServer.stop();
@@ -553,7 +554,7 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
    * @throws IOException
    */
   SessionHandle getSessionHandle(TOpenSessionReq req, TOpenSessionResp res)
-      throws HiveSQLException, LoginException, IOException {
+      throws HiveSQLException, LoginException, IOException, InterruptedException {
 
     TProtocolVersion protocol = getMinVersion(CLIService.SERVER_VERSION,
         req.getClient_protocol());
@@ -562,14 +563,30 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
     SessionHandle sessionHandle;
     String ipAddress = getIpAddress();
 
-    String userName = getUserName(req);
+    String username = getUserName(req);
+
+    // If HOPS TLS is enabled, we need the user certificates to launch jobs and do dfs operations
+    // The user is supposed to send this certificates as part of the OpenSession request.
+    // TODO(Fabio) figure out a way to handle clients which don't send the certificate. (HOPS auth)
+    if (hiveConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      if (!req.isSetTrustStore() || !req.isSetKeyStore() ||
+          !req.isSetKeyStorePassword() || !req.isSetTrustStorePassword()) {
+        throw new LoginException("Certificates not provided");
+      }
+      CertificateLocalizationCtx.getInstance().
+          getCertificateLocalization().materializeCertificates(username, username,
+          ByteBuffer.wrap(req.getKeyStore()), req.getKeyStorePassword(),
+          ByteBuffer.wrap(req.getTrustStore()), req.getTrustStorePassword());
+    }
+
     if (cliService.getHiveConf().getBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS) &&
-        (userName != null)) {
-      String delegationTokenStr = getDelegationToken(userName);
-      sessionHandle = cliService.openSessionWithImpersonation(protocol, userName,
+        (username != null)) {
+      String delegationTokenStr = getDelegationToken(username);
+      sessionHandle = cliService.openSessionWithImpersonation(protocol, username,
           req.getPassword(), ipAddress, req.getConfiguration(), delegationTokenStr);
     } else {
-      sessionHandle = cliService.openSession(protocol, userName, req.getPassword(),
+      sessionHandle = cliService.openSession(protocol, username, req.getPassword(),
           ipAddress, req.getConfiguration());
     }
     return sessionHandle;

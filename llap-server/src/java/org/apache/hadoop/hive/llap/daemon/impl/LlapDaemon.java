@@ -14,6 +14,8 @@
 
 package org.apache.hadoop.hive.llap.daemon.impl;
 
+import io.hops.security.HopsUtil;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.llap.LlapOutputFormatService;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -69,10 +71,12 @@ import org.apache.hadoop.metrics2.util.MBeans;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hadoop.service.CompositeService;
 import org.apache.hadoop.util.ExitUtil;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
+import org.apache.hadoop.yarn.server.security.CertificateLocalizationService;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hive.common.util.ShutdownHookManager;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -300,6 +304,22 @@ public class LlapDaemon extends CompositeService implements ContainerRunner, Lla
     // AMReporter after the server so that it gets the correct address. It knows how to deal with
     // requests before it is started.
     addIfService(amReporter);
+
+    // If HopsTLS is enabled, start the CertificateLocalizationService
+    if (daemonConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      try {
+        // Generate the ssl-server.xml configuration file with the client specific information
+        HopsUtil.generateContainerSSLServerConfiguration(daemonConf);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+
+      CertificateLocalizationService certificateLocalizationService =
+          new CertificateLocalizationService(CertificateLocalizationService.ServiceType.LLAP);
+      CertificateLocalizationCtx.getInstance().setCertificateLocalization(certificateLocalizationService);
+      addIfService(certificateLocalizationService);
+    }
   }
 
   private static long determineXmxHeadroom(

@@ -31,36 +31,21 @@
 <!-- users do not have to edit hadoop configuration files (that may be managed as a centralized -->
 <!-- resource).                                                                                 -->
 
-<!-- Hive Execution Parameters -->
-<property>
-  <name>hadoop.tmp.dir</name>
-  <value>${test.tmp.dir}/hadoop-tmp</value>
-  <description>A base for other temporary directories.</description>
-</property>
-
-<!--
-<property>
-  <name>hive.exec.reducers.max</name>
-  <value>1</value>
-  <description>maximum number of reducers</description>
-</property>
--->
-
 <property>
   <name>hive.exec.scratchdir</name>
-  <value>${test.tmp.dir}/scratchdir</value>
+  <value>hdfs://10.0.2.15:8020/tmp/scratchdir</value>
   <description>Scratch space for Hive jobs</description>
 </property>
 
 <property>
   <name>hive.exec.local.scratchdir</name>
-  <value>${test.tmp.dir}/localscratchdir/</value>
+  <value>/tmp/hive_tests/localscratchdir</value>
   <description>Local scratch space for Hive jobs</description>
 </property>
 
 <property>
   <name>datanucleus.schema.autoCreateAll</name>
-  <value>true</value>
+  <value>false</value>
 </property>
 
 <property>
@@ -70,42 +55,39 @@
 
 <property>
   <name>javax.jdo.option.ConnectionURL</name>
-  <value>jdbc:derby:memory:${test.tmp.dir}/junit_metastore_db;create=true</value>
+  <value>jdbc:mysql://10.0.2.15:3306/hive_tests</value>
 </property>
 
 <property>
   <name>javax.jdo.option.ConnectionDriverName</name>
-  <value>org.apache.derby.jdbc.EmbeddedDriver</value>
+  <value>com.mysql.jdbc.Driver</value>
 </property>
 
 <property>
   <name>javax.jdo.option.ConnectionUserName</name>
-  <value>APP</value>
+  <value>hive</value>
 </property>
 
 <property>
   <name>javax.jdo.option.ConnectionPassword</name>
-  <value>mine</value>
+  <value>hive</value>
 </property>
 
 <property>
   <!--  this should eventually be deprecated since the metastore should supply this -->
   <name>hive.metastore.warehouse.dir</name>
-  <value>${test.warehouse.dir}</value>
+  <value>hdfs://10.0.2.15:8020/user/vagrant/wh_tests</value>
   <description></description>
 </property>
 
 <property>
-  <name>hive.metastore.metadb.dir</name>
-  <value>file://${test.tmp.dir}/metadb/</value>
-  <description>
-  Required by metastore server or if the uris argument below is not supplied
-  </description>
+  <name>hops.db.ConnectionURL</name>
+  <value>jdbc:mysql://10.0.2.15:3306/hops</value>
 </property>
 
 <property>
   <name>test.log.dir</name>
-  <value>${test.tmp.dir}/log/</value>
+  <value>/tmp/hive_tests/log/</value>
   <description></description>
 </property>
 
@@ -135,7 +117,7 @@
 
 <property>
   <name>hive.querylog.location</name>
-  <value>${test.tmp.dir}/tmp</value>
+  <value>/tmp/hive_tests</value>
   <description>Location of the structured hive logs</description>
 </property>
 
@@ -266,33 +248,6 @@
 </property>
 
 <property>
-  <name>hive.security.authorization.manager</name>
-  <value>org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactoryForTest</value>
-  <description>The Hive client authorization manager class name.</description>
-</property>
-
-<property>
-  <name>hive.llap.io.cache.orc.size</name>
-  <value>8388608</value>
-</property>
-
-<property>
-  <name>hive.llap.io.cache.orc.arena.size</name>
-  <value>8388608</value>
-</property>
-
-<property>
-  <name>hive.llap.io.cache.orc.alloc.max</name>
-  <value>2097152</value>
-</property>
-
-
-<property>
-  <name>hive.llap.io.cache.orc.alloc.min</name>
-  <value>32768</value>
-</property>
-
-<property>
   <name>hive.llap.cache.allow.synthetic.fileid</name>
   <value>true</value>
 </property>
@@ -301,7 +256,6 @@
   <name>hive.llap.io.use.lrfu</name>
   <value>true</value>
 </property>
-
 
 <property>
   <name>hive.llap.io.allocator.direct</name>

@@ -136,7 +136,7 @@ public class TUGIBasedProcessor<I extends Iface> extends TSetIpAddressProcessor<
     }
   }
 
-  private void handleSetUGI(TUGIContainingTransport ugiTrans,
+  protected void handleSetUGI(TUGIContainingTransport ugiTrans,
       set_ugi<Iface> fn, TMessage msg, TProtocol iprot, TProtocol oprot)
       throws TException, SecurityException, NoSuchMethodException, IllegalArgumentException,
       IllegalAccessException, InvocationTargetException{

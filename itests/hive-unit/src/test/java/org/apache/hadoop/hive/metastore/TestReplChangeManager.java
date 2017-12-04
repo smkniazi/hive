@@ -59,10 +59,10 @@ public class TestReplChangeManager {
   public static void setUp() throws Exception {
     m_dfs = new MiniDFSCluster.Builder(new Configuration()).numDataNodes(1).format(true).build();
     hiveConf = new HiveConf(TestReplChangeManager.class);
-    hiveConf.set(HiveConf.ConfVars.METASTOREWAREHOUSE.varname,
-        "hdfs://" + m_dfs.getNameNode().getHostAndPort() + HiveConf.ConfVars.METASTOREWAREHOUSE.defaultStrVal);
+    //hiveConf.set(HiveConf.ConfVars.METASTOREWAREHOUSE.varname,
+    //    "hdfs://" + m_dfs.getNameNode().getHostAndPort() + HiveConf.ConfVars.METASTOREWAREHOUSE.defaultStrVal);
     hiveConf.setBoolean(HiveConf.ConfVars.REPLCMENABLED.varname, true);
-    cmroot = "hdfs://" + m_dfs.getNameNode().getHostAndPort() + "/cmroot";
+    //cmroot = "hdfs://" + m_dfs.getNameNode().getHostAndPort() + "/cmroot";
     hiveConf.set(HiveConf.ConfVars.REPLCMDIR.varname, cmroot);
     hiveConf.setInt(CommonConfigurationKeysPublic.FS_TRASH_INTERVAL_KEY, 60);
     warehouse = new Warehouse(hiveConf);
