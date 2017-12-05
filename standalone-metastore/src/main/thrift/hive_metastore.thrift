@@ -1167,7 +1167,7 @@ struct WMValidateResourcePlanRequest {
 }
 
 struct WMValidateResourcePlanResponse {
-  1: optional bool isValid;
+  1: optional list<string> errors;
 }
 
 struct WMDropResourcePlanRequest {

@@ -4826,7 +4826,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
-  public boolean validateResourcePlan(String rpName) throws HiveException {
+  public List<String> validateResourcePlan(String rpName) throws HiveException {
     try {
       return getMSC().validateResourcePlan(rpName);
     } catch (Exception e) {
