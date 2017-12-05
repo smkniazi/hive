@@ -324,6 +324,7 @@
             <configuration>
               <sources>
                 <source>${project.build.directory}/generated-sources/java</source>
+                <source>${project.build.directory}/generated-jamon</source>
               </sources>
             </configuration>
           </execution>
