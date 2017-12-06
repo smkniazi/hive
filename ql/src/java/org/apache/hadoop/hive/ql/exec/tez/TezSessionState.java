@@ -37,7 +37,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.security.auth.login.LoginException;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -61,7 +60,7 @@ import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.session.KillQuery;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
-import org.apache.hadoop.hive.ql.wm.TriggerContext;
+import org.apache.hadoop.hive.ql.wm.WmContext;
 import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.mapred.JobContext;
 import org.apache.hadoop.security.Credentials;
@@ -84,6 +83,9 @@ import org.apache.tez.serviceplugins.api.ContainerLauncherDescriptor;
 import org.apache.tez.serviceplugins.api.ServicePluginsDescriptor;
 import org.apache.tez.serviceplugins.api.TaskCommunicatorDescriptor;
 import org.apache.tez.serviceplugins.api.TaskSchedulerDescriptor;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.ql.exec.tez.monitoring.TezJobMonitor;
@@ -94,6 +96,7 @@ import com.google.common.cache.CacheBuilder;
 /**
  * Holds session state related to Tez
  */
+@JsonSerialize
 public class TezSessionState {
 
   protected static final Logger LOG = LoggerFactory.getLogger(TezSessionState.class.getName());
@@ -110,20 +113,24 @@ public class TezSessionState {
   private Future<TezClient> sessionFuture;
   /** Console used for user feedback during async session opening. */
   private LogHelper console;
+  @JsonProperty("sessionId")
   private String sessionId;
   private final DagUtils utils;
+  @JsonProperty("queueName")
   private String queueName;
+  @JsonProperty("defaultQueue")
   private boolean defaultQueue = false;
+  @JsonProperty("user")
   private String user;
 
   private AtomicReference<String> ownerThread = new AtomicReference<>(null);
 
   private final Set<String> additionalFilesNotFromConf = new HashSet<String>();
-  private final Map<String, LocalResource> localizedResources = new HashMap<>();
-
+  private final Set<LocalResource> localizedResources = new HashSet<LocalResource>();
+  @JsonProperty("doAsEnabled")
   private boolean doAsEnabled;
   private boolean isLegacyLlapMode;
-  private TriggerContext triggerContext;
+  private WmContext wmContext;
   private KillQuery killQuery;
 
   private static final Cache<String, String> shaCache = CacheBuilder.newBuilder().maximumSize(100).build();
@@ -854,12 +861,12 @@ public class TezSessionState {
     TezSessionPoolManager.getInstance().destroy(this);
   }
 
-  public TriggerContext getTriggerContext() {
-    return triggerContext;
+  public WmContext getWmContext() {
+    return wmContext;
   }
 
-  public void setTriggerContext(final TriggerContext triggerContext) {
-    this.triggerContext = triggerContext;
+  public void setWmContext(final WmContext wmContext) {
+    this.wmContext = wmContext;
   }
 
   public void setKillQuery(final KillQuery killQuery) {
