@@ -3567,7 +3567,7 @@ public class ObjectStore implements RawStore, Configurable {
       LOG.debug("filter specified is {}, JDOQL filter is {}", filter, queryFilterString);
       if (LOG.isDebugEnabled()) {
         for (Entry<String, Object> entry : params.entrySet()) {
-          LOG.debug("key: {} value: {} class: {}", entry.getKey(), entry.getValue(), 
+          LOG.debug("key: {} value: {} class: {}", entry.getKey(), entry.getValue(),
              entry.getValue().getClass().getName());
         }
       }
@@ -7727,7 +7727,7 @@ public class ObjectStore implements RawStore, Configurable {
   private List<MTableColumnStatistics> getMTableColumnStatistics(Table table, List<String> colNames, QueryWrapper queryWrapper)
       throws MetaException {
     if (colNames == null || colNames.isEmpty()) {
-      return null;
+      return Collections.emptyList();
     }
 
     boolean committed = false;
