@@ -111,7 +111,7 @@
     </dependency>
     <dependency>
       <groupId>io.hops.hive</groupId>
-      <artifactId>hive-metastore</artifactId>
+      <artifactId>hive-standalone-metastore</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
     </dependency>

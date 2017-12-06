@@ -193,7 +193,7 @@ public class HiveServer2 extends CompositeService {
 
     addServices(thriftCLIServices);
     super.init(hiveConf);
-    // Set host name in hiveConf
+    // Set host name in conf
     try {
       hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST.varname, getServerHost().get(0));
     } catch (Throwable t) {
