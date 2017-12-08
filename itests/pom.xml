@@ -49,6 +49,7 @@
    <module>hive-unit</module>
    <module>hive-unit-hadoop2</module>
    <module>hive-minikdc</module>
+   <module>qtest-druid</module>
   </modules>
 
   <profiles>
