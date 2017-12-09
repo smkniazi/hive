@@ -35,6 +35,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.PartitionDropOptions;
 import org.apache.hadoop.hive.metastore.Warehouse;
+import org.apache.hadoop.hive.metastore.api.BasicTxnInfo;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Index;
@@ -169,6 +170,10 @@ public class TestHive extends TestCase {
       tbl.setSerializationLib(LazySimpleSerDe.class.getName());
       tbl.setStoredAsSubDirectories(false);
 
+      tbl.setRewriteEnabled(false);
+
+      tbl.setCreationMetadata(new HashMap<String, BasicTxnInfo>());
+
       // create table
       setNullCreateTableGrants();
       try {
@@ -227,6 +232,10 @@ public class TestHive extends TestCase {
       tbl.setSerdeParam(serdeConstants.SERIALIZATION_FORMAT, TBinaryProtocol.class
           .getName());
       tbl.setStoredAsSubDirectories(false);
+
+      tbl.setRewriteEnabled(false);
+
+      tbl.setCreationMetadata(new HashMap<String, BasicTxnInfo>());
 
       setNullCreateTableGrants();
       try {

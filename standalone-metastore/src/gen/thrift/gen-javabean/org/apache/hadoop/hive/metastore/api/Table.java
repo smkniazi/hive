@@ -52,8 +52,8 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
   private static final org.apache.thrift.protocol.TField TABLE_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("tableType", org.apache.thrift.protocol.TType.STRING, (short)12);
   private static final org.apache.thrift.protocol.TField PRIVILEGES_FIELD_DESC = new org.apache.thrift.protocol.TField("privileges", org.apache.thrift.protocol.TType.STRUCT, (short)13);
   private static final org.apache.thrift.protocol.TField TEMPORARY_FIELD_DESC = new org.apache.thrift.protocol.TField("temporary", org.apache.thrift.protocol.TType.BOOL, (short)14);
-  private static final org.apache.thrift.protocol.TField MM_NEXT_WRITE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("mmNextWriteId", org.apache.thrift.protocol.TType.I64, (short)15);
-  private static final org.apache.thrift.protocol.TField MM_WATERMARK_WRITE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("mmWatermarkWriteId", org.apache.thrift.protocol.TType.I64, (short)16);
+  private static final org.apache.thrift.protocol.TField REWRITE_ENABLED_FIELD_DESC = new org.apache.thrift.protocol.TField("rewriteEnabled", org.apache.thrift.protocol.TType.BOOL, (short)15);
+  private static final org.apache.thrift.protocol.TField CREATION_METADATA_FIELD_DESC = new org.apache.thrift.protocol.TField("creationMetadata", org.apache.thrift.protocol.TType.MAP, (short)16);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -75,8 +75,8 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
   private String tableType; // required
   private PrincipalPrivilegeSet privileges; // optional
   private boolean temporary; // optional
-  private long mmNextWriteId; // optional
-  private long mmWatermarkWriteId; // optional
+  private boolean rewriteEnabled; // optional
+  private Map<String,BasicTxnInfo> creationMetadata; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -94,8 +94,8 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
     TABLE_TYPE((short)12, "tableType"),
     PRIVILEGES((short)13, "privileges"),
     TEMPORARY((short)14, "temporary"),
-    MM_NEXT_WRITE_ID((short)15, "mmNextWriteId"),
-    MM_WATERMARK_WRITE_ID((short)16, "mmWatermarkWriteId");
+    REWRITE_ENABLED((short)15, "rewriteEnabled"),
+    CREATION_METADATA((short)16, "creationMetadata");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -138,10 +138,10 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
           return PRIVILEGES;
         case 14: // TEMPORARY
           return TEMPORARY;
-        case 15: // MM_NEXT_WRITE_ID
-          return MM_NEXT_WRITE_ID;
-        case 16: // MM_WATERMARK_WRITE_ID
-          return MM_WATERMARK_WRITE_ID;
+        case 15: // REWRITE_ENABLED
+          return REWRITE_ENABLED;
+        case 16: // CREATION_METADATA
+          return CREATION_METADATA;
         default:
           return null;
       }
@@ -186,10 +186,9 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
   private static final int __LASTACCESSTIME_ISSET_ID = 1;
   private static final int __RETENTION_ISSET_ID = 2;
   private static final int __TEMPORARY_ISSET_ID = 3;
-  private static final int __MMNEXTWRITEID_ISSET_ID = 4;
-  private static final int __MMWATERMARKWRITEID_ISSET_ID = 5;
+  private static final int __REWRITEENABLED_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.PRIVILEGES,_Fields.TEMPORARY,_Fields.MM_NEXT_WRITE_ID,_Fields.MM_WATERMARK_WRITE_ID};
+  private static final _Fields optionals[] = {_Fields.PRIVILEGES,_Fields.TEMPORARY,_Fields.REWRITE_ENABLED,_Fields.CREATION_METADATA};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -224,10 +223,12 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, PrincipalPrivilegeSet.class)));
     tmpMap.put(_Fields.TEMPORARY, new org.apache.thrift.meta_data.FieldMetaData("temporary", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-    tmpMap.put(_Fields.MM_NEXT_WRITE_ID, new org.apache.thrift.meta_data.FieldMetaData("mmNextWriteId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
-    tmpMap.put(_Fields.MM_WATERMARK_WRITE_ID, new org.apache.thrift.meta_data.FieldMetaData("mmWatermarkWriteId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+    tmpMap.put(_Fields.REWRITE_ENABLED, new org.apache.thrift.meta_data.FieldMetaData("rewriteEnabled", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+    tmpMap.put(_Fields.CREATION_METADATA, new org.apache.thrift.meta_data.FieldMetaData("creationMetadata", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT            , "BasicTxnInfo"))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Table.class, metaDataMap);
   }
@@ -313,8 +314,22 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       this.privileges = new PrincipalPrivilegeSet(other.privileges);
     }
     this.temporary = other.temporary;
-    this.mmNextWriteId = other.mmNextWriteId;
-    this.mmWatermarkWriteId = other.mmWatermarkWriteId;
+    this.rewriteEnabled = other.rewriteEnabled;
+    if (other.isSetCreationMetadata()) {
+      Map<String,BasicTxnInfo> __this__creationMetadata = new HashMap<String,BasicTxnInfo>(other.creationMetadata.size());
+      for (Map.Entry<String, BasicTxnInfo> other_element : other.creationMetadata.entrySet()) {
+
+        String other_element_key = other_element.getKey();
+        BasicTxnInfo other_element_value = other_element.getValue();
+
+        String __this__creationMetadata_copy_key = other_element_key;
+
+        BasicTxnInfo __this__creationMetadata_copy_value = other_element_value;
+
+        __this__creationMetadata.put(__this__creationMetadata_copy_key, __this__creationMetadata_copy_value);
+      }
+      this.creationMetadata = __this__creationMetadata;
+    }
   }
 
   public Table deepCopy() {
@@ -341,10 +356,9 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
     this.privileges = null;
     this.temporary = false;
 
-    setMmNextWriteIdIsSet(false);
-    this.mmNextWriteId = 0;
-    setMmWatermarkWriteIdIsSet(false);
-    this.mmWatermarkWriteId = 0;
+    setRewriteEnabledIsSet(false);
+    this.rewriteEnabled = false;
+    this.creationMetadata = null;
   }
 
   public String getTableName() {
@@ -691,48 +705,60 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __TEMPORARY_ISSET_ID, value);
   }
 
-  public long getMmNextWriteId() {
-    return this.mmNextWriteId;
+  public boolean isRewriteEnabled() {
+    return this.rewriteEnabled;
   }
 
-  public void setMmNextWriteId(long mmNextWriteId) {
-    this.mmNextWriteId = mmNextWriteId;
-    setMmNextWriteIdIsSet(true);
+  public void setRewriteEnabled(boolean rewriteEnabled) {
+    this.rewriteEnabled = rewriteEnabled;
+    setRewriteEnabledIsSet(true);
   }
 
-  public void unsetMmNextWriteId() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __MMNEXTWRITEID_ISSET_ID);
+  public void unsetRewriteEnabled() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __REWRITEENABLED_ISSET_ID);
   }
 
-  /** Returns true if field mmNextWriteId is set (has been assigned a value) and false otherwise */
-  public boolean isSetMmNextWriteId() {
-    return EncodingUtils.testBit(__isset_bitfield, __MMNEXTWRITEID_ISSET_ID);
+  /** Returns true if field rewriteEnabled is set (has been assigned a value) and false otherwise */
+  public boolean isSetRewriteEnabled() {
+    return EncodingUtils.testBit(__isset_bitfield, __REWRITEENABLED_ISSET_ID);
   }
 
-  public void setMmNextWriteIdIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __MMNEXTWRITEID_ISSET_ID, value);
+  public void setRewriteEnabledIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __REWRITEENABLED_ISSET_ID, value);
   }
 
-  public long getMmWatermarkWriteId() {
-    return this.mmWatermarkWriteId;
+  public int getCreationMetadataSize() {
+    return (this.creationMetadata == null) ? 0 : this.creationMetadata.size();
   }
 
-  public void setMmWatermarkWriteId(long mmWatermarkWriteId) {
-    this.mmWatermarkWriteId = mmWatermarkWriteId;
-    setMmWatermarkWriteIdIsSet(true);
+  public void putToCreationMetadata(String key, BasicTxnInfo val) {
+    if (this.creationMetadata == null) {
+      this.creationMetadata = new HashMap<String,BasicTxnInfo>();
+    }
+    this.creationMetadata.put(key, val);
   }
 
-  public void unsetMmWatermarkWriteId() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __MMWATERMARKWRITEID_ISSET_ID);
+  public Map<String,BasicTxnInfo> getCreationMetadata() {
+    return this.creationMetadata;
   }
 
-  /** Returns true if field mmWatermarkWriteId is set (has been assigned a value) and false otherwise */
-  public boolean isSetMmWatermarkWriteId() {
-    return EncodingUtils.testBit(__isset_bitfield, __MMWATERMARKWRITEID_ISSET_ID);
+  public void setCreationMetadata(Map<String,BasicTxnInfo> creationMetadata) {
+    this.creationMetadata = creationMetadata;
   }
 
-  public void setMmWatermarkWriteIdIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __MMWATERMARKWRITEID_ISSET_ID, value);
+  public void unsetCreationMetadata() {
+    this.creationMetadata = null;
+  }
+
+  /** Returns true if field creationMetadata is set (has been assigned a value) and false otherwise */
+  public boolean isSetCreationMetadata() {
+    return this.creationMetadata != null;
+  }
+
+  public void setCreationMetadataIsSet(boolean value) {
+    if (!value) {
+      this.creationMetadata = null;
+    }
   }
 
   public void setFieldValue(_Fields field, Object value) {
@@ -849,19 +875,19 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       }
       break;
 
-    case MM_NEXT_WRITE_ID:
+    case REWRITE_ENABLED:
       if (value == null) {
-        unsetMmNextWriteId();
+        unsetRewriteEnabled();
       } else {
-        setMmNextWriteId((Long)value);
+        setRewriteEnabled((Boolean)value);
       }
       break;
 
-    case MM_WATERMARK_WRITE_ID:
+    case CREATION_METADATA:
       if (value == null) {
-        unsetMmWatermarkWriteId();
+        unsetCreationMetadata();
       } else {
-        setMmWatermarkWriteId((Long)value);
+        setCreationMetadata((Map<String,BasicTxnInfo>)value);
       }
       break;
 
@@ -912,11 +938,11 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
     case TEMPORARY:
       return isTemporary();
 
-    case MM_NEXT_WRITE_ID:
-      return getMmNextWriteId();
+    case REWRITE_ENABLED:
+      return isRewriteEnabled();
 
-    case MM_WATERMARK_WRITE_ID:
-      return getMmWatermarkWriteId();
+    case CREATION_METADATA:
+      return getCreationMetadata();
 
     }
     throw new IllegalStateException();
@@ -957,10 +983,10 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       return isSetPrivileges();
     case TEMPORARY:
       return isSetTemporary();
-    case MM_NEXT_WRITE_ID:
-      return isSetMmNextWriteId();
-    case MM_WATERMARK_WRITE_ID:
-      return isSetMmWatermarkWriteId();
+    case REWRITE_ENABLED:
+      return isSetRewriteEnabled();
+    case CREATION_METADATA:
+      return isSetCreationMetadata();
     }
     throw new IllegalStateException();
   }
@@ -1104,21 +1130,21 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         return false;
     }
 
-    boolean this_present_mmNextWriteId = true && this.isSetMmNextWriteId();
-    boolean that_present_mmNextWriteId = true && that.isSetMmNextWriteId();
-    if (this_present_mmNextWriteId || that_present_mmNextWriteId) {
-      if (!(this_present_mmNextWriteId && that_present_mmNextWriteId))
+    boolean this_present_rewriteEnabled = true && this.isSetRewriteEnabled();
+    boolean that_present_rewriteEnabled = true && that.isSetRewriteEnabled();
+    if (this_present_rewriteEnabled || that_present_rewriteEnabled) {
+      if (!(this_present_rewriteEnabled && that_present_rewriteEnabled))
         return false;
-      if (this.mmNextWriteId != that.mmNextWriteId)
+      if (this.rewriteEnabled != that.rewriteEnabled)
         return false;
     }
 
-    boolean this_present_mmWatermarkWriteId = true && this.isSetMmWatermarkWriteId();
-    boolean that_present_mmWatermarkWriteId = true && that.isSetMmWatermarkWriteId();
-    if (this_present_mmWatermarkWriteId || that_present_mmWatermarkWriteId) {
-      if (!(this_present_mmWatermarkWriteId && that_present_mmWatermarkWriteId))
+    boolean this_present_creationMetadata = true && this.isSetCreationMetadata();
+    boolean that_present_creationMetadata = true && that.isSetCreationMetadata();
+    if (this_present_creationMetadata || that_present_creationMetadata) {
+      if (!(this_present_creationMetadata && that_present_creationMetadata))
         return false;
-      if (this.mmWatermarkWriteId != that.mmWatermarkWriteId)
+      if (!this.creationMetadata.equals(that.creationMetadata))
         return false;
     }
 
@@ -1199,15 +1225,15 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
     if (present_temporary)
       list.add(temporary);
 
-    boolean present_mmNextWriteId = true && (isSetMmNextWriteId());
-    list.add(present_mmNextWriteId);
-    if (present_mmNextWriteId)
-      list.add(mmNextWriteId);
+    boolean present_rewriteEnabled = true && (isSetRewriteEnabled());
+    list.add(present_rewriteEnabled);
+    if (present_rewriteEnabled)
+      list.add(rewriteEnabled);
 
-    boolean present_mmWatermarkWriteId = true && (isSetMmWatermarkWriteId());
-    list.add(present_mmWatermarkWriteId);
-    if (present_mmWatermarkWriteId)
-      list.add(mmWatermarkWriteId);
+    boolean present_creationMetadata = true && (isSetCreationMetadata());
+    list.add(present_creationMetadata);
+    if (present_creationMetadata)
+      list.add(creationMetadata);
 
     return list.hashCode();
   }
@@ -1360,22 +1386,22 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetMmNextWriteId()).compareTo(other.isSetMmNextWriteId());
+    lastComparison = Boolean.valueOf(isSetRewriteEnabled()).compareTo(other.isSetRewriteEnabled());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetMmNextWriteId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.mmNextWriteId, other.mmNextWriteId);
+    if (isSetRewriteEnabled()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.rewriteEnabled, other.rewriteEnabled);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetMmWatermarkWriteId()).compareTo(other.isSetMmWatermarkWriteId());
+    lastComparison = Boolean.valueOf(isSetCreationMetadata()).compareTo(other.isSetCreationMetadata());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetMmWatermarkWriteId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.mmWatermarkWriteId, other.mmWatermarkWriteId);
+    if (isSetCreationMetadata()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.creationMetadata, other.creationMetadata);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -1499,16 +1525,20 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       sb.append(this.temporary);
       first = false;
     }
-    if (isSetMmNextWriteId()) {
+    if (isSetRewriteEnabled()) {
       if (!first) sb.append(", ");
-      sb.append("mmNextWriteId:");
-      sb.append(this.mmNextWriteId);
+      sb.append("rewriteEnabled:");
+      sb.append(this.rewriteEnabled);
       first = false;
     }
-    if (isSetMmWatermarkWriteId()) {
+    if (isSetCreationMetadata()) {
       if (!first) sb.append(", ");
-      sb.append("mmWatermarkWriteId:");
-      sb.append(this.mmWatermarkWriteId);
+      sb.append("creationMetadata:");
+      if (this.creationMetadata == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.creationMetadata);
+      }
       first = false;
     }
     sb.append(")");
@@ -1699,18 +1729,31 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 15: // MM_NEXT_WRITE_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-              struct.mmNextWriteId = iprot.readI64();
-              struct.setMmNextWriteIdIsSet(true);
+          case 15: // REWRITE_ENABLED
+            if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+              struct.rewriteEnabled = iprot.readBool();
+              struct.setRewriteEnabledIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 16: // MM_WATERMARK_WRITE_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-              struct.mmWatermarkWriteId = iprot.readI64();
-              struct.setMmWatermarkWriteIdIsSet(true);
+          case 16: // CREATION_METADATA
+            if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
+              {
+                org.apache.thrift.protocol.TMap _map197 = iprot.readMapBegin();
+                struct.creationMetadata = new HashMap<String,BasicTxnInfo>(2*_map197.size);
+                String _key198;
+                BasicTxnInfo _val199;
+                for (int _i200 = 0; _i200 < _map197.size; ++_i200)
+                {
+                  _key198 = iprot.readString();
+                  _val199 = new BasicTxnInfo();
+                  _val199.read(iprot);
+                  struct.creationMetadata.put(_key198, _val199);
+                }
+                iprot.readMapEnd();
+              }
+              struct.setCreationMetadataIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1761,9 +1804,9 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         oprot.writeFieldBegin(PARTITION_KEYS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.partitionKeys.size()));
-          for (FieldSchema _iter197 : struct.partitionKeys)
+          for (FieldSchema _iter201 : struct.partitionKeys)
           {
-            _iter197.write(oprot);
+            _iter201.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -1773,10 +1816,10 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         oprot.writeFieldBegin(PARAMETERS_FIELD_DESC);
         {
           oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.parameters.size()));
-          for (Map.Entry<String, String> _iter198 : struct.parameters.entrySet())
+          for (Map.Entry<String, String> _iter202 : struct.parameters.entrySet())
           {
-            oprot.writeString(_iter198.getKey());
-            oprot.writeString(_iter198.getValue());
+            oprot.writeString(_iter202.getKey());
+            oprot.writeString(_iter202.getValue());
           }
           oprot.writeMapEnd();
         }
@@ -1809,15 +1852,25 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         oprot.writeBool(struct.temporary);
         oprot.writeFieldEnd();
       }
-      if (struct.isSetMmNextWriteId()) {
-        oprot.writeFieldBegin(MM_NEXT_WRITE_ID_FIELD_DESC);
-        oprot.writeI64(struct.mmNextWriteId);
+      if (struct.isSetRewriteEnabled()) {
+        oprot.writeFieldBegin(REWRITE_ENABLED_FIELD_DESC);
+        oprot.writeBool(struct.rewriteEnabled);
         oprot.writeFieldEnd();
       }
-      if (struct.isSetMmWatermarkWriteId()) {
-        oprot.writeFieldBegin(MM_WATERMARK_WRITE_ID_FIELD_DESC);
-        oprot.writeI64(struct.mmWatermarkWriteId);
-        oprot.writeFieldEnd();
+      if (struct.creationMetadata != null) {
+        if (struct.isSetCreationMetadata()) {
+          oprot.writeFieldBegin(CREATION_METADATA_FIELD_DESC);
+          {
+            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRUCT, struct.creationMetadata.size()));
+            for (Map.Entry<String, BasicTxnInfo> _iter203 : struct.creationMetadata.entrySet())
+            {
+              oprot.writeString(_iter203.getKey());
+              _iter203.getValue().write(oprot);
+            }
+            oprot.writeMapEnd();
+          }
+          oprot.writeFieldEnd();
+        }
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -1879,10 +1932,10 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       if (struct.isSetTemporary()) {
         optionals.set(13);
       }
-      if (struct.isSetMmNextWriteId()) {
+      if (struct.isSetRewriteEnabled()) {
         optionals.set(14);
       }
-      if (struct.isSetMmWatermarkWriteId()) {
+      if (struct.isSetCreationMetadata()) {
         optionals.set(15);
       }
       oprot.writeBitSet(optionals, 16);
@@ -1910,19 +1963,19 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       if (struct.isSetPartitionKeys()) {
         {
           oprot.writeI32(struct.partitionKeys.size());
-          for (FieldSchema _iter199 : struct.partitionKeys)
+          for (FieldSchema _iter204 : struct.partitionKeys)
           {
-            _iter199.write(oprot);
+            _iter204.write(oprot);
           }
         }
       }
       if (struct.isSetParameters()) {
         {
           oprot.writeI32(struct.parameters.size());
-          for (Map.Entry<String, String> _iter200 : struct.parameters.entrySet())
+          for (Map.Entry<String, String> _iter205 : struct.parameters.entrySet())
           {
-            oprot.writeString(_iter200.getKey());
-            oprot.writeString(_iter200.getValue());
+            oprot.writeString(_iter205.getKey());
+            oprot.writeString(_iter205.getValue());
           }
         }
       }
@@ -1941,11 +1994,18 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       if (struct.isSetTemporary()) {
         oprot.writeBool(struct.temporary);
       }
-      if (struct.isSetMmNextWriteId()) {
-        oprot.writeI64(struct.mmNextWriteId);
+      if (struct.isSetRewriteEnabled()) {
+        oprot.writeBool(struct.rewriteEnabled);
       }
-      if (struct.isSetMmWatermarkWriteId()) {
-        oprot.writeI64(struct.mmWatermarkWriteId);
+      if (struct.isSetCreationMetadata()) {
+        {
+          oprot.writeI32(struct.creationMetadata.size());
+          for (Map.Entry<String, BasicTxnInfo> _iter206 : struct.creationMetadata.entrySet())
+          {
+            oprot.writeString(_iter206.getKey());
+            _iter206.getValue().write(oprot);
+          }
+        }
       }
     }
 
@@ -1984,29 +2044,29 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
       }
       if (incoming.get(7)) {
         {
-          org.apache.thrift.protocol.TList _list201 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.partitionKeys = new ArrayList<FieldSchema>(_list201.size);
-          FieldSchema _elem202;
-          for (int _i203 = 0; _i203 < _list201.size; ++_i203)
+          org.apache.thrift.protocol.TList _list207 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.partitionKeys = new ArrayList<FieldSchema>(_list207.size);
+          FieldSchema _elem208;
+          for (int _i209 = 0; _i209 < _list207.size; ++_i209)
           {
-            _elem202 = new FieldSchema();
-            _elem202.read(iprot);
-            struct.partitionKeys.add(_elem202);
+            _elem208 = new FieldSchema();
+            _elem208.read(iprot);
+            struct.partitionKeys.add(_elem208);
           }
         }
         struct.setPartitionKeysIsSet(true);
       }
       if (incoming.get(8)) {
         {
-          org.apache.thrift.protocol.TMap _map204 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.parameters = new HashMap<String,String>(2*_map204.size);
-          String _key205;
-          String _val206;
-          for (int _i207 = 0; _i207 < _map204.size; ++_i207)
+          org.apache.thrift.protocol.TMap _map210 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.parameters = new HashMap<String,String>(2*_map210.size);
+          String _key211;
+          String _val212;
+          for (int _i213 = 0; _i213 < _map210.size; ++_i213)
           {
-            _key205 = iprot.readString();
-            _val206 = iprot.readString();
-            struct.parameters.put(_key205, _val206);
+            _key211 = iprot.readString();
+            _val212 = iprot.readString();
+            struct.parameters.put(_key211, _val212);
           }
         }
         struct.setParametersIsSet(true);
@@ -2033,12 +2093,24 @@ public class Table implements org.apache.thrift.TBase<Table, Table._Fields>, jav
         struct.setTemporaryIsSet(true);
       }
       if (incoming.get(14)) {
-        struct.mmNextWriteId = iprot.readI64();
-        struct.setMmNextWriteIdIsSet(true);
+        struct.rewriteEnabled = iprot.readBool();
+        struct.setRewriteEnabledIsSet(true);
       }
       if (incoming.get(15)) {
-        struct.mmWatermarkWriteId = iprot.readI64();
-        struct.setMmWatermarkWriteIdIsSet(true);
+        {
+          org.apache.thrift.protocol.TMap _map214 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.creationMetadata = new HashMap<String,BasicTxnInfo>(2*_map214.size);
+          String _key215;
+          BasicTxnInfo _val216;
+          for (int _i217 = 0; _i217 < _map214.size; ++_i217)
+          {
+            _key215 = iprot.readString();
+            _val216 = new BasicTxnInfo();
+            _val216.read(iprot);
+            struct.creationMetadata.put(_key215, _val216);
+          }
+        }
+        struct.setCreationMetadataIsSet(true);
       }
     }
   }

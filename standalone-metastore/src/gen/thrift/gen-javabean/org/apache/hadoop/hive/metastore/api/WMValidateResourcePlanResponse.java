@@ -343,13 +343,13 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
           case 1: // ERRORS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list786 = iprot.readListBegin();
-                struct.errors = new ArrayList<String>(_list786.size);
-                String _elem787;
-                for (int _i788 = 0; _i788 < _list786.size; ++_i788)
+                org.apache.thrift.protocol.TList _list812 = iprot.readListBegin();
+                struct.errors = new ArrayList<String>(_list812.size);
+                String _elem813;
+                for (int _i814 = 0; _i814 < _list812.size; ++_i814)
                 {
-                  _elem787 = iprot.readString();
-                  struct.errors.add(_elem787);
+                  _elem813 = iprot.readString();
+                  struct.errors.add(_elem813);
                 }
                 iprot.readListEnd();
               }
@@ -376,9 +376,9 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
           oprot.writeFieldBegin(ERRORS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.errors.size()));
-            for (String _iter789 : struct.errors)
+            for (String _iter815 : struct.errors)
             {
-              oprot.writeString(_iter789);
+              oprot.writeString(_iter815);
             }
             oprot.writeListEnd();
           }
@@ -410,9 +410,9 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
       if (struct.isSetErrors()) {
         {
           oprot.writeI32(struct.errors.size());
-          for (String _iter790 : struct.errors)
+          for (String _iter816 : struct.errors)
           {
-            oprot.writeString(_iter790);
+            oprot.writeString(_iter816);
           }
         }
       }
@@ -424,13 +424,13 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list791 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.errors = new ArrayList<String>(_list791.size);
-          String _elem792;
-          for (int _i793 = 0; _i793 < _list791.size; ++_i793)
+          org.apache.thrift.protocol.TList _list817 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.errors = new ArrayList<String>(_list817.size);
+          String _elem818;
+          for (int _i819 = 0; _i819 < _list817.size; ++_i819)
           {
-            _elem792 = iprot.readString();
-            struct.errors.add(_elem792);
+            _elem818 = iprot.readString();
+            struct.errors.add(_elem818);
           }
         }
         struct.setErrorsIsSet(true);

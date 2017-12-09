@@ -398,6 +398,10 @@ class ShowCompactResponse;
 
 class AddDynamicPartitions;
 
+class BasicTxnInfo;
+
+class TxnsSnapshot;
+
 class NotificationEventRequest;
 
 class NotificationEvent;
@@ -473,6 +477,8 @@ class CmRecycleRequest;
 class CmRecycleResponse;
 
 class TableMeta;
+
+class Materialization;
 
 class WMResourcePlan;
 
@@ -2378,7 +2384,7 @@ inline std::ostream& operator<<(std::ostream& out, const StorageDescriptor& obj)
 }
 
 typedef struct _Table__isset {
-  _Table__isset() : tableName(false), dbName(false), owner(false), createTime(false), lastAccessTime(false), retention(false), sd(false), partitionKeys(false), parameters(false), viewOriginalText(false), viewExpandedText(false), tableType(false), privileges(false), temporary(true), mmNextWriteId(false), mmWatermarkWriteId(false) {}
+  _Table__isset() : tableName(false), dbName(false), owner(false), createTime(false), lastAccessTime(false), retention(false), sd(false), partitionKeys(false), parameters(false), viewOriginalText(false), viewExpandedText(false), tableType(false), privileges(false), temporary(true), rewriteEnabled(false), creationMetadata(false) {}
   bool tableName :1;
   bool dbName :1;
   bool owner :1;
@@ -2393,8 +2399,8 @@ typedef struct _Table__isset {
   bool tableType :1;
   bool privileges :1;
   bool temporary :1;
-  bool mmNextWriteId :1;
-  bool mmWatermarkWriteId :1;
+  bool rewriteEnabled :1;
+  bool creationMetadata :1;
 } _Table__isset;
 
 class Table {
@@ -2402,7 +2408,7 @@ class Table {
 
   Table(const Table&);
   Table& operator=(const Table&);
-  Table() : tableName(), dbName(), owner(), createTime(0), lastAccessTime(0), retention(0), viewOriginalText(), viewExpandedText(), tableType(), temporary(false), mmNextWriteId(0), mmWatermarkWriteId(0) {
+  Table() : tableName(), dbName(), owner(), createTime(0), lastAccessTime(0), retention(0), viewOriginalText(), viewExpandedText(), tableType(), temporary(false), rewriteEnabled(0) {
   }
 
   virtual ~Table() throw();
@@ -2420,8 +2426,8 @@ class Table {
   std::string tableType;
   PrincipalPrivilegeSet privileges;
   bool temporary;
-  int64_t mmNextWriteId;
-  int64_t mmWatermarkWriteId;
+  bool rewriteEnabled;
+  std::map<std::string, BasicTxnInfo>  creationMetadata;
 
   _Table__isset __isset;
 
@@ -2453,9 +2459,9 @@ class Table {
 
   void __set_temporary(const bool val);
 
-  void __set_mmNextWriteId(const int64_t val);
+  void __set_rewriteEnabled(const bool val);
 
-  void __set_mmWatermarkWriteId(const int64_t val);
+  void __set_creationMetadata(const std::map<std::string, BasicTxnInfo> & val);
 
   bool operator == (const Table & rhs) const
   {
@@ -2491,13 +2497,13 @@ class Table {
       return false;
     else if (__isset.temporary && !(temporary == rhs.temporary))
       return false;
-    if (__isset.mmNextWriteId != rhs.__isset.mmNextWriteId)
+    if (__isset.rewriteEnabled != rhs.__isset.rewriteEnabled)
       return false;
-    else if (__isset.mmNextWriteId && !(mmNextWriteId == rhs.mmNextWriteId))
+    else if (__isset.rewriteEnabled && !(rewriteEnabled == rhs.rewriteEnabled))
       return false;
-    if (__isset.mmWatermarkWriteId != rhs.__isset.mmWatermarkWriteId)
+    if (__isset.creationMetadata != rhs.__isset.creationMetadata)
       return false;
-    else if (__isset.mmWatermarkWriteId && !(mmWatermarkWriteId == rhs.mmWatermarkWriteId))
+    else if (__isset.creationMetadata && !(creationMetadata == rhs.creationMetadata))
       return false;
     return true;
   }
@@ -7091,6 +7097,144 @@ inline std::ostream& operator<<(std::ostream& out, const AddDynamicPartitions& o
   return out;
 }
 
+typedef struct _BasicTxnInfo__isset {
+  _BasicTxnInfo__isset() : id(false), time(false), txnid(false), dbname(false), tablename(false), partitionname(false) {}
+  bool id :1;
+  bool time :1;
+  bool txnid :1;
+  bool dbname :1;
+  bool tablename :1;
+  bool partitionname :1;
+} _BasicTxnInfo__isset;
+
+class BasicTxnInfo {
+ public:
+
+  BasicTxnInfo(const BasicTxnInfo&);
+  BasicTxnInfo& operator=(const BasicTxnInfo&);
+  BasicTxnInfo() : isnull(0), id(0), time(0), txnid(0), dbname(), tablename(), partitionname() {
+  }
+
+  virtual ~BasicTxnInfo() throw();
+  bool isnull;
+  int64_t id;
+  int64_t time;
+  int64_t txnid;
+  std::string dbname;
+  std::string tablename;
+  std::string partitionname;
+
+  _BasicTxnInfo__isset __isset;
+
+  void __set_isnull(const bool val);
+
+  void __set_id(const int64_t val);
+
+  void __set_time(const int64_t val);
+
+  void __set_txnid(const int64_t val);
+
+  void __set_dbname(const std::string& val);
+
+  void __set_tablename(const std::string& val);
+
+  void __set_partitionname(const std::string& val);
+
+  bool operator == (const BasicTxnInfo & rhs) const
+  {
+    if (!(isnull == rhs.isnull))
+      return false;
+    if (__isset.id != rhs.__isset.id)
+      return false;
+    else if (__isset.id && !(id == rhs.id))
+      return false;
+    if (__isset.time != rhs.__isset.time)
+      return false;
+    else if (__isset.time && !(time == rhs.time))
+      return false;
+    if (__isset.txnid != rhs.__isset.txnid)
+      return false;
+    else if (__isset.txnid && !(txnid == rhs.txnid))
+      return false;
+    if (__isset.dbname != rhs.__isset.dbname)
+      return false;
+    else if (__isset.dbname && !(dbname == rhs.dbname))
+      return false;
+    if (__isset.tablename != rhs.__isset.tablename)
+      return false;
+    else if (__isset.tablename && !(tablename == rhs.tablename))
+      return false;
+    if (__isset.partitionname != rhs.__isset.partitionname)
+      return false;
+    else if (__isset.partitionname && !(partitionname == rhs.partitionname))
+      return false;
+    return true;
+  }
+  bool operator != (const BasicTxnInfo &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const BasicTxnInfo & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(BasicTxnInfo &a, BasicTxnInfo &b);
+
+inline std::ostream& operator<<(std::ostream& out, const BasicTxnInfo& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+class TxnsSnapshot {
+ public:
+
+  TxnsSnapshot(const TxnsSnapshot&);
+  TxnsSnapshot& operator=(const TxnsSnapshot&);
+  TxnsSnapshot() : txn_high_water_mark(0) {
+  }
+
+  virtual ~TxnsSnapshot() throw();
+  int64_t txn_high_water_mark;
+  std::vector<int64_t>  open_txns;
+
+  void __set_txn_high_water_mark(const int64_t val);
+
+  void __set_open_txns(const std::vector<int64_t> & val);
+
+  bool operator == (const TxnsSnapshot & rhs) const
+  {
+    if (!(txn_high_water_mark == rhs.txn_high_water_mark))
+      return false;
+    if (!(open_txns == rhs.open_txns))
+      return false;
+    return true;
+  }
+  bool operator != (const TxnsSnapshot &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const TxnsSnapshot & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(TxnsSnapshot &a, TxnsSnapshot &b);
+
+inline std::ostream& operator<<(std::ostream& out, const TxnsSnapshot& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
 typedef struct _NotificationEventRequest__isset {
   _NotificationEventRequest__isset() : maxEvents(false) {}
   bool maxEvents :1;
@@ -8931,6 +9075,56 @@ class TableMeta {
 void swap(TableMeta &a, TableMeta &b);
 
 inline std::ostream& operator<<(std::ostream& out, const TableMeta& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+class Materialization {
+ public:
+
+  Materialization(const Materialization&);
+  Materialization& operator=(const Materialization&);
+  Materialization() : invalidationTime(0) {
+  }
+
+  virtual ~Materialization() throw();
+  Table materializationTable;
+  std::set<std::string>  tablesUsed;
+  int64_t invalidationTime;
+
+  void __set_materializationTable(const Table& val);
+
+  void __set_tablesUsed(const std::set<std::string> & val);
+
+  void __set_invalidationTime(const int64_t val);
+
+  bool operator == (const Materialization & rhs) const
+  {
+    if (!(materializationTable == rhs.materializationTable))
+      return false;
+    if (!(tablesUsed == rhs.tablesUsed))
+      return false;
+    if (!(invalidationTime == rhs.invalidationTime))
+      return false;
+    return true;
+  }
+  bool operator != (const Materialization &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const Materialization & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(Materialization &a, Materialization &b);
+
+inline std::ostream& operator<<(std::ostream& out, const Materialization& obj)
 {
   obj.printTo(out);
   return out;
