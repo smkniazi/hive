@@ -602,6 +602,15 @@ struct TOpenSessionResp {
   4: optional map<string, string> configuration
 }
 
+struct TSetClientInfoReq {
+  1: required TSessionHandle sessionHandle,
+  2: optional map<string, string> configuration
+}
+
+struct TSetClientInfoResp {
+  1: required TStatus status
+}
+
 
 // CloseSession()
 //
@@ -1290,4 +1299,6 @@ service TCLIService {
   TRenewDelegationTokenResp RenewDelegationToken(1:TRenewDelegationTokenReq req);
 
   TGetQueryIdResp GetQueryId(1:TGetQueryIdReq req);
+
+  TSetClientInfoResp SetClientInfo(1:TSetClientInfoReq req);
 }

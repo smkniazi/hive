@@ -20,6 +20,9 @@ package org.apache.hive.service.cli.thrift;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import org.apache.hive.service.rpc.thrift.TSetClientInfoReq;
+import org.apache.hive.service.rpc.thrift.TSetClientInfoResp;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -27,7 +30,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import javax.security.auth.login.LoginException;
 import javax.security.sasl.AuthenticationException;
 
@@ -371,6 +373,28 @@ public abstract class ThriftCLIService extends AbstractService implements TCLISe
       resp.setStatus(HiveSQLException.toTStatus(e));
     }
     return resp;
+  }
+
+  @Override
+  public TSetClientInfoResp SetClientInfo(TSetClientInfoReq req) throws TException {
+    // TODO: We don't do anything for now, just log this for debugging.
+    //       We may be able to make use of this later, e.g. for workload management.
+    if (req.isSetConfiguration()) {
+      StringBuilder sb = null;
+      for (Map.Entry<String, String> e : req.getConfiguration().entrySet()) {
+        if (sb == null) {
+          SessionHandle sh = new SessionHandle(req.getSessionHandle());
+          sb = new StringBuilder("Client information for ").append(sh).append(": ");
+        } else {
+          sb.append(", ");
+        }
+        sb.append(e.getKey()).append(" = ").append(e.getValue());
+      }
+      if (sb != null) {
+        LOG.info("{}", sb);
+      }
+    }
+    return new TSetClientInfoResp(OK_STATUS);
   }
 
   private String getIpAddress() {
