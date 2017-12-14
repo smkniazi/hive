@@ -397,7 +397,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   protected transient FileSystem fs;
   protected transient Serializer serializer;
   protected final transient LongWritable row_count = new LongWritable();
-  private transient boolean isNativeTable = true;
 
   /**
    * The evaluators for the multiFile sprayer. If the table under consideration has 1000 buckets,
@@ -480,7 +479,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     try {
       this.hconf = hconf;
       filesCreated = false;
-      isNativeTable = !conf.getTableInfo().isNonNative();
       isTemporary = conf.isTemporary();
       multiFileSpray = conf.isMultiFileSpray();
       this.isBucketed = hconf.getInt(hive_metastoreConstants.BUCKET_COUNT, 0) > 0;
@@ -710,7 +708,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       assert filesIdx == numFiles;
 
       // in recent hadoop versions, use deleteOnExit to clean tmp files.
-      if (isNativeTable && fs != null && fsp != null && !conf.isMmTable()) {
+      if (isNativeTable() && fs != null && fsp != null && !conf.isMmTable()) {
         autoDelete = fs.deleteOnExit(fsp.outPaths[0]);
       }
     } catch (Exception e) {
@@ -724,7 +722,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   protected void createBucketForFileIdx(FSPaths fsp, int filesIdx)
       throws HiveException {
     try {
-      fsp.initializeBucketPaths(filesIdx, taskId, isNativeTable, isSkewedStoredAsSubDirectories);
+      fsp.initializeBucketPaths(filesIdx, taskId, isNativeTable(), isSkewedStoredAsSubDirectories);
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("createBucketForFileIdx " + filesIdx + ": final path " + fsp.finalPaths[filesIdx]
           + "; out path " + fsp.outPaths[filesIdx] +" (spec path " + specPath + ", tmp path "
@@ -734,7 +732,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         LOG.info("New Final Path: FS " + fsp.finalPaths[filesIdx]);
       }
 
-      if (isNativeTable && !conf.isMmTable()) {
+      if (isNativeTable() && !conf.isMmTable()) {
         // in recent hadoop versions, use deleteOnExit to clean tmp files.
         autoDelete = fs.deleteOnExit(fsp.outPaths[filesIdx]);
       }
@@ -1309,7 +1307,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           }
         }
 
-        if (isNativeTable) {
+        if (isNativeTable()) {
           fsp.commit(fs, commitPaths);
         }
       }
@@ -1326,7 +1324,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       // Hadoop always call close() even if an Exception was thrown in map() or
       // reduce().
       for (FSPaths fsp : valToPaths.values()) {
-        fsp.abortWriters(fs, abort, !autoDelete && isNativeTable && !conf.isMmTable());
+        fsp.abortWriters(fs, abort, !autoDelete && isNativeTable() && !conf.isMmTable());
       }
     }
     fsp = prevFsp = null;
@@ -1350,7 +1348,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   public void jobCloseOp(Configuration hconf, boolean success)
       throws HiveException {
     try {
-      if ((conf != null) && isNativeTable) {
+      if ((conf != null) && isNativeTable()) {
         Path specPath = conf.getDirName();
         String unionSuffix = null;
         DynamicPartitionCtx dpCtx = conf.getDynPartCtx();
@@ -1575,5 +1573,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       return confCopy;
     }
     return conf;
+  }
+
+  private boolean isNativeTable() {
+    return !conf.getTableInfo().isNonNative();
   }
 }
