@@ -34,6 +34,7 @@ import org.apache.hadoop.hive.ql.metadata.Table;
 import org.apache.hadoop.hive.ql.optimizer.IndexUtils;
 import org.apache.hadoop.hive.ql.plan.LoadTableDesc;
 import org.apache.hadoop.hive.ql.plan.TableDesc;
+import org.apache.hadoop.hive.ql.session.LineageState;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -49,13 +50,15 @@ public class IndexUpdater {
   private Hive hive;
   private List<Task<? extends Serializable>> tasks;
   private Set<ReadEntity> inputs;
+  private LineageState lineageState;
 
-
-  public IndexUpdater(List<LoadTableDesc> loadTableWork, Set<ReadEntity> inputs, Configuration conf) {
+  public IndexUpdater(List<LoadTableDesc> loadTableWork, Set<ReadEntity> inputs, Configuration conf,
+      LineageState lineageState) {
     this.loadTableWork = loadTableWork;
     this.inputs = inputs;
     this.parentConf = conf;
     this.conf = new HiveConf(conf, IndexUpdater.class);
+    this.lineageState = lineageState;
     this.tasks = new LinkedList<Task<? extends Serializable>>();
   }
 
@@ -137,9 +140,14 @@ public class IndexUpdater {
     compileRebuild(sb.toString(), index, mmWriteId);
   }
 
+<<<<<<< HEAD
   private void compileRebuild(String query, Index index, Long mmWriteId)
       throws HiveException {
     Driver driver = new Driver(this.conf);
+=======
+  private void compileRebuild(String query) {
+    Driver driver = new Driver(this.conf, lineageState);
+>>>>>>> 646ccce8ea... HIVE-18054: Make Lineage work with concurrent queries on a Session (Andrew Sherman, reviewed by Sahil Takiar)
     driver.compile(query, false);
     if (mmWriteId != null) {
       // TODO: this is rather fragile

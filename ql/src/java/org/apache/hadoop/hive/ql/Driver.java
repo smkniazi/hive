@@ -117,6 +117,7 @@ import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivObjectActionType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivilegeObjectType;
+import org.apache.hadoop.hive.ql.session.LineageState;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.session.SessionState.LogHelper;
 import org.apache.hadoop.hive.ql.wm.WmContext;
@@ -379,17 +380,31 @@ public class Driver implements CommandProcessor {
     this(getNewQueryState(conf), null);
   }
 
+  // Pass lineageState when a driver instantiates another Driver to run
+  // or compile another query
+  public Driver(HiveConf conf, LineageState lineageState) {
+    this(getNewQueryState(conf, lineageState), null);
+  }
+
   public Driver(HiveConf conf, HiveTxnManager txnMgr) {
     this(getNewQueryState(conf), null, null, txnMgr);
   }
 
-  public Driver(HiveConf conf, Context ctx) {
-    this(getNewQueryState(conf), null, null);
+  // Pass lineageState when a driver instantiates another Driver to run
+  // or compile another query
+  public Driver(HiveConf conf, Context ctx, LineageState lineageState) {
+    this(getNewQueryState(conf, lineageState), null, null);
     this.ctx = ctx;
   }
 
   public Driver(HiveConf conf, String userName) {
     this(getNewQueryState(conf), userName, null);
+  }
+
+  // Pass lineageState when a driver instantiates another Driver to run
+  // or compile another query
+  public Driver(HiveConf conf, String userName, LineageState lineageState) {
+    this(getNewQueryState(conf, lineageState), userName, null);
   }
 
   public Driver(QueryState queryState, String userName) {
@@ -427,6 +442,20 @@ public class Driver implements CommandProcessor {
    */
   private static QueryState getNewQueryState(HiveConf conf) {
     return new QueryState.Builder().withGenerateNewQueryId(true).withHiveConf(conf).build();
+  }
+
+  /**
+   * Generating the new QueryState object. Making sure, that the new queryId is generated.
+   * @param conf The HiveConf which should be used
+   * @param lineageState a LineageState to be set in the new QueryState object
+   * @return The new QueryState object
+   */
+  private static QueryState getNewQueryState(HiveConf conf, LineageState lineageState) {
+    return new QueryState.Builder()
+        .withGenerateNewQueryId(true)
+        .withHiveConf(conf)
+        .withLineageState(lineageState)
+        .build();
   }
 
   /**
@@ -1341,9 +1370,6 @@ public class Driver implements CommandProcessor {
   private void releaseResources() {
     releasePlan();
     releaseDriverContext();
-    if (SessionState.get() != null) {
-      SessionState.get().getLineageState().clear();
-    }
   }
 
   @Override
@@ -2450,9 +2476,6 @@ public class Driver implements CommandProcessor {
     releaseFetchTask();
     releaseResStream();
     releaseContext();
-    if (SessionState.get() != null) {
-      SessionState.get().getLineageState().clear();
-    }
     if(destroyed) {
       if (!hiveLocks.isEmpty()) {
         try {
@@ -2485,9 +2508,6 @@ public class Driver implements CommandProcessor {
     } finally {
       lDrvState.stateLock.unlock();
       LockedDriverState.removeLockedDriverState();
-    }
-    if (SessionState.get() != null) {
-      SessionState.get().getLineageState().clear();
     }
     return 0;
   }
@@ -2549,5 +2569,9 @@ public class Driver implements CommandProcessor {
     // propagating queryState into those existing fields, or resetting them.
     releaseResources();
     this.queryState = getNewQueryState(queryState.getConf());
+  }
+
+  public QueryState getQueryState() {
+    return queryState;
   }
 }

@@ -4894,7 +4894,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         }
         if (crtTbl.isCTAS()) {
           DataContainer dc = new DataContainer(createdTable.getTTable());
-          SessionState.get().getLineageState().setLineage(
+          queryState.getLineageState().setLineage(
                   createdTable.getPath(), dc, createdTable.getCols()
           );
         }
@@ -5122,7 +5122,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
       //set lineage info
       DataContainer dc = new DataContainer(tbl.getTTable());
-      SessionState.get().getLineageState().setLineage(new Path(crtView.getViewName()), dc, tbl.getCols());
+      queryState.getLineageState().setLineage(new Path(crtView.getViewName()), dc, tbl.getCols());
     }
     return 0;
   }

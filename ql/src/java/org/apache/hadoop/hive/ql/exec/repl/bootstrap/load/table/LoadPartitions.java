@@ -243,8 +243,7 @@ public class LoadPartitions {
         tmpPath, Utilities.getTableDesc(table), partSpec.getPartSpec(),
         event.replicationSpec().isReplace() ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING);
     loadTableWork.setInheritTableSpecs(false);
-    MoveWork work = new MoveWork(new HashSet<>(), new HashSet<>(), loadTableWork, null, false,
-        context.sessionStateLineageState);
+    MoveWork work = new MoveWork(new HashSet<>(), new HashSet<>(), loadTableWork, null, false);
     return TaskFactory.get(work, context.hiveConf);
   }
 
