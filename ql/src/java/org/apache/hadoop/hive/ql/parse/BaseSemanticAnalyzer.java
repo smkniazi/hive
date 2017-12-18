@@ -123,8 +123,9 @@ public abstract class BaseSemanticAnalyzer {
    */
   protected Set<FileSinkDesc> acidFileSinks = new HashSet<FileSinkDesc>();
 
-  // whether any ACID table is involved in a query
-  protected boolean acidInQuery;
+  // whether any ACID table or Insert-only (mm) table is involved in a query
+  // They both require DbTxnManager and both need to recordValidTxns when acquiring locks in Driver
+  protected boolean transactionalInQuery;
 
   protected HiveTxnManager txnManager;
 
@@ -1486,8 +1487,8 @@ public abstract class BaseSemanticAnalyzer {
     return acidFileSinks;
   }
 
-  public boolean hasAcidInQuery() {
-    return acidInQuery;
+  public boolean hasTransactionalInQuery() {
+    return transactionalInQuery;
   }
 
   /**

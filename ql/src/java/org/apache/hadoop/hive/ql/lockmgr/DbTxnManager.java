@@ -259,7 +259,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
     issue ROLLBACK but these tables won't rollback.
     Can do this by checking ReadEntity/WriteEntity to determine whether it's reading/writing
     any non acid and raise an appropriate error
-    * Driver.acidSinks and Driver.acidInQuery can be used if any acid is in the query*/
+    * Driver.acidSinks and Driver.transactionalInQuery can be used if any acid is in the query*/
   }
 
   /**
@@ -271,7 +271,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
     //in a txn assuming we can determine the target is a suitable table type.
     if(queryPlan.getOperation() == HiveOperation.LOAD && queryPlan.getOutputs() != null && queryPlan.getOutputs().size() == 1) {
       WriteEntity writeEntity = queryPlan.getOutputs().iterator().next();
-      if(AcidUtils.isFullAcidTable(writeEntity.getTable()) || AcidUtils.isInsertOnlyTable(writeEntity.getTable())) {
+      if(AcidUtils.isAcidTable(writeEntity.getTable()) || AcidUtils.isInsertOnlyTable(writeEntity.getTable())) {
         switch (writeEntity.getWriteType()) {
           case INSERT:
             //allow operation in a txn
@@ -366,8 +366,8 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           // This is a file or something we don't hold locks for.
           continue;
       }
-      if(t != null && AcidUtils.isFullAcidTable(t)) {
-        compBuilder.setIsAcid(true);
+      if(t != null) {
+        compBuilder.setIsAcid(AcidUtils.isAcidTable(t));
       }
       LockComponent comp = compBuilder.build();
       LOG.debug("Adding lock component to lock request " + comp.toString());
@@ -395,7 +395,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           break;
         case INSERT_OVERWRITE:
           t = getTable(output);
-          if (AcidUtils.isAcidTable(t)) {
+          if (AcidUtils.isTransactionalTable(t)) {
             compBuilder.setSemiShared();
             compBuilder.setOperationType(DataOperationType.UPDATE);
           } else {
@@ -404,8 +404,8 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           }
           break;
         case INSERT:
-          t = getTable(output);
-          if(AcidUtils.isFullAcidTable(t)) {
+          assert t != null;
+          if(AcidUtils.isAcidTable(t)) {
             compBuilder.setShared();
             compBuilder.setIsAcid(true);
           }
@@ -443,32 +443,10 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
               output.getWriteType().toString());
 
       }
-      switch (output.getType()) {
-        case DATABASE:
-          compBuilder.setDbName(output.getDatabase().getName());
-          break;
-
-        case TABLE:
-        case DUMMYPARTITION:   // in case of dynamic partitioning lock the table
-          t = output.getTable();
-          compBuilder.setDbName(t.getDbName());
-          compBuilder.setTableName(t.getTableName());
-          break;
-
-        case PARTITION:
-          compBuilder.setPartitionName(output.getPartition().getName());
-          t = output.getPartition().getTable();
-          compBuilder.setDbName(t.getDbName());
-          compBuilder.setTableName(t.getTableName());
-          break;
-
-        default:
-          // This is a file or something we don't hold locks for.
-          continue;
+      if(t != null) {
+        compBuilder.setIsAcid(AcidUtils.isAcidTable(t));
       }
-      if(t != null && AcidUtils.isFullAcidTable(t)) {
-        compBuilder.setIsAcid(true);
-      }
+
       compBuilder.setIsDynamicPartitionWrite(output.isDynamicPartitionWrite());
       LockComponent comp = compBuilder.build();
       LOG.debug("Adding lock component to lock request " + comp.toString());

@@ -838,7 +838,7 @@ public class TestInputOutputFormat {
   public void testEtlCombinedStrategy() throws Exception {
     conf.set(HiveConf.ConfVars.HIVE_ORC_SPLIT_STRATEGY.varname, "ETL");
     conf.set(HiveConf.ConfVars.HIVE_ORC_SPLIT_DIRECTORY_BATCH_MS.varname, "1000000");
-    AcidUtils.setTransactionalTableScan(conf, true);
+    AcidUtils.setAcidTableScan(conf, true);
     conf.setBoolean(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, true);
     conf.set(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES, "default");
 
@@ -2287,7 +2287,7 @@ public class TestInputOutputFormat {
 
     conf.set(IOConstants.SCHEMA_EVOLUTION_COLUMNS, BigRow.getColumnNamesProperty());
     conf.set(IOConstants.SCHEMA_EVOLUTION_COLUMNS_TYPES, BigRow.getColumnTypesProperty());
-    HiveConf.setBoolVar(conf, HiveConf.ConfVars.HIVE_TRANSACTIONAL_TABLE_SCAN, true);
+    HiveConf.setBoolVar(conf, HiveConf.ConfVars.HIVE_ACID_TABLE_SCAN, true);
 
     org.apache.hadoop.mapred.RecordReader<NullWritable, VectorizedRowBatch>
         reader = inputFormat.getRecordReader(splits[0], conf, Reporter.NULL);
@@ -3379,7 +3379,7 @@ public class TestInputOutputFormat {
   public void testACIDReaderNoFooterSerialize() throws Exception {
     MockFileSystem fs = new MockFileSystem(conf);
     MockPath mockPath = new MockPath(fs, "mock:///mocktable5");
-    conf.set("hive.transactional.table.scan", "true");
+    conf.set(ConfVars.HIVE_ACID_TABLE_SCAN.varname, "true");
     conf.setBoolean(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, true);
     conf.set(IOConstants.SCHEMA_EVOLUTION_COLUMNS, MyRow.getColumnNamesProperty());
     conf.set(IOConstants.SCHEMA_EVOLUTION_COLUMNS_TYPES, MyRow.getColumnTypesProperty());
@@ -3460,7 +3460,7 @@ public class TestInputOutputFormat {
   public void testACIDReaderFooterSerialize() throws Exception {
     MockFileSystem fs = new MockFileSystem(conf);
     MockPath mockPath = new MockPath(fs, "mock:///mocktable6");
-    conf.set("hive.transactional.table.scan", "true");
+    conf.set(ConfVars.HIVE_ACID_TABLE_SCAN.varname, "true");
     conf.setBoolean(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, true);
     conf.set(IOConstants.SCHEMA_EVOLUTION_COLUMNS, MyRow.getColumnNamesProperty());
     conf.set(IOConstants.SCHEMA_EVOLUTION_COLUMNS_TYPES, MyRow.getColumnTypesProperty());
@@ -3571,7 +3571,7 @@ public class TestInputOutputFormat {
 
     //set up props for read
     conf.setBoolean(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, true);
-    AcidUtils.setTransactionalTableScan(conf, true);
+    AcidUtils.setAcidTableScan(conf, true);
 
     OrcInputFormat orcInputFormat = new OrcInputFormat();
     InputSplit[] splits = orcInputFormat.getSplits(conf, 2);
@@ -3650,7 +3650,7 @@ public class TestInputOutputFormat {
 
     //set up props for read
     conf.setBoolean(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, true);
-    AcidUtils.setTransactionalTableScan(conf, true);
+    AcidUtils.setAcidTableScan(conf, true);
 
     OrcInputFormat orcInputFormat = new OrcInputFormat();
     InputSplit[] splits = orcInputFormat.getSplits(conf, 2);
