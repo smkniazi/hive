@@ -23389,6 +23389,11 @@ void WMAlterResourcePlanRequest::__set_isEnableAndActivate(const bool val) {
 __isset.isEnableAndActivate = true;
 }
 
+void WMAlterResourcePlanRequest::__set_isForceDeactivate(const bool val) {
+  this->isForceDeactivate = val;
+__isset.isForceDeactivate = true;
+}
+
 uint32_t WMAlterResourcePlanRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -23434,6 +23439,14 @@ uint32_t WMAlterResourcePlanRequest::read(::apache::thrift::protocol::TProtocol*
           xfer += iprot->skip(ftype);
         }
         break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->isForceDeactivate);
+          this->__isset.isForceDeactivate = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -23466,6 +23479,11 @@ uint32_t WMAlterResourcePlanRequest::write(::apache::thrift::protocol::TProtocol
     xfer += oprot->writeBool(this->isEnableAndActivate);
     xfer += oprot->writeFieldEnd();
   }
+  if (this->__isset.isForceDeactivate) {
+    xfer += oprot->writeFieldBegin("isForceDeactivate", ::apache::thrift::protocol::T_BOOL, 4);
+    xfer += oprot->writeBool(this->isForceDeactivate);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -23476,6 +23494,7 @@ void swap(WMAlterResourcePlanRequest &a, WMAlterResourcePlanRequest &b) {
   swap(a.resourcePlanName, b.resourcePlanName);
   swap(a.resourcePlan, b.resourcePlan);
   swap(a.isEnableAndActivate, b.isEnableAndActivate);
+  swap(a.isForceDeactivate, b.isForceDeactivate);
   swap(a.__isset, b.__isset);
 }
 
@@ -23483,12 +23502,14 @@ WMAlterResourcePlanRequest::WMAlterResourcePlanRequest(const WMAlterResourcePlan
   resourcePlanName = other944.resourcePlanName;
   resourcePlan = other944.resourcePlan;
   isEnableAndActivate = other944.isEnableAndActivate;
+  isForceDeactivate = other944.isForceDeactivate;
   __isset = other944.__isset;
 }
 WMAlterResourcePlanRequest& WMAlterResourcePlanRequest::operator=(const WMAlterResourcePlanRequest& other945) {
   resourcePlanName = other945.resourcePlanName;
   resourcePlan = other945.resourcePlan;
   isEnableAndActivate = other945.isEnableAndActivate;
+  isForceDeactivate = other945.isForceDeactivate;
   __isset = other945.__isset;
   return *this;
 }
@@ -23498,6 +23519,7 @@ void WMAlterResourcePlanRequest::printTo(std::ostream& out) const {
   out << "resourcePlanName="; (__isset.resourcePlanName ? (out << to_string(resourcePlanName)) : (out << "<null>"));
   out << ", " << "resourcePlan="; (__isset.resourcePlan ? (out << to_string(resourcePlan)) : (out << "<null>"));
   out << ", " << "isEnableAndActivate="; (__isset.isEnableAndActivate ? (out << to_string(isEnableAndActivate)) : (out << "<null>"));
+  out << ", " << "isForceDeactivate="; (__isset.isForceDeactivate ? (out << to_string(isForceDeactivate)) : (out << "<null>"));
   out << ")";
 }
 

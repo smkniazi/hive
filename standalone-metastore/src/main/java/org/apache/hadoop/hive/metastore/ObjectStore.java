@@ -9941,11 +9941,10 @@ public class ObjectStore implements RawStore, Configurable {
   }
 
   @Override
-  public WMFullResourcePlan alterResourcePlan(
-      String name, WMResourcePlan resourcePlan, boolean canActivateDisabled)
-      throws AlreadyExistsException, NoSuchObjectException, InvalidOperationException,
-          MetaException {
-    name = normalizeIdentifier(name);
+  public WMFullResourcePlan alterResourcePlan(String name, WMResourcePlan resourcePlan,
+      boolean canActivateDisabled, boolean canDeactivate) throws AlreadyExistsException,
+      NoSuchObjectException, InvalidOperationException, MetaException {
+    name = name == null ? null : normalizeIdentifier(name);
     boolean commited = false;
     Query query = null;
     // This method only returns the result when activating a resource plan.
@@ -9954,16 +9953,18 @@ public class ObjectStore implements RawStore, Configurable {
     WMFullResourcePlan result = null;
     try {
       openTransaction();
-      MWMResourcePlan mResourcePlan = getMWMResourcePlan(name, !resourcePlan.isSetStatus());
+      MWMResourcePlan mResourcePlan = name == null ? getActiveMWMResourcePlan()
+          : getMWMResourcePlan(name, !resourcePlan.isSetStatus());
+      boolean hasNameChange = resourcePlan.isSetName() && !resourcePlan.getName().equals(name);
       if (resourcePlan.isSetQueryParallelism() || resourcePlan.isSetDefaultPoolPath()
-        || !resourcePlan.getName().equals(name)) {
+        || hasNameChange) {
         if (resourcePlan.isSetStatus()) {
           throw new InvalidOperationException("Cannot change values during status switch.");
         } else if (resourcePlan.getStatus() == WMResourcePlanStatus.DISABLED) {
           throw new InvalidOperationException("Resource plan must be disabled to edit it.");
         }
       }
-      if (!resourcePlan.getName().equals(name)) {
+      if (hasNameChange) {
         String newName = normalizeIdentifier(resourcePlan.getName());
         if (newName.isEmpty()) {
           throw new InvalidOperationException("Cannot rename to empty value.");
@@ -9981,8 +9982,8 @@ public class ObjectStore implements RawStore, Configurable {
         mResourcePlan.setDefaultPool(pool);
       }
       if (resourcePlan.isSetStatus()) {
-        result = switchStatus(
-            name, mResourcePlan, resourcePlan.getStatus().name(), canActivateDisabled);
+        result = switchStatus(name, mResourcePlan,
+            resourcePlan.getStatus().name(), canActivateDisabled, canDeactivate);
       }
       commited = commitTransaction();
       return result;
@@ -9996,6 +9997,8 @@ public class ObjectStore implements RawStore, Configurable {
 
   @Override
   public WMFullResourcePlan getActiveResourcePlan() throws MetaException {
+    // Note: fullFromMResroucePlan needs to be called inside the txn, otherwise we could have
+    //       deduplicated this with getActiveMWMResourcePlan.
     boolean commited = false;
     Query query = null;
     WMFullResourcePlan result = null;
@@ -10015,8 +10018,25 @@ public class ObjectStore implements RawStore, Configurable {
     return result;
   }
 
-  private WMFullResourcePlan switchStatus(String name, MWMResourcePlan mResourcePlan,
-      String status, boolean canActivateDisabled) throws InvalidOperationException {
+  private MWMResourcePlan getActiveMWMResourcePlan() throws MetaException {
+    boolean commited = false;
+    Query query = null;
+    MWMResourcePlan result = null;
+    try {
+      openTransaction();
+      query = pm.newQuery(MWMResourcePlan.class, "status == activeStatus");
+      query.declareParameters("java.lang.String activeStatus");
+      query.setUnique(true);
+      result = (MWMResourcePlan) query.execute(Status.ACTIVE.toString());
+      commited = commitTransaction();
+    } finally {
+      rollbackAndCleanup(commited, query);
+    }
+    return result;
+  }
+
+  private WMFullResourcePlan switchStatus(String name, MWMResourcePlan mResourcePlan, String status,
+      boolean canActivateDisabled, boolean canDeactivate) throws InvalidOperationException {
     Status currentStatus = mResourcePlan.getStatus();
     Status newStatus = null;
     try {
@@ -10032,14 +10052,18 @@ public class ObjectStore implements RawStore, Configurable {
     boolean doActivate = false, doValidate = false;
     switch (currentStatus) {
       case ACTIVE: // No status change for active resource plan, first activate another plan.
-        throw new InvalidOperationException(
-          "Resource plan " + name + " is active, activate another plan first.");
+        if (!canDeactivate) {
+          throw new InvalidOperationException(
+            "Resource plan " + name
+              + " is active; activate another plan first, or disable workload management.");
+        }
+        break;
       case DISABLED:
         assert newStatus == Status.ACTIVE || newStatus == Status.ENABLED;
         doValidate = true;
         doActivate = (newStatus == Status.ACTIVE);
         if (doActivate && !canActivateDisabled) {
-          throw new InvalidOperationException("Resource plan " + name
+          throw new InvalidOperationException("Resource plan " +name
               + " is disabled and should be enabled before activation (or in the same command)");
         }
         break;

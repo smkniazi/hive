@@ -1794,7 +1794,7 @@ public interface IMetaStoreClient {
       throws NoSuchObjectException, MetaException, TException;
 
   WMFullResourcePlan alterResourcePlan(String resourcePlanName, WMResourcePlan resourcePlan,
-      boolean canActivateDisabled)
+      boolean canActivateDisabled, boolean isForceDeactivate)
       throws NoSuchObjectException, InvalidObjectException, MetaException, TException;
 
   WMFullResourcePlan getActiveResourcePlan() throws MetaException, TException;

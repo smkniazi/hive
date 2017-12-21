@@ -9672,10 +9672,11 @@ inline std::ostream& operator<<(std::ostream& out, const WMGetAllResourcePlanRes
 }
 
 typedef struct _WMAlterResourcePlanRequest__isset {
-  _WMAlterResourcePlanRequest__isset() : resourcePlanName(false), resourcePlan(false), isEnableAndActivate(false) {}
+  _WMAlterResourcePlanRequest__isset() : resourcePlanName(false), resourcePlan(false), isEnableAndActivate(false), isForceDeactivate(false) {}
   bool resourcePlanName :1;
   bool resourcePlan :1;
   bool isEnableAndActivate :1;
+  bool isForceDeactivate :1;
 } _WMAlterResourcePlanRequest__isset;
 
 class WMAlterResourcePlanRequest {
@@ -9683,13 +9684,14 @@ class WMAlterResourcePlanRequest {
 
   WMAlterResourcePlanRequest(const WMAlterResourcePlanRequest&);
   WMAlterResourcePlanRequest& operator=(const WMAlterResourcePlanRequest&);
-  WMAlterResourcePlanRequest() : resourcePlanName(), isEnableAndActivate(0) {
+  WMAlterResourcePlanRequest() : resourcePlanName(), isEnableAndActivate(0), isForceDeactivate(0) {
   }
 
   virtual ~WMAlterResourcePlanRequest() throw();
   std::string resourcePlanName;
   WMResourcePlan resourcePlan;
   bool isEnableAndActivate;
+  bool isForceDeactivate;
 
   _WMAlterResourcePlanRequest__isset __isset;
 
@@ -9698,6 +9700,8 @@ class WMAlterResourcePlanRequest {
   void __set_resourcePlan(const WMResourcePlan& val);
 
   void __set_isEnableAndActivate(const bool val);
+
+  void __set_isForceDeactivate(const bool val);
 
   bool operator == (const WMAlterResourcePlanRequest & rhs) const
   {
@@ -9712,6 +9716,10 @@ class WMAlterResourcePlanRequest {
     if (__isset.isEnableAndActivate != rhs.__isset.isEnableAndActivate)
       return false;
     else if (__isset.isEnableAndActivate && !(isEnableAndActivate == rhs.isEnableAndActivate))
+      return false;
+    if (__isset.isForceDeactivate != rhs.__isset.isForceDeactivate)
+      return false;
+    else if (__isset.isForceDeactivate && !(isForceDeactivate == rhs.isForceDeactivate))
       return false;
     return true;
   }
