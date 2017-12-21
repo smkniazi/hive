@@ -3567,9 +3567,11 @@ end
 class WMCreateResourcePlanRequest
   include ::Thrift::Struct, ::Thrift::Struct_Union
   RESOURCEPLAN = 1
+  COPYFROM = 2
 
   FIELDS = {
-    RESOURCEPLAN => {:type => ::Thrift::Types::STRUCT, :name => 'resourcePlan', :class => ::WMResourcePlan, :optional => true}
+    RESOURCEPLAN => {:type => ::Thrift::Types::STRUCT, :name => 'resourcePlan', :class => ::WMResourcePlan, :optional => true},
+    COPYFROM => {:type => ::Thrift::Types::STRING, :name => 'copyFrom', :optional => true}
   }
 
   def struct_fields; FIELDS; end
@@ -3695,12 +3697,14 @@ class WMAlterResourcePlanRequest
   RESOURCEPLAN = 2
   ISENABLEANDACTIVATE = 3
   ISFORCEDEACTIVATE = 4
+  ISREPLACE = 5
 
   FIELDS = {
     RESOURCEPLANNAME => {:type => ::Thrift::Types::STRING, :name => 'resourcePlanName', :optional => true},
     RESOURCEPLAN => {:type => ::Thrift::Types::STRUCT, :name => 'resourcePlan', :class => ::WMResourcePlan, :optional => true},
     ISENABLEANDACTIVATE => {:type => ::Thrift::Types::BOOL, :name => 'isEnableAndActivate', :optional => true},
-    ISFORCEDEACTIVATE => {:type => ::Thrift::Types::BOOL, :name => 'isForceDeactivate', :optional => true}
+    ISFORCEDEACTIVATE => {:type => ::Thrift::Types::BOOL, :name => 'isForceDeactivate', :optional => true},
+    ISREPLACE => {:type => ::Thrift::Types::BOOL, :name => 'isReplace', :optional => true}
   }
 
   def struct_fields; FIELDS; end
