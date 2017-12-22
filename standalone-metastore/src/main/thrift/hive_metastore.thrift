@@ -1103,6 +1103,7 @@ struct WMTrigger {
   2: required string triggerName;
   3: optional string triggerExpression;
   4: optional string actionExpression;
+  5: optional bool isInUnmanaged;
 }
 
 struct WMMapping {

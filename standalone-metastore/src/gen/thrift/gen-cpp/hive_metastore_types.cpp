@@ -22054,6 +22054,11 @@ void WMTrigger::__set_actionExpression(const std::string& val) {
 __isset.actionExpression = true;
 }
 
+void WMTrigger::__set_isInUnmanaged(const bool val) {
+  this->isInUnmanaged = val;
+__isset.isInUnmanaged = true;
+}
+
 uint32_t WMTrigger::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -22109,6 +22114,14 @@ uint32_t WMTrigger::read(::apache::thrift::protocol::TProtocol* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
+      case 5:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->isInUnmanaged);
+          this->__isset.isInUnmanaged = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -22148,6 +22161,11 @@ uint32_t WMTrigger::write(::apache::thrift::protocol::TProtocol* oprot) const {
     xfer += oprot->writeString(this->actionExpression);
     xfer += oprot->writeFieldEnd();
   }
+  if (this->__isset.isInUnmanaged) {
+    xfer += oprot->writeFieldBegin("isInUnmanaged", ::apache::thrift::protocol::T_BOOL, 5);
+    xfer += oprot->writeBool(this->isInUnmanaged);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -22159,6 +22177,7 @@ void swap(WMTrigger &a, WMTrigger &b) {
   swap(a.triggerName, b.triggerName);
   swap(a.triggerExpression, b.triggerExpression);
   swap(a.actionExpression, b.actionExpression);
+  swap(a.isInUnmanaged, b.isInUnmanaged);
   swap(a.__isset, b.__isset);
 }
 
@@ -22167,6 +22186,7 @@ WMTrigger::WMTrigger(const WMTrigger& other890) {
   triggerName = other890.triggerName;
   triggerExpression = other890.triggerExpression;
   actionExpression = other890.actionExpression;
+  isInUnmanaged = other890.isInUnmanaged;
   __isset = other890.__isset;
 }
 WMTrigger& WMTrigger::operator=(const WMTrigger& other891) {
@@ -22174,6 +22194,7 @@ WMTrigger& WMTrigger::operator=(const WMTrigger& other891) {
   triggerName = other891.triggerName;
   triggerExpression = other891.triggerExpression;
   actionExpression = other891.actionExpression;
+  isInUnmanaged = other891.isInUnmanaged;
   __isset = other891.__isset;
   return *this;
 }
@@ -22184,6 +22205,7 @@ void WMTrigger::printTo(std::ostream& out) const {
   out << ", " << "triggerName=" << to_string(triggerName);
   out << ", " << "triggerExpression="; (__isset.triggerExpression ? (out << to_string(triggerExpression)) : (out << "<null>"));
   out << ", " << "actionExpression="; (__isset.actionExpression ? (out << to_string(actionExpression)) : (out << "<null>"));
+  out << ", " << "isInUnmanaged="; (__isset.isInUnmanaged ? (out << to_string(isInUnmanaged)) : (out << "<null>"));
   out << ")";
 }
 
