@@ -1149,7 +1149,7 @@ struct WMGetResourcePlanRequest {
 }
 
 struct WMGetResourcePlanResponse {
-  1: optional WMResourcePlan resourcePlan;
+  1: optional WMFullResourcePlan resourcePlan;
 }
 
 struct WMGetAllResourcePlanRequest {

@@ -1011,7 +1011,7 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   }
 
   @Override
-  public WMResourcePlan getResourcePlan(String name) throws NoSuchObjectException {
+  public WMFullResourcePlan getResourcePlan(String name) throws NoSuchObjectException {
     return null;
   }
 

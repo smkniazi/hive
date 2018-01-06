@@ -9579,11 +9579,11 @@ class WMGetResourcePlanResponse {
   }
 
   virtual ~WMGetResourcePlanResponse() throw();
-  WMResourcePlan resourcePlan;
+  WMFullResourcePlan resourcePlan;
 
   _WMGetResourcePlanResponse__isset __isset;
 
-  void __set_resourcePlan(const WMResourcePlan& val);
+  void __set_resourcePlan(const WMFullResourcePlan& val);
 
   bool operator == (const WMGetResourcePlanResponse & rhs) const
   {

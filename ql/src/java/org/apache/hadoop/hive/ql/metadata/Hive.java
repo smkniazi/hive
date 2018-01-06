@@ -4785,7 +4785,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
-  public WMResourcePlan getResourcePlan(String rpName) throws HiveException {
+  public WMFullResourcePlan getResourcePlan(String rpName) throws HiveException {
     try {
       return getMSC().getResourcePlan(rpName);
     } catch (NoSuchObjectException e) {
