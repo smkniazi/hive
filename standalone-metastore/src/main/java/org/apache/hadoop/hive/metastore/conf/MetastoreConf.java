@@ -1026,6 +1026,10 @@ public class MetastoreConf {
     throw new RuntimeException("You should never be creating one of these!");
   }
 
+  public static void setHiveSiteLocation(URL location) {
+    hiveSiteURL = location;
+  }
+
   public static Configuration newMetastoreConf() {
 
     Configuration conf = new Configuration();
@@ -1041,7 +1045,15 @@ public class MetastoreConf {
 
     // Add in hive-site.xml.  We add this first so that it gets overridden by the new metastore
     // specific files if they exist.
-    hiveSiteURL = findConfigFile(classLoader, "hive-site.xml");
+    if(hiveSiteURL == null) {
+      /*
+       * this 'if' is pretty lame - QTestUtil.QTestUtil() uses hiveSiteURL to load a specific
+       * hive-site.xml from data/conf/<subdir> so this makes it follow the same logic - otherwise
+       * HiveConf and MetastoreConf may load different hive-site.xml  ( For example,
+       * HiveConf uses data/conf/spark/hive-site.xml and MetastoreConf data/conf/hive-site.xml)
+       */
+      hiveSiteURL = findConfigFile(classLoader, "hive-site.xml");
+    }
     if (hiveSiteURL != null) conf.addResource(hiveSiteURL);
 
     // Now add hivemetastore-site.xml.  Again we add this before our own config files so that the
