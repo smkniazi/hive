@@ -30,7 +30,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.api.AggrStats;
 import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
 import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
-import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -69,14 +68,11 @@ import org.apache.hadoop.hive.metastore.api.Type;
 import org.apache.hadoop.hive.metastore.api.UnknownDBException;
 import org.apache.hadoop.hive.metastore.api.UnknownPartitionException;
 import org.apache.hadoop.hive.metastore.api.UnknownTableException;
-<<<<<<< HEAD
-import org.apache.hadoop.hive.metastore.model.MTableWrite;
-=======
 import org.apache.hadoop.hive.metastore.api.WMMapping;
 import org.apache.hadoop.hive.metastore.api.WMPool;
->>>>>>> 44ef599155... HIVE-17954 : Implement pool, user, group and trigger to pool management API's (Harish Jaiprakash, reviewed by Sergey Shelukhin)
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
+import org.apache.hadoop.hive.metastore.utils.MetaStoreUtils.ColStatsObjWithSourceInfo;
 import org.apache.thrift.TException;
 import org.junit.Assert;
 
@@ -960,53 +956,6 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   }
 
   @Override
-  public void createTableWrite(Table tbl, long writeId, char state, long heartbeat) {
-  }
-
-  @Override
-  public void updateTableWrite(MTableWrite tw) {
-  }
-
-  @Override
-  public MTableWrite getTableWrite(String dbName, String tblName, long writeId) {
-    return null;
-  }
-
-  @Override
-  public List<Long> getTableWriteIds(
-      String dbName, String tblName, long watermarkId, long nextWriteId, char state) {
-    return null;
-  }
-
-  @Override
-  public List<FullTableName> getAllMmTablesForCleanup() throws MetaException {
-    return null;
-  }
-
-  @Override
-  public List<MTableWrite> getTableWrites(String dbName, String tblName,
-      long from, long to) throws MetaException {
-    return null;
-  }
-
-  @Override
-  public Collection<String> getAllPartitionLocations(String dbName,
-      String tblName) {
-    return null;
-  }
-
-  @Override
-  public void deleteTableWrites(String dbName, String tblName, long from,
-      long to) throws MetaException {
-  }
-
-  public Map<String, List<ColumnStatisticsObj>> getColStatsForTablePartitions(String dbName,
-      String tableName) throws MetaException, NoSuchObjectException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public String getMetastoreDbUuid() throws MetaException {
     throw new MetaException("Get metastore uuid is not implemented");
   }
@@ -1104,5 +1053,12 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   @Override
   public void dropWMTriggerToPoolMapping(String resourcePlanName, String triggerName,
       String poolPath) throws NoSuchObjectException, InvalidOperationException, MetaException {
+  }
+
+  @Override
+  public List<ColStatsObjWithSourceInfo> getPartitionColStatsForDatabase(String dbName)
+      throws MetaException, NoSuchObjectException {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
