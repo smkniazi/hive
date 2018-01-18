@@ -410,7 +410,7 @@ public class ConditionalResolverMergeFiles implements ConditionalResolver,
    */
   private long getMergeSize(FileSystem inpFs, Path dirPath, long avgSize) {
     AverageSize averageSize = getAverageSize(inpFs, dirPath);
-    if (averageSize.getTotalSize() <= 0) {
+    if (averageSize.getTotalSize() < 0) {
       return -1;
     }
 
