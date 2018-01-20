@@ -24713,6 +24713,11 @@ void WMValidateResourcePlanResponse::__set_errors(const std::vector<std::string>
 __isset.errors = true;
 }
 
+void WMValidateResourcePlanResponse::__set_warnings(const std::vector<std::string> & val) {
+  this->warnings = val;
+__isset.warnings = true;
+}
+
 uint32_t WMValidateResourcePlanResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -24754,6 +24759,26 @@ uint32_t WMValidateResourcePlanResponse::read(::apache::thrift::protocol::TProto
           xfer += iprot->skip(ftype);
         }
         break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->warnings.clear();
+            uint32_t _size987;
+            ::apache::thrift::protocol::TType _etype990;
+            xfer += iprot->readListBegin(_etype990, _size987);
+            this->warnings.resize(_size987);
+            uint32_t _i991;
+            for (_i991 = 0; _i991 < _size987; ++_i991)
+            {
+              xfer += iprot->readString(this->warnings[_i991]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.warnings = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -24775,10 +24800,23 @@ uint32_t WMValidateResourcePlanResponse::write(::apache::thrift::protocol::TProt
     xfer += oprot->writeFieldBegin("errors", ::apache::thrift::protocol::T_LIST, 1);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->errors.size()));
-      std::vector<std::string> ::const_iterator _iter987;
-      for (_iter987 = this->errors.begin(); _iter987 != this->errors.end(); ++_iter987)
+      std::vector<std::string> ::const_iterator _iter992;
+      for (_iter992 = this->errors.begin(); _iter992 != this->errors.end(); ++_iter992)
       {
-        xfer += oprot->writeString((*_iter987));
+        xfer += oprot->writeString((*_iter992));
+      }
+      xfer += oprot->writeListEnd();
+    }
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.warnings) {
+    xfer += oprot->writeFieldBegin("warnings", ::apache::thrift::protocol::T_LIST, 2);
+    {
+      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->warnings.size()));
+      std::vector<std::string> ::const_iterator _iter993;
+      for (_iter993 = this->warnings.begin(); _iter993 != this->warnings.end(); ++_iter993)
+      {
+        xfer += oprot->writeString((*_iter993));
       }
       xfer += oprot->writeListEnd();
     }
@@ -24792,22 +24830,26 @@ uint32_t WMValidateResourcePlanResponse::write(::apache::thrift::protocol::TProt
 void swap(WMValidateResourcePlanResponse &a, WMValidateResourcePlanResponse &b) {
   using ::std::swap;
   swap(a.errors, b.errors);
+  swap(a.warnings, b.warnings);
   swap(a.__isset, b.__isset);
 }
 
-WMValidateResourcePlanResponse::WMValidateResourcePlanResponse(const WMValidateResourcePlanResponse& other988) {
-  errors = other988.errors;
-  __isset = other988.__isset;
+WMValidateResourcePlanResponse::WMValidateResourcePlanResponse(const WMValidateResourcePlanResponse& other994) {
+  errors = other994.errors;
+  warnings = other994.warnings;
+  __isset = other994.__isset;
 }
-WMValidateResourcePlanResponse& WMValidateResourcePlanResponse::operator=(const WMValidateResourcePlanResponse& other989) {
-  errors = other989.errors;
-  __isset = other989.__isset;
+WMValidateResourcePlanResponse& WMValidateResourcePlanResponse::operator=(const WMValidateResourcePlanResponse& other995) {
+  errors = other995.errors;
+  warnings = other995.warnings;
+  __isset = other995.__isset;
   return *this;
 }
 void WMValidateResourcePlanResponse::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "WMValidateResourcePlanResponse(";
   out << "errors="; (__isset.errors ? (out << to_string(errors)) : (out << "<null>"));
+  out << ", " << "warnings="; (__isset.warnings ? (out << to_string(warnings)) : (out << "<null>"));
   out << ")";
 }
 
@@ -24883,13 +24925,13 @@ void swap(WMDropResourcePlanRequest &a, WMDropResourcePlanRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMDropResourcePlanRequest::WMDropResourcePlanRequest(const WMDropResourcePlanRequest& other990) {
-  resourcePlanName = other990.resourcePlanName;
-  __isset = other990.__isset;
+WMDropResourcePlanRequest::WMDropResourcePlanRequest(const WMDropResourcePlanRequest& other996) {
+  resourcePlanName = other996.resourcePlanName;
+  __isset = other996.__isset;
 }
-WMDropResourcePlanRequest& WMDropResourcePlanRequest::operator=(const WMDropResourcePlanRequest& other991) {
-  resourcePlanName = other991.resourcePlanName;
-  __isset = other991.__isset;
+WMDropResourcePlanRequest& WMDropResourcePlanRequest::operator=(const WMDropResourcePlanRequest& other997) {
+  resourcePlanName = other997.resourcePlanName;
+  __isset = other997.__isset;
   return *this;
 }
 void WMDropResourcePlanRequest::printTo(std::ostream& out) const {
@@ -24948,11 +24990,11 @@ void swap(WMDropResourcePlanResponse &a, WMDropResourcePlanResponse &b) {
   (void) b;
 }
 
-WMDropResourcePlanResponse::WMDropResourcePlanResponse(const WMDropResourcePlanResponse& other992) {
-  (void) other992;
+WMDropResourcePlanResponse::WMDropResourcePlanResponse(const WMDropResourcePlanResponse& other998) {
+  (void) other998;
 }
-WMDropResourcePlanResponse& WMDropResourcePlanResponse::operator=(const WMDropResourcePlanResponse& other993) {
-  (void) other993;
+WMDropResourcePlanResponse& WMDropResourcePlanResponse::operator=(const WMDropResourcePlanResponse& other999) {
+  (void) other999;
   return *this;
 }
 void WMDropResourcePlanResponse::printTo(std::ostream& out) const {
@@ -25033,13 +25075,13 @@ void swap(WMCreateTriggerRequest &a, WMCreateTriggerRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMCreateTriggerRequest::WMCreateTriggerRequest(const WMCreateTriggerRequest& other994) {
-  trigger = other994.trigger;
-  __isset = other994.__isset;
+WMCreateTriggerRequest::WMCreateTriggerRequest(const WMCreateTriggerRequest& other1000) {
+  trigger = other1000.trigger;
+  __isset = other1000.__isset;
 }
-WMCreateTriggerRequest& WMCreateTriggerRequest::operator=(const WMCreateTriggerRequest& other995) {
-  trigger = other995.trigger;
-  __isset = other995.__isset;
+WMCreateTriggerRequest& WMCreateTriggerRequest::operator=(const WMCreateTriggerRequest& other1001) {
+  trigger = other1001.trigger;
+  __isset = other1001.__isset;
   return *this;
 }
 void WMCreateTriggerRequest::printTo(std::ostream& out) const {
@@ -25098,11 +25140,11 @@ void swap(WMCreateTriggerResponse &a, WMCreateTriggerResponse &b) {
   (void) b;
 }
 
-WMCreateTriggerResponse::WMCreateTriggerResponse(const WMCreateTriggerResponse& other996) {
-  (void) other996;
+WMCreateTriggerResponse::WMCreateTriggerResponse(const WMCreateTriggerResponse& other1002) {
+  (void) other1002;
 }
-WMCreateTriggerResponse& WMCreateTriggerResponse::operator=(const WMCreateTriggerResponse& other997) {
-  (void) other997;
+WMCreateTriggerResponse& WMCreateTriggerResponse::operator=(const WMCreateTriggerResponse& other1003) {
+  (void) other1003;
   return *this;
 }
 void WMCreateTriggerResponse::printTo(std::ostream& out) const {
@@ -25183,13 +25225,13 @@ void swap(WMAlterTriggerRequest &a, WMAlterTriggerRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMAlterTriggerRequest::WMAlterTriggerRequest(const WMAlterTriggerRequest& other998) {
-  trigger = other998.trigger;
-  __isset = other998.__isset;
+WMAlterTriggerRequest::WMAlterTriggerRequest(const WMAlterTriggerRequest& other1004) {
+  trigger = other1004.trigger;
+  __isset = other1004.__isset;
 }
-WMAlterTriggerRequest& WMAlterTriggerRequest::operator=(const WMAlterTriggerRequest& other999) {
-  trigger = other999.trigger;
-  __isset = other999.__isset;
+WMAlterTriggerRequest& WMAlterTriggerRequest::operator=(const WMAlterTriggerRequest& other1005) {
+  trigger = other1005.trigger;
+  __isset = other1005.__isset;
   return *this;
 }
 void WMAlterTriggerRequest::printTo(std::ostream& out) const {
@@ -25248,11 +25290,11 @@ void swap(WMAlterTriggerResponse &a, WMAlterTriggerResponse &b) {
   (void) b;
 }
 
-WMAlterTriggerResponse::WMAlterTriggerResponse(const WMAlterTriggerResponse& other1000) {
-  (void) other1000;
+WMAlterTriggerResponse::WMAlterTriggerResponse(const WMAlterTriggerResponse& other1006) {
+  (void) other1006;
 }
-WMAlterTriggerResponse& WMAlterTriggerResponse::operator=(const WMAlterTriggerResponse& other1001) {
-  (void) other1001;
+WMAlterTriggerResponse& WMAlterTriggerResponse::operator=(const WMAlterTriggerResponse& other1007) {
+  (void) other1007;
   return *this;
 }
 void WMAlterTriggerResponse::printTo(std::ostream& out) const {
@@ -25352,15 +25394,15 @@ void swap(WMDropTriggerRequest &a, WMDropTriggerRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMDropTriggerRequest::WMDropTriggerRequest(const WMDropTriggerRequest& other1002) {
-  resourcePlanName = other1002.resourcePlanName;
-  triggerName = other1002.triggerName;
-  __isset = other1002.__isset;
+WMDropTriggerRequest::WMDropTriggerRequest(const WMDropTriggerRequest& other1008) {
+  resourcePlanName = other1008.resourcePlanName;
+  triggerName = other1008.triggerName;
+  __isset = other1008.__isset;
 }
-WMDropTriggerRequest& WMDropTriggerRequest::operator=(const WMDropTriggerRequest& other1003) {
-  resourcePlanName = other1003.resourcePlanName;
-  triggerName = other1003.triggerName;
-  __isset = other1003.__isset;
+WMDropTriggerRequest& WMDropTriggerRequest::operator=(const WMDropTriggerRequest& other1009) {
+  resourcePlanName = other1009.resourcePlanName;
+  triggerName = other1009.triggerName;
+  __isset = other1009.__isset;
   return *this;
 }
 void WMDropTriggerRequest::printTo(std::ostream& out) const {
@@ -25420,11 +25462,11 @@ void swap(WMDropTriggerResponse &a, WMDropTriggerResponse &b) {
   (void) b;
 }
 
-WMDropTriggerResponse::WMDropTriggerResponse(const WMDropTriggerResponse& other1004) {
-  (void) other1004;
+WMDropTriggerResponse::WMDropTriggerResponse(const WMDropTriggerResponse& other1010) {
+  (void) other1010;
 }
-WMDropTriggerResponse& WMDropTriggerResponse::operator=(const WMDropTriggerResponse& other1005) {
-  (void) other1005;
+WMDropTriggerResponse& WMDropTriggerResponse::operator=(const WMDropTriggerResponse& other1011) {
+  (void) other1011;
   return *this;
 }
 void WMDropTriggerResponse::printTo(std::ostream& out) const {
@@ -25505,13 +25547,13 @@ void swap(WMGetTriggersForResourePlanRequest &a, WMGetTriggersForResourePlanRequ
   swap(a.__isset, b.__isset);
 }
 
-WMGetTriggersForResourePlanRequest::WMGetTriggersForResourePlanRequest(const WMGetTriggersForResourePlanRequest& other1006) {
-  resourcePlanName = other1006.resourcePlanName;
-  __isset = other1006.__isset;
+WMGetTriggersForResourePlanRequest::WMGetTriggersForResourePlanRequest(const WMGetTriggersForResourePlanRequest& other1012) {
+  resourcePlanName = other1012.resourcePlanName;
+  __isset = other1012.__isset;
 }
-WMGetTriggersForResourePlanRequest& WMGetTriggersForResourePlanRequest::operator=(const WMGetTriggersForResourePlanRequest& other1007) {
-  resourcePlanName = other1007.resourcePlanName;
-  __isset = other1007.__isset;
+WMGetTriggersForResourePlanRequest& WMGetTriggersForResourePlanRequest::operator=(const WMGetTriggersForResourePlanRequest& other1013) {
+  resourcePlanName = other1013.resourcePlanName;
+  __isset = other1013.__isset;
   return *this;
 }
 void WMGetTriggersForResourePlanRequest::printTo(std::ostream& out) const {
@@ -25556,14 +25598,14 @@ uint32_t WMGetTriggersForResourePlanResponse::read(::apache::thrift::protocol::T
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->triggers.clear();
-            uint32_t _size1008;
-            ::apache::thrift::protocol::TType _etype1011;
-            xfer += iprot->readListBegin(_etype1011, _size1008);
-            this->triggers.resize(_size1008);
-            uint32_t _i1012;
-            for (_i1012 = 0; _i1012 < _size1008; ++_i1012)
+            uint32_t _size1014;
+            ::apache::thrift::protocol::TType _etype1017;
+            xfer += iprot->readListBegin(_etype1017, _size1014);
+            this->triggers.resize(_size1014);
+            uint32_t _i1018;
+            for (_i1018 = 0; _i1018 < _size1014; ++_i1018)
             {
-              xfer += this->triggers[_i1012].read(iprot);
+              xfer += this->triggers[_i1018].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
@@ -25593,10 +25635,10 @@ uint32_t WMGetTriggersForResourePlanResponse::write(::apache::thrift::protocol::
     xfer += oprot->writeFieldBegin("triggers", ::apache::thrift::protocol::T_LIST, 1);
     {
       xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->triggers.size()));
-      std::vector<WMTrigger> ::const_iterator _iter1013;
-      for (_iter1013 = this->triggers.begin(); _iter1013 != this->triggers.end(); ++_iter1013)
+      std::vector<WMTrigger> ::const_iterator _iter1019;
+      for (_iter1019 = this->triggers.begin(); _iter1019 != this->triggers.end(); ++_iter1019)
       {
-        xfer += (*_iter1013).write(oprot);
+        xfer += (*_iter1019).write(oprot);
       }
       xfer += oprot->writeListEnd();
     }
@@ -25613,13 +25655,13 @@ void swap(WMGetTriggersForResourePlanResponse &a, WMGetTriggersForResourePlanRes
   swap(a.__isset, b.__isset);
 }
 
-WMGetTriggersForResourePlanResponse::WMGetTriggersForResourePlanResponse(const WMGetTriggersForResourePlanResponse& other1014) {
-  triggers = other1014.triggers;
-  __isset = other1014.__isset;
+WMGetTriggersForResourePlanResponse::WMGetTriggersForResourePlanResponse(const WMGetTriggersForResourePlanResponse& other1020) {
+  triggers = other1020.triggers;
+  __isset = other1020.__isset;
 }
-WMGetTriggersForResourePlanResponse& WMGetTriggersForResourePlanResponse::operator=(const WMGetTriggersForResourePlanResponse& other1015) {
-  triggers = other1015.triggers;
-  __isset = other1015.__isset;
+WMGetTriggersForResourePlanResponse& WMGetTriggersForResourePlanResponse::operator=(const WMGetTriggersForResourePlanResponse& other1021) {
+  triggers = other1021.triggers;
+  __isset = other1021.__isset;
   return *this;
 }
 void WMGetTriggersForResourePlanResponse::printTo(std::ostream& out) const {
@@ -25701,13 +25743,13 @@ void swap(WMCreatePoolRequest &a, WMCreatePoolRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMCreatePoolRequest::WMCreatePoolRequest(const WMCreatePoolRequest& other1016) {
-  pool = other1016.pool;
-  __isset = other1016.__isset;
+WMCreatePoolRequest::WMCreatePoolRequest(const WMCreatePoolRequest& other1022) {
+  pool = other1022.pool;
+  __isset = other1022.__isset;
 }
-WMCreatePoolRequest& WMCreatePoolRequest::operator=(const WMCreatePoolRequest& other1017) {
-  pool = other1017.pool;
-  __isset = other1017.__isset;
+WMCreatePoolRequest& WMCreatePoolRequest::operator=(const WMCreatePoolRequest& other1023) {
+  pool = other1023.pool;
+  __isset = other1023.__isset;
   return *this;
 }
 void WMCreatePoolRequest::printTo(std::ostream& out) const {
@@ -25766,11 +25808,11 @@ void swap(WMCreatePoolResponse &a, WMCreatePoolResponse &b) {
   (void) b;
 }
 
-WMCreatePoolResponse::WMCreatePoolResponse(const WMCreatePoolResponse& other1018) {
-  (void) other1018;
+WMCreatePoolResponse::WMCreatePoolResponse(const WMCreatePoolResponse& other1024) {
+  (void) other1024;
 }
-WMCreatePoolResponse& WMCreatePoolResponse::operator=(const WMCreatePoolResponse& other1019) {
-  (void) other1019;
+WMCreatePoolResponse& WMCreatePoolResponse::operator=(const WMCreatePoolResponse& other1025) {
+  (void) other1025;
   return *this;
 }
 void WMCreatePoolResponse::printTo(std::ostream& out) const {
@@ -25870,15 +25912,15 @@ void swap(WMAlterPoolRequest &a, WMAlterPoolRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMAlterPoolRequest::WMAlterPoolRequest(const WMAlterPoolRequest& other1020) {
-  pool = other1020.pool;
-  poolPath = other1020.poolPath;
-  __isset = other1020.__isset;
+WMAlterPoolRequest::WMAlterPoolRequest(const WMAlterPoolRequest& other1026) {
+  pool = other1026.pool;
+  poolPath = other1026.poolPath;
+  __isset = other1026.__isset;
 }
-WMAlterPoolRequest& WMAlterPoolRequest::operator=(const WMAlterPoolRequest& other1021) {
-  pool = other1021.pool;
-  poolPath = other1021.poolPath;
-  __isset = other1021.__isset;
+WMAlterPoolRequest& WMAlterPoolRequest::operator=(const WMAlterPoolRequest& other1027) {
+  pool = other1027.pool;
+  poolPath = other1027.poolPath;
+  __isset = other1027.__isset;
   return *this;
 }
 void WMAlterPoolRequest::printTo(std::ostream& out) const {
@@ -25938,11 +25980,11 @@ void swap(WMAlterPoolResponse &a, WMAlterPoolResponse &b) {
   (void) b;
 }
 
-WMAlterPoolResponse::WMAlterPoolResponse(const WMAlterPoolResponse& other1022) {
-  (void) other1022;
+WMAlterPoolResponse::WMAlterPoolResponse(const WMAlterPoolResponse& other1028) {
+  (void) other1028;
 }
-WMAlterPoolResponse& WMAlterPoolResponse::operator=(const WMAlterPoolResponse& other1023) {
-  (void) other1023;
+WMAlterPoolResponse& WMAlterPoolResponse::operator=(const WMAlterPoolResponse& other1029) {
+  (void) other1029;
   return *this;
 }
 void WMAlterPoolResponse::printTo(std::ostream& out) const {
@@ -26042,15 +26084,15 @@ void swap(WMDropPoolRequest &a, WMDropPoolRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMDropPoolRequest::WMDropPoolRequest(const WMDropPoolRequest& other1024) {
-  resourcePlanName = other1024.resourcePlanName;
-  poolPath = other1024.poolPath;
-  __isset = other1024.__isset;
+WMDropPoolRequest::WMDropPoolRequest(const WMDropPoolRequest& other1030) {
+  resourcePlanName = other1030.resourcePlanName;
+  poolPath = other1030.poolPath;
+  __isset = other1030.__isset;
 }
-WMDropPoolRequest& WMDropPoolRequest::operator=(const WMDropPoolRequest& other1025) {
-  resourcePlanName = other1025.resourcePlanName;
-  poolPath = other1025.poolPath;
-  __isset = other1025.__isset;
+WMDropPoolRequest& WMDropPoolRequest::operator=(const WMDropPoolRequest& other1031) {
+  resourcePlanName = other1031.resourcePlanName;
+  poolPath = other1031.poolPath;
+  __isset = other1031.__isset;
   return *this;
 }
 void WMDropPoolRequest::printTo(std::ostream& out) const {
@@ -26110,11 +26152,11 @@ void swap(WMDropPoolResponse &a, WMDropPoolResponse &b) {
   (void) b;
 }
 
-WMDropPoolResponse::WMDropPoolResponse(const WMDropPoolResponse& other1026) {
-  (void) other1026;
+WMDropPoolResponse::WMDropPoolResponse(const WMDropPoolResponse& other1032) {
+  (void) other1032;
 }
-WMDropPoolResponse& WMDropPoolResponse::operator=(const WMDropPoolResponse& other1027) {
-  (void) other1027;
+WMDropPoolResponse& WMDropPoolResponse::operator=(const WMDropPoolResponse& other1033) {
+  (void) other1033;
   return *this;
 }
 void WMDropPoolResponse::printTo(std::ostream& out) const {
@@ -26214,15 +26256,15 @@ void swap(WMCreateOrUpdateMappingRequest &a, WMCreateOrUpdateMappingRequest &b) 
   swap(a.__isset, b.__isset);
 }
 
-WMCreateOrUpdateMappingRequest::WMCreateOrUpdateMappingRequest(const WMCreateOrUpdateMappingRequest& other1028) {
-  mapping = other1028.mapping;
-  update = other1028.update;
-  __isset = other1028.__isset;
+WMCreateOrUpdateMappingRequest::WMCreateOrUpdateMappingRequest(const WMCreateOrUpdateMappingRequest& other1034) {
+  mapping = other1034.mapping;
+  update = other1034.update;
+  __isset = other1034.__isset;
 }
-WMCreateOrUpdateMappingRequest& WMCreateOrUpdateMappingRequest::operator=(const WMCreateOrUpdateMappingRequest& other1029) {
-  mapping = other1029.mapping;
-  update = other1029.update;
-  __isset = other1029.__isset;
+WMCreateOrUpdateMappingRequest& WMCreateOrUpdateMappingRequest::operator=(const WMCreateOrUpdateMappingRequest& other1035) {
+  mapping = other1035.mapping;
+  update = other1035.update;
+  __isset = other1035.__isset;
   return *this;
 }
 void WMCreateOrUpdateMappingRequest::printTo(std::ostream& out) const {
@@ -26282,11 +26324,11 @@ void swap(WMCreateOrUpdateMappingResponse &a, WMCreateOrUpdateMappingResponse &b
   (void) b;
 }
 
-WMCreateOrUpdateMappingResponse::WMCreateOrUpdateMappingResponse(const WMCreateOrUpdateMappingResponse& other1030) {
-  (void) other1030;
+WMCreateOrUpdateMappingResponse::WMCreateOrUpdateMappingResponse(const WMCreateOrUpdateMappingResponse& other1036) {
+  (void) other1036;
 }
-WMCreateOrUpdateMappingResponse& WMCreateOrUpdateMappingResponse::operator=(const WMCreateOrUpdateMappingResponse& other1031) {
-  (void) other1031;
+WMCreateOrUpdateMappingResponse& WMCreateOrUpdateMappingResponse::operator=(const WMCreateOrUpdateMappingResponse& other1037) {
+  (void) other1037;
   return *this;
 }
 void WMCreateOrUpdateMappingResponse::printTo(std::ostream& out) const {
@@ -26367,13 +26409,13 @@ void swap(WMDropMappingRequest &a, WMDropMappingRequest &b) {
   swap(a.__isset, b.__isset);
 }
 
-WMDropMappingRequest::WMDropMappingRequest(const WMDropMappingRequest& other1032) {
-  mapping = other1032.mapping;
-  __isset = other1032.__isset;
+WMDropMappingRequest::WMDropMappingRequest(const WMDropMappingRequest& other1038) {
+  mapping = other1038.mapping;
+  __isset = other1038.__isset;
 }
-WMDropMappingRequest& WMDropMappingRequest::operator=(const WMDropMappingRequest& other1033) {
-  mapping = other1033.mapping;
-  __isset = other1033.__isset;
+WMDropMappingRequest& WMDropMappingRequest::operator=(const WMDropMappingRequest& other1039) {
+  mapping = other1039.mapping;
+  __isset = other1039.__isset;
   return *this;
 }
 void WMDropMappingRequest::printTo(std::ostream& out) const {
@@ -26432,11 +26474,11 @@ void swap(WMDropMappingResponse &a, WMDropMappingResponse &b) {
   (void) b;
 }
 
-WMDropMappingResponse::WMDropMappingResponse(const WMDropMappingResponse& other1034) {
-  (void) other1034;
+WMDropMappingResponse::WMDropMappingResponse(const WMDropMappingResponse& other1040) {
+  (void) other1040;
 }
-WMDropMappingResponse& WMDropMappingResponse::operator=(const WMDropMappingResponse& other1035) {
-  (void) other1035;
+WMDropMappingResponse& WMDropMappingResponse::operator=(const WMDropMappingResponse& other1041) {
+  (void) other1041;
   return *this;
 }
 void WMDropMappingResponse::printTo(std::ostream& out) const {
@@ -26574,19 +26616,19 @@ void swap(WMCreateOrDropTriggerToPoolMappingRequest &a, WMCreateOrDropTriggerToP
   swap(a.__isset, b.__isset);
 }
 
-WMCreateOrDropTriggerToPoolMappingRequest::WMCreateOrDropTriggerToPoolMappingRequest(const WMCreateOrDropTriggerToPoolMappingRequest& other1036) {
-  resourcePlanName = other1036.resourcePlanName;
-  triggerName = other1036.triggerName;
-  poolPath = other1036.poolPath;
-  drop = other1036.drop;
-  __isset = other1036.__isset;
+WMCreateOrDropTriggerToPoolMappingRequest::WMCreateOrDropTriggerToPoolMappingRequest(const WMCreateOrDropTriggerToPoolMappingRequest& other1042) {
+  resourcePlanName = other1042.resourcePlanName;
+  triggerName = other1042.triggerName;
+  poolPath = other1042.poolPath;
+  drop = other1042.drop;
+  __isset = other1042.__isset;
 }
-WMCreateOrDropTriggerToPoolMappingRequest& WMCreateOrDropTriggerToPoolMappingRequest::operator=(const WMCreateOrDropTriggerToPoolMappingRequest& other1037) {
-  resourcePlanName = other1037.resourcePlanName;
-  triggerName = other1037.triggerName;
-  poolPath = other1037.poolPath;
-  drop = other1037.drop;
-  __isset = other1037.__isset;
+WMCreateOrDropTriggerToPoolMappingRequest& WMCreateOrDropTriggerToPoolMappingRequest::operator=(const WMCreateOrDropTriggerToPoolMappingRequest& other1043) {
+  resourcePlanName = other1043.resourcePlanName;
+  triggerName = other1043.triggerName;
+  poolPath = other1043.poolPath;
+  drop = other1043.drop;
+  __isset = other1043.__isset;
   return *this;
 }
 void WMCreateOrDropTriggerToPoolMappingRequest::printTo(std::ostream& out) const {
@@ -26648,11 +26690,11 @@ void swap(WMCreateOrDropTriggerToPoolMappingResponse &a, WMCreateOrDropTriggerTo
   (void) b;
 }
 
-WMCreateOrDropTriggerToPoolMappingResponse::WMCreateOrDropTriggerToPoolMappingResponse(const WMCreateOrDropTriggerToPoolMappingResponse& other1038) {
-  (void) other1038;
+WMCreateOrDropTriggerToPoolMappingResponse::WMCreateOrDropTriggerToPoolMappingResponse(const WMCreateOrDropTriggerToPoolMappingResponse& other1044) {
+  (void) other1044;
 }
-WMCreateOrDropTriggerToPoolMappingResponse& WMCreateOrDropTriggerToPoolMappingResponse::operator=(const WMCreateOrDropTriggerToPoolMappingResponse& other1039) {
-  (void) other1039;
+WMCreateOrDropTriggerToPoolMappingResponse& WMCreateOrDropTriggerToPoolMappingResponse::operator=(const WMCreateOrDropTriggerToPoolMappingResponse& other1045) {
+  (void) other1045;
   return *this;
 }
 void WMCreateOrDropTriggerToPoolMappingResponse::printTo(std::ostream& out) const {
@@ -26731,13 +26773,13 @@ void swap(MetaException &a, MetaException &b) {
   swap(a.__isset, b.__isset);
 }
 
-MetaException::MetaException(const MetaException& other1040) : TException() {
-  message = other1040.message;
-  __isset = other1040.__isset;
+MetaException::MetaException(const MetaException& other1046) : TException() {
+  message = other1046.message;
+  __isset = other1046.__isset;
 }
-MetaException& MetaException::operator=(const MetaException& other1041) {
-  message = other1041.message;
-  __isset = other1041.__isset;
+MetaException& MetaException::operator=(const MetaException& other1047) {
+  message = other1047.message;
+  __isset = other1047.__isset;
   return *this;
 }
 void MetaException::printTo(std::ostream& out) const {
@@ -26828,13 +26870,13 @@ void swap(UnknownTableException &a, UnknownTableException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownTableException::UnknownTableException(const UnknownTableException& other1042) : TException() {
-  message = other1042.message;
-  __isset = other1042.__isset;
+UnknownTableException::UnknownTableException(const UnknownTableException& other1048) : TException() {
+  message = other1048.message;
+  __isset = other1048.__isset;
 }
-UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other1043) {
-  message = other1043.message;
-  __isset = other1043.__isset;
+UnknownTableException& UnknownTableException::operator=(const UnknownTableException& other1049) {
+  message = other1049.message;
+  __isset = other1049.__isset;
   return *this;
 }
 void UnknownTableException::printTo(std::ostream& out) const {
@@ -26925,13 +26967,13 @@ void swap(UnknownDBException &a, UnknownDBException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownDBException::UnknownDBException(const UnknownDBException& other1044) : TException() {
-  message = other1044.message;
-  __isset = other1044.__isset;
+UnknownDBException::UnknownDBException(const UnknownDBException& other1050) : TException() {
+  message = other1050.message;
+  __isset = other1050.__isset;
 }
-UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other1045) {
-  message = other1045.message;
-  __isset = other1045.__isset;
+UnknownDBException& UnknownDBException::operator=(const UnknownDBException& other1051) {
+  message = other1051.message;
+  __isset = other1051.__isset;
   return *this;
 }
 void UnknownDBException::printTo(std::ostream& out) const {
@@ -27022,13 +27064,13 @@ void swap(AlreadyExistsException &a, AlreadyExistsException &b) {
   swap(a.__isset, b.__isset);
 }
 
-AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other1046) : TException() {
-  message = other1046.message;
-  __isset = other1046.__isset;
+AlreadyExistsException::AlreadyExistsException(const AlreadyExistsException& other1052) : TException() {
+  message = other1052.message;
+  __isset = other1052.__isset;
 }
-AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other1047) {
-  message = other1047.message;
-  __isset = other1047.__isset;
+AlreadyExistsException& AlreadyExistsException::operator=(const AlreadyExistsException& other1053) {
+  message = other1053.message;
+  __isset = other1053.__isset;
   return *this;
 }
 void AlreadyExistsException::printTo(std::ostream& out) const {
@@ -27119,13 +27161,13 @@ void swap(InvalidPartitionException &a, InvalidPartitionException &b) {
   swap(a.__isset, b.__isset);
 }
 
-InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other1048) : TException() {
-  message = other1048.message;
-  __isset = other1048.__isset;
+InvalidPartitionException::InvalidPartitionException(const InvalidPartitionException& other1054) : TException() {
+  message = other1054.message;
+  __isset = other1054.__isset;
 }
-InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other1049) {
-  message = other1049.message;
-  __isset = other1049.__isset;
+InvalidPartitionException& InvalidPartitionException::operator=(const InvalidPartitionException& other1055) {
+  message = other1055.message;
+  __isset = other1055.__isset;
   return *this;
 }
 void InvalidPartitionException::printTo(std::ostream& out) const {
@@ -27216,13 +27258,13 @@ void swap(UnknownPartitionException &a, UnknownPartitionException &b) {
   swap(a.__isset, b.__isset);
 }
 
-UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other1050) : TException() {
-  message = other1050.message;
-  __isset = other1050.__isset;
+UnknownPartitionException::UnknownPartitionException(const UnknownPartitionException& other1056) : TException() {
+  message = other1056.message;
+  __isset = other1056.__isset;
 }
-UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other1051) {
-  message = other1051.message;
-  __isset = other1051.__isset;
+UnknownPartitionException& UnknownPartitionException::operator=(const UnknownPartitionException& other1057) {
+  message = other1057.message;
+  __isset = other1057.__isset;
   return *this;
 }
 void UnknownPartitionException::printTo(std::ostream& out) const {
@@ -27313,13 +27355,13 @@ void swap(InvalidObjectException &a, InvalidObjectException &b) {
   swap(a.__isset, b.__isset);
 }
 
-InvalidObjectException::InvalidObjectException(const InvalidObjectException& other1052) : TException() {
-  message = other1052.message;
-  __isset = other1052.__isset;
+InvalidObjectException::InvalidObjectException(const InvalidObjectException& other1058) : TException() {
+  message = other1058.message;
+  __isset = other1058.__isset;
 }
-InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other1053) {
-  message = other1053.message;
-  __isset = other1053.__isset;
+InvalidObjectException& InvalidObjectException::operator=(const InvalidObjectException& other1059) {
+  message = other1059.message;
+  __isset = other1059.__isset;
   return *this;
 }
 void InvalidObjectException::printTo(std::ostream& out) const {
@@ -27410,13 +27452,13 @@ void swap(NoSuchObjectException &a, NoSuchObjectException &b) {
   swap(a.__isset, b.__isset);
 }
 
-NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other1054) : TException() {
-  message = other1054.message;
-  __isset = other1054.__isset;
+NoSuchObjectException::NoSuchObjectException(const NoSuchObjectException& other1060) : TException() {
+  message = other1060.message;
+  __isset = other1060.__isset;
 }
-NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other1055) {
-  message = other1055.message;
-  __isset = other1055.__isset;
+NoSuchObjectException& NoSuchObjectException::operator=(const NoSuchObjectException& other1061) {
+  message = other1061.message;
+  __isset = other1061.__isset;
   return *this;
 }
 void NoSuchObjectException::printTo(std::ostream& out) const {
@@ -27507,13 +27549,13 @@ void swap(IndexAlreadyExistsException &a, IndexAlreadyExistsException &b) {
   swap(a.__isset, b.__isset);
 }
 
-IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other1056) : TException() {
-  message = other1056.message;
-  __isset = other1056.__isset;
+IndexAlreadyExistsException::IndexAlreadyExistsException(const IndexAlreadyExistsException& other1062) : TException() {
+  message = other1062.message;
+  __isset = other1062.__isset;
 }
-IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other1057) {
-  message = other1057.message;
-  __isset = other1057.__isset;
+IndexAlreadyExistsException& IndexAlreadyExistsException::operator=(const IndexAlreadyExistsException& other1063) {
+  message = other1063.message;
+  __isset = other1063.__isset;
   return *this;
 }
 void IndexAlreadyExistsException::printTo(std::ostream& out) const {
@@ -27604,13 +27646,13 @@ void swap(InvalidOperationException &a, InvalidOperationException &b) {
   swap(a.__isset, b.__isset);
 }
 
-InvalidOperationException::InvalidOperationException(const InvalidOperationException& other1058) : TException() {
-  message = other1058.message;
-  __isset = other1058.__isset;
+InvalidOperationException::InvalidOperationException(const InvalidOperationException& other1064) : TException() {
+  message = other1064.message;
+  __isset = other1064.__isset;
 }
-InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other1059) {
-  message = other1059.message;
-  __isset = other1059.__isset;
+InvalidOperationException& InvalidOperationException::operator=(const InvalidOperationException& other1065) {
+  message = other1065.message;
+  __isset = other1065.__isset;
   return *this;
 }
 void InvalidOperationException::printTo(std::ostream& out) const {
@@ -27701,13 +27743,13 @@ void swap(ConfigValSecurityException &a, ConfigValSecurityException &b) {
   swap(a.__isset, b.__isset);
 }
 
-ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other1060) : TException() {
-  message = other1060.message;
-  __isset = other1060.__isset;
+ConfigValSecurityException::ConfigValSecurityException(const ConfigValSecurityException& other1066) : TException() {
+  message = other1066.message;
+  __isset = other1066.__isset;
 }
-ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other1061) {
-  message = other1061.message;
-  __isset = other1061.__isset;
+ConfigValSecurityException& ConfigValSecurityException::operator=(const ConfigValSecurityException& other1067) {
+  message = other1067.message;
+  __isset = other1067.__isset;
   return *this;
 }
 void ConfigValSecurityException::printTo(std::ostream& out) const {
@@ -27798,13 +27840,13 @@ void swap(InvalidInputException &a, InvalidInputException &b) {
   swap(a.__isset, b.__isset);
 }
 
-InvalidInputException::InvalidInputException(const InvalidInputException& other1062) : TException() {
-  message = other1062.message;
-  __isset = other1062.__isset;
+InvalidInputException::InvalidInputException(const InvalidInputException& other1068) : TException() {
+  message = other1068.message;
+  __isset = other1068.__isset;
 }
-InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other1063) {
-  message = other1063.message;
-  __isset = other1063.__isset;
+InvalidInputException& InvalidInputException::operator=(const InvalidInputException& other1069) {
+  message = other1069.message;
+  __isset = other1069.__isset;
   return *this;
 }
 void InvalidInputException::printTo(std::ostream& out) const {
@@ -27895,13 +27937,13 @@ void swap(NoSuchTxnException &a, NoSuchTxnException &b) {
   swap(a.__isset, b.__isset);
 }
 
-NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other1064) : TException() {
-  message = other1064.message;
-  __isset = other1064.__isset;
+NoSuchTxnException::NoSuchTxnException(const NoSuchTxnException& other1070) : TException() {
+  message = other1070.message;
+  __isset = other1070.__isset;
 }
-NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other1065) {
-  message = other1065.message;
-  __isset = other1065.__isset;
+NoSuchTxnException& NoSuchTxnException::operator=(const NoSuchTxnException& other1071) {
+  message = other1071.message;
+  __isset = other1071.__isset;
   return *this;
 }
 void NoSuchTxnException::printTo(std::ostream& out) const {
@@ -27992,13 +28034,13 @@ void swap(TxnAbortedException &a, TxnAbortedException &b) {
   swap(a.__isset, b.__isset);
 }
 
-TxnAbortedException::TxnAbortedException(const TxnAbortedException& other1066) : TException() {
-  message = other1066.message;
-  __isset = other1066.__isset;
+TxnAbortedException::TxnAbortedException(const TxnAbortedException& other1072) : TException() {
+  message = other1072.message;
+  __isset = other1072.__isset;
 }
-TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other1067) {
-  message = other1067.message;
-  __isset = other1067.__isset;
+TxnAbortedException& TxnAbortedException::operator=(const TxnAbortedException& other1073) {
+  message = other1073.message;
+  __isset = other1073.__isset;
   return *this;
 }
 void TxnAbortedException::printTo(std::ostream& out) const {
@@ -28089,13 +28131,13 @@ void swap(TxnOpenException &a, TxnOpenException &b) {
   swap(a.__isset, b.__isset);
 }
 
-TxnOpenException::TxnOpenException(const TxnOpenException& other1068) : TException() {
-  message = other1068.message;
-  __isset = other1068.__isset;
+TxnOpenException::TxnOpenException(const TxnOpenException& other1074) : TException() {
+  message = other1074.message;
+  __isset = other1074.__isset;
 }
-TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other1069) {
-  message = other1069.message;
-  __isset = other1069.__isset;
+TxnOpenException& TxnOpenException::operator=(const TxnOpenException& other1075) {
+  message = other1075.message;
+  __isset = other1075.__isset;
   return *this;
 }
 void TxnOpenException::printTo(std::ostream& out) const {
@@ -28186,13 +28228,13 @@ void swap(NoSuchLockException &a, NoSuchLockException &b) {
   swap(a.__isset, b.__isset);
 }
 
-NoSuchLockException::NoSuchLockException(const NoSuchLockException& other1070) : TException() {
-  message = other1070.message;
-  __isset = other1070.__isset;
+NoSuchLockException::NoSuchLockException(const NoSuchLockException& other1076) : TException() {
+  message = other1076.message;
+  __isset = other1076.__isset;
 }
-NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other1071) {
-  message = other1071.message;
-  __isset = other1071.__isset;
+NoSuchLockException& NoSuchLockException::operator=(const NoSuchLockException& other1077) {
+  message = other1077.message;
+  __isset = other1077.__isset;
   return *this;
 }
 void NoSuchLockException::printTo(std::ostream& out) const {

@@ -138,6 +138,7 @@ import org.apache.hadoop.hive.metastore.api.WMNullableResourcePlan;
 import org.apache.hadoop.hive.metastore.api.WMPool;
 import org.apache.hadoop.hive.metastore.api.WMResourcePlan;
 import org.apache.hadoop.hive.metastore.api.WMTrigger;
+import org.apache.hadoop.hive.metastore.api.WMValidateResourcePlanResponse;
 import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.metastore.utils.MetaStoreUtils;
 import org.apache.hadoop.hive.ql.ErrorMsg;
@@ -4903,7 +4904,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
-  public List<String> validateResourcePlan(String rpName) throws HiveException {
+  public WMValidateResourcePlanResponse validateResourcePlan(String rpName) throws HiveException {
     try {
       return getMSC().validateResourcePlan(rpName);
     } catch (Exception e) {

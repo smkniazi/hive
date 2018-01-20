@@ -24146,6 +24146,10 @@ class WMValidateResourcePlanResponse {
    * @var string[]
    */
   public $errors = null;
+  /**
+   * @var string[]
+   */
+  public $warnings = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -24158,11 +24162,22 @@ class WMValidateResourcePlanResponse {
             'type' => TType::STRING,
             ),
           ),
+        2 => array(
+          'var' => 'warnings',
+          'type' => TType::LST,
+          'etype' => TType::STRING,
+          'elem' => array(
+            'type' => TType::STRING,
+            ),
+          ),
         );
     }
     if (is_array($vals)) {
       if (isset($vals['errors'])) {
         $this->errors = $vals['errors'];
+      }
+      if (isset($vals['warnings'])) {
+        $this->warnings = $vals['warnings'];
       }
     }
   }
@@ -24203,6 +24218,23 @@ class WMValidateResourcePlanResponse {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 2:
+          if ($ftype == TType::LST) {
+            $this->warnings = array();
+            $_size724 = 0;
+            $_etype727 = 0;
+            $xfer += $input->readListBegin($_etype727, $_size724);
+            for ($_i728 = 0; $_i728 < $_size724; ++$_i728)
+            {
+              $elem729 = null;
+              $xfer += $input->readString($elem729);
+              $this->warnings []= $elem729;
+            }
+            $xfer += $input->readListEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -24224,9 +24256,26 @@ class WMValidateResourcePlanResponse {
       {
         $output->writeListBegin(TType::STRING, count($this->errors));
         {
-          foreach ($this->errors as $iter724)
+          foreach ($this->errors as $iter730)
           {
-            $xfer += $output->writeString($iter724);
+            $xfer += $output->writeString($iter730);
+          }
+        }
+        $output->writeListEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->warnings !== null) {
+      if (!is_array($this->warnings)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('warnings', TType::LST, 2);
+      {
+        $output->writeListBegin(TType::STRING, count($this->warnings));
+        {
+          foreach ($this->warnings as $iter731)
+          {
+            $xfer += $output->writeString($iter731);
           }
         }
         $output->writeListEnd();
@@ -24899,15 +24948,15 @@ class WMGetTriggersForResourePlanResponse {
         case 1:
           if ($ftype == TType::LST) {
             $this->triggers = array();
-            $_size725 = 0;
-            $_etype728 = 0;
-            $xfer += $input->readListBegin($_etype728, $_size725);
-            for ($_i729 = 0; $_i729 < $_size725; ++$_i729)
+            $_size732 = 0;
+            $_etype735 = 0;
+            $xfer += $input->readListBegin($_etype735, $_size732);
+            for ($_i736 = 0; $_i736 < $_size732; ++$_i736)
             {
-              $elem730 = null;
-              $elem730 = new \metastore\WMTrigger();
-              $xfer += $elem730->read($input);
-              $this->triggers []= $elem730;
+              $elem737 = null;
+              $elem737 = new \metastore\WMTrigger();
+              $xfer += $elem737->read($input);
+              $this->triggers []= $elem737;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -24935,9 +24984,9 @@ class WMGetTriggersForResourePlanResponse {
       {
         $output->writeListBegin(TType::STRUCT, count($this->triggers));
         {
-          foreach ($this->triggers as $iter731)
+          foreach ($this->triggers as $iter738)
           {
-            $xfer += $iter731->write($output);
+            $xfer += $iter738->write($output);
           }
         }
         $output->writeListEnd();

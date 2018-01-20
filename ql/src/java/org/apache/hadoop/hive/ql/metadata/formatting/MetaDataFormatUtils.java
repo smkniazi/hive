@@ -781,6 +781,7 @@ public final class MetaDataFormatUtils {
       rpFormatter.endTriggers();
       rpFormatter.startMappings();
       for (Map.Entry<String, List<String>> mappingsOfType : mappings.entrySet()) {
+        mappingsOfType.getValue().sort(String::compareTo);
         rpFormatter.formatMappingType(mappingsOfType.getKey(), mappingsOfType.getValue());
       }
       if (isDefault) {
@@ -806,6 +807,8 @@ public final class MetaDataFormatUtils {
       for (PoolTreeNode child : children) {
         child.sortChildren();
       }
+      triggers.sort((WMTrigger t1, WMTrigger t2)
+          -> t1.getTriggerName().compareTo(t2.getTriggerName()));
     }
 
     static PoolTreeNode makePoolTree(WMFullResourcePlan fullRp) {
