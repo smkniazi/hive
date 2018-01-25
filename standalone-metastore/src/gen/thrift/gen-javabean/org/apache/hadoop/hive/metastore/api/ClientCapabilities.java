@@ -354,13 +354,13 @@ public class ClientCapabilities implements org.apache.thrift.TBase<ClientCapabil
           case 1: // VALUES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list740 = iprot.readListBegin();
-                struct.values = new ArrayList<ClientCapability>(_list740.size);
-                ClientCapability _elem741;
-                for (int _i742 = 0; _i742 < _list740.size; ++_i742)
+                org.apache.thrift.protocol.TList _list730 = iprot.readListBegin();
+                struct.values = new ArrayList<ClientCapability>(_list730.size);
+                ClientCapability _elem731;
+                for (int _i732 = 0; _i732 < _list730.size; ++_i732)
                 {
-                  _elem741 = org.apache.hadoop.hive.metastore.api.ClientCapability.findByValue(iprot.readI32());
-                  struct.values.add(_elem741);
+                  _elem731 = org.apache.hadoop.hive.metastore.api.ClientCapability.findByValue(iprot.readI32());
+                  struct.values.add(_elem731);
                 }
                 iprot.readListEnd();
               }
@@ -386,9 +386,9 @@ public class ClientCapabilities implements org.apache.thrift.TBase<ClientCapabil
         oprot.writeFieldBegin(VALUES_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.values.size()));
-          for (ClientCapability _iter743 : struct.values)
+          for (ClientCapability _iter733 : struct.values)
           {
-            oprot.writeI32(_iter743.getValue());
+            oprot.writeI32(_iter733.getValue());
           }
           oprot.writeListEnd();
         }
@@ -413,9 +413,9 @@ public class ClientCapabilities implements org.apache.thrift.TBase<ClientCapabil
       TTupleProtocol oprot = (TTupleProtocol) prot;
       {
         oprot.writeI32(struct.values.size());
-        for (ClientCapability _iter744 : struct.values)
+        for (ClientCapability _iter734 : struct.values)
         {
-          oprot.writeI32(_iter744.getValue());
+          oprot.writeI32(_iter734.getValue());
         }
       }
     }
@@ -424,13 +424,13 @@ public class ClientCapabilities implements org.apache.thrift.TBase<ClientCapabil
     public void read(org.apache.thrift.protocol.TProtocol prot, ClientCapabilities struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       {
-        org.apache.thrift.protocol.TList _list745 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-        struct.values = new ArrayList<ClientCapability>(_list745.size);
-        ClientCapability _elem746;
-        for (int _i747 = 0; _i747 < _list745.size; ++_i747)
+        org.apache.thrift.protocol.TList _list735 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+        struct.values = new ArrayList<ClientCapability>(_list735.size);
+        ClientCapability _elem736;
+        for (int _i737 = 0; _i737 < _list735.size; ++_i737)
         {
-          _elem746 = org.apache.hadoop.hive.metastore.api.ClientCapability.findByValue(iprot.readI32());
-          struct.values.add(_elem746);
+          _elem736 = org.apache.hadoop.hive.metastore.api.ClientCapability.findByValue(iprot.readI32());
+          struct.values.add(_elem736);
         }
       }
       struct.setValuesIsSet(true);

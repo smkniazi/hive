@@ -533,13 +533,13 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
           case 2: // TABLES_USED
             if (schemeField.type == org.apache.thrift.protocol.TType.SET) {
               {
-                org.apache.thrift.protocol.TSet _set764 = iprot.readSetBegin();
-                struct.tablesUsed = new HashSet<String>(2*_set764.size);
-                String _elem765;
-                for (int _i766 = 0; _i766 < _set764.size; ++_i766)
+                org.apache.thrift.protocol.TSet _set754 = iprot.readSetBegin();
+                struct.tablesUsed = new HashSet<String>(2*_set754.size);
+                String _elem755;
+                for (int _i756 = 0; _i756 < _set754.size; ++_i756)
                 {
-                  _elem765 = iprot.readString();
-                  struct.tablesUsed.add(_elem765);
+                  _elem755 = iprot.readString();
+                  struct.tablesUsed.add(_elem755);
                 }
                 iprot.readSetEnd();
               }
@@ -578,9 +578,9 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
         oprot.writeFieldBegin(TABLES_USED_FIELD_DESC);
         {
           oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, struct.tablesUsed.size()));
-          for (String _iter767 : struct.tablesUsed)
+          for (String _iter757 : struct.tablesUsed)
           {
-            oprot.writeString(_iter767);
+            oprot.writeString(_iter757);
           }
           oprot.writeSetEnd();
         }
@@ -609,9 +609,9 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
       struct.materializationTable.write(oprot);
       {
         oprot.writeI32(struct.tablesUsed.size());
-        for (String _iter768 : struct.tablesUsed)
+        for (String _iter758 : struct.tablesUsed)
         {
-          oprot.writeString(_iter768);
+          oprot.writeString(_iter758);
         }
       }
       oprot.writeI64(struct.invalidationTime);
@@ -624,13 +624,13 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
       struct.materializationTable.read(iprot);
       struct.setMaterializationTableIsSet(true);
       {
-        org.apache.thrift.protocol.TSet _set769 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-        struct.tablesUsed = new HashSet<String>(2*_set769.size);
-        String _elem770;
-        for (int _i771 = 0; _i771 < _set769.size; ++_i771)
+        org.apache.thrift.protocol.TSet _set759 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+        struct.tablesUsed = new HashSet<String>(2*_set759.size);
+        String _elem760;
+        for (int _i761 = 0; _i761 < _set759.size; ++_i761)
         {
-          _elem770 = iprot.readString();
-          struct.tablesUsed.add(_elem770);
+          _elem760 = iprot.readString();
+          struct.tablesUsed.add(_elem760);
         }
       }
       struct.setTablesUsedIsSet(true);
