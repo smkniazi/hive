@@ -507,7 +507,7 @@ public class OrcInputFormat implements InputFormat<NullWritable, OrcStruct>,
                                List<FileStatus> files
                               ) throws IOException {
 
-    if (Utilities.getUseVectorizedInputFileFormat(conf)) {
+    if (Utilities.getIsVectorized(conf)) {
       return new VectorizedOrcInputFormat().validateInput(fs, conf, files);
     }
 
@@ -1891,7 +1891,7 @@ public class OrcInputFormat implements InputFormat<NullWritable, OrcStruct>,
   getRecordReader(InputSplit inputSplit, JobConf conf,
                   Reporter reporter) throws IOException {
     //CombineHiveInputFormat may produce FileSplit that is not OrcSplit
-    boolean vectorMode = Utilities.getUseVectorizedInputFileFormat(conf);
+    boolean vectorMode = Utilities.getIsVectorized(conf);
     boolean isAcidRead = isAcidRead(conf, inputSplit);
     if (!isAcidRead) {
       if (vectorMode) {
