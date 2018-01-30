@@ -44,6 +44,8 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
 
   private Long txnId;
   private int stmtId;
+  private Long currentTransactionId;
+  private boolean isInsertOverwrite;
 
   // TODO: the below seem like they should just be combined into partitionDesc
   private org.apache.hadoop.hive.ql.plan.TableDesc table;
@@ -194,6 +196,14 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
 
   public void setInheritTableSpecs(boolean inheritTableSpecs) {
     this.inheritTableSpecs = inheritTableSpecs;
+  }
+
+  public boolean isInsertOverwrite() {
+    return this.isInsertOverwrite;
+  }
+
+  public void setInsertOverwrite(boolean v) {
+   this.isInsertOverwrite = v;
   }
 
   /**

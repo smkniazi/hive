@@ -6996,6 +6996,21 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       tableDesc.setWriter(fileSinkDesc);
     }
 
+    if (fileSinkDesc.getInsertOverwrite()) {
+      if (ltd != null) {
+        ltd.setInsertOverwrite(true);
+      }
+    }
+
+    if (SessionState.get().isHiveServerQuery() &&
+      null != table_desc &&
+      table_desc.getSerdeClassName().equalsIgnoreCase(ThriftJDBCBinarySerDe.class.getName()) &&
+      HiveConf.getBoolVar(conf,HiveConf.ConfVars.HIVE_SERVER2_THRIFT_RESULTSET_SERIALIZE_IN_TASKS)) {
+        fileSinkDesc.setIsUsingThriftJDBCBinarySerDe(true);
+    } else {
+        fileSinkDesc.setIsUsingThriftJDBCBinarySerDe(false);
+    }
+
     Operator output = putOpInsertMap(OperatorFactory.getAndMakeChild(
         fileSinkDesc, fsRS, input), inputRR);
 

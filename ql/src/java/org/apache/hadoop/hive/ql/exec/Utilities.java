@@ -1507,12 +1507,8 @@ public final class Utilities {
         Set<Path> filesKept = new HashSet<Path>();
         perfLogger.PerfLogBegin("FileSinkOperator", "RemoveTempOrDuplicateFiles");
         // remove any tmp file or double-committed output files
-<<<<<<< HEAD
-        List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(fs, statuses, dpCtx, conf, hconf, filesKept);
-=======
         List<Path> emptyBuckets = Utilities.removeTempOrDuplicateFiles(
             fs, statuses, dpCtx, conf, hconf, filesKept, false);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
         perfLogger.PerfLogEnd("FileSinkOperator", "RemoveTempOrDuplicateFiles");
         // create empty buckets if necessary
         if (!emptyBuckets.isEmpty()) {
@@ -1668,32 +1664,10 @@ public final class Utilities {
           continue;
         }
 
-<<<<<<< HEAD
-        taskIDToFile = removeTempOrDuplicateFiles(items, fs);
-        if (filesKept != null && taskIDToFile != null) {
-          addFilesToPathSet(taskIDToFile.values(), filesKept);
-        }
-        // if the table is bucketed and enforce bucketing, we should check and generate all buckets
-        if (dpCtx.getNumBuckets() > 0 && taskIDToFile != null && !"tez".equalsIgnoreCase(hconf.get(ConfVars.HIVE_EXECUTION_ENGINE.varname))) {
-          // refresh the file list
-          items = fs.listStatus(parts[i].getPath());
-          // get the missing buckets and generate empty buckets
-          String taskID1 = taskIDToFile.keySet().iterator().next();
-          Path bucketPath = taskIDToFile.values().iterator().next().getPath();
-          for (int j = 0; j < dpCtx.getNumBuckets(); ++j) {
-            String taskID2 = replaceTaskId(taskID1, j);
-            if (!taskIDToFile.containsKey(taskID2)) {
-              // create empty bucket, file name should be derived from taskID2
-              URI bucketUri = bucketPath.toUri();
-              String path2 = replaceTaskIdFromFilename(bucketUri.getPath().toString(), j);
-              result.add(new Path(bucketUri.getScheme(), bucketUri.getAuthority(), path2));
-            }
-=======
         if (isMmTable) {
           Path mmDir = parts[i].getPath();
           if (!mmDir.getName().equals(AcidUtils.baseOrDeltaSubdir(isBaseDir, txnId, txnId, stmtId))) {
             throw new IOException("Unexpected non-MM directory name " + mmDir);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
           }
 
           Utilities.FILE_OP_LOGGER.trace("removeTempOrDuplicateFiles processing files in MM directory {}", mmDir);
@@ -4100,7 +4074,7 @@ public final class Utilities {
           throws IOException {
     int skipLevels = dpLevels + lbLevels;
     if (filter == null) {
-      filter = new ValidWriteIds.IdPathFilter(mmWriteId, true);
+      filter = new JavaUtils.IdPathFilter(txnId, stmtId, true, false, isBaseDir);
     }
     if (skipLevels == 0) {
       return statusToPath(fs.listStatus(path, filter));
@@ -4111,11 +4085,7 @@ public final class Utilities {
         || (HiveConf.getBoolVar(conf, ConfVars.HIVE_MM_AVOID_GLOBSTATUS_ON_S3) && isS3(fs))) {
       return getMmDirectoryCandidatesRecursive(fs, path, skipLevels, filter);
     }
-<<<<<<< HEAD
-    return getMmDirectoryCandidatesGlobStatus(fs, path, skipLevels, filter, mmWriteId);
-=======
     return getMmDirectoryCandidatesGlobStatus(fs, path, skipLevels, filter, txnId, stmtId, isBaseDir);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
   }
 
   private static boolean isS3(FileSystem fs) {
@@ -4192,11 +4162,7 @@ public final class Utilities {
   }
 
   private static Path[] getMmDirectoryCandidatesGlobStatus(FileSystem fs,
-<<<<<<< HEAD
-      Path path, int skipLevels, PathFilter filter, long mmWriteId) throws IOException {
-=======
       Path path, int skipLevels, PathFilter filter, long txnId, int stmtId, boolean isBaseDir) throws IOException {
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     StringBuilder sb = new StringBuilder(path.toUri().getPath());
     for (int i = 0; i < skipLevels; i++) {
       sb.append(Path.SEPARATOR).append('*');
@@ -4213,17 +4179,10 @@ public final class Utilities {
   }
 
   private static void tryDeleteAllMmFiles(FileSystem fs, Path specPath, Path manifestDir,
-<<<<<<< HEAD
-      int dpLevels, int lbLevels, String unionSuffix, ValidWriteIds.IdPathFilter filter,
-      long mmWriteId, Configuration conf) throws IOException {
-    Path[] files = getMmDirectoryCandidates(
-        fs, specPath, dpLevels, lbLevels, filter, mmWriteId, conf);
-=======
                                           int dpLevels, int lbLevels, JavaUtils.IdPathFilter filter,
                                           long txnId, int stmtId, Configuration conf, boolean isBaseDir) throws IOException {
     Path[] files = getMmDirectoryCandidates(
         fs, specPath, dpLevels, lbLevels, filter, txnId, stmtId, conf, isBaseDir);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     if (files != null) {
       for (Path path : files) {
         Utilities.FILE_OP_LOGGER.info("Deleting {} on failure", path);
@@ -4241,11 +4200,7 @@ public final class Utilities {
       return;
     }
     // We assume one FSOP per task (per specPath), so we create it in specPath.
-<<<<<<< HEAD
-    Path manifestPath = getManifestDir(specPath, mmWriteId, unionSuffix);
-=======
     Path manifestPath = getManifestDir(specPath, txnId, stmtId, unionSuffix, isInsertOverwrite);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     manifestPath = new Path(manifestPath, taskId + MANIFEST_EXTENSION);
     Utilities.FILE_OP_LOGGER.info("Writing manifest to {} with {}", manifestPath, commitPaths);
     try {
@@ -4264,15 +4219,10 @@ public final class Utilities {
     }
   }
 
-<<<<<<< HEAD
-  private static Path getManifestDir(Path specPath, long mmWriteId, String unionSuffix) {
-    Path manifestPath = new Path(specPath, "_tmp." + ValidWriteIds.getMmFilePrefix(mmWriteId));
-=======
   private static Path getManifestDir(Path specPath, long txnId, int stmtId, String unionSuffix, boolean isInsertOverwrite) {
     Path manifestPath = new Path(specPath, "_tmp." + 
       AcidUtils.baseOrDeltaSubdir(isInsertOverwrite, txnId, txnId, stmtId));
 
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     return (unionSuffix == null) ? manifestPath : new Path(manifestPath, unionSuffix);
   }
 
@@ -4288,25 +4238,14 @@ public final class Utilities {
   }
 
   public static void handleMmTableFinalPath(Path specPath, String unionSuffix, Configuration hconf,
-<<<<<<< HEAD
-      boolean success, int dpLevels, int lbLevels, MissingBucketsContext mbc, long mmWriteId,
-      Reporter reporter, boolean isMmCtas) throws IOException, HiveException {
-    FileSystem fs = specPath.getFileSystem(hconf);
-    Path manifestDir = getManifestDir(specPath, mmWriteId, unionSuffix);
-=======
       boolean success, int dpLevels, int lbLevels, MissingBucketsContext mbc, long txnId, int stmtId,
       Reporter reporter, boolean isMmTable, boolean isMmCtas, boolean isInsertOverwrite) throws IOException, HiveException {
     FileSystem fs = specPath.getFileSystem(hconf);
     Path manifestDir = getManifestDir(specPath, txnId, stmtId, unionSuffix, isInsertOverwrite);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     if (!success) {
       ValidWriteIds.IdPathFilter filter = new ValidWriteIds.IdPathFilter(mmWriteId, true);
       tryDeleteAllMmFiles(fs, specPath, manifestDir, dpLevels, lbLevels,
-<<<<<<< HEAD
-          unionSuffix, filter, mmWriteId, hconf);
-=======
           filter, txnId, stmtId, hconf, isInsertOverwrite);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
       return;
     }
 
@@ -4328,23 +4267,14 @@ public final class Utilities {
       manifestDir = null;
     }
 
-<<<<<<< HEAD
-    Utilities.FILE_OP_LOGGER.debug("Looking for files in: " + specPath);
-    ValidWriteIds.IdPathFilter filter = new ValidWriteIds.IdPathFilter(mmWriteId, true);
-=======
     Utilities.FILE_OP_LOGGER.debug("Looking for files in: {}", specPath);
     JavaUtils.IdPathFilter filter = new JavaUtils.IdPathFilter(txnId, stmtId, true, false, isInsertOverwrite);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     if (isMmCtas && !fs.exists(specPath)) {
       Utilities.FILE_OP_LOGGER.info("Creating table directory for CTAS with no output at {}", specPath);
       FileUtils.mkdir(fs, specPath, hconf);
     }
     Path[] files = getMmDirectoryCandidates(
-<<<<<<< HEAD
-        fs, specPath, dpLevels, lbLevels, filter, mmWriteId, hconf);
-=======
         fs, specPath, dpLevels, lbLevels, filter, txnId, stmtId, hconf, isInsertOverwrite);
->>>>>>> 5f12cb8440... HIVE-17856 : MM tables - IOW is not ACID compliant (Steve Yeom, reviewed by Sergey Shelukhin and Eugene Koifman)
     ArrayList<Path> mmDirectories = new ArrayList<>();
     if (files != null) {
       for (Path path : files) {
