@@ -2054,8 +2054,15 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
                 }
               }
               try {
-                fname = ctx.getExtTmpPathRelTo(
-                    FileUtils.makeQualified(location, conf)).toString();
+                CreateTableDesc tblDesc = qb.getTableDesc();
+                if (tblDesc != null
+                    && tblDesc.isTemporary()
+                    && AcidUtils.isInsertOnlyTable(tblDesc.getTblProps(), true)) {
+                  fname = FileUtils.makeQualified(location, conf).toString();
+                } else {
+                  fname = ctx.getExtTmpPathRelTo(
+                      FileUtils.makeQualified(location, conf)).toString();
+                }
               } catch (Exception e) {
                 throw new SemanticException(generateErrorMessage(ast,
                     "Error creating temporary folder on: " + location.toString()), e);
@@ -6840,7 +6847,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         field_schemas = new ArrayList<FieldSchema>();
         destTableIsTemporary = tblDesc.isTemporary();
         destTableIsMaterialization = tblDesc.isMaterialization();
-        if (!destTableIsTemporary && AcidUtils.isInsertOnlyTable(tblDesc.getTblProps(), true)) {
+        if (AcidUtils.isInsertOnlyTable(tblDesc.getTblProps(), true)) {
           isMmTable = isMmCtas = true;
           // TODO# this should really get current ACID txn; assuming ACID works correctly the txn
           //       should have been opened to create the ACID table. For now use the first ID.
