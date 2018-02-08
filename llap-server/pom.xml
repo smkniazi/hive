@@ -319,28 +319,28 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.slider</groupId>
+      <groupId>io.hops.slider</groupId>
       <artifactId>slider-core</artifactId>
       <version>${slider.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.apache.hadoop</groupId>
+          <groupId>io.hops</groupId>
           <artifactId>hadoop-client</artifactId>
         </exclusion>
          <exclusion>
-          <groupId>org.apache.hadoop</groupId>
+          <groupId>io.hops</groupId>
           <artifactId>hadoop-hdfs</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.hadoop</groupId>
+          <groupId>io.hops</groupId>
           <artifactId>hadoop-yarn-client</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.hadoop</groupId>
+          <groupId>io.hops</groupId>
           <artifactId>hadoop-yarn-server-web-proxy</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.apache.hadoop</groupId>
+          <groupId>io.hops</groupId>
           <artifactId>hadoop-yarn-registry</artifactId>
         </exclusion>
         <exclusion>
