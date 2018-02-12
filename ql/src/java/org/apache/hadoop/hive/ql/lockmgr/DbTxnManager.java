@@ -271,14 +271,14 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
     //in a txn assuming we can determine the target is a suitable table type.
     if(queryPlan.getOperation() == HiveOperation.LOAD && queryPlan.getOutputs() != null && queryPlan.getOutputs().size() == 1) {
       WriteEntity writeEntity = queryPlan.getOutputs().iterator().next();
-      if(AcidUtils.isAcidTable(writeEntity.getTable()) || AcidUtils.isInsertOnlyTable(writeEntity.getTable())) {
+      if(AcidUtils.isTransactionalTable(writeEntity.getTable())) {
         switch (writeEntity.getWriteType()) {
           case INSERT:
             //allow operation in a txn
             return true;
           case INSERT_OVERWRITE:
             //see HIVE-18154
-            return false;
+            return false; // TODO: is this still relevant for insert-only tables?
           default:
             //not relevant for LOAD
             return false;
@@ -367,7 +367,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           continue;
       }
       if(t != null) {
-        compBuilder.setIsAcid(AcidUtils.isAcidTable(t));
+        compBuilder.setIsFullAcid(AcidUtils.isFullAcidTable(t));
       }
       LockComponent comp = compBuilder.build();
       LOG.debug("Adding lock component to lock request " + comp.toString());
@@ -405,7 +405,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           break;
         case INSERT:
           assert t != null;
-          if(AcidUtils.isAcidTable(t)) {
+          if(AcidUtils.isFullAcidTable(t)) {
             compBuilder.setShared();
             compBuilder.setIsAcid(true);
           }
@@ -444,7 +444,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
 
       }
       if(t != null) {
-        compBuilder.setIsAcid(AcidUtils.isAcidTable(t));
+        compBuilder.setIsFullAcid(AcidUtils.isFullAcidTable(t));
       }
 
       compBuilder.setIsDynamicPartitionWrite(output.isDynamicPartitionWrite());
