@@ -41,7 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang.StringUtils;
 
-import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.ValidReadTxnList;
@@ -177,7 +177,7 @@ public class Driver implements IDriver {
   private LockedDriverState lDrvState = new LockedDriverState();
 
   // Query specific info
-  private QueryState queryState;
+  private final QueryState queryState;
 
   // Query hooks that execute before compilation and after execution
   private QueryLifeTimeHookRunner queryLifeTimeHookRunner;
@@ -376,23 +376,15 @@ public class Driver implements IDriver {
     this.maxRows = maxRows;
   }
 
-  public Driver() {
-    this(getNewQueryState((SessionState.get() != null) ?
-        SessionState.get().getConf() : new HiveConf()), null);
-  }
-
   public Driver(HiveConf conf) {
-    this(getNewQueryState(conf), null);
+    this(new QueryState.Builder().withGenerateNewQueryId(true).withHiveConf(conf).build(), null);
   }
 
   // Pass lineageState when a driver instantiates another Driver to run
   // or compile another query
+  // NOTE: only used from index related classes
   public Driver(HiveConf conf, LineageState lineageState) {
     this(getNewQueryState(conf, lineageState), null);
-  }
-
-  public Driver(HiveConf conf, HiveTxnManager txnMgr) {
-    this(getNewQueryState(conf), null, null, txnMgr);
   }
 
   // Pass lineageState when a driver instantiates another Driver to run
@@ -400,10 +392,6 @@ public class Driver implements IDriver {
   public Driver(HiveConf conf, Context ctx, LineageState lineageState) {
     this(getNewQueryState(conf, lineageState), null, null);
     this.ctx = ctx;
-  }
-
-  public Driver(HiveConf conf, String userName) {
-    this(getNewQueryState(conf), userName, null);
   }
 
   // Pass lineageState when a driver instantiates another Driver to run
@@ -414,10 +402,6 @@ public class Driver implements IDriver {
 
   public Driver(QueryState queryState, String userName) {
     this(queryState, userName, new HooksLoader(queryState.getConf()), null, null);
-  }
-
-  public Driver(HiveConf conf, HooksLoader hooksLoader) {
-    this(getNewQueryState(conf), null, hooksLoader, null, null);
   }
 
   public Driver(QueryState queryState, String userName, QueryInfo queryInfo) {
@@ -438,17 +422,6 @@ public class Driver implements IDriver {
     this.queryLifeTimeHookRunner = new QueryLifeTimeHookRunner(conf, hooksLoader, console);
     this.queryInfo = queryInfo;
     this.initTxnMgr = txnMgr;
-  }
-
-  /**
-   * Generating the new QueryState object. Making sure, that the new queryId is generated.
-   * @param conf The HiveConf which should be used
-   * @return The new QueryState object
-   */
-  // move to driverFactory ; with those constructors...
-  @Deprecated
-  private static QueryState getNewQueryState(HiveConf conf) {
-    return new QueryState.Builder().withGenerateNewQueryId(true).withHiveConf(conf).build();
   }
 
   /**
@@ -547,6 +520,9 @@ public class Driver implements IDriver {
 
     LOG.info("Compiling command(queryId=" + queryId + "): " + queryStr);
 
+    conf.setQueryString(queryStr);
+    // FIXME: sideeffect will leave the last query set at the session level
+    SessionState.get().getConf().setQueryString(queryStr);
     SessionState.get().setupQueryCurrentTimestamp();
 
     // Whether any error occurred during query compilation. Used for query lifetime hook.
@@ -560,6 +536,9 @@ public class Driver implements IDriver {
         queryTxnMgr = initTxnMgr;
       } else {
         queryTxnMgr = SessionState.get().initTxnMgr(conf);
+      }
+      if (queryTxnMgr instanceof Configurable) {
+        ((Configurable) queryTxnMgr).setConf(conf);
       }
       queryState.setTxnManager(queryTxnMgr);
 
@@ -665,7 +644,6 @@ public class Driver implements IDriver {
       plan = new QueryPlan(queryStr, sem, perfLogger.getStartTime(PerfLogger.DRIVER_RUN), queryId,
         queryState.getHiveOperation(), schema);
 
-      conf.setQueryString(queryStr);
 
       conf.set("mapreduce.workflow.id", "hive_" + queryId);
       conf.set("mapreduce.workflow.name", queryStr);
@@ -1208,6 +1186,11 @@ public class Driver implements IDriver {
     return HiveOperationType.valueOf(op.name());
   }
 
+  @Override
+  public HiveConf getConf() {
+    return conf;
+  }
+
   /**
    * @return The current query plan associated with this Driver, if any.
    */
@@ -1384,7 +1367,7 @@ public class Driver implements IDriver {
    * Release some resources after a query is executed
    * while keeping the result around.
    */
-  private void releaseResources() {
+  public void releaseResources() {
     releasePlan();
     releaseDriverContext();
   }
@@ -2544,14 +2527,13 @@ public class Driver implements IDriver {
 
   // is called to stop the query if it is running, clean query results, and release resources.
   @Override
-  public int close() {
+  public void close() {
     lDrvState.stateLock.lock();
     try {
       releaseDriverContext();
       if (lDrvState.driverState == DriverState.COMPILING ||
           lDrvState.driverState == DriverState.EXECUTING) {
         lDrvState.abort();
-        return 0;
       }
       releasePlan();
       releaseCachedResult();
@@ -2563,7 +2545,7 @@ public class Driver implements IDriver {
       lDrvState.stateLock.unlock();
       LockedDriverState.removeLockedDriverState();
     }
-    return 0;
+    destroy();
   }
 
   // is usually called after close() to commit or rollback a query and end the driver life cycle.
@@ -2615,19 +2597,6 @@ public class Driver implements IDriver {
   @Override
   public void setOperationId(String opId) {
     this.operationId = opId;
-  }
-
-  /**
-   * Resets QueryState to get new queryId on Driver reuse.
-   */
-
-  @Override
-  public void resetQueryState() {
-    // Note: Driver cleanup for reuse at this point is not very clear. The assumption here is that
-    // repeated compile/execute calls create new contexts, plan, etc., so we don't need to worry
-    // propagating queryState into those existing fields, or resetting them.
-    releaseResources();
-    this.queryState = getNewQueryState(queryState.getConf());
   }
 
   public QueryState getQueryState() {

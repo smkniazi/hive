@@ -7518,6 +7518,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     backwards incompatible.
     */
     conf.set(AcidUtils.CONF_ACID_KEY, "true");
+    SessionState.get().getConf().set(AcidUtils.CONF_ACID_KEY, "true");
   }
 
   /**
