@@ -669,7 +669,7 @@ public class SessionManager extends CompositeService {
   // execute session hooks
   private void executeSessionHooks(HiveSession session) throws Exception {
     List<HiveSessionHook> sessionHooks =
-        new HooksLoader(hiveConf).getHooks(HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK, HiveSessionHook.class);
+        HookUtils.readHooksFromConf(hiveConf, HiveConf.ConfVars.HIVE_SERVER2_SESSION_HOOK);
     for (HiveSessionHook sessionHook : sessionHooks) {
       sessionHook.run(new HiveSessionHookContextImpl(session));
     }
