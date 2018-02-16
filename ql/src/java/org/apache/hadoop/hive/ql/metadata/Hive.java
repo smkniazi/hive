@@ -91,6 +91,7 @@ import org.apache.hadoop.hive.metastore.api.CmRecycleRequest;
 import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
 import org.apache.hadoop.hive.metastore.api.CompactionResponse;
 import org.apache.hadoop.hive.metastore.api.CompactionType;
+import org.apache.hadoop.hive.metastore.api.CreationMetadata;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -126,6 +127,7 @@ import org.apache.hadoop.hive.metastore.api.SetPartitionsStatsRequest;
 import org.apache.hadoop.hive.metastore.api.ShowCompactResponse;
 import org.apache.hadoop.hive.metastore.api.SkewedInfo;
 import org.apache.hadoop.hive.metastore.api.UniqueConstraintsRequest;
+import org.apache.hadoop.hive.metastore.api.UnknownDBException;
 import org.apache.hadoop.hive.metastore.api.WMFullResourcePlan;
 import org.apache.hadoop.hive.metastore.api.WMMapping;
 import org.apache.hadoop.hive.metastore.api.WMNullablePool;
@@ -654,6 +656,15 @@ public class Hive {
       throw new HiveException("Unable to alter table. " + e.getMessage(), e);
     } catch (TException e) {
       throw new HiveException("Unable to alter table. " + e.getMessage(), e);
+    }
+  }
+
+  public void updateCreationMetadata(String dbName, String tableName, CreationMetadata cm)
+      throws HiveException {
+    try {
+      getMSC().updateCreationMetadata(dbName, tableName, cm);
+    } catch (TException e) {
+      throw new HiveException("Unable to update creation metadata " + e.getMessage(), e);
     }
   }
 
