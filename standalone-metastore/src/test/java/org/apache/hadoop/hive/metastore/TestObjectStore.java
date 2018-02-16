@@ -29,6 +29,7 @@ import org.apache.hadoop.fs.Path;
 import com.google.common.collect.ImmutableList;
 import org.apache.hadoop.hive.metastore.ObjectStore.RetryingExecutor;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hive.metastore.annotation.MetastoreUnitTest;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -66,16 +67,12 @@ import org.junit.Test;
 
 import com.google.common.base.Supplier;
 
+import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jdo.Query;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
@@ -83,9 +80,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
+@Category(MetastoreUnitTest.class)
 public class TestObjectStore {
   private ObjectStore objectStore = null;
 
@@ -670,38 +667,38 @@ public class TestObjectStore {
 
     // Verify that there is no notifications available yet
     eventId = objectStore.getCurrentNotificationEventId();
-    Assert.assertEquals(NO_EVENT_ID, eventId.getEventId());
+    assertEquals(NO_EVENT_ID, eventId.getEventId());
 
     // Verify that addNotificationEvent() updates the NotificationEvent with the new event ID
     objectStore.addNotificationEvent(event);
-    Assert.assertEquals(FIRST_EVENT_ID, event.getEventId());
+    assertEquals(FIRST_EVENT_ID, event.getEventId());
     objectStore.addNotificationEvent(event);
-    Assert.assertEquals(SECOND_EVENT_ID, event.getEventId());
+    assertEquals(SECOND_EVENT_ID, event.getEventId());
 
     // Verify that objectStore fetches the latest notification event ID
     eventId = objectStore.getCurrentNotificationEventId();
-    Assert.assertEquals(SECOND_EVENT_ID, eventId.getEventId());
+    assertEquals(SECOND_EVENT_ID, eventId.getEventId());
 
     // Verify that getNextNotification() returns all events
     eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
-    Assert.assertEquals(2, eventResponse.getEventsSize());
-    Assert.assertEquals(FIRST_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
-    Assert.assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(1).getEventId());
+    assertEquals(2, eventResponse.getEventsSize());
+    assertEquals(FIRST_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
+    assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(1).getEventId());
 
     // Verify that getNextNotification(last) returns events after a specified event
     eventResponse = objectStore.getNextNotification(new NotificationEventRequest(FIRST_EVENT_ID));
-    Assert.assertEquals(1, eventResponse.getEventsSize());
-    Assert.assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
+    assertEquals(1, eventResponse.getEventsSize());
+    assertEquals(SECOND_EVENT_ID, eventResponse.getEvents().get(0).getEventId());
 
     // Verify that getNextNotification(last) returns zero events if there are no more notifications available
     eventResponse = objectStore.getNextNotification(new NotificationEventRequest(SECOND_EVENT_ID));
-    Assert.assertEquals(0, eventResponse.getEventsSize());
+    assertEquals(0, eventResponse.getEventsSize());
 
     // Verify that cleanNotificationEvents() cleans up all old notifications
     Thread.sleep(1);
     objectStore.cleanNotificationEvents(1);
     eventResponse = objectStore.getNextNotification(new NotificationEventRequest());
-    Assert.assertEquals(0, eventResponse.getEventsSize());
+    assertEquals(0, eventResponse.getEventsSize());
   }
 
   @Ignore(
@@ -776,7 +773,7 @@ public class TestObjectStore {
 
     NotificationEventResponse eventResponse = store.getNextNotification(
         new NotificationEventRequest());
-    Assert.assertEquals(NUM_THREADS + 1, eventResponse.getEventsSize());
+    assertEquals(NUM_THREADS + 1, eventResponse.getEventsSize());
     long previousId = 0;
     for (NotificationEvent event : eventResponse.getEvents()) {
       Assert.assertTrue("previous:" + previousId + " current:" + event.getEventId(),
