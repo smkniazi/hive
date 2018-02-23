@@ -179,7 +179,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     int acidLastBucket = -1;
     int acidFileOffset = -1;
     private boolean isMmTable;
-    private Long txnId;
+    private Long writeId;
     private int stmtId;
     String dpDir;
 
@@ -191,6 +191,8 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       } else {
         tmpPath = specPath;
         taskOutputTempPath = null; // Should not be used.
+        writeId = conf.getTableWriteId();
+        stmtId = conf.getStatementId();
       }
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("new FSPaths for " + numFiles + " files, dynParts = " + bDynParts
@@ -331,7 +333,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           }
           outPaths[filesIdx] = getTaskOutPath(taskId);
         } else {
-          String subdirPath = AcidUtils.baseOrDeltaSubdir(conf.getInsertOverwrite(), txnId, txnId, stmtId);
+          String subdirPath = AcidUtils.baseOrDeltaSubdir(conf.getInsertOverwrite(), writeId, writeId, stmtId);
           if (unionPath != null) {
             // Create the union directory inside the MM directory.
             subdirPath += Path.SEPARATOR + unionPath;
@@ -949,7 +951,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID) {
         rowOutWriters[findWriterOffset(row)].write(recordValue);
       } else if (conf.getWriteType() == AcidUtils.Operation.INSERT) {
-        fpaths.updaters[findWriterOffset(row)].insert(conf.getTransactionId(), row);
+        fpaths.updaters[findWriterOffset(row)].insert(conf.getTableWriteId(), row);
       } else {
         // TODO I suspect we could skip much of the stuff above this in the function in the case
         // of update and delete.  But I don't understand all of the side effects of the above
@@ -1006,9 +1008,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           }
         }
         if (conf.getWriteType() == AcidUtils.Operation.UPDATE) {
-            fpaths.updaters[writerOffset].update(conf.getTransactionId(), row);
+          fpaths.updaters[writerOffset].update(conf.getTableWriteId(), row);
         } else if (conf.getWriteType() == AcidUtils.Operation.DELETE) {
-            fpaths.updaters[writerOffset].delete(conf.getTransactionId(), row);
+          fpaths.updaters[writerOffset].delete(conf.getTableWriteId(), row);
         } else {
           throw new HiveException("Unknown write type " + conf.getWriteType().toString());
         }
@@ -1311,9 +1313,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           fsp.commit(fs, commitPaths);
         }
       }
-      if (conf.getMmWriteId() != null) {
-        Utilities.writeMmCommitManifest(
-            commitPaths, specPath, fs, taskId, conf.getTransactionId(), conf.getStatementId(), unionPath, conf.getInsertOverwrite());
+      if (conf.isMmTable()) {
+        Utilities.writeMmCommitManifest(commitPaths, specPath, fs, taskId,
+                conf.getTableWriteId(), conf.getStatementId(), unionPath, conf.getInsertOverwrite());
       }
       // Only publish stats if this operator's flag was set to gather stats
       if (conf.isGatherStats()) {
@@ -1371,7 +1373,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           MissingBucketsContext mbc = new MissingBucketsContext(
               conf.getTableInfo(), numBuckets, conf.getCompressed());
           Utilities.handleMmTableFinalPath(specPath, unionSuffix, hconf, success,
-              dpLevels, lbLevels, mbc, conf.getTransactionId(), conf.getStatementId(), reporter,
+              dpLevels, lbLevels, mbc, conf.getTableWriteId(), conf.getStatementId(), reporter,
               conf.isMmTable(), conf.isMmCtas(), conf.getInsertOverwrite());
         }
       }

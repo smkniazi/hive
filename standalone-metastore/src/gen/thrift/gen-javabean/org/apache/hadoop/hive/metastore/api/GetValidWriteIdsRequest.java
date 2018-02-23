@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
 public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValidWriteIdsRequest, GetValidWriteIdsRequest._Fields>, java.io.Serializable, Cloneable, Comparable<GetValidWriteIdsRequest> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetValidWriteIdsRequest");
 
-  private static final org.apache.thrift.protocol.TField DB_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("dbName", org.apache.thrift.protocol.TType.STRING, (short)1);
-  private static final org.apache.thrift.protocol.TField TBL_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("tblName", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField FULL_TABLE_NAMES_FIELD_DESC = new org.apache.thrift.protocol.TField("fullTableNames", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField VALID_TXN_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("validTxnList", org.apache.thrift.protocol.TType.STRING, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -47,13 +47,13 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
     schemes.put(TupleScheme.class, new GetValidWriteIdsRequestTupleSchemeFactory());
   }
 
-  private String dbName; // required
-  private String tblName; // required
+  private List<String> fullTableNames; // required
+  private String validTxnList; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    DB_NAME((short)1, "dbName"),
-    TBL_NAME((short)2, "tblName");
+    FULL_TABLE_NAMES((short)1, "fullTableNames"),
+    VALID_TXN_LIST((short)2, "validTxnList");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -68,10 +68,10 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // DB_NAME
-          return DB_NAME;
-        case 2: // TBL_NAME
-          return TBL_NAME;
+        case 1: // FULL_TABLE_NAMES
+          return FULL_TABLE_NAMES;
+        case 2: // VALID_TXN_LIST
+          return VALID_TXN_LIST;
         default:
           return null;
       }
@@ -115,9 +115,10 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.DB_NAME, new org.apache.thrift.meta_data.FieldMetaData("dbName", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.TBL_NAME, new org.apache.thrift.meta_data.FieldMetaData("tblName", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+    tmpMap.put(_Fields.FULL_TABLE_NAMES, new org.apache.thrift.meta_data.FieldMetaData("fullTableNames", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+    tmpMap.put(_Fields.VALID_TXN_LIST, new org.apache.thrift.meta_data.FieldMetaData("validTxnList", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(GetValidWriteIdsRequest.class, metaDataMap);
@@ -127,23 +128,24 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
   }
 
   public GetValidWriteIdsRequest(
-    String dbName,
-    String tblName)
+    List<String> fullTableNames,
+    String validTxnList)
   {
     this();
-    this.dbName = dbName;
-    this.tblName = tblName;
+    this.fullTableNames = fullTableNames;
+    this.validTxnList = validTxnList;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
   public GetValidWriteIdsRequest(GetValidWriteIdsRequest other) {
-    if (other.isSetDbName()) {
-      this.dbName = other.dbName;
+    if (other.isSetFullTableNames()) {
+      List<String> __this__fullTableNames = new ArrayList<String>(other.fullTableNames);
+      this.fullTableNames = __this__fullTableNames;
     }
-    if (other.isSetTblName()) {
-      this.tblName = other.tblName;
+    if (other.isSetValidTxnList()) {
+      this.validTxnList = other.validTxnList;
     }
   }
 
@@ -153,71 +155,86 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
 
   @Override
   public void clear() {
-    this.dbName = null;
-    this.tblName = null;
+    this.fullTableNames = null;
+    this.validTxnList = null;
   }
 
-  public String getDbName() {
-    return this.dbName;
+  public int getFullTableNamesSize() {
+    return (this.fullTableNames == null) ? 0 : this.fullTableNames.size();
   }
 
-  public void setDbName(String dbName) {
-    this.dbName = dbName;
+  public java.util.Iterator<String> getFullTableNamesIterator() {
+    return (this.fullTableNames == null) ? null : this.fullTableNames.iterator();
   }
 
-  public void unsetDbName() {
-    this.dbName = null;
+  public void addToFullTableNames(String elem) {
+    if (this.fullTableNames == null) {
+      this.fullTableNames = new ArrayList<String>();
+    }
+    this.fullTableNames.add(elem);
   }
 
-  /** Returns true if field dbName is set (has been assigned a value) and false otherwise */
-  public boolean isSetDbName() {
-    return this.dbName != null;
+  public List<String> getFullTableNames() {
+    return this.fullTableNames;
   }
 
-  public void setDbNameIsSet(boolean value) {
+  public void setFullTableNames(List<String> fullTableNames) {
+    this.fullTableNames = fullTableNames;
+  }
+
+  public void unsetFullTableNames() {
+    this.fullTableNames = null;
+  }
+
+  /** Returns true if field fullTableNames is set (has been assigned a value) and false otherwise */
+  public boolean isSetFullTableNames() {
+    return this.fullTableNames != null;
+  }
+
+  public void setFullTableNamesIsSet(boolean value) {
     if (!value) {
-      this.dbName = null;
+      this.fullTableNames = null;
     }
   }
 
-  public String getTblName() {
-    return this.tblName;
+  public String getValidTxnList() {
+    return this.validTxnList;
   }
 
-  public void setTblName(String tblName) {
-    this.tblName = tblName;
+  public void setValidTxnList(String validTxnList) {
+    this.validTxnList = validTxnList;
   }
 
-  public void unsetTblName() {
-    this.tblName = null;
+  public void unsetValidTxnList() {
+    this.validTxnList = null;
   }
 
-  /** Returns true if field tblName is set (has been assigned a value) and false otherwise */
-  public boolean isSetTblName() {
-    return this.tblName != null;
+  /** Returns true if field validTxnList is set (has been assigned a value) and false otherwise */
+  public boolean isSetValidTxnList() {
+    return this.validTxnList != null;
   }
 
-  public void setTblNameIsSet(boolean value) {
+  public void setValidTxnListIsSet(boolean value) {
     if (!value) {
-      this.tblName = null;
+      this.validTxnList = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case DB_NAME:
+    case FULL_TABLE_NAMES:
       if (value == null) {
-        unsetDbName();
+        unsetFullTableNames();
       } else {
-        setDbName((String)value);
+        setFullTableNames((List<String>)value);
       }
       break;
 
-    case TBL_NAME:
+    case VALID_TXN_LIST:
       if (value == null) {
-        unsetTblName();
+        unsetValidTxnList();
       } else {
-        setTblName((String)value);
+        setValidTxnList((String)value);
       }
       break;
 
@@ -226,11 +243,11 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case DB_NAME:
-      return getDbName();
+    case FULL_TABLE_NAMES:
+      return getFullTableNames();
 
-    case TBL_NAME:
-      return getTblName();
+    case VALID_TXN_LIST:
+      return getValidTxnList();
 
     }
     throw new IllegalStateException();
@@ -243,10 +260,10 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
     }
 
     switch (field) {
-    case DB_NAME:
-      return isSetDbName();
-    case TBL_NAME:
-      return isSetTblName();
+    case FULL_TABLE_NAMES:
+      return isSetFullTableNames();
+    case VALID_TXN_LIST:
+      return isSetValidTxnList();
     }
     throw new IllegalStateException();
   }
@@ -264,21 +281,21 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
     if (that == null)
       return false;
 
-    boolean this_present_dbName = true && this.isSetDbName();
-    boolean that_present_dbName = true && that.isSetDbName();
-    if (this_present_dbName || that_present_dbName) {
-      if (!(this_present_dbName && that_present_dbName))
+    boolean this_present_fullTableNames = true && this.isSetFullTableNames();
+    boolean that_present_fullTableNames = true && that.isSetFullTableNames();
+    if (this_present_fullTableNames || that_present_fullTableNames) {
+      if (!(this_present_fullTableNames && that_present_fullTableNames))
         return false;
-      if (!this.dbName.equals(that.dbName))
+      if (!this.fullTableNames.equals(that.fullTableNames))
         return false;
     }
 
-    boolean this_present_tblName = true && this.isSetTblName();
-    boolean that_present_tblName = true && that.isSetTblName();
-    if (this_present_tblName || that_present_tblName) {
-      if (!(this_present_tblName && that_present_tblName))
+    boolean this_present_validTxnList = true && this.isSetValidTxnList();
+    boolean that_present_validTxnList = true && that.isSetValidTxnList();
+    if (this_present_validTxnList || that_present_validTxnList) {
+      if (!(this_present_validTxnList && that_present_validTxnList))
         return false;
-      if (!this.tblName.equals(that.tblName))
+      if (!this.validTxnList.equals(that.validTxnList))
         return false;
     }
 
@@ -289,15 +306,15 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
   public int hashCode() {
     List<Object> list = new ArrayList<Object>();
 
-    boolean present_dbName = true && (isSetDbName());
-    list.add(present_dbName);
-    if (present_dbName)
-      list.add(dbName);
+    boolean present_fullTableNames = true && (isSetFullTableNames());
+    list.add(present_fullTableNames);
+    if (present_fullTableNames)
+      list.add(fullTableNames);
 
-    boolean present_tblName = true && (isSetTblName());
-    list.add(present_tblName);
-    if (present_tblName)
-      list.add(tblName);
+    boolean present_validTxnList = true && (isSetValidTxnList());
+    list.add(present_validTxnList);
+    if (present_validTxnList)
+      list.add(validTxnList);
 
     return list.hashCode();
   }
@@ -310,22 +327,22 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetDbName()).compareTo(other.isSetDbName());
+    lastComparison = Boolean.valueOf(isSetFullTableNames()).compareTo(other.isSetFullTableNames());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetDbName()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.dbName, other.dbName);
+    if (isSetFullTableNames()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.fullTableNames, other.fullTableNames);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetTblName()).compareTo(other.isSetTblName());
+    lastComparison = Boolean.valueOf(isSetValidTxnList()).compareTo(other.isSetValidTxnList());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetTblName()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.tblName, other.tblName);
+    if (isSetValidTxnList()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.validTxnList, other.validTxnList);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -350,19 +367,19 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
     StringBuilder sb = new StringBuilder("GetValidWriteIdsRequest(");
     boolean first = true;
 
-    sb.append("dbName:");
-    if (this.dbName == null) {
+    sb.append("fullTableNames:");
+    if (this.fullTableNames == null) {
       sb.append("null");
     } else {
-      sb.append(this.dbName);
+      sb.append(this.fullTableNames);
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("tblName:");
-    if (this.tblName == null) {
+    sb.append("validTxnList:");
+    if (this.validTxnList == null) {
       sb.append("null");
     } else {
-      sb.append(this.tblName);
+      sb.append(this.validTxnList);
     }
     first = false;
     sb.append(")");
@@ -371,12 +388,12 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
-    if (!isSetDbName()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'dbName' is unset! Struct:" + toString());
+    if (!isSetFullTableNames()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'fullTableNames' is unset! Struct:" + toString());
     }
 
-    if (!isSetTblName()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'tblName' is unset! Struct:" + toString());
+    if (!isSetValidTxnList()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'validTxnList' is unset! Struct:" + toString());
     }
 
     // check for sub-struct validity
@@ -416,18 +433,28 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
           break;
         }
         switch (schemeField.id) {
-          case 1: // DB_NAME
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.dbName = iprot.readString();
-              struct.setDbNameIsSet(true);
+          case 1: // FULL_TABLE_NAMES
+            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+              {
+                org.apache.thrift.protocol.TList _list556 = iprot.readListBegin();
+                struct.fullTableNames = new ArrayList<String>(_list556.size);
+                String _elem557;
+                for (int _i558 = 0; _i558 < _list556.size; ++_i558)
+                {
+                  _elem557 = iprot.readString();
+                  struct.fullTableNames.add(_elem557);
+                }
+                iprot.readListEnd();
+              }
+              struct.setFullTableNamesIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // TBL_NAME
+          case 2: // VALID_TXN_LIST
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.tblName = iprot.readString();
-              struct.setTblNameIsSet(true);
+              struct.validTxnList = iprot.readString();
+              struct.setValidTxnListIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -445,14 +472,21 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.dbName != null) {
-        oprot.writeFieldBegin(DB_NAME_FIELD_DESC);
-        oprot.writeString(struct.dbName);
+      if (struct.fullTableNames != null) {
+        oprot.writeFieldBegin(FULL_TABLE_NAMES_FIELD_DESC);
+        {
+          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.fullTableNames.size()));
+          for (String _iter559 : struct.fullTableNames)
+          {
+            oprot.writeString(_iter559);
+          }
+          oprot.writeListEnd();
+        }
         oprot.writeFieldEnd();
       }
-      if (struct.tblName != null) {
-        oprot.writeFieldBegin(TBL_NAME_FIELD_DESC);
-        oprot.writeString(struct.tblName);
+      if (struct.validTxnList != null) {
+        oprot.writeFieldBegin(VALID_TXN_LIST_FIELD_DESC);
+        oprot.writeString(struct.validTxnList);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -472,17 +506,32 @@ public class GetValidWriteIdsRequest implements org.apache.thrift.TBase<GetValid
     @Override
     public void write(org.apache.thrift.protocol.TProtocol prot, GetValidWriteIdsRequest struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
-      oprot.writeString(struct.dbName);
-      oprot.writeString(struct.tblName);
+      {
+        oprot.writeI32(struct.fullTableNames.size());
+        for (String _iter560 : struct.fullTableNames)
+        {
+          oprot.writeString(_iter560);
+        }
+      }
+      oprot.writeString(struct.validTxnList);
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, GetValidWriteIdsRequest struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      struct.dbName = iprot.readString();
-      struct.setDbNameIsSet(true);
-      struct.tblName = iprot.readString();
-      struct.setTblNameIsSet(true);
+      {
+        org.apache.thrift.protocol.TList _list561 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+        struct.fullTableNames = new ArrayList<String>(_list561.size);
+        String _elem562;
+        for (int _i563 = 0; _i563 < _list561.size; ++_i563)
+        {
+          _elem562 = iprot.readString();
+          struct.fullTableNames.add(_elem562);
+        }
+      }
+      struct.setFullTableNamesIsSet(true);
+      struct.validTxnList = iprot.readString();
+      struct.setValidTxnListIsSet(true);
     }
   }
 

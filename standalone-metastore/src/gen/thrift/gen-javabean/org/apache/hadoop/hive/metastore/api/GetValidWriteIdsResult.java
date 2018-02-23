@@ -614,13 +614,13 @@ public class GetValidWriteIdsResult implements org.apache.thrift.TBase<GetValidW
           case 4: // IDS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list714 = iprot.readListBegin();
-                struct.ids = new ArrayList<Long>(_list714.size);
-                long _elem715;
-                for (int _i716 = 0; _i716 < _list714.size; ++_i716)
+                org.apache.thrift.protocol.TList _list754 = iprot.readListBegin();
+                struct.ids = new ArrayList<Long>(_list754.size);
+                long _elem755;
+                for (int _i756 = 0; _i756 < _list754.size; ++_i756)
                 {
-                  _elem715 = iprot.readI64();
-                  struct.ids.add(_elem715);
+                  _elem755 = iprot.readI64();
+                  struct.ids.add(_elem755);
                 }
                 iprot.readListEnd();
               }
@@ -658,9 +658,9 @@ public class GetValidWriteIdsResult implements org.apache.thrift.TBase<GetValidW
           oprot.writeFieldBegin(IDS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, struct.ids.size()));
-            for (long _iter717 : struct.ids)
+            for (long _iter757 : struct.ids)
             {
-              oprot.writeI64(_iter717);
+              oprot.writeI64(_iter757);
             }
             oprot.writeListEnd();
           }
@@ -700,9 +700,9 @@ public class GetValidWriteIdsResult implements org.apache.thrift.TBase<GetValidW
       if (struct.isSetIds()) {
         {
           oprot.writeI32(struct.ids.size());
-          for (long _iter718 : struct.ids)
+          for (long _iter758 : struct.ids)
           {
-            oprot.writeI64(_iter718);
+            oprot.writeI64(_iter758);
           }
         }
       }
@@ -722,13 +722,13 @@ public class GetValidWriteIdsResult implements org.apache.thrift.TBase<GetValidW
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list719 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, iprot.readI32());
-          struct.ids = new ArrayList<Long>(_list719.size);
-          long _elem720;
-          for (int _i721 = 0; _i721 < _list719.size; ++_i721)
+          org.apache.thrift.protocol.TList _list759 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, iprot.readI32());
+          struct.ids = new ArrayList<Long>(_list759.size);
+          long _elem760;
+          for (int _i761 = 0; _i761 < _list759.size; ++_i761)
           {
-            _elem720 = iprot.readI64();
-            struct.ids.add(_elem720);
+            _elem760 = iprot.readI64();
+            struct.ids.add(_elem760);
           }
         }
         struct.setIdsIsSet(true);

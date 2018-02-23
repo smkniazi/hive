@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.ValidTxnList;
+import org.apache.hadoop.hive.common.ValidTxnWriteIdList;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.LockComponentBuilder;
 import org.apache.hadoop.hive.metastore.LockRequestBuilder;
@@ -50,7 +51,9 @@ import org.apache.thrift.TException;
 import java.io.IOException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -77,14 +80,66 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
    * transaction id.  Thus is 1 is first transaction id.
    */
   private volatile long txnId = 0;
+
+  /**
+   * The local cache of table write IDs allocated/created by the current transaction
+   */
+  private Map<String, Long> tableWriteIds = new HashMap<>();
+
   /**
    * assigns a unique monotonically increasing ID to each statement
    * which is part of an open transaction.  This is used by storage
    * layer (see {@link org.apache.hadoop.hive.ql.io.AcidUtils#deltaSubdir(long, long, int)})
    * to keep apart multiple writes of the same data within the same transaction
-   * Also see {@link org.apache.hadoop.hive.ql.io.AcidOutputFormat.Options}
+   * Also see {@link org.apache.hadoop.hive.ql.io.AcidOutputFormat.Options}.
    */
+<<<<<<< HEAD
   private int statementId = -1;
+=======
+  private int stmtId = -1;
+
+  /**
+   * counts number of statements in the current transaction.
+   */
+  private int numStatements = 0;
+
+  /**
+   * if {@code true} it means current transaction is started via START TRANSACTION which means it cannot
+   * include any Operations which cannot be rolled back (drop partition; write to  non-acid table).
+   * If false, it's a single statement transaction which can include any statement.  This is not a 
+   * contradiction from the user point of view who doesn't know anything about the implicit txn
+   * and cannot call rollback (the statement of course can fail in which case there is nothing to 
+   * rollback (assuming the statement is well implemented)).
+   *
+   * This is done so that all commands run in a transaction which simplifies implementation and
+   * allows a simple implementation of multi-statement txns which don't require a lock manager
+   * capable of deadlock detection.  (todo: not fully implemented; elaborate on how this LM works)
+   *
+   * Also, critically important, ensuring that everything runs in a transaction assigns an order
+   * to all operations in the system - needed for replication/DR.
+   *
+   * We don't want to allow non-transactional statements in a user demarcated txn because the effect
+   * of such statement is "visible" immediately on statement completion, but the user may
+   * issue a rollback but the action of the statement can't be undone (and has possibly already been
+   * seen by another txn).  For example,
+   * start transaction
+   * insert into transactional_table values(1);
+   * insert into non_transactional_table select * from transactional_table;
+   * rollback
+   *
+   * The user would be in for a surprise especially if they are not aware of transactional
+   * properties of the tables involved.
+   *
+   * As a side note: what should the lock manager do with locks for non-transactional resources?
+   * Should it it release them at the end of the stmt or txn?
+   * Some interesting thoughts: http://mysqlmusings.blogspot.com/2009/02/mixing-engines-in-transactions.html.
+   */
+  private boolean isExplicitTransaction = false;
+
+  /**
+   * To ensure transactions don't nest.
+   */
+  private int startTransactionCount = 0;
 
   // QueryId for the query in current transaction
   private String queryId;
@@ -94,6 +149,7 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
   private ScheduledFuture<?> heartbeatTask = null;
   private Runnable shutdownRunner = null;
   private static final int SHUTDOWN_HOOK_PRIORITY = 0;
+
   /**
    * We do this on every call to make sure TM uses same MS connection as is used by the caller (Driver,
    * SemanticAnalyzer, etc).  {@code Hive} instances are cached using ThreadLocal and
@@ -157,7 +213,11 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
     }
     try {
       txnId = getMS().openTxn(user);
-      statementId = 0;
+      stmtId = 0;
+      numStatements = 0;
+      tableWriteIds.clear();
+      isExplicitTransaction = false;
+      startTransactionCount = 0;
       LOG.debug("Opened " + JavaUtils.txnIdToString(txnId));
       ctx.setHeartbeater(startHeartbeat(delay));
       return txnId;
@@ -187,7 +247,8 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
     catch(LockException e) {
       if(e.getCause() instanceof TxnAbortedException) {
         txnId = 0;
-        statementId = -1;
+        stmtId = -1;
+        tableWriteIds.clear();
       }
       throw e;
     }
@@ -517,7 +578,9 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           e);
     } finally {
       txnId = 0;
-      statementId = -1;
+      stmtId = -1;
+      numStatements = 0;
+      tableWriteIds.clear();
     }
   }
 
@@ -541,7 +604,9 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           e);
     } finally {
       txnId = 0;
-      statementId = -1;
+      stmtId = -1;
+      numStatements = 0;
+      tableWriteIds.clear();
     }
   }
 
@@ -661,12 +726,24 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
 
   @Override
   public ValidTxnList getValidTxns() throws LockException {
+    assert isTxnOpen();
     init();
     try {
       return getMS().getValidTxns(txnId);
     } catch (TException e) {
-      throw new LockException(ErrorMsg.METASTORE_COMMUNICATION_FAILED.getMsg(),
-          e);
+      throw new LockException(ErrorMsg.METASTORE_COMMUNICATION_FAILED.getMsg(), e);
+    }
+  }
+
+  @Override
+  public ValidTxnWriteIdList getValidWriteIds(List<String> tableList,
+                                              String validTxnList) throws LockException {
+    assert isTxnOpen();
+    assert validTxnList != null && !validTxnList.isEmpty();
+    try {
+      return getMS().getValidWriteIds(txnId, tableList, validTxnList);
+    } catch (TException e) {
+      throw new LockException(ErrorMsg.METASTORE_COMMUNICATION_FAILED.getMsg(), e);
     }
   }
 
@@ -747,9 +824,25 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
     return txnId;
   }
   @Override
-  public int getWriteIdAndIncrement() {
+  public int getStmtIdAndIncrement() {
     assert isTxnOpen();
-    return statementId++;
+    return stmtId++;
+  }
+
+  @Override
+  public long getTableWriteId(String dbName, String tableName) throws LockException {
+    assert isTxnOpen();
+    String fullTableName = AcidUtils.getFullTableName(dbName, tableName);
+    if (tableWriteIds.containsKey(fullTableName)) {
+      return tableWriteIds.get(fullTableName);
+    }
+    try {
+      long writeId = getMS().allocateTableWriteId(txnId, dbName, tableName);
+      tableWriteIds.put(fullTableName, writeId);
+      return writeId;
+    } catch (TException e) {
+      throw new LockException(ErrorMsg.METASTORE_COMMUNICATION_FAILED.getMsg(), e);
+    }
   }
 
   private static long getHeartbeatInterval(Configuration conf) throws LockException {

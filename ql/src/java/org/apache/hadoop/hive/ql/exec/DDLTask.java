@@ -62,6 +62,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidTxnList;
+import org.apache.hadoop.hive.common.ValidWriteIdList;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.conf.Constants;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -4238,32 +4239,6 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         + " to MM is not supported. Please re-create a table in the desired format.");
   }
 
-  private void handleRemoveMm(
-      Path path, ValidWriteIds ids, List<Path> result) throws HiveException {
-    // Note: doesn't take LB into account; that is not presently supported here (throws above).
-    try {
-      FileSystem fs = path.getFileSystem(conf);
-      for (FileStatus file : fs.listStatus(path)) {
-        Path childPath = file.getPath();
-        if (!file.isDirectory()) {
-          ensureDelete(fs, childPath, "a non-directory file");
-          continue;
-        }
-        Long writeId = ValidWriteIds.extractWriteId(childPath);
-        if (writeId == null) {
-          ensureDelete(fs, childPath, "an unknown directory");
-        } else if (!ids.isValid(writeId)) {
-          // Assume no concurrent active writes - we rely on locks here. We could check and fail.
-          ensureDelete(fs, childPath, "an uncommitted directory");
-        } else {
-          result.add(childPath);
-        }
-      }
-    } catch (IOException ex) {
-      throw new HiveException(ex);
-    }
-  }
-
   private static void ensureDelete(FileSystem fs, Path path, String what) throws IOException {
     if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
       Utilities.FILE_OP_LOGGER.trace("Deleting " + what + " " + path);
@@ -4283,9 +4258,25 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     // We will move all the files in the table/partition directories into the first MM
     // directory, then commit the first write ID.
     List<Path> srcs = new ArrayList<>(), tgts = new ArrayList<>();
+    long mmWriteId = 0;
+    try {
+      HiveTxnManager txnManager = SessionState.get().getTxnMgr();
+      if (txnManager.isTxnOpen()) {
+        mmWriteId = txnManager.getTableWriteId(tbl.getDbName(), tbl.getTableName());
+      } else {
+        txnManager.openTxn(new Context(conf), conf.getUser());
+        mmWriteId = txnManager.getTableWriteId(tbl.getDbName(), tbl.getTableName());
+        txnManager.commitTxn();
+      }
+    } catch (Exception e) {
+      String errorMessage = "FAILED: Error in acquiring locks: " + e.getMessage();
+      console.printError(errorMessage, "\n"
+          + org.apache.hadoop.util.StringUtils.stringifyException(e));
+    }
+    int stmtId = 0;
+    String mmDir = AcidUtils.deltaSubdir(mmWriteId, mmWriteId, stmtId);
+
     Hive db = getHive();
-    long mmWriteId = db.getNextTableWriteId(tbl.getDbName(), tbl.getTableName());
-    String mmDir = ValidWriteIds.getMmFilePrefix(mmWriteId);
     if (tbl.getPartitionKeys().size() > 0) {
       PartitionIterable parts = new PartitionIterable(db, tbl, null,
           HiveConf.getIntVar(conf, ConfVars.METASTORE_BATCH_RETRIEVE_MAX));

@@ -742,6 +742,16 @@ class ThriftHiveMetastoreHandler : virtual public ThriftHiveMetastoreIf {
     printf("commit_txn\n");
   }
 
+  void get_valid_write_ids(GetValidWriteIdsResponse& _return, const GetValidWriteIdsRequest& rqst) {
+    // Your implementation goes here
+    printf("get_valid_write_ids\n");
+  }
+
+  void allocate_table_write_ids(AllocateTableWriteIdsResponse& _return, const AllocateTableWriteIdsRequest& rqst) {
+    // Your implementation goes here
+    printf("allocate_table_write_ids\n");
+  }
+
   void lock(LockResponse& _return, const LockRequest& rqst) {
     // Your implementation goes here
     printf("lock\n");
@@ -860,11 +870,6 @@ class ThriftHiveMetastoreHandler : virtual public ThriftHiveMetastoreIf {
   void heartbeat_write_id(HeartbeatWriteIdResult& _return, const HeartbeatWriteIdRequest& req) {
     // Your implementation goes here
     printf("heartbeat_write_id\n");
-  }
-
-  void get_valid_write_ids(GetValidWriteIdsResult& _return, const GetValidWriteIdsRequest& req) {
-    // Your implementation goes here
-    printf("get_valid_write_ids\n");
   }
 
   void get_metastore_db_uuid(std::string& _return) {
