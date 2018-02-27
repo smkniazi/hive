@@ -270,15 +270,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         }
         FileUtils.mkdir(fs, finalPaths[idx].getParent(), hconf);
       }
-      // If we're updating or deleting there may be no file to close.  This can happen
-      // because the where clause strained out all of the records for a given bucket.  So
-      // before attempting the rename below, check if our file exists.  If it doesn't,
-      // then skip the rename.  If it does try it.  We could just blindly try the rename
-      // and avoid the extra stat, but that would mask other errors.
-      AcidUtils.Operation acidOp = conf.getWriteType();
-      boolean needToRename = outPaths[idx] != null && ((acidOp != AcidUtils.Operation.UPDATE
-          && acidOp != AcidUtils.Operation.DELETE) || fs.exists(outPaths[idx]));
-      if (needToRename && outPaths[idx] != null) {
+      if(outPaths[idx] != null && fs.exists(outPaths[idx])) {
         if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
           Utilities.FILE_OP_LOGGER.trace("committing " + outPaths[idx] + " to "
               + finalPaths[idx] + " (" + isMmTable + ")");
