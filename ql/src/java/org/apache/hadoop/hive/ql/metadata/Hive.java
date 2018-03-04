@@ -18,6 +18,12 @@
 
 package org.apache.hadoop.hive.ql.metadata;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import static org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_STORAGE;
 import static org.apache.hadoop.hive.serde.serdeConstants.SERIALIZATION_FORMAT;
 import static org.apache.hadoop.hive.serde.serdeConstants.STRING_TYPE_NAME;
@@ -94,6 +100,7 @@ import org.apache.hadoop.hive.metastore.api.CompactionResponse;
 import org.apache.hadoop.hive.metastore.api.CompactionType;
 import org.apache.hadoop.hive.metastore.api.CreationMetadata;
 import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.DefaultConstraintsRequest;
 import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FireEventRequest;
@@ -120,6 +127,7 @@ import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.PrivilegeBag;
 import org.apache.hadoop.hive.metastore.api.Role;
 import org.apache.hadoop.hive.metastore.api.RolePrincipalGrant;
+import org.apache.hadoop.hive.metastore.api.SQLDefaultConstraint;
 import org.apache.hadoop.hive.metastore.api.SQLForeignKey;
 import org.apache.hadoop.hive.metastore.api.SQLNotNullConstraint;
 import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
@@ -128,7 +136,6 @@ import org.apache.hadoop.hive.metastore.api.SetPartitionsStatsRequest;
 import org.apache.hadoop.hive.metastore.api.ShowCompactResponse;
 import org.apache.hadoop.hive.metastore.api.SkewedInfo;
 import org.apache.hadoop.hive.metastore.api.UniqueConstraintsRequest;
-import org.apache.hadoop.hive.metastore.api.UnknownDBException;
 import org.apache.hadoop.hive.metastore.api.WMFullResourcePlan;
 import org.apache.hadoop.hive.metastore.api.WMMapping;
 import org.apache.hadoop.hive.metastore.api.WMNullablePool;
@@ -843,13 +850,20 @@ public class Hive {
    *          primary key columns associated with the table
    * @param foreignKeys
    *          foreign key columns associated with the table
+   * @param uniqueConstraints
+   *          UNIQUE constraints associated with the table
+   * @param notNullConstraints
+   *          NOT NULL constraints associated with the table
+   * @param defaultConstraints
+   *          DEFAULT constraints associated with the table
    * @throws HiveException
    */
   public void createTable(Table tbl, boolean ifNotExists,
     List<SQLPrimaryKey> primaryKeys,
     List<SQLForeignKey> foreignKeys,
     List<SQLUniqueConstraint> uniqueConstraints,
-    List<SQLNotNullConstraint> notNullConstraints)
+    List<SQLNotNullConstraint> notNullConstraints,
+    List<SQLDefaultConstraint> defaultConstraints)
             throws HiveException {
     try {
       if (tbl.getDbName() == null || "".equals(tbl.getDbName().trim())) {
@@ -876,11 +890,11 @@ public class Hive {
         }
       }
       if (primaryKeys == null && foreignKeys == null
-              && uniqueConstraints == null && notNullConstraints == null) {
+              && uniqueConstraints == null && notNullConstraints == null && defaultConstraints == null) {
         getMSC().createTable(tTbl);
       } else {
         getMSC().createTableWithConstraints(tTbl, primaryKeys, foreignKeys,
-            uniqueConstraints, notNullConstraints);
+            uniqueConstraints, notNullConstraints, defaultConstraints);
       }
 
     } catch (AlreadyExistsException e) {
@@ -893,7 +907,7 @@ public class Hive {
   }
 
   public void createTable(Table tbl, boolean ifNotExists) throws HiveException {
-   createTable(tbl, ifNotExists, null, null, null, null);
+   createTable(tbl, ifNotExists, null, null, null, null, null);
  }
 
   public static List<FieldSchema> getFieldsFromDeserializerForMsStorage(
@@ -4459,6 +4473,18 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
+  public List<SQLDefaultConstraint> getDefaultConstraintList(String dbName, String tblName) throws HiveException, NoSuchObjectException {
+    try {
+      return getMSC().getDefaultConstraints(new DefaultConstraintsRequest(dbName, tblName));
+    } catch (NoSuchObjectException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  /**
+
   /**
    * Get all primary key columns associated with the table.
    *
@@ -4625,6 +4651,30 @@ private void constructOneLBLocationMap(FileStatus fSta,
     }
   }
 
+  /**
+   * Get Default constraints associated with the table that are enabled
+   *
+   * @param dbName Database Name
+   * @param tblName Table Name
+   * @return Default constraints associated with the table.
+   * @throws HiveException
+   */
+  public DefaultConstraint getEnabledDefaultConstraints(String dbName, String tblName)
+      throws HiveException {
+    try {
+      List<SQLDefaultConstraint> defaultConstraints = getMSC().getDefaultConstraints(
+          new DefaultConstraintsRequest(dbName, tblName));
+      if (defaultConstraints != null && !defaultConstraints.isEmpty()) {
+        defaultConstraints = defaultConstraints.stream()
+            .filter(nnc -> nnc.isEnable_cstr())
+            .collect(Collectors.toList());
+      }
+      return new DefaultConstraint(defaultConstraints, tblName, dbName);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
   private NotNullConstraint getNotNullConstraints(String dbName, String tblName, boolean onlyReliable)
       throws HiveException {
     try {
@@ -4636,6 +4686,21 @@ private void constructOneLBLocationMap(FileStatus fSta,
           .collect(Collectors.toList());
       }
       return new NotNullConstraint(notNullConstraints, tblName, dbName);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
+  public DefaultConstraint getDefaultConstraints(String dbName, String tblName)
+      throws HiveException {
+    try {
+      List<SQLDefaultConstraint> defaultConstraints = getMSC().getDefaultConstraints(
+          new DefaultConstraintsRequest(dbName, tblName));
+      if (defaultConstraints != null && !defaultConstraints.isEmpty()) {
+        defaultConstraints = defaultConstraints.stream()
+            .collect(Collectors.toList());
+      }
+      return new DefaultConstraint(defaultConstraints, tblName, dbName);
     } catch (Exception e) {
       throw new HiveException(e);
     }
@@ -4697,6 +4762,16 @@ private void constructOneLBLocationMap(FileStatus fSta,
       throw new HiveException(e);
     }
   }
+
+  public void addDefaultConstraint(List<SQLDefaultConstraint> defaultConstraints)
+      throws HiveException, NoSuchObjectException {
+    try {
+      getMSC().addDefaultConstraint(defaultConstraints);
+    } catch (Exception e) {
+      throw new HiveException(e);
+    }
+  }
+
 
   public void createResourcePlan(WMResourcePlan resourcePlan, String copyFromName)
       throws HiveException {

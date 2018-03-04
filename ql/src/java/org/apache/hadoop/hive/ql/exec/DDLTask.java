@@ -91,6 +91,7 @@ import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.Order;
 import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.RolePrincipalGrant;
+import org.apache.hadoop.hive.metastore.api.SQLDefaultConstraint;
 import org.apache.hadoop.hive.metastore.api.SQLForeignKey;
 import org.apache.hadoop.hive.metastore.api.SQLNotNullConstraint;
 import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
@@ -142,6 +143,7 @@ import org.apache.hadoop.hive.ql.lockmgr.HiveLockObject;
 import org.apache.hadoop.hive.ql.lockmgr.HiveLockObject.HiveLockObjectData;
 import org.apache.hadoop.hive.ql.lockmgr.HiveTxnManager;
 import org.apache.hadoop.hive.ql.metadata.CheckResult;
+import org.apache.hadoop.hive.ql.metadata.DefaultConstraint;
 import org.apache.hadoop.hive.ql.metadata.ForeignKeyInfo;
 import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -3616,11 +3618,13 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       ForeignKeyInfo fkInfo = null;
       UniqueConstraint ukInfo = null;
       NotNullConstraint nnInfo = null;
+      DefaultConstraint dInfo = null;
       if (descTbl.isExt() || descTbl.isFormatted()) {
         pkInfo = db.getPrimaryKeys(tbl.getDbName(), tbl.getTableName());
         fkInfo = db.getForeignKeys(tbl.getDbName(), tbl.getTableName());
         ukInfo = db.getUniqueConstraints(tbl.getDbName(), tbl.getTableName());
         nnInfo = db.getNotNullConstraints(tbl.getDbName(), tbl.getTableName());
+        dInfo = db.getDefaultConstraints(tbl.getDbName(), tbl.getTableName());
       }
       fixDecimalColumnTypeName(cols);
       // In case the query is served by HiveServer2, don't pad it with spaces,
@@ -3629,7 +3633,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       formatter.describeTable(outStream, colPath, tableName, tbl, part,
           cols, descTbl.isFormatted(), descTbl.isExt(),
           isOutputPadded, colStats,
-          pkInfo, fkInfo, ukInfo, nnInfo);
+          pkInfo, fkInfo, ukInfo, nnInfo, dInfo);
 
       LOG.debug("DDLTask: written data for {}", tableName);
 
@@ -4384,6 +4388,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
               && !alterTbl.getNotNullConstraintCols().isEmpty()) {
         db.addNotNullConstraint(alterTbl.getNotNullConstraintCols());
       }
+      if (alterTbl.getDefaultConstraintCols() != null
+          && !alterTbl.getDefaultConstraintCols().isEmpty()) {
+        db.addDefaultConstraint(alterTbl.getDefaultConstraintCols());
+      }
     } catch (NoSuchObjectException e) {
       throw new HiveException(e);
     }
@@ -4706,6 +4714,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     List<SQLForeignKey> foreignKeys = crtTbl.getForeignKeys();
     List<SQLUniqueConstraint> uniqueConstraints = crtTbl.getUniqueConstraints();
     List<SQLNotNullConstraint> notNullConstraints = crtTbl.getNotNullConstraints();
+    List<SQLDefaultConstraint> defaultConstraints = crtTbl.getDefaultConstraints();
     LOG.debug("creating table {} on {}",tbl.getFullyQualifiedName(),tbl.getDataLocation());
 
     if (crtTbl.getReplicationSpec().isInReplicationScope() && (!crtTbl.getReplaceMode())){
@@ -4731,12 +4740,13 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       // replace-mode creates are really alters using CreateTableDesc.
       db.alterTable(tbl, null);
     } else {
-      if ((foreignKeys != null && foreignKeys.size() > 0 ) ||
+      if ((foreignKeys != null && foreignKeys.size() > 0) ||
           (primaryKeys != null && primaryKeys.size() > 0) ||
           (uniqueConstraints != null && uniqueConstraints.size() > 0) ||
-          (notNullConstraints != null && notNullConstraints.size() > 0)) {
+          (notNullConstraints != null && notNullConstraints.size() > 0) ||
+          defaultConstraints != null && defaultConstraints.size() > 0) {
         db.createTable(tbl, crtTbl.getIfNotExists(), primaryKeys, foreignKeys,
-                uniqueConstraints, notNullConstraints);
+                uniqueConstraints, notNullConstraints, defaultConstraints);
       } else {
         db.createTable(tbl, crtTbl.getIfNotExists());
       }
