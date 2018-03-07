@@ -346,14 +346,14 @@ public class WMGetTriggersForResourePlanResponse implements org.apache.thrift.TB
           case 1: // TRIGGERS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list874 = iprot.readListBegin();
-                struct.triggers = new ArrayList<WMTrigger>(_list874.size);
-                WMTrigger _elem875;
-                for (int _i876 = 0; _i876 < _list874.size; ++_i876)
+                org.apache.thrift.protocol.TList _list864 = iprot.readListBegin();
+                struct.triggers = new ArrayList<WMTrigger>(_list864.size);
+                WMTrigger _elem865;
+                for (int _i866 = 0; _i866 < _list864.size; ++_i866)
                 {
-                  _elem875 = new WMTrigger();
-                  _elem875.read(iprot);
-                  struct.triggers.add(_elem875);
+                  _elem865 = new WMTrigger();
+                  _elem865.read(iprot);
+                  struct.triggers.add(_elem865);
                 }
                 iprot.readListEnd();
               }
@@ -380,9 +380,9 @@ public class WMGetTriggersForResourePlanResponse implements org.apache.thrift.TB
           oprot.writeFieldBegin(TRIGGERS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.triggers.size()));
-            for (WMTrigger _iter877 : struct.triggers)
+            for (WMTrigger _iter867 : struct.triggers)
             {
-              _iter877.write(oprot);
+              _iter867.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -414,9 +414,9 @@ public class WMGetTriggersForResourePlanResponse implements org.apache.thrift.TB
       if (struct.isSetTriggers()) {
         {
           oprot.writeI32(struct.triggers.size());
-          for (WMTrigger _iter878 : struct.triggers)
+          for (WMTrigger _iter868 : struct.triggers)
           {
-            _iter878.write(oprot);
+            _iter868.write(oprot);
           }
         }
       }
@@ -428,14 +428,14 @@ public class WMGetTriggersForResourePlanResponse implements org.apache.thrift.TB
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list879 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.triggers = new ArrayList<WMTrigger>(_list879.size);
-          WMTrigger _elem880;
-          for (int _i881 = 0; _i881 < _list879.size; ++_i881)
+          org.apache.thrift.protocol.TList _list869 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.triggers = new ArrayList<WMTrigger>(_list869.size);
+          WMTrigger _elem870;
+          for (int _i871 = 0; _i871 < _list869.size; ++_i871)
           {
-            _elem880 = new WMTrigger();
-            _elem880.read(iprot);
-            struct.triggers.add(_elem880);
+            _elem870 = new WMTrigger();
+            _elem870.read(iprot);
+            struct.triggers.add(_elem870);
           }
         }
         struct.setTriggersIsSet(true);
