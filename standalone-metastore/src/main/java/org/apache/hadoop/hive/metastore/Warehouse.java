@@ -550,7 +550,7 @@ public class Warehouse {
    * @return array of FileStatus objects corresponding to the files
    * making up the passed storage description
    */
-  public FileStatus[] getFileStatusesForSD(StorageDescriptor desc)
+  public List<FileStatus> getFileStatusesForSD(StorageDescriptor desc)
       throws MetaException {
     return getFileStatusesForLocation(desc.getLocation());
   }
@@ -560,7 +560,7 @@ public class Warehouse {
    * @return array of FileStatus objects corresponding to the files
    * making up the passed storage description
    */
-  public FileStatus[] getFileStatusesForLocation(String location)
+  public List<FileStatus> getFileStatusesForLocation(String location)
       throws MetaException {
     try {
       Path path = new Path(location);
@@ -578,7 +578,7 @@ public class Warehouse {
    * @return array of FileStatus objects corresponding to the files making up the passed
    * unpartitioned table
    */
-  public FileStatus[] getFileStatusesForUnpartitionedTable(Database db, Table table)
+  public List<FileStatus> getFileStatusesForUnpartitionedTable(Database db, Table table)
       throws MetaException {
     Path tablePath = getDnsPath(new Path(table.getSd().getLocation()));
     try {
