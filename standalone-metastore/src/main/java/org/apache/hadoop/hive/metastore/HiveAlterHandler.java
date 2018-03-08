@@ -197,7 +197,7 @@ public class HiveAlterHandler implements AlterHandler {
           Database db = msdb.getDatabase(newt.getDbName());
           // Update table stats. For partitioned table, we update stats in
           MetaStoreUtils.updateTableStatsFast(db, newt, wh, false, true, environmentContext, false);
-          
+
         if (isPartitionedTable) {
           //Currently only column related changes can be cascaded in alter table
           if(!MetaStoreUtils.areSameColumns(oldt.getSd().getCols(), newt.getSd().getCols())) {
