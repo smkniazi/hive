@@ -112,7 +112,7 @@ public final class TxnDbUtil {
       stmt.execute("CREATE TABLE HIVE_LOCKS (" +
           " HL_LOCK_EXT_ID bigint NOT NULL," +
           " HL_LOCK_INT_ID bigint NOT NULL," +
-          " HL_TXNID bigint," +
+          " HL_TXNID bigint NOT NULL," +
           " HL_DB varchar(128) NOT NULL," +
           " HL_TABLE varchar(128)," +
           " HL_PARTITION varchar(767)," +
@@ -149,7 +149,7 @@ public final class TxnDbUtil {
 
       stmt.execute("CREATE TABLE NEXT_COMPACTION_QUEUE_ID (NCQ_NEXT bigint NOT NULL)");
       stmt.execute("INSERT INTO NEXT_COMPACTION_QUEUE_ID VALUES(1)");
-      
+
       stmt.execute("CREATE TABLE COMPLETED_COMPACTIONS (" +
           " CC_ID bigint PRIMARY KEY," +
           " CC_DATABASE varchar(128) NOT NULL," +
@@ -171,7 +171,7 @@ public final class TxnDbUtil {
         " MT_KEY2 bigint NOT NULL," +
         " MT_COMMENT varchar(255)," +
         " PRIMARY KEY(MT_KEY1, MT_KEY2))");
-      
+
       stmt.execute("CREATE TABLE WRITE_SET (" +
         " WS_DATABASE varchar(128) NOT NULL," +
         " WS_TABLE varchar(128) NOT NULL," +
