@@ -6001,8 +6001,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         ret = ms.grantRole(role, principalName, principalType, grantor, grantorType, grantOption);
       } catch (MetaException e) {
         throw e;
+      } catch (InvalidObjectException | NoSuchObjectException e) {
+        ret = false;
+        MetaStoreUtils.logAndThrowMetaException(e);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new TException(e);
       }
       return ret;
     }
@@ -6050,8 +6053,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         ret = getMS().addRole(role.getRoleName(), role.getOwnerName());
       } catch (MetaException e) {
         throw e;
+      } catch (InvalidObjectException | NoSuchObjectException e) {
+        ret = false;
+        MetaStoreUtils.logAndThrowMetaException(e);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new TException(e);
       }
       return ret;
     }
@@ -6068,8 +6074,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         ret = getMS().removeRole(roleName);
       } catch (MetaException e) {
         throw e;
+      } catch (NoSuchObjectException e) {
+        ret = false;
+        MetaStoreUtils.logAndThrowMetaException(e);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new TException(e);
       }
       return ret;
     }
@@ -6098,8 +6107,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         ret = getMS().grantPrivileges(privileges);
       } catch (MetaException e) {
         throw e;
+      } catch (InvalidObjectException | NoSuchObjectException e) {
+        ret = false;
+        MetaStoreUtils.logAndThrowMetaException(e);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new TException(e);
       }
       return ret;
     }
@@ -6124,8 +6136,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         ret = ms.revokeRole(mRole, userName, principalType, grantOption);
       } catch (MetaException e) {
         throw e;
+      } catch (NoSuchObjectException e) {
+        ret = false;
+        MetaStoreUtils.logAndThrowMetaException(e);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new TException(e);
       }
       return ret;
     }
@@ -6199,8 +6214,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         ret = getMS().revokePrivileges(privileges, grantOption);
       } catch (MetaException e) {
         throw e;
+      } catch (InvalidObjectException | NoSuchObjectException e) {
+        ret = false;
+        MetaStoreUtils.logAndThrowMetaException(e);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new TException(e);
       }
       return ret;
     }
