@@ -347,7 +347,9 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   protected boolean noscan;
 
   // whether this is a mv rebuild rewritten expression
-  protected boolean rewrittenRebuild = false;
+  protected MaterializationRebuildMode mvRebuildMode = MaterializationRebuildMode.NONE;
+  protected String mvRebuildDbName; // Db name for materialization to rebuild
+  protected String mvRebuildName; // Name for materialization to rebuild
 
   protected volatile boolean disableJoinMerge = false;
   protected final boolean defaultJoinMerge;
@@ -2211,7 +2213,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       case HiveParser.TOK_TAB: {
         TableSpec ts = new TableSpec(db, conf, ast);
         if (ts.tableHandle.isView() ||
-            (!rewrittenRebuild && ts.tableHandle.isMaterializedView())) {
+            (mvRebuildMode == MaterializationRebuildMode.NONE && ts.tableHandle.isMaterializedView())) {
           throw new SemanticException(ErrorMsg.DML_AGAINST_VIEW.getMsg());
         }
 
@@ -14700,5 +14702,12 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
   public boolean isValidQueryMaterialization() {
     return (invalidQueryMaterializationReason == null);
+  }
+
+  protected enum MaterializationRebuildMode {
+    NONE,
+    INSERT_OVERWRITE_REBUILD,
+    AGGREGATE_REBUILD,
+    NO_AGGREGATE_REBUILD
   }
 }

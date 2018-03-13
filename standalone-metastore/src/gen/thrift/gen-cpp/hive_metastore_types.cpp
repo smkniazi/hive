@@ -25195,6 +25195,12 @@ __isset.validTxnList = true;
 
 void Materialization::__set_invalidationTime(const int64_t val) {
   this->invalidationTime = val;
+__isset.invalidationTime = true;
+}
+
+void Materialization::__set_sourceTablesUpdateDeleteModified(const bool val) {
+  this->sourceTablesUpdateDeleteModified = val;
+__isset.sourceTablesUpdateDeleteModified = true;
 }
 
 uint32_t Materialization::read(::apache::thrift::protocol::TProtocol* iprot) {
@@ -25210,7 +25216,6 @@ uint32_t Materialization::read(::apache::thrift::protocol::TProtocol* iprot) {
   using ::apache::thrift::protocol::TProtocolException;
 
   bool isset_tablesUsed = false;
-  bool isset_invalidationTime = false;
 
   while (true)
   {
@@ -25252,7 +25257,15 @@ uint32_t Materialization::read(::apache::thrift::protocol::TProtocol* iprot) {
       case 3:
         if (ftype == ::apache::thrift::protocol::T_I64) {
           xfer += iprot->readI64(this->invalidationTime);
-          isset_invalidationTime = true;
+          this->__isset.invalidationTime = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->sourceTablesUpdateDeleteModified);
+          this->__isset.sourceTablesUpdateDeleteModified = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -25267,8 +25280,6 @@ uint32_t Materialization::read(::apache::thrift::protocol::TProtocol* iprot) {
   xfer += iprot->readStructEnd();
 
   if (!isset_tablesUsed)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
-  if (!isset_invalidationTime)
     throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
@@ -25295,10 +25306,16 @@ uint32_t Materialization::write(::apache::thrift::protocol::TProtocol* oprot) co
     xfer += oprot->writeString(this->validTxnList);
     xfer += oprot->writeFieldEnd();
   }
-  xfer += oprot->writeFieldBegin("invalidationTime", ::apache::thrift::protocol::T_I64, 3);
-  xfer += oprot->writeI64(this->invalidationTime);
-  xfer += oprot->writeFieldEnd();
-
+  if (this->__isset.invalidationTime) {
+    xfer += oprot->writeFieldBegin("invalidationTime", ::apache::thrift::protocol::T_I64, 3);
+    xfer += oprot->writeI64(this->invalidationTime);
+    xfer += oprot->writeFieldEnd();
+  }
+  if (this->__isset.sourceTablesUpdateDeleteModified) {
+    xfer += oprot->writeFieldBegin("sourceTablesUpdateDeleteModified", ::apache::thrift::protocol::T_BOOL, 4);
+    xfer += oprot->writeBool(this->sourceTablesUpdateDeleteModified);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -25309,6 +25326,7 @@ void swap(Materialization &a, Materialization &b) {
   swap(a.tablesUsed, b.tablesUsed);
   swap(a.validTxnList, b.validTxnList);
   swap(a.invalidationTime, b.invalidationTime);
+  swap(a.sourceTablesUpdateDeleteModified, b.sourceTablesUpdateDeleteModified);
   swap(a.__isset, b.__isset);
 }
 
@@ -25316,12 +25334,14 @@ Materialization::Materialization(const Materialization& other998) {
   tablesUsed = other998.tablesUsed;
   validTxnList = other998.validTxnList;
   invalidationTime = other998.invalidationTime;
+  sourceTablesUpdateDeleteModified = other998.sourceTablesUpdateDeleteModified;
   __isset = other998.__isset;
 }
 Materialization& Materialization::operator=(const Materialization& other999) {
   tablesUsed = other999.tablesUsed;
   validTxnList = other999.validTxnList;
   invalidationTime = other999.invalidationTime;
+  sourceTablesUpdateDeleteModified = other999.sourceTablesUpdateDeleteModified;
   __isset = other999.__isset;
   return *this;
 }
@@ -25330,7 +25350,8 @@ void Materialization::printTo(std::ostream& out) const {
   out << "Materialization(";
   out << "tablesUsed=" << to_string(tablesUsed);
   out << ", " << "validTxnList="; (__isset.validTxnList ? (out << to_string(validTxnList)) : (out << "<null>"));
-  out << ", " << "invalidationTime=" << to_string(invalidationTime);
+  out << ", " << "invalidationTime="; (__isset.invalidationTime ? (out << to_string(invalidationTime)) : (out << "<null>"));
+  out << ", " << "sourceTablesUpdateDeleteModified="; (__isset.sourceTablesUpdateDeleteModified ? (out << to_string(sourceTablesUpdateDeleteModified)) : (out << "<null>"));
   out << ")";
 }
 

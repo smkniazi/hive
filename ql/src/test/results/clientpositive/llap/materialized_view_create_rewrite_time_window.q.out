@@ -1,12 +1,12 @@
-PREHOOK: query: create table cmv_basetable_n3 (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
+PREHOOK: query: create table cmv_basetable (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
-PREHOOK: Output: default@cmv_basetable_n3
-POSTHOOK: query: create table cmv_basetable_n3 (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
+PREHOOK: Output: default@cmv_basetable
+POSTHOOK: query: create table cmv_basetable (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
-POSTHOOK: Output: default@cmv_basetable_n3
-PREHOOK: query: insert into cmv_basetable_n3 values
+POSTHOOK: Output: default@cmv_basetable
+PREHOOK: query: insert into cmv_basetable values
  (1, 'alfred', 10.30, 2),
  (2, 'bob', 3.14, 3),
  (2, 'bonnie', 172342.2, 3),
@@ -14,8 +14,8 @@ PREHOOK: query: insert into cmv_basetable_n3 values
  (3, 'charlie', 9.8, 1)
 PREHOOK: type: QUERY
 PREHOOK: Input: _dummy_database@_dummy_table
-PREHOOK: Output: default@cmv_basetable_n3
-POSTHOOK: query: insert into cmv_basetable_n3 values
+PREHOOK: Output: default@cmv_basetable
+POSTHOOK: query: insert into cmv_basetable values
  (1, 'alfred', 10.30, 2),
  (2, 'bob', 3.14, 3),
  (2, 'bonnie', 172342.2, 3),
@@ -23,68 +23,68 @@ POSTHOOK: query: insert into cmv_basetable_n3 values
  (3, 'charlie', 9.8, 1)
 POSTHOOK: type: QUERY
 POSTHOOK: Input: _dummy_database@_dummy_table
-POSTHOOK: Output: default@cmv_basetable_n3
-POSTHOOK: Lineage: cmv_basetable_n3.a SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_n3.b SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_n3.c SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_n3.d SCRIPT []
-PREHOOK: query: analyze table cmv_basetable_n3 compute statistics for columns
-PREHOOK: type: ANALYZE_TABLE
-PREHOOK: Input: default@cmv_basetable_n3
-PREHOOK: Output: default@cmv_basetable_n3
+POSTHOOK: Output: default@cmv_basetable
+POSTHOOK: Lineage: cmv_basetable.a SCRIPT []
+POSTHOOK: Lineage: cmv_basetable.b SCRIPT []
+POSTHOOK: Lineage: cmv_basetable.c SCRIPT []
+POSTHOOK: Lineage: cmv_basetable.d SCRIPT []
+PREHOOK: query: analyze table cmv_basetable compute statistics for columns
+PREHOOK: type: QUERY
+PREHOOK: Input: default@cmv_basetable
+PREHOOK: Output: default@cmv_basetable
 #### A masked pattern was here ####
-POSTHOOK: query: analyze table cmv_basetable_n3 compute statistics for columns
-POSTHOOK: type: ANALYZE_TABLE
-POSTHOOK: Input: default@cmv_basetable_n3
-POSTHOOK: Output: default@cmv_basetable_n3
+POSTHOOK: query: analyze table cmv_basetable compute statistics for columns
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@cmv_basetable
+POSTHOOK: Output: default@cmv_basetable
 #### A masked pattern was here ####
-PREHOOK: query: create table cmv_basetable_2_n1 (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
+PREHOOK: query: create table cmv_basetable_2 (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
 PREHOOK: type: CREATETABLE
 PREHOOK: Output: database:default
-PREHOOK: Output: default@cmv_basetable_2_n1
-POSTHOOK: query: create table cmv_basetable_2_n1 (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
+PREHOOK: Output: default@cmv_basetable_2
+POSTHOOK: query: create table cmv_basetable_2 (a int, b varchar(256), c decimal(10,2), d int) stored as orc TBLPROPERTIES ('transactional'='true')
 POSTHOOK: type: CREATETABLE
 POSTHOOK: Output: database:default
-POSTHOOK: Output: default@cmv_basetable_2_n1
-PREHOOK: query: insert into cmv_basetable_2_n1 values
+POSTHOOK: Output: default@cmv_basetable_2
+PREHOOK: query: insert into cmv_basetable_2 values
  (1, 'alfred', 10.30, 2),
  (3, 'calvin', 978.76, 3)
 PREHOOK: type: QUERY
 PREHOOK: Input: _dummy_database@_dummy_table
-PREHOOK: Output: default@cmv_basetable_2_n1
-POSTHOOK: query: insert into cmv_basetable_2_n1 values
+PREHOOK: Output: default@cmv_basetable_2
+POSTHOOK: query: insert into cmv_basetable_2 values
  (1, 'alfred', 10.30, 2),
  (3, 'calvin', 978.76, 3)
 POSTHOOK: type: QUERY
 POSTHOOK: Input: _dummy_database@_dummy_table
-POSTHOOK: Output: default@cmv_basetable_2_n1
-POSTHOOK: Lineage: cmv_basetable_2_n1.a SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_2_n1.b SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_2_n1.c SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_2_n1.d SCRIPT []
-PREHOOK: query: analyze table cmv_basetable_2_n1 compute statistics for columns
-PREHOOK: type: ANALYZE_TABLE
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Output: default@cmv_basetable_2_n1
+POSTHOOK: Output: default@cmv_basetable_2
+POSTHOOK: Lineage: cmv_basetable_2.a SCRIPT []
+POSTHOOK: Lineage: cmv_basetable_2.b SCRIPT []
+POSTHOOK: Lineage: cmv_basetable_2.c SCRIPT []
+POSTHOOK: Lineage: cmv_basetable_2.d SCRIPT []
+PREHOOK: query: analyze table cmv_basetable_2 compute statistics for columns
+PREHOOK: type: QUERY
+PREHOOK: Input: default@cmv_basetable_2
+PREHOOK: Output: default@cmv_basetable_2
 #### A masked pattern was here ####
-POSTHOOK: query: analyze table cmv_basetable_2_n1 compute statistics for columns
-POSTHOOK: type: ANALYZE_TABLE
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Output: default@cmv_basetable_2_n1
+POSTHOOK: query: analyze table cmv_basetable_2 compute statistics for columns
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@cmv_basetable_2
+POSTHOOK: Output: default@cmv_basetable_2
 #### A masked pattern was here ####
 PREHOOK: query: EXPLAIN
-CREATE MATERIALIZED VIEW cmv_mat_view_n3 TBLPROPERTIES('rewriting.time.window'='300s') AS
-  SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c
-  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-  WHERE cmv_basetable_2_n1.c > 10.0
-  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+CREATE MATERIALIZED VIEW cmv_mat_view TBLPROPERTIES('rewriting.time.window'='300s') AS
+  SELECT cmv_basetable.a, cmv_basetable_2.c
+  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+  WHERE cmv_basetable_2.c > 10.0
+  GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: CREATE_MATERIALIZED_VIEW
 POSTHOOK: query: EXPLAIN
-CREATE MATERIALIZED VIEW cmv_mat_view_n3 TBLPROPERTIES('rewriting.time.window'='300s') AS
-  SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c
-  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-  WHERE cmv_basetable_2_n1.c > 10.0
-  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+CREATE MATERIALIZED VIEW cmv_mat_view TBLPROPERTIES('rewriting.time.window'='300s') AS
+  SELECT cmv_basetable.a, cmv_basetable_2.c
+  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+  WHERE cmv_basetable_2.c > 10.0
+  GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: CREATE_MATERIALIZED_VIEW
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -106,7 +106,7 @@ STAGE PLANS:
         Map 1 
             Map Operator Tree:
                 TableScan
-                  alias: cmv_basetable_n3
+                  alias: cmv_basetable
                   Statistics: Num rows: 5 Data size: 20 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: a is not null (type: boolean)
@@ -125,7 +125,7 @@ STAGE PLANS:
         Map 4 
             Map Operator Tree:
                 TableScan
-                  alias: cmv_basetable_2_n1
+                  alias: cmv_basetable_2
                   Statistics: Num rows: 2 Data size: 232 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: ((c > 10) and a is not null) (type: boolean)
@@ -178,7 +178,7 @@ STAGE PLANS:
                       input format: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
                       output format: org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat
                       serde: org.apache.hadoop.hive.ql.io.orc.OrcSerde
-                      name: default.cmv_mat_view_n3
+                      name: default.cmv_mat_view
 
   Stage: Stage-2
     Dependency Collection
@@ -189,15 +189,15 @@ STAGE PLANS:
           columns: a int, c decimal(10,2)
           table properties:
             rewriting.time.window 300s
-          expanded text: SELECT `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`
-  FROM `default`.`cmv_basetable_n3` JOIN `default`.`cmv_basetable_2_n1` ON (`cmv_basetable_n3`.`a` = `cmv_basetable_2_n1`.`a`)
-  WHERE `cmv_basetable_2_n1`.`c` > 10.0
-  GROUP BY `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`
-          name: default.cmv_mat_view_n3
-          original text: SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c
-  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-  WHERE cmv_basetable_2_n1.c > 10.0
-  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+          expanded text: SELECT `cmv_basetable`.`a`, `cmv_basetable_2`.`c`
+  FROM `default`.`cmv_basetable` JOIN `default`.`cmv_basetable_2` ON (`cmv_basetable`.`a` = `cmv_basetable_2`.`a`)
+  WHERE `cmv_basetable_2`.`c` > 10.0
+  GROUP BY `cmv_basetable`.`a`, `cmv_basetable_2`.`c`
+          name: default.cmv_mat_view
+          original text: SELECT cmv_basetable.a, cmv_basetable_2.c
+  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+  WHERE cmv_basetable_2.c > 10.0
+  GROUP BY cmv_basetable.a, cmv_basetable_2.c
 
   Stage: Stage-3
     Stats Work
@@ -212,32 +212,32 @@ STAGE PLANS:
           hdfs directory: true
 #### A masked pattern was here ####
 
-PREHOOK: query: CREATE MATERIALIZED VIEW cmv_mat_view_n3 TBLPROPERTIES('rewriting.time.window'='300s') AS
-  SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c
-  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-  WHERE cmv_basetable_2_n1.c > 10.0
-  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+PREHOOK: query: CREATE MATERIALIZED VIEW cmv_mat_view TBLPROPERTIES('rewriting.time.window'='300s') AS
+  SELECT cmv_basetable.a, cmv_basetable_2.c
+  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+  WHERE cmv_basetable_2.c > 10.0
+  GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: CREATE_MATERIALIZED_VIEW
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Input: default@cmv_basetable_n3
+PREHOOK: Input: default@cmv_basetable
+PREHOOK: Input: default@cmv_basetable_2
 PREHOOK: Output: database:default
-PREHOOK: Output: default@cmv_mat_view_n3
-POSTHOOK: query: CREATE MATERIALIZED VIEW cmv_mat_view_n3 TBLPROPERTIES('rewriting.time.window'='300s') AS
-  SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c
-  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-  WHERE cmv_basetable_2_n1.c > 10.0
-  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+PREHOOK: Output: default@cmv_mat_view
+POSTHOOK: query: CREATE MATERIALIZED VIEW cmv_mat_view TBLPROPERTIES('rewriting.time.window'='300s') AS
+  SELECT cmv_basetable.a, cmv_basetable_2.c
+  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+  WHERE cmv_basetable_2.c > 10.0
+  GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: CREATE_MATERIALIZED_VIEW
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Input: default@cmv_basetable_n3
+POSTHOOK: Input: default@cmv_basetable
+POSTHOOK: Input: default@cmv_basetable_2
 POSTHOOK: Output: database:default
-POSTHOOK: Output: default@cmv_mat_view_n3
-PREHOOK: query: DESCRIBE FORMATTED cmv_mat_view_n3
+POSTHOOK: Output: default@cmv_mat_view
+PREHOOK: query: DESCRIBE FORMATTED cmv_mat_view
 PREHOOK: type: DESCTABLE
-PREHOOK: Input: default@cmv_mat_view_n3
-POSTHOOK: query: DESCRIBE FORMATTED cmv_mat_view_n3
+PREHOOK: Input: default@cmv_mat_view
+POSTHOOK: query: DESCRIBE FORMATTED cmv_mat_view
 POSTHOOK: type: DESCTABLE
-POSTHOOK: Input: default@cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_mat_view
 # col_name            	data_type           	comment             
 a                   	int                 	                    
 c                   	decimal(10,2)       	                    
@@ -250,12 +250,11 @@ Retention:          	0
 Table Type:         	MATERIALIZED_VIEW   	 
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
-	bucketing_version   	2                   
 	numFiles            	2                   
 	numRows             	2                   
 	rawDataSize         	232                 
 	rewriting.time.window	300s                
-	totalSize           	608                 
+	totalSize           	586                 
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -268,26 +267,26 @@ Bucket Columns:     	[]
 Sort Columns:       	[]                  	 
 	 	 
 # View Information	 	 
-View Original Text: 	SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c	 
-	                    	  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-	                    	  WHERE cmv_basetable_2_n1.c > 10.0
-	                    	  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
-View Expanded Text: 	SELECT `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`	 
-	                    	  FROM `default`.`cmv_basetable_n3` JOIN `default`.`cmv_basetable_2_n1` ON (`cmv_basetable_n3`.`a` = `cmv_basetable_2_n1`.`a`)
-	                    	  WHERE `cmv_basetable_2_n1`.`c` > 10.0
-	                    	  GROUP BY `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`
+View Original Text: 	SELECT cmv_basetable.a, cmv_basetable_2.c	 
+	                    	  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+	                    	  WHERE cmv_basetable_2.c > 10.0
+	                    	  GROUP BY cmv_basetable.a, cmv_basetable_2.c
+View Expanded Text: 	SELECT `cmv_basetable`.`a`, `cmv_basetable_2`.`c`	 
+	                    	  FROM `default`.`cmv_basetable` JOIN `default`.`cmv_basetable_2` ON (`cmv_basetable`.`a` = `cmv_basetable_2`.`a`)
+	                    	  WHERE `cmv_basetable_2`.`c` > 10.0
+	                    	  GROUP BY `cmv_basetable`.`a`, `cmv_basetable_2`.`c`
 View Rewrite Enabled:	No                  	 
 PREHOOK: query: EXPLAIN
-SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 join cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+SELECT cmv_basetable.a
+FROM cmv_basetable join cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: QUERY
 POSTHOOK: query: EXPLAIN
-SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 join cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+SELECT cmv_basetable.a
+FROM cmv_basetable join cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -305,7 +304,7 @@ STAGE PLANS:
         Map 1 
             Map Operator Tree:
                 TableScan
-                  alias: cmv_basetable_n3
+                  alias: cmv_basetable
                   Statistics: Num rows: 5 Data size: 20 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: a is not null (type: boolean)
@@ -324,7 +323,7 @@ STAGE PLANS:
         Map 4 
             Map Operator Tree:
                 TableScan
-                  alias: cmv_basetable_2_n1
+                  alias: cmv_basetable_2
                   Statistics: Num rows: 2 Data size: 232 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: ((c > 10.1) and a is not null) (type: boolean)
@@ -388,53 +387,53 @@ STAGE PLANS:
       Processor Tree:
         ListSink
 
-PREHOOK: query: SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+PREHOOK: query: SELECT cmv_basetable.a
+FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: QUERY
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Input: default@cmv_basetable_n3
+PREHOOK: Input: default@cmv_basetable
+PREHOOK: Input: default@cmv_basetable_2
 #### A masked pattern was here ####
-POSTHOOK: query: SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+POSTHOOK: query: SELECT cmv_basetable.a
+FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: QUERY
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Input: default@cmv_basetable_n3
+POSTHOOK: Input: default@cmv_basetable
+POSTHOOK: Input: default@cmv_basetable_2
 #### A masked pattern was here ####
-1
 3
-PREHOOK: query: insert into cmv_basetable_2_n1 values
+1
+PREHOOK: query: insert into cmv_basetable_2 values
  (3, 'charlie', 15.8, 1)
 PREHOOK: type: QUERY
 PREHOOK: Input: _dummy_database@_dummy_table
-PREHOOK: Output: default@cmv_basetable_2_n1
-POSTHOOK: query: insert into cmv_basetable_2_n1 values
+PREHOOK: Output: default@cmv_basetable_2
+POSTHOOK: query: insert into cmv_basetable_2 values
  (3, 'charlie', 15.8, 1)
 POSTHOOK: type: QUERY
 POSTHOOK: Input: _dummy_database@_dummy_table
-POSTHOOK: Output: default@cmv_basetable_2_n1
-POSTHOOK: Lineage: cmv_basetable_2_n1.a SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_2_n1.b SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_2_n1.c SCRIPT []
-POSTHOOK: Lineage: cmv_basetable_2_n1.d SCRIPT []
-PREHOOK: query: analyze table cmv_basetable_2_n1 compute statistics for columns
-PREHOOK: type: ANALYZE_TABLE
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Output: default@cmv_basetable_2_n1
+POSTHOOK: Output: default@cmv_basetable_2
+POSTHOOK: Lineage: cmv_basetable_2.a SCRIPT []
+POSTHOOK: Lineage: cmv_basetable_2.b SCRIPT []
+POSTHOOK: Lineage: cmv_basetable_2.c SCRIPT []
+POSTHOOK: Lineage: cmv_basetable_2.d SCRIPT []
+PREHOOK: query: analyze table cmv_basetable_2 compute statistics for columns
+PREHOOK: type: QUERY
+PREHOOK: Input: default@cmv_basetable_2
+PREHOOK: Output: default@cmv_basetable_2
 #### A masked pattern was here ####
-POSTHOOK: query: analyze table cmv_basetable_2_n1 compute statistics for columns
-POSTHOOK: type: ANALYZE_TABLE
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Output: default@cmv_basetable_2_n1
+POSTHOOK: query: analyze table cmv_basetable_2 compute statistics for columns
+POSTHOOK: type: QUERY
+POSTHOOK: Input: default@cmv_basetable_2
+POSTHOOK: Output: default@cmv_basetable_2
 #### A masked pattern was here ####
 PREHOOK: query: EXPLAIN
-ALTER MATERIALIZED VIEW cmv_mat_view_n3 ENABLE REWRITE
+ALTER MATERIALIZED VIEW cmv_mat_view ENABLE REWRITE
 PREHOOK: type: ALTER_MATERIALIZED_VIEW_REWRITE
 POSTHOOK: query: EXPLAIN
-ALTER MATERIALIZED VIEW cmv_mat_view_n3 ENABLE REWRITE
+ALTER MATERIALIZED VIEW cmv_mat_view ENABLE REWRITE
 POSTHOOK: type: ALTER_MATERIALIZED_VIEW_REWRITE
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
@@ -443,23 +442,23 @@ STAGE PLANS:
   Stage: Stage-0
       Alter Materialized View Operator:
         Alter Materialized View
-          name: default.cmv_mat_view_n3
+          name: default.cmv_mat_view
           operation: UPDATE_REWRITE_FLAG
 
-PREHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view_n3 ENABLE REWRITE
+PREHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view ENABLE REWRITE
 PREHOOK: type: ALTER_MATERIALIZED_VIEW_REWRITE
-PREHOOK: Input: default@cmv_mat_view_n3
-PREHOOK: Output: default@cmv_mat_view_n3
-POSTHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view_n3 ENABLE REWRITE
+PREHOOK: Input: default@cmv_mat_view
+PREHOOK: Output: default@cmv_mat_view
+POSTHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view ENABLE REWRITE
 POSTHOOK: type: ALTER_MATERIALIZED_VIEW_REWRITE
-POSTHOOK: Input: default@cmv_mat_view_n3
-POSTHOOK: Output: default@cmv_mat_view_n3
-PREHOOK: query: DESCRIBE FORMATTED cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_mat_view
+POSTHOOK: Output: default@cmv_mat_view
+PREHOOK: query: DESCRIBE FORMATTED cmv_mat_view
 PREHOOK: type: DESCTABLE
-PREHOOK: Input: default@cmv_mat_view_n3
-POSTHOOK: query: DESCRIBE FORMATTED cmv_mat_view_n3
+PREHOOK: Input: default@cmv_mat_view
+POSTHOOK: query: DESCRIBE FORMATTED cmv_mat_view
 POSTHOOK: type: DESCTABLE
-POSTHOOK: Input: default@cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_mat_view
 # col_name            	data_type           	comment             
 a                   	int                 	                    
 c                   	decimal(10,2)       	                    
@@ -472,12 +471,11 @@ Retention:          	0
 Table Type:         	MATERIALIZED_VIEW   	 
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\"}
-	bucketing_version   	2                   
 	numFiles            	2                   
 	numRows             	2                   
 	rawDataSize         	232                 
 	rewriting.time.window	300s                
-	totalSize           	608                 
+	totalSize           	586                 
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -490,26 +488,26 @@ Bucket Columns:     	[]
 Sort Columns:       	[]                  	 
 	 	 
 # View Information	 	 
-View Original Text: 	SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c	 
-	                    	  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-	                    	  WHERE cmv_basetable_2_n1.c > 10.0
-	                    	  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
-View Expanded Text: 	SELECT `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`	 
-	                    	  FROM `default`.`cmv_basetable_n3` JOIN `default`.`cmv_basetable_2_n1` ON (`cmv_basetable_n3`.`a` = `cmv_basetable_2_n1`.`a`)
-	                    	  WHERE `cmv_basetable_2_n1`.`c` > 10.0
-	                    	  GROUP BY `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`
+View Original Text: 	SELECT cmv_basetable.a, cmv_basetable_2.c	 
+	                    	  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+	                    	  WHERE cmv_basetable_2.c > 10.0
+	                    	  GROUP BY cmv_basetable.a, cmv_basetable_2.c
+View Expanded Text: 	SELECT `cmv_basetable`.`a`, `cmv_basetable_2`.`c`	 
+	                    	  FROM `default`.`cmv_basetable` JOIN `default`.`cmv_basetable_2` ON (`cmv_basetable`.`a` = `cmv_basetable_2`.`a`)
+	                    	  WHERE `cmv_basetable_2`.`c` > 10.0
+	                    	  GROUP BY `cmv_basetable`.`a`, `cmv_basetable_2`.`c`
 View Rewrite Enabled:	Yes                 	 
 PREHOOK: query: EXPLAIN
-SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 join cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+SELECT cmv_basetable.a
+FROM cmv_basetable join cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: QUERY
 POSTHOOK: query: EXPLAIN
-SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 join cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+SELECT cmv_basetable.a
+FROM cmv_basetable join cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
@@ -520,7 +518,7 @@ STAGE PLANS:
       limit: -1
       Processor Tree:
         TableScan
-          alias: default.cmv_mat_view_n3
+          alias: default.cmv_mat_view
           Filter Operator
             predicate: (c > 10.1) (type: boolean)
             Select Operator
@@ -528,31 +526,31 @@ STAGE PLANS:
               outputColumnNames: _col0
               ListSink
 
-PREHOOK: query: SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+PREHOOK: query: SELECT cmv_basetable.a
+FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: QUERY
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Input: default@cmv_basetable_n3
-PREHOOK: Input: default@cmv_mat_view_n3
+PREHOOK: Input: default@cmv_basetable
+PREHOOK: Input: default@cmv_basetable_2
+PREHOOK: Input: default@cmv_mat_view
 #### A masked pattern was here ####
-POSTHOOK: query: SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+POSTHOOK: query: SELECT cmv_basetable.a
+FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: QUERY
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Input: default@cmv_basetable_n3
-POSTHOOK: Input: default@cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_basetable
+POSTHOOK: Input: default@cmv_basetable_2
+POSTHOOK: Input: default@cmv_mat_view
 #### A masked pattern was here ####
-1
 3
+1
 PREHOOK: query: EXPLAIN
-ALTER MATERIALIZED VIEW cmv_mat_view_n3 REBUILD
+ALTER MATERIALIZED VIEW cmv_mat_view REBUILD
 PREHOOK: type: QUERY
 POSTHOOK: query: EXPLAIN
-ALTER MATERIALIZED VIEW cmv_mat_view_n3 REBUILD
+ALTER MATERIALIZED VIEW cmv_mat_view REBUILD
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-1 is a root stage
@@ -576,7 +574,7 @@ STAGE PLANS:
         Map 1 
             Map Operator Tree:
                 TableScan
-                  alias: cmv_basetable_n3
+                  alias: cmv_basetable
                   Statistics: Num rows: 5 Data size: 20 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: a is not null (type: boolean)
@@ -595,7 +593,7 @@ STAGE PLANS:
         Map 7 
             Map Operator Tree:
                 TableScan
-                  alias: cmv_basetable_2_n1
+                  alias: cmv_basetable_2
                   Statistics: Num rows: 3 Data size: 348 Basic stats: COMPLETE Column stats: COMPLETE
                   Filter Operator
                     predicate: ((ROW__ID.writeid > 1) and (c > 10) and a is not null) (type: boolean)
@@ -615,7 +613,7 @@ STAGE PLANS:
         Map 8 
             Map Operator Tree:
                 TableScan
-                  alias: default.cmv_mat_view_n3
+                  alias: default.cmv_mat_view
                   Statistics: Num rows: 2 Data size: 232 Basic stats: COMPLETE Column stats: NONE
                   Select Operator
                     expressions: a (type: int), c (type: decimal(10,2))
@@ -687,7 +685,7 @@ STAGE PLANS:
                       input format: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
                       output format: org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat
                       serde: org.apache.hadoop.hive.ql.io.orc.OrcSerde
-                      name: default.cmv_mat_view_n3
+                      name: default.cmv_mat_view
                 Select Operator
                   expressions: _col0 (type: int), _col1 (type: decimal(10,2))
                   outputColumnNames: a, c
@@ -730,7 +728,7 @@ STAGE PLANS:
               input format: org.apache.hadoop.hive.ql.io.orc.OrcInputFormat
               output format: org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat
               serde: org.apache.hadoop.hive.ql.io.orc.OrcSerde
-              name: default.cmv_mat_view_n3
+              name: default.cmv_mat_view
 
   Stage: Stage-3
     Stats Work
@@ -738,31 +736,31 @@ STAGE PLANS:
       Column Stats Desc:
           Columns: a, c
           Column Types: int, decimal(10,2)
-          Table: default.cmv_mat_view_n3
+          Table: default.cmv_mat_view
 
   Stage: Stage-4
     Materialized View Work
 
-PREHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view_n3 REBUILD
+PREHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view REBUILD
 PREHOOK: type: QUERY
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Input: default@cmv_basetable_n3
-PREHOOK: Input: default@cmv_mat_view_n3
-PREHOOK: Output: default@cmv_mat_view_n3
-POSTHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view_n3 REBUILD
+PREHOOK: Input: default@cmv_basetable
+PREHOOK: Input: default@cmv_basetable_2
+PREHOOK: Input: default@cmv_mat_view
+PREHOOK: Output: default@cmv_mat_view
+POSTHOOK: query: ALTER MATERIALIZED VIEW cmv_mat_view REBUILD
 POSTHOOK: type: QUERY
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Input: default@cmv_basetable_n3
-POSTHOOK: Input: default@cmv_mat_view_n3
-POSTHOOK: Output: default@cmv_mat_view_n3
-POSTHOOK: Lineage: cmv_mat_view_n3.a EXPRESSION [(cmv_basetable_n3)cmv_basetable_n3.FieldSchema(name:a, type:int, comment:null), (cmv_mat_view_n3)default.cmv_mat_view_n3.FieldSchema(name:a, type:int, comment:null), ]
-POSTHOOK: Lineage: cmv_mat_view_n3.c EXPRESSION [(cmv_basetable_2_n1)cmv_basetable_2_n1.FieldSchema(name:c, type:decimal(10,2), comment:null), (cmv_mat_view_n3)default.cmv_mat_view_n3.FieldSchema(name:c, type:decimal(10,2), comment:null), ]
-PREHOOK: query: DESCRIBE FORMATTED cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_basetable
+POSTHOOK: Input: default@cmv_basetable_2
+POSTHOOK: Input: default@cmv_mat_view
+POSTHOOK: Output: default@cmv_mat_view
+POSTHOOK: Lineage: cmv_mat_view.a EXPRESSION [(cmv_basetable)cmv_basetable.FieldSchema(name:a, type:int, comment:null), (cmv_mat_view)default.cmv_mat_view.FieldSchema(name:a, type:int, comment:null), ]
+POSTHOOK: Lineage: cmv_mat_view.c EXPRESSION [(cmv_basetable_2)cmv_basetable_2.FieldSchema(name:c, type:decimal(10,2), comment:null), (cmv_mat_view)default.cmv_mat_view.FieldSchema(name:c, type:decimal(10,2), comment:null), ]
+PREHOOK: query: DESCRIBE FORMATTED cmv_mat_view
 PREHOOK: type: DESCTABLE
-PREHOOK: Input: default@cmv_mat_view_n3
-POSTHOOK: query: DESCRIBE FORMATTED cmv_mat_view_n3
+PREHOOK: Input: default@cmv_mat_view
+POSTHOOK: query: DESCRIBE FORMATTED cmv_mat_view
 POSTHOOK: type: DESCTABLE
-POSTHOOK: Input: default@cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_mat_view
 # col_name            	data_type           	comment             
 a                   	int                 	                    
 c                   	decimal(10,2)       	                    
@@ -775,12 +773,11 @@ Retention:          	0
 Table Type:         	MATERIALIZED_VIEW   	 
 Table Parameters:	 	 
 	COLUMN_STATS_ACCURATE	{\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"a\":\"true\",\"c\":\"true\"}}
-	bucketing_version   	2                   
-	numFiles            	2                   
+	numFiles            	3                   
 	numRows             	3                   
 	rawDataSize         	348                 
 	rewriting.time.window	300s                
-	totalSize           	628                 
+	totalSize           	877                 
 #### A masked pattern was here ####
 	 	 
 # Storage Information	 	 
@@ -793,26 +790,26 @@ Bucket Columns:     	[]
 Sort Columns:       	[]                  	 
 	 	 
 # View Information	 	 
-View Original Text: 	SELECT cmv_basetable_n3.a, cmv_basetable_2_n1.c	 
-	                    	  FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-	                    	  WHERE cmv_basetable_2_n1.c > 10.0
-	                    	  GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
-View Expanded Text: 	SELECT `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`	 
-	                    	  FROM `default`.`cmv_basetable_n3` JOIN `default`.`cmv_basetable_2_n1` ON (`cmv_basetable_n3`.`a` = `cmv_basetable_2_n1`.`a`)
-	                    	  WHERE `cmv_basetable_2_n1`.`c` > 10.0
-	                    	  GROUP BY `cmv_basetable_n3`.`a`, `cmv_basetable_2_n1`.`c`
+View Original Text: 	SELECT cmv_basetable.a, cmv_basetable_2.c	 
+	                    	  FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+	                    	  WHERE cmv_basetable_2.c > 10.0
+	                    	  GROUP BY cmv_basetable.a, cmv_basetable_2.c
+View Expanded Text: 	SELECT `cmv_basetable`.`a`, `cmv_basetable_2`.`c`	 
+	                    	  FROM `default`.`cmv_basetable` JOIN `default`.`cmv_basetable_2` ON (`cmv_basetable`.`a` = `cmv_basetable_2`.`a`)
+	                    	  WHERE `cmv_basetable_2`.`c` > 10.0
+	                    	  GROUP BY `cmv_basetable`.`a`, `cmv_basetable_2`.`c`
 View Rewrite Enabled:	Yes                 	 
 PREHOOK: query: EXPLAIN
-SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 join cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+SELECT cmv_basetable.a
+FROM cmv_basetable join cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: QUERY
 POSTHOOK: query: EXPLAIN
-SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 join cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+SELECT cmv_basetable.a
+FROM cmv_basetable join cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: QUERY
 STAGE DEPENDENCIES:
   Stage-0 is a root stage
@@ -823,7 +820,7 @@ STAGE PLANS:
       limit: -1
       Processor Tree:
         TableScan
-          alias: default.cmv_mat_view_n3
+          alias: default.cmv_mat_view
           Filter Operator
             predicate: (c > 10.1) (type: boolean)
             Select Operator
@@ -831,32 +828,32 @@ STAGE PLANS:
               outputColumnNames: _col0
               ListSink
 
-PREHOOK: query: SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+PREHOOK: query: SELECT cmv_basetable.a
+FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 PREHOOK: type: QUERY
-PREHOOK: Input: default@cmv_basetable_2_n1
-PREHOOK: Input: default@cmv_basetable_n3
-PREHOOK: Input: default@cmv_mat_view_n3
+PREHOOK: Input: default@cmv_basetable
+PREHOOK: Input: default@cmv_basetable_2
+PREHOOK: Input: default@cmv_mat_view
 #### A masked pattern was here ####
-POSTHOOK: query: SELECT cmv_basetable_n3.a
-FROM cmv_basetable_n3 JOIN cmv_basetable_2_n1 ON (cmv_basetable_n3.a = cmv_basetable_2_n1.a)
-WHERE cmv_basetable_2_n1.c > 10.10
-GROUP BY cmv_basetable_n3.a, cmv_basetable_2_n1.c
+POSTHOOK: query: SELECT cmv_basetable.a
+FROM cmv_basetable JOIN cmv_basetable_2 ON (cmv_basetable.a = cmv_basetable_2.a)
+WHERE cmv_basetable_2.c > 10.10
+GROUP BY cmv_basetable.a, cmv_basetable_2.c
 POSTHOOK: type: QUERY
-POSTHOOK: Input: default@cmv_basetable_2_n1
-POSTHOOK: Input: default@cmv_basetable_n3
-POSTHOOK: Input: default@cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_basetable
+POSTHOOK: Input: default@cmv_basetable_2
+POSTHOOK: Input: default@cmv_mat_view
 #### A masked pattern was here ####
+3
+3
 1
-3
-3
-PREHOOK: query: drop materialized view cmv_mat_view_n3
+PREHOOK: query: drop materialized view cmv_mat_view
 PREHOOK: type: DROP_MATERIALIZED_VIEW
-PREHOOK: Input: default@cmv_mat_view_n3
-PREHOOK: Output: default@cmv_mat_view_n3
-POSTHOOK: query: drop materialized view cmv_mat_view_n3
+PREHOOK: Input: default@cmv_mat_view
+PREHOOK: Output: default@cmv_mat_view
+POSTHOOK: query: drop materialized view cmv_mat_view
 POSTHOOK: type: DROP_MATERIALIZED_VIEW
-POSTHOOK: Input: default@cmv_mat_view_n3
-POSTHOOK: Output: default@cmv_mat_view_n3
+POSTHOOK: Input: default@cmv_mat_view
+POSTHOOK: Output: default@cmv_mat_view

@@ -10406,8 +10406,10 @@ inline std::ostream& operator<<(std::ostream& out, const TableMeta& obj)
 }
 
 typedef struct _Materialization__isset {
-  _Materialization__isset() : validTxnList(false) {}
+  _Materialization__isset() : validTxnList(false), invalidationTime(false), sourceTablesUpdateDeleteModified(false) {}
   bool validTxnList :1;
+  bool invalidationTime :1;
+  bool sourceTablesUpdateDeleteModified :1;
 } _Materialization__isset;
 
 class Materialization {
@@ -10415,13 +10417,14 @@ class Materialization {
 
   Materialization(const Materialization&);
   Materialization& operator=(const Materialization&);
-  Materialization() : validTxnList(), invalidationTime(0) {
+  Materialization() : validTxnList(), invalidationTime(0), sourceTablesUpdateDeleteModified(0) {
   }
 
   virtual ~Materialization() throw();
   std::set<std::string>  tablesUsed;
   std::string validTxnList;
   int64_t invalidationTime;
+  bool sourceTablesUpdateDeleteModified;
 
   _Materialization__isset __isset;
 
@@ -10431,6 +10434,8 @@ class Materialization {
 
   void __set_invalidationTime(const int64_t val);
 
+  void __set_sourceTablesUpdateDeleteModified(const bool val);
+
   bool operator == (const Materialization & rhs) const
   {
     if (!(tablesUsed == rhs.tablesUsed))
@@ -10439,7 +10444,13 @@ class Materialization {
       return false;
     else if (__isset.validTxnList && !(validTxnList == rhs.validTxnList))
       return false;
-    if (!(invalidationTime == rhs.invalidationTime))
+    if (__isset.invalidationTime != rhs.__isset.invalidationTime)
+      return false;
+    else if (__isset.invalidationTime && !(invalidationTime == rhs.invalidationTime))
+      return false;
+    if (__isset.sourceTablesUpdateDeleteModified != rhs.__isset.sourceTablesUpdateDeleteModified)
+      return false;
+    else if (__isset.sourceTablesUpdateDeleteModified && !(sourceTablesUpdateDeleteModified == rhs.sourceTablesUpdateDeleteModified))
       return false;
     return true;
   }
