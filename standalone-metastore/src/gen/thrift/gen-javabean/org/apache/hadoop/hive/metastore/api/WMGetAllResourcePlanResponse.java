@@ -346,14 +346,14 @@ public class WMGetAllResourcePlanResponse implements org.apache.thrift.TBase<WMG
           case 1: // RESOURCE_PLANS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list840 = iprot.readListBegin();
-                struct.resourcePlans = new ArrayList<WMResourcePlan>(_list840.size);
-                WMResourcePlan _elem841;
-                for (int _i842 = 0; _i842 < _list840.size; ++_i842)
+                org.apache.thrift.protocol.TList _list856 = iprot.readListBegin();
+                struct.resourcePlans = new ArrayList<WMResourcePlan>(_list856.size);
+                WMResourcePlan _elem857;
+                for (int _i858 = 0; _i858 < _list856.size; ++_i858)
                 {
-                  _elem841 = new WMResourcePlan();
-                  _elem841.read(iprot);
-                  struct.resourcePlans.add(_elem841);
+                  _elem857 = new WMResourcePlan();
+                  _elem857.read(iprot);
+                  struct.resourcePlans.add(_elem857);
                 }
                 iprot.readListEnd();
               }
@@ -380,9 +380,9 @@ public class WMGetAllResourcePlanResponse implements org.apache.thrift.TBase<WMG
           oprot.writeFieldBegin(RESOURCE_PLANS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.resourcePlans.size()));
-            for (WMResourcePlan _iter843 : struct.resourcePlans)
+            for (WMResourcePlan _iter859 : struct.resourcePlans)
             {
-              _iter843.write(oprot);
+              _iter859.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -414,9 +414,9 @@ public class WMGetAllResourcePlanResponse implements org.apache.thrift.TBase<WMG
       if (struct.isSetResourcePlans()) {
         {
           oprot.writeI32(struct.resourcePlans.size());
-          for (WMResourcePlan _iter844 : struct.resourcePlans)
+          for (WMResourcePlan _iter860 : struct.resourcePlans)
           {
-            _iter844.write(oprot);
+            _iter860.write(oprot);
           }
         }
       }
@@ -428,14 +428,14 @@ public class WMGetAllResourcePlanResponse implements org.apache.thrift.TBase<WMG
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list845 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.resourcePlans = new ArrayList<WMResourcePlan>(_list845.size);
-          WMResourcePlan _elem846;
-          for (int _i847 = 0; _i847 < _list845.size; ++_i847)
+          org.apache.thrift.protocol.TList _list861 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.resourcePlans = new ArrayList<WMResourcePlan>(_list861.size);
+          WMResourcePlan _elem862;
+          for (int _i863 = 0; _i863 < _list861.size; ++_i863)
           {
-            _elem846 = new WMResourcePlan();
-            _elem846.read(iprot);
-            struct.resourcePlans.add(_elem846);
+            _elem862 = new WMResourcePlan();
+            _elem862.read(iprot);
+            struct.resourcePlans.add(_elem862);
           }
         }
         struct.setResourcePlansIsSet(true);
