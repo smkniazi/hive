@@ -1,5 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
+* Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -151,7 +151,10 @@ public class HiveConnection implements java.sql.Connection {
    */
   public static List<JdbcConnectionParams> getAllUrls(String zookeeperBasedHS2Url) throws Exception {
     JdbcConnectionParams params = Utils.parseURL(zookeeperBasedHS2Url, new Properties());
-    if (params.getZooKeeperEnsemble() == null) {
+    // if zk is disabled or if HA service discovery is enabled we return the already populated params.
+    // in HA mode, params is already populated with Active server host info.
+    if (params.getZooKeeperEnsemble() == null ||
+      ZooKeeperHiveClientHelper.isZkHADynamicDiscoveryMode(params.getSessionVars())) {
       return Collections.singletonList(params);
     }
     return ZooKeeperHiveClientHelper.getDirectParamsList(params);
@@ -801,14 +804,8 @@ public class HiveConnection implements java.sql.Connection {
     return false;
   }
 
-  private boolean isZkDynamicDiscoveryMode() {
-    return (sessConfMap.get(JdbcConnectionParams.SERVICE_DISCOVERY_MODE) != null)
-      && (JdbcConnectionParams.SERVICE_DISCOVERY_MODE_ZOOKEEPER.equalsIgnoreCase(sessConfMap
-      .get(JdbcConnectionParams.SERVICE_DISCOVERY_MODE)));
-  }
-
   private void logZkDiscoveryMessage(String message) {
-    if (isZkDynamicDiscoveryMode()) {
+    if (ZooKeeperHiveClientHelper.isZkDynamicDiscoveryMode(sessConfMap)) {
       LOG.info(message);
     }
   }
