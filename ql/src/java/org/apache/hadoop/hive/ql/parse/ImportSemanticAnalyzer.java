@@ -552,7 +552,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
       Task<?> addPartTask = TaskFactory.get(new DDLWork(x.getInputs(),
           x.getOutputs(), addPartitionDesc));
-      
+
       // Note: this sets LoadFileType incorrectly for ACID; is that relevant for import?
       //       See setLoadFileType and setIsAcidIow calls elsewhere for an example.
       LoadTableDesc loadTableWork = new LoadTableDesc(moveTaskSrc, Utilities.getTableDesc(table),
