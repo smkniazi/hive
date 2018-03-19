@@ -4307,16 +4307,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     // Don't set inputs and outputs - the locks have already been taken so it's pointless.
     MoveWork mw = new MoveWork(null, null, null, null, false);
     mw.setMultiFilesDesc(new LoadMultiFilesDesc(srcs, tgts, true, null, null));
-    ImportCommitWork icw = new ImportCommitWork(tbl.getDbName(), tbl.getTableName(), mmWriteId);
-    // TODO# this is hacky and will be gone with ACID. The problem is getting the write ID above
-    //       modifies the table, but the table object above is preserved and modified without
-    //       getting this change, so saving it will overwrite write ID. Ideally, when we save
-    //       only specific fields, and not overwrite write ID every time we alter table.
-    //       There's probably some way in DN to achieve that, but for now let's just update the
-    //       original object here. This is safe due to DDL lock and the fact that converting
-    //       the table to MM here from non-MM should mean no concurrent write ID updates.
-    tbl.setMmNextWriteId(mmWriteId + 1);
-    Task<?> mv = TaskFactory.get(mw, conf), ic = TaskFactory.get(icw, conf);
+    ImportCommitWork icw = new ImportCommitWork(tbl.getDbName(), tbl.getTableName(), mmWriteId, stmtId);
+    Task<?> mv = TaskFactory.get(mw), ic = TaskFactory.get(icw);
     mv.addDependentTask(ic);
     return Lists.<Task<?>>newArrayList(mv);
   }

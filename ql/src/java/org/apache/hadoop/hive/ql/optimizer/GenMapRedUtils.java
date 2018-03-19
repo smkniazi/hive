@@ -409,8 +409,7 @@ public final class GenMapRedUtils {
     Task<? extends Serializable> parentTask = opProcCtx.getCurrTask();
 
     MapredWork childPlan = getMapRedWork(parseCtx);
-    Task<? extends Serializable> childTask = TaskFactory.get(childPlan, parseCtx
-        .getConf());
+    Task<? extends Serializable> childTask = TaskFactory.get(childPlan);
     Operator<? extends OperatorDesc> reducer = cRS.getChildOperators().get(0);
 
     // Add the reducer
@@ -1553,7 +1552,7 @@ public final class GenMapRedUtils {
     columnStatsWork.truncateExisting(truncate);
 
     columnStatsWork.setSourceTask(currTask);
-    Task<? extends Serializable> statsTask = TaskFactory.get(columnStatsWork, hconf);
+    Task<? extends Serializable> statsTask = TaskFactory.get(columnStatsWork);
 
     // subscribe feeds from the MoveTask so that MoveTask can forward the list
     // of dynamic partition list to the StatsTask
@@ -1807,12 +1806,10 @@ public final class GenMapRedUtils {
     // conflicts.
     // TODO: if we are not dealing with concatenate DDL, we should not create a merge+move path
     //       because it should be impossible to get incompatible outputs.
-    // Create a dummy task if no move is needed.
-    Serializable moveWork = mvWork != null ? mvWork : new DependencyCollectionWork();
-    Task<? extends Serializable> mergeOnlyMergeTask = TaskFactory.get(mergeWork, conf);
-    Task<? extends Serializable> moveOnlyMoveTask = TaskFactory.get(moveWork, conf);
-    Task<? extends Serializable> mergeAndMoveMergeTask = TaskFactory.get(mergeWork, conf);
-    Task<? extends Serializable> mergeAndMoveMoveTask = TaskFactory.get(moveWork, conf);
+    Task<? extends Serializable> mergeOnlyMergeTask = TaskFactory.get(mergeWork);
+    Task<? extends Serializable> moveOnlyMoveTask = TaskFactory.get(workForMoveOnlyTask);
+    Task<? extends Serializable> mergeAndMoveMergeTask = TaskFactory.get(mergeWork);
+    Task<? extends Serializable> mergeAndMoveMoveTask = TaskFactory.get(moveWork);
 
     // NOTE! It is necessary merge task is the parent of the move task, and not
     // the other way around, for the proper execution of the execute method of
@@ -1830,7 +1827,7 @@ public final class GenMapRedUtils {
     listTasks.add(mergeOnlyMergeTask);
     listTasks.add(mergeAndMoveMergeTask);
 
-    ConditionalTask cndTsk = (ConditionalTask) TaskFactory.get(cndWork, conf);
+    ConditionalTask cndTsk = (ConditionalTask) TaskFactory.get(cndWork);
     cndTsk.setListTasks(listTasks);
 
     // create resolver
