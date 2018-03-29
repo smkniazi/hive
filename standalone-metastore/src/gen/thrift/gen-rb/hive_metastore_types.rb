@@ -3828,7 +3828,7 @@ class WMNullableResourcePlan
   ISSETDEFAULTPOOLPATH = 7
 
   FIELDS = {
-    NAME => {:type => ::Thrift::Types::STRING, :name => 'name'},
+    NAME => {:type => ::Thrift::Types::STRING, :name => 'name', :optional => true},
     STATUS => {:type => ::Thrift::Types::I32, :name => 'status', :optional => true, :enum_class => ::WMResourcePlanStatus},
     QUERYPARALLELISM => {:type => ::Thrift::Types::I32, :name => 'queryParallelism', :optional => true},
     ISSETQUERYPARALLELISM => {:type => ::Thrift::Types::BOOL, :name => 'isSetQueryParallelism', :optional => true},
@@ -3839,7 +3839,6 @@ class WMNullableResourcePlan
   def struct_fields; FIELDS; end
 
   def validate
-    raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Required field name is unset!') unless @name
     unless @status.nil? || ::WMResourcePlanStatus::VALID_VALUES.include?(@status)
       raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Invalid value of field status!')
     end

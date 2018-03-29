@@ -9923,7 +9923,8 @@ inline std::ostream& operator<<(std::ostream& out, const WMResourcePlan& obj)
 }
 
 typedef struct _WMNullableResourcePlan__isset {
-  _WMNullableResourcePlan__isset() : status(false), queryParallelism(false), isSetQueryParallelism(false), defaultPoolPath(false), isSetDefaultPoolPath(false) {}
+  _WMNullableResourcePlan__isset() : name(false), status(false), queryParallelism(false), isSetQueryParallelism(false), defaultPoolPath(false), isSetDefaultPoolPath(false) {}
+  bool name :1;
   bool status :1;
   bool queryParallelism :1;
   bool isSetQueryParallelism :1;
@@ -9963,7 +9964,9 @@ class WMNullableResourcePlan {
 
   bool operator == (const WMNullableResourcePlan & rhs) const
   {
-    if (!(name == rhs.name))
+    if (__isset.name != rhs.__isset.name)
+      return false;
+    else if (__isset.name && !(name == rhs.name))
       return false;
     if (__isset.status != rhs.__isset.status)
       return false;

@@ -1220,7 +1220,7 @@ struct WMResourcePlan {
 }
 
 struct WMNullableResourcePlan {
-  1: required string name;
+  1: optional string name;
   2: optional WMResourcePlanStatus status;
   4: optional i32 queryParallelism;
   5: optional bool isSetQueryParallelism;

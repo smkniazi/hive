@@ -16892,8 +16892,6 @@ class WMNullableResourcePlan:
     oprot.writeStructEnd()
 
   def validate(self):
-    if self.name is None:
-      raise TProtocol.TProtocolException(message='Required field name is unset!')
     return
 
 

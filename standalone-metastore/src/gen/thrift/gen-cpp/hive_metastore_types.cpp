@@ -24068,6 +24068,7 @@ WMNullableResourcePlan::~WMNullableResourcePlan() throw() {
 
 void WMNullableResourcePlan::__set_name(const std::string& val) {
   this->name = val;
+__isset.name = true;
 }
 
 void WMNullableResourcePlan::__set_status(const WMResourcePlanStatus::type val) {
@@ -24107,7 +24108,6 @@ uint32_t WMNullableResourcePlan::read(::apache::thrift::protocol::TProtocol* ipr
 
   using ::apache::thrift::protocol::TProtocolException;
 
-  bool isset_name = false;
 
   while (true)
   {
@@ -24120,7 +24120,7 @@ uint32_t WMNullableResourcePlan::read(::apache::thrift::protocol::TProtocol* ipr
       case 1:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->name);
-          isset_name = true;
+          this->__isset.name = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -24176,8 +24176,6 @@ uint32_t WMNullableResourcePlan::read(::apache::thrift::protocol::TProtocol* ipr
 
   xfer += iprot->readStructEnd();
 
-  if (!isset_name)
-    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -24186,10 +24184,11 @@ uint32_t WMNullableResourcePlan::write(::apache::thrift::protocol::TProtocol* op
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("WMNullableResourcePlan");
 
-  xfer += oprot->writeFieldBegin("name", ::apache::thrift::protocol::T_STRING, 1);
-  xfer += oprot->writeString(this->name);
-  xfer += oprot->writeFieldEnd();
-
+  if (this->__isset.name) {
+    xfer += oprot->writeFieldBegin("name", ::apache::thrift::protocol::T_STRING, 1);
+    xfer += oprot->writeString(this->name);
+    xfer += oprot->writeFieldEnd();
+  }
   if (this->__isset.status) {
     xfer += oprot->writeFieldBegin("status", ::apache::thrift::protocol::T_I32, 2);
     xfer += oprot->writeI32((int32_t)this->status);
@@ -24253,7 +24252,7 @@ WMNullableResourcePlan& WMNullableResourcePlan::operator=(const WMNullableResour
 void WMNullableResourcePlan::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "WMNullableResourcePlan(";
-  out << "name=" << to_string(name);
+  out << "name="; (__isset.name ? (out << to_string(name)) : (out << "<null>"));
   out << ", " << "status="; (__isset.status ? (out << to_string(status)) : (out << "<null>"));
   out << ", " << "queryParallelism="; (__isset.queryParallelism ? (out << to_string(queryParallelism)) : (out << "<null>"));
   out << ", " << "isSetQueryParallelism="; (__isset.isSetQueryParallelism ? (out << to_string(isSetQueryParallelism)) : (out << "<null>"));
