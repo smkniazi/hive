@@ -17,19 +17,14 @@
  */
 package org.apache.hadoop.hive.metastore;
 
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.hadoop.fs.Path;
-
+import com.codahale.metrics.Counter;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.metastore.ObjectStore.RetryingExecutor;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.annotation.MetastoreUnitTest;
+import org.apache.hadoop.hive.metastore.api.Catalog;
 import org.apache.hadoop.hive.metastore.api.CurrentNotificationEventId;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
@@ -49,7 +44,8 @@ import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
+import org.apache.hadoop.hive.metastore.client.builder.CatalogBuilder;
+import org.apache.hadoop.hive.metastore.client.builder.DatabaseBuilder;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage;
 import org.apache.hadoop.hive.metastore.metrics.Metrics;
@@ -70,6 +66,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jdo.Query;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
@@ -78,10 +77,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.apache.hadoop.hive.metastore.Warehouse.DEFAULT_CATALOG_NAME;
 
 @Category(MetastoreUnitTest.class)
 public class TestObjectStore {
   private ObjectStore objectStore = null;
+  private Configuration conf;
 
   private static final String DB1 = "testobjectstoredb1";
   private static final String DB2 = "testobjectstoredb2";
@@ -106,13 +107,60 @@ public class TestObjectStore {
 
   @Before
   public void setUp() throws Exception {
-    Configuration conf = MetastoreConf.newMetastoreConf();
+    conf = MetastoreConf.newMetastoreConf();
     MetaStoreTestUtils.setConfForStandloneMode(conf);
 
     objectStore = new ObjectStore();
     objectStore.setConf(conf);
     dropAllStoreObjects(objectStore);
+    HiveMetaStore.HMSHandler.createDefaultCatalog(objectStore, new Warehouse(conf));
   }
+
+  @Test
+  public void catalogs() throws MetaException, NoSuchObjectException {
+    final String names[] = {"cat1", "cat2"};
+    final String locations[] = {"loc1", "loc2"};
+    final String descriptions[] = {"description 1", "description 2"};
+
+    for (int i = 0; i < names.length; i++) {
+      Catalog cat = new CatalogBuilder()
+          .setName(names[i])
+          .setLocation(locations[i])
+          .setDescription(descriptions[i])
+          .build();
+      objectStore.createCatalog(cat);
+    }
+
+    List<String> fetchedNames = objectStore.getCatalogs();
+    Assert.assertEquals(3, fetchedNames.size());
+    for (int i = 0; i < names.length - 1; i++) {
+      Assert.assertEquals(names[i], fetchedNames.get(i));
+      Catalog cat = objectStore.getCatalog(fetchedNames.get(i));
+      Assert.assertEquals(names[i], cat.getName());
+      Assert.assertEquals(descriptions[i], cat.getDescription());
+      Assert.assertEquals(locations[i], cat.getLocationUri());
+    }
+    Catalog cat = objectStore.getCatalog(fetchedNames.get(2));
+    Assert.assertEquals(DEFAULT_CATALOG_NAME, cat.getName());
+    Assert.assertEquals(Warehouse.DEFAULT_CATALOG_COMMENT, cat.getDescription());
+    // Location will vary by system.
+
+    for (int i = 0; i < names.length; i++) objectStore.dropCatalog(names[i]);
+    fetchedNames = objectStore.getCatalogs();
+    Assert.assertEquals(1, fetchedNames.size());
+  }
+
+  @Test(expected = NoSuchObjectException.class)
+  public void getNoSuchCatalog() throws MetaException, NoSuchObjectException {
+    objectStore.getCatalog("no_such_catalog");
+  }
+
+  @Test(expected = NoSuchObjectException.class)
+  public void dropNoSuchCatalog() throws MetaException, NoSuchObjectException {
+    objectStore.dropCatalog("no_such_catalog");
+  }
+
+  // TODO test dropping non-empty catalog
 
   /**
    * Test database operations
@@ -124,24 +172,27 @@ public class TestObjectStore {
     Path db2Path = new Path(wh.getWhRoot(), DB2);
     wh.mkdirs(db2Path);
 
-    Database db1 = new Database(DB1, "description", db1Path.toString(), null);
-    Database db2 = new Database(DB2, "description", db2Path.toString(), null);
+    String catName = "tdo1_cat";
+    createTestCatalog(catName);
+    Database db1 = new Database(DB1, "description", "locationurl", null);
+    Database db2 = new Database(DB2, "description", "locationurl", null);
+    db1.setCatalogName(catName);
+    db2.setCatalogName(catName);
     objectStore.createDatabase(db1);
     objectStore.createDatabase(db2);
 
-    List<String> databases = objectStore.getAllDatabases();
+    List<String> databases = objectStore.getAllDatabases(catName);
     LOG.info("databases: " + databases);
     assertEquals(2, databases.size());
     assertEquals(DB1, databases.get(0));
     assertEquals(DB2, databases.get(1));
 
-    objectStore.dropDatabase(DB1);
-    databases = objectStore.getAllDatabases();
-    assertEquals(1, databases.size());
-    assertEquals(DB2, databases.get(0));
+    objectStore.dropDatabase(catName, DB1);
+    databases = objectStore.getAllDatabases(catName);
+    Assert.assertEquals(1, databases.size());
+    Assert.assertEquals(DB2, databases.get(0));
 
-    objectStore.dropDatabase(DB2);
-
+    objectStore.dropDatabase(catName, DB2);
     wh.deleteDir(db1Path, true);
     wh.deleteDir(db2Path, true);
   }
@@ -153,7 +204,11 @@ public class TestObjectStore {
   public void testTableOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
     Path db1Path = new Path(wh.getWhRoot(), DB1);
     wh.mkdirs(db1Path);
-    Database db1 = new Database(DB1, "description", db1Path.toString(), null);
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation(db1Path.toString())
+        .build(conf);
     objectStore.createDatabase(db1);
 
     Path tbl1Path = new Path(db1Path, TABLE1);
@@ -164,28 +219,30 @@ public class TestObjectStore {
     Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
     objectStore.createTable(tbl1);
 
-    List<String> tables = objectStore.getAllTables(DB1);
-    assertEquals(1, tables.size());
-    assertEquals(TABLE1, tables.get(0));
+    List<String> tables = objectStore.getAllTables(DEFAULT_CATALOG_NAME, DB1);
+    Assert.assertEquals(1, tables.size());
+    Assert.assertEquals(TABLE1, tables.get(0));
 
     Path tbl2Path = new Path(db1Path, "new" + TABLE1);
     wh.mkdirs(tbl2Path);
-    StorageDescriptor newSd = new StorageDescriptor(null, tbl2Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
-    Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, newSd, null, params, null, null, "MANAGED_TABLE");
-    objectStore.alterTable(DB1, TABLE1, newTbl1);
-    tables = objectStore.getTables(DB1, "new*");
-    assertEquals(1, tables.size());
-    assertEquals("new" + TABLE1, tables.get(0));
+    StorageDescriptor sd2 = createFakeSd(tbl2Path.toString());
+    Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, sd2, null, params, null, null,
+        "MANAGED_TABLE");
+    objectStore.alterTable(DEFAULT_CATALOG_NAME, DB1, TABLE1, newTbl1);
+    tables = objectStore.getTables(DEFAULT_CATALOG_NAME, DB1, "new*");
+    Assert.assertEquals(1, tables.size());
+    Assert.assertEquals("new" + TABLE1, tables.get(0));
 
     objectStore.createTable(tbl1);
-    tables = objectStore.getAllTables(DB1);
-    assertEquals(2, tables.size());
+    tables = objectStore.getAllTables(DEFAULT_CATALOG_NAME, DB1);
+    Assert.assertEquals(2, tables.size());
 
-    List<SQLForeignKey> foreignKeys = objectStore.getForeignKeys(DB1, TABLE1, null, null);
-    assertEquals(0, foreignKeys.size());
+    List<SQLForeignKey> foreignKeys = objectStore.getForeignKeys(DEFAULT_CATALOG_NAME, DB1, TABLE1, null, null);
+    Assert.assertEquals(0, foreignKeys.size());
 
     SQLPrimaryKey pk = new SQLPrimaryKey(DB1, TABLE1, "pk_col", 1,
         "pk_const_1", false, false, false);
+    pk.setCatName(DEFAULT_CATALOG_NAME);
     objectStore.addPrimaryKeys(ImmutableList.of(pk));
     SQLForeignKey fk = new SQLForeignKey(DB1, TABLE1, "pk_col",
         DB1, "new" + TABLE1, "fk_col", 1,
@@ -193,180 +250,32 @@ public class TestObjectStore {
     objectStore.addForeignKeys(ImmutableList.of(fk));
 
     // Retrieve from PK side
-    foreignKeys = objectStore.getForeignKeys(null, null, DB1, "new" + TABLE1);
-    assertEquals(1, foreignKeys.size());
+    foreignKeys = objectStore.getForeignKeys(DEFAULT_CATALOG_NAME, null, null, DB1, "new" + TABLE1);
+    Assert.assertEquals(1, foreignKeys.size());
 
-    List<SQLForeignKey> fks = objectStore.getForeignKeys(null, null, DB1, "new" + TABLE1);
+    List<SQLForeignKey> fks = objectStore.getForeignKeys(DEFAULT_CATALOG_NAME, null, null, DB1, "new" + TABLE1);
     if (fks != null) {
       for (SQLForeignKey fkcol : fks) {
-        objectStore.dropConstraint(fkcol.getFktable_db(), fkcol.getFktable_name(),
+        objectStore.dropConstraint(fkcol.getCatName(), fkcol.getFktable_db(), fkcol.getFktable_name(),
             fkcol.getFk_name());
       }
     }
     // Retrieve from FK side
-    foreignKeys = objectStore.getForeignKeys(DB1, TABLE1, null, null);
-    assertEquals(0, foreignKeys.size());
+    foreignKeys = objectStore.getForeignKeys(DEFAULT_CATALOG_NAME, DB1, TABLE1, null, null);
+    Assert.assertEquals(0, foreignKeys.size());
     // Retrieve from PK side
-    foreignKeys = objectStore.getForeignKeys(null, null, DB1, "new" + TABLE1);
-    assertEquals(0, foreignKeys.size());
+    foreignKeys = objectStore.getForeignKeys(DEFAULT_CATALOG_NAME, null, null, DB1, "new" + TABLE1);
+    Assert.assertEquals(0, foreignKeys.size());
 
-    objectStore.dropTable(DB1, TABLE1);
-    tables = objectStore.getAllTables(DB1);
-    assertEquals(1, tables.size());
+    objectStore.dropTable(DEFAULT_CATALOG_NAME, DB1, TABLE1);
+    tables = objectStore.getAllTables(DEFAULT_CATALOG_NAME, DB1);
+    Assert.assertEquals(1, tables.size());
 
-    objectStore.dropTable(DB1, "new" + TABLE1);
-    tables = objectStore.getAllTables(DB1);
-    assertEquals(0, tables.size());
+    objectStore.dropTable(DEFAULT_CATALOG_NAME, DB1, "new" + TABLE1);
+    tables = objectStore.getAllTables(DEFAULT_CATALOG_NAME, DB1);
+    Assert.assertEquals(0, tables.size());
 
-    objectStore.dropDatabase(DB1);
-
-    // cleanup
-    wh.deleteDir(db1Path, true);
-  }
-  
-
-  /**
-   * Test table operations
-   */
-  @Test
-  public void testMmCleaner() throws Exception {
-    HiveConf conf = new HiveConf();
-    conf.set(ConfVars.HIVE_METASTORE_MM_HEARTBEAT_TIMEOUT.varname, "3ms");
-    conf.set(ConfVars.HIVE_METASTORE_MM_ABSOLUTE_TIMEOUT.varname, "20ms");
-    conf.set(ConfVars.HIVE_METASTORE_MM_ABORTED_GRACE_PERIOD.varname, "5ms");
-    conf.set("fs.mock.impl", MockFileSystem.class.getName());
-
-    MockFileSystem mfs = (MockFileSystem)(new Path("mock:///").getFileSystem(conf));
-    mfs.clear();
-    mfs.allowDelete = true;
-    // Don't add the files just yet...
-    MockFile[] files = new MockFile[9];
-    for (int i = 0; i < files.length; ++i) {
-      files[i] = new MockFile("mock:/foo/mm_" + i + "/1", 0, new byte[0]);
-    }
-
-    LongSupplier time = new LongSupplier();
-
-    MmCleanerThread mct = new MmCleanerThread(0);
-    mct.setHiveConf(conf);
-    mct.overrideTime(time);
-
-    Database db1 = new Database(DB1, "description", "locationurl", null);
-    objectStore.createDatabase(db1);
-    StorageDescriptor sd = createFakeSd("mock:/foo");
-    HashMap<String,String> params = new HashMap<String,String>();
-    params.put("EXTERNAL", "false");
-    params.put(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL, "true");
-    params.put(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES, "insert_only");
-    Table tbl = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd,
-        null, params, null, null, "MANAGED_TABLE");
-    objectStore.createTable(tbl);
-
-    // Add write #0 so the watermark wouldn't advance; skip write #1, add #2 at 0, skip #3
-    createCompleteTableWrite(mfs, files, 0, time, tbl, HiveMetaStore.MM_WRITE_OPEN);
-    mfs.addFile(files[1]);
-    createCompleteTableWrite(mfs, files, 2, time, tbl, HiveMetaStore.MM_WRITE_OPEN);
-    mfs.addFile(files[3]);
-    tbl.setMmNextWriteId(4);
-    objectStore.alterTable(DB1, TABLE1, tbl);
-
-    mct.runOneIteration(objectStore);
-    List<Long> writes = getAbortedWrites();
-    assertEquals(0, writes.size()); // Missing write is not aborted before timeout.
-    time.value = 4; // Advance time.
-    mct.runOneIteration(objectStore);
-    writes = getAbortedWrites();
-    assertEquals(1, writes.size()); // Missing write is aborted after timeout.
-    assertEquals(1L, writes.get(0).longValue());
-    checkDeletedSet(files, 1);
-    // However, write #3 was not aborted as we cannot determine when it will time out.
-    createCompleteTableWrite(mfs, files, 4, time, tbl, HiveMetaStore.MM_WRITE_OPEN);
-    time.value = 8;
-    // It will now be aborted, since we have a following write.
-    mct.runOneIteration(objectStore);
-    writes = getAbortedWrites();
-    assertEquals(2, writes.size());
-    assertTrue(writes.contains(Long.valueOf(3)));
-    checkDeletedSet(files, 1, 3);
-
-    // Commit #0 and #2 and confirm that the watermark advances.
-    // It will only advance over #1, since #3 was aborted at 8 and grace period has not passed.
-    time.value = 10;
-    MTableWrite tw = objectStore.getTableWrite(DB1, TABLE1, 0);
-    tw.setState(String.valueOf(HiveMetaStore.MM_WRITE_COMMITTED));
-    objectStore.updateTableWrite(tw);
-    tw = objectStore.getTableWrite(DB1, TABLE1, 2);
-    tw.setState(String.valueOf(HiveMetaStore.MM_WRITE_COMMITTED));
-    objectStore.updateTableWrite(tw);
-    mct.runOneIteration(objectStore);
-    writes = getAbortedWrites();
-    assertEquals(1, writes.size());
-    assertEquals(3L, writes.get(0).longValue());
-    tbl = objectStore.getTable(DB1, TABLE1);
-    assertEquals(2L, tbl.getMmWatermarkWriteId());
-
-    // Now advance the time and see that watermark also advances over #3.
-    time.value = 16;
-    mct.runOneIteration(objectStore);
-    writes = getAbortedWrites();
-    assertEquals(0, writes.size());
-    tbl = objectStore.getTable(DB1, TABLE1);
-    assertEquals(3L, tbl.getMmWatermarkWriteId());
-
-    // Check that the open write gets aborted after some time; then the watermark advances.
-    time.value = 25;
-    mct.runOneIteration(objectStore);
-    writes = getAbortedWrites();
-    assertEquals(1, writes.size());
-    assertEquals(4L, writes.get(0).longValue());
-    time.value = 31;
-    mct.runOneIteration(objectStore);
-    tbl = objectStore.getTable(DB1, TABLE1);
-    assertEquals(4L, tbl.getMmWatermarkWriteId());
-    checkDeletedSet(files, 1, 3, 4); // The other two should still be deleted.
-
-    // Finally check that we cannot advance watermark if cleanup fails for some file.
-    createCompleteTableWrite(mfs, files, 5, time, tbl, HiveMetaStore.MM_WRITE_ABORTED);
-    createCompleteTableWrite(mfs, files, 6, time, tbl, HiveMetaStore.MM_WRITE_ABORTED);
-    createCompleteTableWrite(mfs, files, 7, time, tbl, HiveMetaStore.MM_WRITE_COMMITTED);
-    createCompleteTableWrite(mfs, files, 8, time, tbl, HiveMetaStore.MM_WRITE_ABORTED);
-    time.value = 37; // Skip the grace period.
-    files[6].cannotDelete = true;
-    mct.runOneIteration(objectStore);
-    checkDeletedSet(files, 1, 3, 4, 5, 8); // The other two should still be deleted.
-    tbl = objectStore.getTable(DB1, TABLE1);
-    assertEquals(5L, tbl.getMmWatermarkWriteId()); // Watermark only goes up to 5.
-    files[6].cannotDelete = false;
-    mct.runOneIteration(objectStore);
-    checkDeletedSet(files, 1, 3, 4, 5, 6, 8);
-    tbl = objectStore.getTable(DB1, TABLE1);
-    assertEquals(8L, tbl.getMmWatermarkWriteId()); // Now it advances all the way.
-
-    objectStore.dropTable(DB1, TABLE1);
-    objectStore.dropDatabase(DB1);
-  }
-
-  private void createCompleteTableWrite(MockFileSystem mfs, MockFile[] files,
-      int id, LongSupplier time, Table tbl, char state) throws MetaException, InvalidObjectException {
-    objectStore.createTableWrite(tbl, id, state, time.value);
-    mfs.addFile(files[id]);
-    tbl.setMmNextWriteId(id + 1);
-    objectStore.alterTable(DB1, TABLE1, tbl);
-  }
-
-  private void checkDeletedSet(MockFile[] files, int... deleted) {
-    for (int id : deleted) {
-      assertTrue("File " + id + " not deleted", files[id].isDeleted);
-    }
-    int count = 0;
-    for (MockFile file : files) {
-      if (file.isDeleted) ++count;
-    }
-    assertEquals(deleted.length, count); // Make sure nothing else is deleted.
-  }
-
-  private List<Long> getAbortedWrites() throws MetaException {
-    return objectStore.getTableWriteIds(DB1, TABLE1, -1, 10, HiveMetaStore.MM_WRITE_ABORTED);
+    objectStore.dropDatabase(db1.getCatalogName(), DB1);
   }
 
   private StorageDescriptor createFakeSd(String location) {
@@ -382,7 +291,11 @@ public class TestObjectStore {
   public void testPartitionOps() throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
     Path db1Path = new Path(wh.getWhRoot(), DB1);
     wh.mkdirs(db1Path);
-    Database db1 = new Database(DB1, "description", db1Path.toString(), null);
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation(db1Path.toString())
+        .build(conf);
     objectStore.createDatabase(db1);
 
     Path tbl1Path = new Path(db1Path, TABLE1);
@@ -404,6 +317,7 @@ public class TestObjectStore {
     wh.mkdirs(part1Path);
     sd = new StorageDescriptor(null, part1Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     Partition part1 = new Partition(value1, DB1, TABLE1, 111, 111, sd, partitionParams);
+    part1.setCatName(DEFAULT_CATALOG_NAME);
     objectStore.addPartition(part1);
 
 
@@ -412,30 +326,30 @@ public class TestObjectStore {
     sd = new StorageDescriptor(null, part2Path.toString(), null, null, false, 0, new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
     List<String> value2 = Arrays.asList("US", "MA");
     Partition part2 = new Partition(value2, DB1, TABLE1, 222, 222, sd, partitionParams);
+    part2.setCatName(DEFAULT_CATALOG_NAME);
     objectStore.addPartition(part2);
 
     Deadline.startTimer("getPartition");
-    List<Partition> partitions = objectStore.getPartitions(DB1, TABLE1, 10);
-    assertEquals(2, partitions.size());
-    assertEquals(111, partitions.get(0).getCreateTime());
-    assertEquals(222, partitions.get(1).getCreateTime());
 
-    int numPartitions = objectStore.getNumPartitionsByFilter(DB1, TABLE1, "");
-    assertEquals(partitions.size(), numPartitions);
+    List<Partition> partitions = objectStore.getPartitions(DEFAULT_CATALOG_NAME, DB1, TABLE1, 10);
+    Assert.assertEquals(2, partitions.size());
+    Assert.assertEquals(111, partitions.get(0).getCreateTime());
+    Assert.assertEquals(222, partitions.get(1).getCreateTime());
 
-    numPartitions = objectStore.getNumPartitionsByFilter(DB1, TABLE1, "country = \"US\"");
-    assertEquals(2, numPartitions);
+    int numPartitions = objectStore.getNumPartitionsByFilter(DEFAULT_CATALOG_NAME, DB1, TABLE1, "");
+    Assert.assertEquals(partitions.size(), numPartitions);
 
-    objectStore.dropPartition(DB1, TABLE1, value1);
-    partitions = objectStore.getPartitions(DB1, TABLE1, 10);
-    assertEquals(1, partitions.size());
-    assertEquals(222, partitions.get(0).getCreateTime());
+    numPartitions = objectStore.getNumPartitionsByFilter(DEFAULT_CATALOG_NAME, DB1, TABLE1, "country = \"US\"");
+    Assert.assertEquals(2, numPartitions);
 
-    objectStore.dropPartition(DB1, TABLE1, value2);
-    objectStore.dropTable(DB1, TABLE1);
-    objectStore.dropDatabase(DB1);
+    objectStore.dropPartition(DEFAULT_CATALOG_NAME, DB1, TABLE1, value1);
+    partitions = objectStore.getPartitions(DEFAULT_CATALOG_NAME, DB1, TABLE1, 10);
+    Assert.assertEquals(1, partitions.size());
+    Assert.assertEquals(222, partitions.get(0).getCreateTime());
 
-    wh.deleteDir(db1Path, true);
+    objectStore.dropPartition(DEFAULT_CATALOG_NAME, DB1, TABLE1, value2);
+    objectStore.dropTable(DEFAULT_CATALOG_NAME, DB1, TABLE1);
+    objectStore.dropDatabase(db1.getCatalogName(), DB1);
   }
 
   /**
@@ -499,7 +413,7 @@ public class TestObjectStore {
     Counter directSqlErrors =
         Metrics.getRegistry().getCounters().get(MetricsConstants.DIRECTSQL_ERRORS);
 
-    objectStore.new GetDbHelper("foo", true, true) {
+    objectStore.new GetDbHelper(DEFAULT_CATALOG_NAME, "foo", true, true) {
       @Override
       protected Database getSqlResult(ObjectStore.GetHelper<Database> ctx) throws MetaException {
         return null;
@@ -514,7 +428,7 @@ public class TestObjectStore {
 
     assertEquals(0, directSqlErrors.getCount());
 
-    objectStore.new GetDbHelper("foo", true, true) {
+    objectStore.new GetDbHelper(DEFAULT_CATALOG_NAME, "foo", true, true) {
       @Override
       protected Database getSqlResult(ObjectStore.GetHelper<Database> ctx) throws MetaException {
         throw new RuntimeException();
@@ -534,39 +448,42 @@ public class TestObjectStore {
       throws MetaException, InvalidObjectException, InvalidInputException {
     try {
       Deadline.registerIfNot(100000);
-      List<Function> functions = store.getAllFunctions();
+      List<Function> functions = store.getAllFunctions(DEFAULT_CATALOG_NAME);
       for (Function func : functions) {
-        store.dropFunction(func.getDbName(), func.getFunctionName());
+        store.dropFunction(DEFAULT_CATALOG_NAME, func.getDbName(), func.getFunctionName());
       }
-      List<String> dbs = store.getAllDatabases();
-      for (String db : dbs) {
-        List<String> tbls = store.getAllTables(db);
-        for (String tbl : tbls) {
-          Deadline.startTimer("getPartition");
-          List<Partition> parts = store.getPartitions(db, tbl, 100);
-          for (Partition part : parts) {
-            store.dropPartition(db, tbl, part.getValues());
-          }
-          // Find any constraints and drop them
-          Set<String> constraints = new HashSet<>();
-          List<SQLPrimaryKey> pk = store.getPrimaryKeys(db, tbl);
-          if (pk != null) {
-            for (SQLPrimaryKey pkcol : pk) {
-              constraints.add(pkcol.getPk_name());
+      for (String catName : store.getCatalogs()) {
+        List<String> dbs = store.getAllDatabases(catName);
+        for (String db : dbs) {
+          List<String> tbls = store.getAllTables(DEFAULT_CATALOG_NAME, db);
+          for (String tbl : tbls) {
+            Deadline.startTimer("getPartition");
+            List<Partition> parts = store.getPartitions(DEFAULT_CATALOG_NAME, db, tbl, 100);
+            for (Partition part : parts) {
+              store.dropPartition(DEFAULT_CATALOG_NAME, db, tbl, part.getValues());
             }
-          }
-          List<SQLForeignKey> fks = store.getForeignKeys(null, null, db, tbl);
-          if (fks != null) {
-            for (SQLForeignKey fkcol : fks) {
-              constraints.add(fkcol.getFk_name());
+            // Find any constraints and drop them
+            Set<String> constraints = new HashSet<>();
+            List<SQLPrimaryKey> pk = store.getPrimaryKeys(DEFAULT_CATALOG_NAME, db, tbl);
+            if (pk != null) {
+              for (SQLPrimaryKey pkcol : pk) {
+                constraints.add(pkcol.getPk_name());
+              }
             }
+            List<SQLForeignKey> fks = store.getForeignKeys(DEFAULT_CATALOG_NAME, null, null, db, tbl);
+            if (fks != null) {
+              for (SQLForeignKey fkcol : fks) {
+                constraints.add(fkcol.getFk_name());
+              }
+            }
+            for (String constraint : constraints) {
+              store.dropConstraint(DEFAULT_CATALOG_NAME, db, tbl, constraint);
+            }
+            store.dropTable(DEFAULT_CATALOG_NAME, db, tbl);
           }
-          for (String constraint : constraints) {
-            store.dropConstraint(db, tbl, constraint);
-          }
-          store.dropTable(db, tbl);
+          store.dropDatabase(catName, db);
         }
-        store.dropDatabase(db);
+        store.dropCatalog(catName);
       }
       List<String> roles = store.listRoleNames();
       for (String role : roles) {
@@ -579,9 +496,9 @@ public class TestObjectStore {
   @Test
   public void testQueryCloseOnError() throws Exception {
     ObjectStore spy = Mockito.spy(objectStore);
-    spy.getAllDatabases();
-    spy.getAllFunctions();
-    spy.getAllTables(DB1);
+    spy.getAllDatabases(DEFAULT_CATALOG_NAME);
+    spy.getAllFunctions(DEFAULT_CATALOG_NAME);
+    spy.getAllTables(DEFAULT_CATALOG_NAME, DB1);
     spy.getPartitionCount();
     Mockito.verify(spy, Mockito.times(3))
         .rollbackAndCleanup(Mockito.anyBoolean(), Mockito.<Query>anyObject());
@@ -742,6 +659,14 @@ public class TestObjectStore {
       Assert.assertTrue(previousId + 1 == event.getEventId());
       previousId = event.getEventId();
     }
+  }
+
+  private void createTestCatalog(String catName) throws MetaException {
+    Catalog cat = new CatalogBuilder()
+        .setName(catName)
+        .setLocation("/tmp")
+        .build();
+    objectStore.createCatalog(cat);
   }
 }
 

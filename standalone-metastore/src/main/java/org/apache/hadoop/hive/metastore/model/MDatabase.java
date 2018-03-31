@@ -36,6 +36,7 @@ public class MDatabase {
   private Map<String, String> parameters;
   private String ownerName;
   private String ownerType;
+  private String catalogName;
 
   /**
    * Default construction to keep jpox/jdo happy
@@ -48,12 +49,13 @@ public class MDatabase {
    * @param sd StorageDescriptor of the database in the warehouse
    * @param description Comment describing the database
    */
-  public MDatabase(String name, MStorageDescriptor sd, String description,
+  public MDatabase(String catalogName, String name, MStorageDescriptor sd, String locationUri, String description,
       Map<String, String> parameters) {
     this.name = name;
     this.sd = sd;
     this.description = description;
     this.parameters = parameters;
+    this.catalogName = catalogName;
   }
 
   /**
@@ -126,5 +128,13 @@ public class MDatabase {
 
   public void setOwnerType(String ownerType) {
     this.ownerType = ownerType;
+  }
+
+  public String getCatalogName() {
+    return catalogName;
+  }
+
+  public void setCatalogName(String catalogName) {
+    this.catalogName = catalogName;
   }
 }
