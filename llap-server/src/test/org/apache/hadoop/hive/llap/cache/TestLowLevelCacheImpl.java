@@ -119,7 +119,12 @@ public class TestLowLevelCacheImpl {
     public void setParentDebugDumper(LlapOomDebugDump dumper) {
     }
 
-   @Override
+    @Override
+    public long purge() {
+      return 0;
+    }
+
+    @Override
     public void debugDumpShort(StringBuilder sb) {
     }
   }
