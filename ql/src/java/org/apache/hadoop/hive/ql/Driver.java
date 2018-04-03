@@ -2788,6 +2788,10 @@ public class Driver implements IDriver {
     this.statsSource = runtimeStatsSource;
   }
 
+  public StatsSource getStatsSource() {
+    return statsSource;
+  }
+
   @Override
   public boolean hasResultSet() {
 
