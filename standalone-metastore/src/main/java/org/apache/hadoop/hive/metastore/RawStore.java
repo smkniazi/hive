@@ -1166,6 +1166,17 @@ public interface RawStore extends Configurable {
     List<String> partNames, List<String> colNames) throws MetaException, NoSuchObjectException;
 
   /**
+   * Get column stats for all partitions of all tables in the database
+   * @param catName catalog name
+   * @param dbName database name
+   * @return List of column stats objects for all partitions of all tables in the database
+   * @throws MetaException error accessing RDBMS
+   * @throws NoSuchObjectException no such database
+   */
+  List<ColStatsObjWithSourceInfo> getPartitionColStatsForDatabase(String catName, String dbName)
+      throws MetaException, NoSuchObjectException;
+
+  /**
    * Get the next notification event.
    * @param rqst Request containing information on the last processed notification.
    * @return list of notifications, sorted by eventId
