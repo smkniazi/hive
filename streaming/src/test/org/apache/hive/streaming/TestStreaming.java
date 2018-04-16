@@ -20,13 +20,11 @@ package org.apache.hive.streaming;
 
 import static org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.BUCKET_COUNT;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +35,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -56,10 +53,12 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.Validator;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
 import org.apache.hadoop.hive.metastore.api.LockState;
 import org.apache.hadoop.hive.metastore.api.LockType;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.metastore.api.ShowLocksRequest;
 import org.apache.hadoop.hive.metastore.api.ShowLocksResponse;
@@ -70,8 +69,6 @@ import org.apache.hadoop.hive.metastore.api.TxnState;
 import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
 import org.apache.hadoop.hive.metastore.txn.AcidHouseKeeperService;
 import org.apache.hadoop.hive.metastore.txn.TxnDbUtil;
-import org.apache.hadoop.hive.metastore.txn.TxnStore;
-import org.apache.hadoop.hive.metastore.txn.TxnUtils;
 import org.apache.hadoop.hive.ql.DriverFactory;
 import org.apache.hadoop.hive.ql.IDriver;
 import org.apache.hadoop.hive.ql.io.AcidUtils;
@@ -91,11 +88,13 @@ import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableIntObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableLongObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableStringObjectInspector;
+import org.apache.hadoop.hive.shims.Utils;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.orc.impl.OrcAcidUtils;
 import org.apache.orc.tools.FileDump;
 import org.apache.thrift.TException;
@@ -114,7 +113,6 @@ public class TestStreaming {
 
   public static class RawFileSystem extends RawLocalFileSystem {
     private static final URI NAME;
-
     static {
       try {
         NAME = new URI("raw:///");
@@ -128,16 +126,12 @@ public class TestStreaming {
       return NAME;
     }
 
-    @Override
-    public String getScheme() {
-      return "raw";
-    }
 
     @Override
     public FileStatus getFileStatus(Path path) throws IOException {
       File file = pathToFile(path);
       if (!file.exists()) {
-        throw new FileNotFoundException("Can'table find " + path);
+        throw new FileNotFoundException("Can't find " + path);
       }
       // get close enough
       short mod = 0;
@@ -151,30 +145,32 @@ public class TestStreaming {
         mod |= 0111;
       }
       return new FileStatus(file.length(), file.isDirectory(), 1, 1024,
-        file.lastModified(), file.lastModified(),
-        FsPermission.createImmutable(mod), "owen", "users", path);
+          file.lastModified(), file.lastModified(),
+          FsPermission.createImmutable(mod), "owen", "users", path);
     }
   }
 
   private static final String COL1 = "id";
   private static final String COL2 = "msg";
 
-  private static HiveConf conf = null;
+  private final HiveConf conf;
   private IDriver driver;
   private final IMetaStoreClient msClient;
+
+  final String metaStoreURI = null;
 
   // partitioned table
   private final static String dbName = "testing";
   private final static String tblName = "alerts";
-  private final static String[] fieldNames = new String[]{COL1, COL2};
-  static List<String> partitionVals;
+  private final static String[] fieldNames = new String[]{COL1,COL2};
+  List<String> partitionVals;
   private static Path partLoc;
   private static Path partLoc2;
 
   // unpartitioned table
   private final static String dbName2 = "testing2";
   private final static String tblName2 = "alerts";
-  private final static String[] fieldNames2 = new String[]{COL1, COL2};
+  private final static String[] fieldNames2 = new String[]{COL1,COL2};
 
 
   // for bucket join testing
@@ -203,9 +199,13 @@ public class TestStreaming {
 
     conf = new HiveConf(this.getClass());
     conf.set("fs.raw.impl", RawFileSystem.class.getName());
-    conf.setVar(HiveConf.ConfVars.HIVE_AUTHORIZATION_MANAGER,
-      "org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory");
+    conf
+    .setVar(HiveConf.ConfVars.HIVE_AUTHORIZATION_MANAGER,
+        "org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory");
     TxnDbUtil.setConfValues(conf);
+    if (metaStoreURI!=null) {
+      conf.setVar(HiveConf.ConfVars.METASTOREURIS, metaStoreURI);
+    }
     conf.setBoolVar(HiveConf.ConfVars.METASTORE_EXECUTE_SET_UGI, true);
     conf.setBoolVar(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY, true);
     dbFolder.create();
@@ -227,13 +227,12 @@ public class TestStreaming {
     // drop and recreate the necessary databases and tables
     dropDB(msClient, dbName);
 
-    String[] colNames = new String[]{COL1, COL2};
-    String[] colTypes = new String[]{serdeConstants.INT_TYPE_NAME, serdeConstants.STRING_TYPE_NAME};
-    String[] bucketCols = new String[]{COL1};
+    String[] colNames = new String[] {COL1, COL2};
+    String[] colTypes = new String[] {serdeConstants.INT_TYPE_NAME, serdeConstants.STRING_TYPE_NAME};
+    String[] bucketCols = new String[] {COL1};
     String loc1 = dbFolder.newFolder(dbName + ".db").toString();
     String[] partNames = new String[]{"Continent", "Country"};
-    partLoc = createDbAndTable(driver, dbName, tblName, partitionVals, colNames, colTypes, bucketCols, partNames, loc1,
-      1);
+    partLoc = createDbAndTable(driver, dbName, tblName, partitionVals, colNames, colTypes, bucketCols, partNames, loc1, 1);
 
     dropDB(msClient, dbName2);
     String loc2 = dbFolder.newFolder(dbName2 + ".db").toString();
@@ -248,9 +247,17 @@ public class TestStreaming {
   }
 
   @After
-  public void cleanup() {
+  public void cleanup() throws Exception {
     msClient.close();
     driver.close();
+  }
+
+  private static List<FieldSchema> getPartitionKeys() {
+    List<FieldSchema> fields = new ArrayList<FieldSchema>();
+    // Defining partition names in unsorted order
+    fields.add(new FieldSchema("continent", serdeConstants.STRING_TYPE_NAME, ""));
+    fields.add(new FieldSchema("country", serdeConstants.STRING_TYPE_NAME, ""));
+    return fields;
   }
 
   private void createStoreSales(String dbName, String loc) throws Exception {
@@ -292,48 +299,43 @@ public class TestStreaming {
       ")\n" +
       " partitioned by (dt string)\n" +
       "clustered by (ss_store_sk, ss_promo_sk)\n" +
-      "INTO 4 BUCKETS stored as orc " + " location '" + tableLoc + "'" +
-      "  TBLPROPERTIES ('orc.compress'='NONE', 'transactional'='true')");
+      "INTO 4 BUCKETS stored as orc " + " location '" + tableLoc +  "'" + "  TBLPROPERTIES ('orc.compress'='NONE', 'transactional'='true')");
     Assert.assertTrue(success);
 
     success = runDDL(driver, "alter table store_sales add partition(dt='2015')");
     Assert.assertTrue(success);
   }
-
   /**
    * make sure it works with table where bucket col is not 1st col
-   *
    * @throws Exception
    */
   @Test
   public void testBucketingWhereBucketColIsNotFirstCol() throws Exception {
     List<String> partitionVals = new ArrayList<String>();
     partitionVals.add("2015");
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("testing5")
-      .withTable("store_sales")
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, "testing5", "store_sales", partitionVals);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(new String[] {"ss_sold_date_sk","ss_sold_time_sk", "ss_item_sk",
+      "ss_customer_sk", "ss_cdemo_sk", "ss_hdemo_sk", "ss_addr_sk", "ss_store_sk", "ss_promo_sk", "ss_ticket_number", "ss_quantity",
+      "ss_wholesale_cost", "ss_list_price", "ss_sales_price", "ss_ext_discount_amt", "ss_ext_sales_price", "ss_ext_wholesale_cost",
+      "ss_ext_list_price", "ss_ext_tax", "ss_coupon_amt", "ss_net_paid", "ss_net_paid_inc_tax", "ss_net_profit"},",", endPt, connection);
 
-    connection.beginTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+
     StringBuilder row = new StringBuilder();
-    for (int i = 0; i < 10; i++) {
-      for (int ints = 0; ints < 11; ints++) {
+    for(int i = 0; i < 10; i++) {
+      for(int ints = 0; ints < 11; ints++) {
         row.append(ints).append(',');
       }
-      for (int decs = 0; decs < 12; decs++) {
+      for(int decs = 0; decs < 12; decs++) {
         row.append(i + 0.1).append(',');
       }
       row.setLength(row.length() - 1);
-      connection.write(row.toString().getBytes());
+      txnBatch.write(row.toString().getBytes());
     }
-    connection.commitTransaction();
+    txnBatch.commit();
+    txnBatch.close();
     connection.close();
 
     ArrayList<String> res = queryTable(driver, "select row__id.bucketid, * from testing5.store_sales");
@@ -348,41 +350,30 @@ public class TestStreaming {
   @Test
   public void testNoBuckets() throws Exception {
     queryTable(driver, "drop table if exists default.streamingnobuckets");
-    queryTable(driver, "create table default.streamingnobuckets (a string, b string) stored as orc " +
-      "TBLPROPERTIES('transactional'='true')");
+    //todo: why does it need transactional_properties?
+    queryTable(driver, "create table default.streamingnobuckets (a string, b string) stored as orc TBLPROPERTIES('transactional'='true', 'transactional_properties'='default')");
     queryTable(driver, "insert into default.streamingnobuckets values('foo','bar')");
     List<String> rs = queryTable(driver, "select * from default.streamingnobuckets");
     Assert.assertEquals(1, rs.size());
     Assert.assertEquals("foo\tbar", rs.get(0));
-    StrictDelimitedInputWriter wr = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("Default")
-      .withTable("streamingNoBuckets")
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withTransactionBatchSize(2)
-      .withRecordWriter(wr)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, "default", "streamingnobuckets", null);
+    String[] colNames1 = new String[] { "a", "b" };
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter wr = new DelimitedInputWriter(colNames1,",",  endPt, connection);
 
-    connection.beginTransaction();
-    connection.write("a1,b2".getBytes());
-    connection.write("a3,b4".getBytes());
-    TxnStore txnHandler = TxnUtils.getTxnStore(conf);
-    ShowLocksResponse resp = txnHandler.showLocks(new ShowLocksRequest());
-    Assert.assertEquals(resp.getLocksSize(), 1);
-    Assert.assertEquals("streamingnobuckets", resp.getLocks().get(0).getTablename());
-    Assert.assertEquals("default", resp.getLocks().get(0).getDbname());
-    connection.commitTransaction();
-    connection.beginTransaction();
-    connection.write("a5,b6".getBytes());
-    connection.write("a7,b8".getBytes());
-    connection.commitTransaction();
-    connection.close();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, wr);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("a1,b2".getBytes());
+    txnBatch.write("a3,b4".getBytes());
+    txnBatch.commit();
+    txnBatch.beginNextTransaction();
+    txnBatch.write("a5,b6".getBytes());
+    txnBatch.write("a7,b8".getBytes());
+    txnBatch.commit();
+    txnBatch.close();
 
     Assert.assertEquals("", 0, BucketCodec.determineVersion(536870912).decodeWriterId(536870912));
-    rs = queryTable(driver, "select ROW__ID, a, b, INPUT__FILE__NAME from default.streamingnobuckets order by ROW__ID");
+    rs = queryTable(driver,"select ROW__ID, a, b, INPUT__FILE__NAME from default.streamingnobuckets order by ROW__ID");
 
     Assert.assertTrue(rs.get(0), rs.get(0).startsWith("{\"writeid\":1,\"bucketid\":536870912,\"rowid\":0}\tfoo\tbar"));
     Assert.assertTrue(rs.get(0), rs.get(0).endsWith("streamingnobuckets/delta_0000001_0000001_0000/bucket_00000"));
@@ -406,7 +397,7 @@ public class TestStreaming {
 
     queryTable(driver, "alter table default.streamingnobuckets compact 'major'");
     runWorker(conf);
-    rs = queryTable(driver, "select ROW__ID, a, b, INPUT__FILE__NAME from default.streamingnobuckets order by ROW__ID");
+    rs = queryTable(driver,"select ROW__ID, a, b, INPUT__FILE__NAME from default.streamingnobuckets order by ROW__ID");
 
     Assert.assertTrue(rs.get(0), rs.get(0).startsWith("{\"writeid\":1,\"bucketid\":536870912,\"rowid\":0}\tfoo\tbar"));
     Assert.assertTrue(rs.get(0), rs.get(0).endsWith("streamingnobuckets/base_0000005/bucket_00000"));
@@ -416,206 +407,6 @@ public class TestStreaming {
     Assert.assertTrue(rs.get(2), rs.get(2).endsWith("streamingnobuckets/base_0000005/bucket_00000"));
     Assert.assertTrue(rs.get(3), rs.get(3).startsWith("{\"writeid\":4,\"bucketid\":536870912,\"rowid\":0}\t0\t0"));
     Assert.assertTrue(rs.get(3), rs.get(3).endsWith("streamingnobuckets/base_0000005/bucket_00000"));
-  }
-
-  @Test
-  public void testAllTypesDelimitedWriter() throws Exception {
-    queryTable(driver, "drop table if exists default.alltypes");
-    queryTable(driver,
-      "create table if not exists default.alltypes ( bo boolean, ti tinyint, si smallint, i int, bi bigint, " +
-        "f float, d double, de decimal(10,3), ts timestamp, da date, s string, c char(5), vc varchar(5), " +
-        "m map<string, string>, l array<int>, st struct<c1:int, c2:string> ) " +
-        "stored as orc TBLPROPERTIES('transactional'='true')");
-    StrictDelimitedInputWriter wr = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter('|')
-      .withCollectionDelimiter(',')
-      .withMapKeyDelimiter(':')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("default")
-      .withTable("alltypes")
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withTransactionBatchSize(2)
-      .withRecordWriter(wr)
-      .withHiveConf(conf)
-      .connect();
-
-    String row1 = "true|10|100|1000|10000|4.0|20.0|4.2222|1969-12-31 " +
-      "15:59:58.174|1970-01-01|string|hello|hello|k1:v1|100,200|10,foo";
-    String row2 = "false|20|200|2000|20000|8.0|40.0|2.2222|1970-12-31 15:59:58.174|1971-01-01|abcd|world|world|" +
-      "k4:v4|200,300|20,bar";
-    connection.beginTransaction();
-    connection.write(row1.getBytes());
-    connection.write(row2.getBytes());
-    connection.commitTransaction();
-    connection.close();
-
-    List<String> rs = queryTable(driver, "select ROW__ID, bo, ti, si, i, bi, f, d, de, ts, da, s, c, vc, m, l, st," +
-      " INPUT__FILE__NAME from default.alltypes order by ROW__ID");
-    Assert.assertEquals(2, rs.size());
-    String gotRow1 = rs.get(0);
-    String expectedPrefixRow1 = "{\"writeid\":1,\"bucketid\":536870912," +
-      "\"rowid\":0}\ttrue\t10\t100\t1000\t10000\t4.0\t20.0\t4.222\t1969-12-31 15:59:58.174\t1970-01-01\tstring" +
-      "\thello\thello\t{\"k1\":\"v1\"}\t[100,200]\t{\"c1\":10,\"c2\":\"foo\"}";
-    String expectedSuffixRow1 = "alltypes/delta_0000001_0000002/bucket_00000";
-    String gotRow2 = rs.get(1);
-    String expectedPrefixRow2 = "{\"writeid\":1,\"bucketid\":536870912," +
-      "\"rowid\":1}\tfalse\t20\t200\t2000\t20000\t8.0\t40.0\t2.222\t1970-12-31 15:59:58.174\t1971-01-01\tabcd" +
-      "\tworld\tworld\t{\"k4\":\"v4\"}\t[200,300]\t{\"c1\":20,\"c2\":\"bar\"}";
-    String expectedSuffixRow2 = "alltypes/delta_0000001_0000002/bucket_00000";
-    Assert.assertTrue(gotRow1, gotRow1.startsWith(expectedPrefixRow1));
-    Assert.assertTrue(gotRow1, gotRow1.endsWith(expectedSuffixRow1));
-    Assert.assertTrue(gotRow2, gotRow2.startsWith(expectedPrefixRow2));
-    Assert.assertTrue(gotRow2, gotRow2.endsWith(expectedSuffixRow2));
-  }
-
-  @Test
-  public void testAllTypesDelimitedWriterInputStream() throws Exception {
-    queryTable(driver, "drop table if exists default.alltypes");
-    queryTable(driver,
-      "create table if not exists default.alltypes ( bo boolean, ti tinyint, si smallint, i int, bi bigint, " +
-        "f float, d double, de decimal(10,3), ts timestamp, da date, s string, c char(5), vc varchar(5), " +
-        "m map<string, string>, l array<int>, st struct<c1:int, c2:string> ) " +
-        "stored as orc TBLPROPERTIES('transactional'='true')");
-    StrictDelimitedInputWriter wr = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter('|')
-      .withCollectionDelimiter(',')
-      .withMapKeyDelimiter(':')
-      .withLineDelimiterPattern("\n")
-      .build();
-    StreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("default")
-      .withTable("alltypes")
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withTransactionBatchSize(2)
-      .withRecordWriter(wr)
-      .withHiveConf(conf)
-      .connect();
-
-    String row1 = "true|10|100|1000|10000|4.0|20.0|4.2222|1969-12-31 " +
-      "15:59:58.174|1970-01-01|string|hello|hello|k1:v1|100,200|10,foo";
-    String row2 = "false|20|200|2000|20000|8.0|40.0|2.2222|1970-12-31 15:59:58.174|1971-01-01|abcd|world|world|" +
-      "k4:v4|200,300|20,bar";
-    String allRows = row1 + "\n" + row2 + "\n";
-    ByteArrayInputStream bais = new ByteArrayInputStream(allRows.getBytes());
-    connection.beginTransaction();
-    connection.write(bais);
-    connection.commitTransaction();
-    connection.close();
-    bais.close();
-
-    List<String> rs = queryTable(driver, "select ROW__ID, bo, ti, si, i, bi, f, d, de, ts, da, s, c, vc, m, l, st," +
-      " INPUT__FILE__NAME from default.alltypes order by ROW__ID");
-    Assert.assertEquals(2, rs.size());
-    String gotRow1 = rs.get(0);
-    String expectedPrefixRow1 = "{\"writeid\":1,\"bucketid\":536870912," +
-      "\"rowid\":0}\ttrue\t10\t100\t1000\t10000\t4.0\t20.0\t4.222\t1969-12-31 15:59:58.174\t1970-01-01\tstring" +
-      "\thello\thello\t{\"k1\":\"v1\"}\t[100,200]\t{\"c1\":10,\"c2\":\"foo\"}";
-    String expectedSuffixRow1 = "alltypes/delta_0000001_0000002/bucket_00000";
-    String gotRow2 = rs.get(1);
-    String expectedPrefixRow2 = "{\"writeid\":1,\"bucketid\":536870912," +
-      "\"rowid\":1}\tfalse\t20\t200\t2000\t20000\t8.0\t40.0\t2.222\t1970-12-31 15:59:58.174\t1971-01-01\tabcd" +
-      "\tworld\tworld\t{\"k4\":\"v4\"}\t[200,300]\t{\"c1\":20,\"c2\":\"bar\"}";
-    String expectedSuffixRow2 = "alltypes/delta_0000001_0000002/bucket_00000";
-    Assert.assertTrue(gotRow1, gotRow1.startsWith(expectedPrefixRow1));
-    Assert.assertTrue(gotRow1, gotRow1.endsWith(expectedSuffixRow1));
-    Assert.assertTrue(gotRow2, gotRow2.startsWith(expectedPrefixRow2));
-    Assert.assertTrue(gotRow2, gotRow2.endsWith(expectedSuffixRow2));
-  }
-
-  @Test
-  public void testAutoRollTransactionBatch() throws Exception {
-    queryTable(driver, "drop table if exists default.streamingnobuckets");
-    queryTable(driver, "create table default.streamingnobuckets (a string, b string) stored as orc " +
-      "TBLPROPERTIES('transactional'='true')");
-    queryTable(driver, "insert into default.streamingnobuckets values('foo','bar')");
-    List<String> rs = queryTable(driver, "select * from default.streamingnobuckets");
-    Assert.assertEquals(1, rs.size());
-    Assert.assertEquals("foo\tbar", rs.get(0));
-    StrictDelimitedInputWriter wr = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("default")
-      .withTable("streamingnobuckets")
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(wr)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(2)
-      .connect();
-
-    connection.beginTransaction();
-    connection.write("a1,b2".getBytes());
-    connection.write("a3,b4".getBytes());
-    connection.commitTransaction();
-    connection.beginTransaction();
-    connection.write("a5,b6".getBytes());
-    connection.write("a7,b8".getBytes());
-    connection.commitTransaction();
-    // should have rolled over to next transaction batch
-    connection.beginTransaction();
-    connection.write("a9,b10".getBytes());
-    connection.write("a11,b12".getBytes());
-    connection.commitTransaction();
-    connection.beginTransaction();
-    connection.write("a13,b14".getBytes());
-    connection.write("a15,b16".getBytes());
-    connection.commitTransaction();
-    connection.close();
-
-    Assert.assertEquals("", 0, BucketCodec.determineVersion(536870912).decodeWriterId(536870912));
-    rs = queryTable(driver, "select ROW__ID, a, b, INPUT__FILE__NAME from default.streamingnobuckets order by ROW__ID");
-
-    Assert.assertTrue(rs.get(0), rs.get(0).startsWith("{\"writeid\":1,\"bucketid\":536870912,\"rowid\":0}\tfoo\tbar"));
-    Assert.assertTrue(rs.get(0), rs.get(0).endsWith("streamingnobuckets/delta_0000001_0000001_0000/bucket_00000"));
-    Assert.assertTrue(rs.get(1), rs.get(1).startsWith("{\"writeid\":2,\"bucketid\":536870912,\"rowid\":0}\ta1\tb2"));
-    Assert.assertTrue(rs.get(1), rs.get(1).endsWith("streamingnobuckets/delta_0000002_0000003/bucket_00000"));
-    Assert.assertTrue(rs.get(2), rs.get(2).startsWith("{\"writeid\":2,\"bucketid\":536870912,\"rowid\":1}\ta3\tb4"));
-    Assert.assertTrue(rs.get(2), rs.get(2).endsWith("streamingnobuckets/delta_0000002_0000003/bucket_00000"));
-    Assert.assertTrue(rs.get(3), rs.get(3).startsWith("{\"writeid\":3,\"bucketid\":536870912,\"rowid\":0}\ta5\tb6"));
-    Assert.assertTrue(rs.get(3), rs.get(3).endsWith("streamingnobuckets/delta_0000002_0000003/bucket_00000"));
-    Assert.assertTrue(rs.get(4), rs.get(4).startsWith("{\"writeid\":3,\"bucketid\":536870912,\"rowid\":1}\ta7\tb8"));
-    Assert.assertTrue(rs.get(4), rs.get(4).endsWith("streamingnobuckets/delta_0000002_0000003/bucket_00000"));
-
-    Assert.assertTrue(rs.get(5), rs.get(5).startsWith("{\"writeid\":4,\"bucketid\":536870912,\"rowid\":0}\ta9\tb10"));
-    Assert.assertTrue(rs.get(5), rs.get(5).endsWith("streamingnobuckets/delta_0000004_0000005/bucket_00000"));
-    Assert.assertTrue(rs.get(6), rs.get(6).startsWith("{\"writeid\":4,\"bucketid\":536870912,\"rowid\":1}\ta11\tb12"));
-    Assert.assertTrue(rs.get(6), rs.get(6).endsWith("streamingnobuckets/delta_0000004_0000005/bucket_00000"));
-    Assert.assertTrue(rs.get(7), rs.get(7).startsWith("{\"writeid\":5,\"bucketid\":536870912,\"rowid\":0}\ta13\tb14"));
-    Assert.assertTrue(rs.get(7), rs.get(7).endsWith("streamingnobuckets/delta_0000004_0000005/bucket_00000"));
-    Assert.assertTrue(rs.get(8), rs.get(8).startsWith("{\"writeid\":5,\"bucketid\":536870912,\"rowid\":1}\ta15\tb16"));
-    Assert.assertTrue(rs.get(8), rs.get(8).endsWith("streamingnobuckets/delta_0000004_0000005/bucket_00000"));
-
-    queryTable(driver, "update default.streamingnobuckets set a=0, b=0 where a='a7'");
-    queryTable(driver, "delete from default.streamingnobuckets where a='a1'");
-    queryTable(driver, "update default.streamingnobuckets set a=0, b=0 where a='a15'");
-    queryTable(driver, "delete from default.streamingnobuckets where a='a9'");
-    rs = queryTable(driver, "select a, b from default.streamingnobuckets order by a, b");
-    int row = 0;
-    Assert.assertEquals("at row=" + row, "0\t0", rs.get(row++));
-    Assert.assertEquals("at row=" + row, "0\t0", rs.get(row++));
-    Assert.assertEquals("at row=" + row, "a11\tb12", rs.get(row++));
-    Assert.assertEquals("at row=" + row, "a13\tb14", rs.get(row++));
-    Assert.assertEquals("at row=" + row, "a3\tb4", rs.get(row++));
-    Assert.assertEquals("at row=" + row, "a5\tb6", rs.get(row++));
-    Assert.assertEquals("at row=" + row, "foo\tbar", rs.get(row++));
-
-    queryTable(driver, "alter table default.streamingnobuckets compact 'major'");
-    runWorker(conf);
-    rs = queryTable(driver, "select ROW__ID, a, b, INPUT__FILE__NAME from default.streamingnobuckets order by ROW__ID");
-
-    Assert.assertTrue(rs.get(0), rs.get(0).startsWith("{\"writeid\":1,\"bucketid\":536870912,\"rowid\":0}\tfoo\tbar"));
-    Assert.assertTrue(rs.get(0), rs.get(0).endsWith("streamingnobuckets/base_0000009/bucket_00000"));
-    Assert.assertTrue(rs.get(1), rs.get(1).startsWith("{\"writeid\":2,\"bucketid\":536870912,\"rowid\":1}\ta3\tb4"));
-    Assert.assertTrue(rs.get(1), rs.get(1).endsWith("streamingnobuckets/base_0000009/bucket_00000"));
-    Assert.assertTrue(rs.get(2), rs.get(2).startsWith("{\"writeid\":3,\"bucketid\":536870912,\"rowid\":0}\ta5\tb6"));
-    Assert.assertTrue(rs.get(2), rs.get(2).endsWith("streamingnobuckets/base_0000009/bucket_00000"));
-    Assert.assertTrue(rs.get(3), rs.get(3).startsWith("{\"writeid\":4,\"bucketid\":536870912,\"rowid\":1}\ta11\tb12"));
-    Assert.assertTrue(rs.get(3), rs.get(3).endsWith("streamingnobuckets/base_0000009/bucket_00000"));
-    Assert.assertTrue(rs.get(4), rs.get(4).startsWith("{\"writeid\":5,\"bucketid\":536870912,\"rowid\":0}\ta13\tb14"));
-    Assert.assertTrue(rs.get(4), rs.get(4).endsWith("streamingnobuckets/base_0000009/bucket_00000"));
-    Assert.assertTrue(rs.get(5), rs.get(5).startsWith("{\"writeid\":6,\"bucketid\":536870912,\"rowid\":0}\t0\t0"));
-    Assert.assertTrue(rs.get(5), rs.get(5).endsWith("streamingnobuckets/base_0000009/bucket_00000"));
   }
 
   /**
@@ -638,83 +429,71 @@ public class TestStreaming {
     int bucketCount = 100;
 
     String dbUri = "raw://" + new Path(dbFolder.newFolder().toString()).toUri().toString();
-    String tableLoc = "'" + dbUri + Path.SEPARATOR + "streamedtable" + "'";
+    String tableLoc  = "'" + dbUri + Path.SEPARATOR + "streamedtable" + "'";
     String tableLoc2 = "'" + dbUri + Path.SEPARATOR + "finaltable" + "'";
     String tableLoc3 = "'" + dbUri + Path.SEPARATOR + "nobucket" + "'";
 
-    // disabling vectorization as this test yields incorrect results with vectorization
-    conf.setBoolVar(HiveConf.ConfVars.HIVE_VECTORIZATION_ENABLED, false);
-    try (IDriver driver = DriverFactory.newDriver(conf)) {
-      runDDL(driver, "create database testBucketing3");
-      runDDL(driver, "use testBucketing3");
-      runDDL(driver, "create table streamedtable ( key1 string,key2 int,data string ) clustered by ( key1,key2 ) into "
-        + bucketCount + " buckets  stored as orc  location " + tableLoc + " TBLPROPERTIES ('transactional'='true')");
-      //  In 'nobucket' table we capture bucketid from streamedtable to workaround a hive bug that prevents joins two identically bucketed tables
-      runDDL(driver, "create table nobucket ( bucketid int, key1 string,key2 int,data string ) location " + tableLoc3);
-      runDDL(driver,
-        "create table finaltable ( bucketid int, key1 string,key2 int,data string ) clustered by ( key1,key2 ) into "
-          + bucketCount + " buckets  stored as orc location " + tableLoc2 + " TBLPROPERTIES ('transactional'='true')");
+    runDDL(driver, "create database testBucketing3");
+    runDDL(driver, "use testBucketing3");
+    runDDL(driver, "create table streamedtable ( key1 string,key2 int,data string ) clustered by ( key1,key2 ) into "
+            + bucketCount + " buckets  stored as orc  location " + tableLoc + " TBLPROPERTIES ('transactional'='true')") ;
+//  In 'nobucket' table we capture bucketid from streamedtable to workaround a hive bug that prevents joins two identically bucketed tables
+    runDDL(driver, "create table nobucket ( bucketid int, key1 string,key2 int,data string ) location " + tableLoc3) ;
+    runDDL(driver, "create table finaltable ( bucketid int, key1 string,key2 int,data string ) clustered by ( key1,key2 ) into "
+            + bucketCount + " buckets  stored as orc location " + tableLoc2 + " TBLPROPERTIES ('transactional'='true')");
 
 
-      String[] records = new String[]{
-        "PSFAHYLZVC,29,EPNMA",
-        "PPPRKWAYAU,96,VUTEE",
-        "MIAOFERCHI,3,WBDSI",
-        "CEGQAZOWVN,0,WCUZL",
-        "XWAKMNSVQF,28,YJVHU",
-        "XBWTSAJWME,2,KDQFO",
-        "FUVLQTAXAY,5,LDSDG",
-        "QTQMDJMGJH,6,QBOMA",
-        "EFLOTLWJWN,71,GHWPS",
-        "PEQNAOJHCM,82,CAAFI",
-        "MOEKQLGZCP,41,RUACR",
-        "QZXMCOPTID,37,LFLWE",
-        "EYALVWICRD,13,JEZLC",
-        "VYWLZAYTXX,16,DMVZX",
-        "OSALYSQIXR,47,HNZVE",
-        "JGKVHKCEGQ,25,KSCJB",
-        "WQFMMYDHET,12,DTRWA",
-        "AJOVAYZKZQ,15,YBKFO",
-        "YAQONWCUAU,31,QJNHZ",
-        "DJBXUEUOEB,35,IYCBL"
-      };
+    String[] records = new String[] {
+    "PSFAHYLZVC,29,EPNMA",
+    "PPPRKWAYAU,96,VUTEE",
+    "MIAOFERCHI,3,WBDSI",
+    "CEGQAZOWVN,0,WCUZL",
+    "XWAKMNSVQF,28,YJVHU",
+    "XBWTSAJWME,2,KDQFO",
+    "FUVLQTAXAY,5,LDSDG",
+    "QTQMDJMGJH,6,QBOMA",
+    "EFLOTLWJWN,71,GHWPS",
+    "PEQNAOJHCM,82,CAAFI",
+    "MOEKQLGZCP,41,RUACR",
+    "QZXMCOPTID,37,LFLWE",
+    "EYALVWICRD,13,JEZLC",
+    "VYWLZAYTXX,16,DMVZX",
+    "OSALYSQIXR,47,HNZVE",
+    "JGKVHKCEGQ,25,KSCJB",
+    "WQFMMYDHET,12,DTRWA",
+    "AJOVAYZKZQ,15,YBKFO",
+    "YAQONWCUAU,31,QJNHZ",
+    "DJBXUEUOEB,35,IYCBL"
+    };
 
-      StrictDelimitedInputWriter wr = StrictDelimitedInputWriter.newBuilder()
-        .withFieldDelimiter(',')
-        .build();
-      HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-        .withDatabase("testBucketing3")
-        .withTable("streamedtable")
-        .withAgentInfo("UT_" + Thread.currentThread().getName())
-        .withRecordWriter(wr)
-        .withHiveConf(conf)
-        .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, "testBucketing3", "streamedtable", null);
+    String[] colNames1 = new String[] { "key1", "key2", "data" };
+    DelimitedInputWriter wr = new DelimitedInputWriter(colNames1,",",  endPt);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
 
-      connection.beginTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, wr);
+    txnBatch.beginNextTransaction();
 
-      for (String record : records) {
-        connection.write(record.getBytes());
-      }
-
-      connection.commitTransaction();
-      connection.close();
-
-      ArrayList<String> res1 = queryTable(driver, "select row__id.bucketid, * from streamedtable order by key2");
-      for (String re : res1) {
-        LOG.error(re);
-      }
-
-      driver.run("insert into nobucket select row__id.bucketid,* from streamedtable");
-      runDDL(driver, "insert into finaltable select * from nobucket");
-      ArrayList<String> res2 = queryTable(driver,
-        "select row__id.bucketid,* from finaltable where row__id.bucketid<>bucketid");
-      for (String s : res2) {
-        LOG.error(s);
-      }
-      Assert.assertTrue(res2.isEmpty());
-    } finally {
-      conf.unset(HiveConf.ConfVars.HIVE_VECTORIZATION_ENABLED.varname);
+    for (String record : records) {
+      txnBatch.write(record.toString().getBytes());
     }
+
+    txnBatch.commit();
+    txnBatch.close();
+    connection.close();
+
+    ArrayList<String> res1 = queryTable(driver, "select row__id.bucketid, * from streamedtable order by key2");
+    for (String re : res1) {
+      System.out.println(re);
+    }
+
+    driver.run("insert into nobucket select row__id.bucketid,* from streamedtable");
+    runDDL(driver, " insert into finaltable select * from nobucket");
+    ArrayList<String> res2 = queryTable(driver, "select row__id.bucketid,* from finaltable where row__id.bucketid<>bucketid");
+    for (String s : res2) {
+      LOG.error(s);
+    }
+    Assert.assertTrue(res2.isEmpty());
   }
 
 
@@ -726,53 +505,32 @@ public class TestStreaming {
     String tbl1 = "validation1";
     String tbl2 = "validation2";
 
-    String tableLoc = "'" + dbUri + Path.SEPARATOR + tbl1 + "'";
+    String tableLoc  = "'" + dbUri + Path.SEPARATOR + tbl1 + "'";
     String tableLoc2 = "'" + dbUri + Path.SEPARATOR + tbl2 + "'";
 
     runDDL(driver, "create database testBucketing3");
     runDDL(driver, "use testBucketing3");
 
     runDDL(driver, "create table " + tbl1 + " ( key1 string, data string ) clustered by ( key1 ) into "
-      + bucketCount + " buckets  stored as orc  location " + tableLoc + " TBLPROPERTIES ('transactional'='false')");
+            + bucketCount + " buckets  stored as orc  location " + tableLoc + " TBLPROPERTIES ('transactional'='false')") ;
 
     runDDL(driver, "create table " + tbl2 + " ( key1 string, data string ) clustered by ( key1 ) into "
-      + bucketCount + " buckets  stored as orc  location " + tableLoc2 + " TBLPROPERTIES ('transactional'='false')");
+            + bucketCount + " buckets  stored as orc  location " + tableLoc2 + " TBLPROPERTIES ('transactional'='false')") ;
 
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = null;
+
     try {
-      connection = HiveStreamingConnection.newBuilder()
-        .withDatabase("testBucketing3")
-        .withTable("validation2")
-        .withAgentInfo("UT_" + Thread.currentThread().getName())
-        .withRecordWriter(writer)
-        .withHiveConf(conf)
-        .connect();
+      HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, "testBucketing3", "validation1", null);
+      endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
       Assert.assertTrue("InvalidTable exception was not thrown", false);
     } catch (InvalidTable e) {
       // expecting this exception
-    } finally {
-      if (connection != null) {
-        connection.close();
-      }
     }
     try {
-      connection = HiveStreamingConnection.newBuilder()
-        .withDatabase("testBucketing3")
-        .withTable("validation2")
-        .withAgentInfo("UT_" + Thread.currentThread().getName())
-        .withRecordWriter(writer)
-        .withHiveConf(conf)
-        .connect();
+      HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, "testBucketing3", "validation2", null);
+      endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
       Assert.assertTrue("InvalidTable exception was not thrown", false);
     } catch (InvalidTable e) {
       // expecting this exception
-    } finally {
-      if (connection != null) {
-        connection.close();
-      }
     }
   }
 
@@ -782,7 +540,7 @@ public class TestStreaming {
    */
   @Deprecated
   private void checkDataWritten(Path partitionPath, long minTxn, long maxTxn, int buckets, int numExpectedFiles,
-    String... records) throws Exception {
+                                String... records) throws Exception {
     ValidWriteIdList writeIds = msClient.getValidWriteIds(AcidUtils.getFullTableName(dbName, tblName));
     AcidUtils.Directory dir = AcidUtils.getAcidState(partitionPath, conf, writeIds);
     Assert.assertEquals(0, dir.getObsolete().size());
@@ -820,7 +578,7 @@ public class TestStreaming {
     InputSplit[] splits = inf.getSplits(job, buckets);
     Assert.assertEquals(numExpectedFiles, splits.length);
     org.apache.hadoop.mapred.RecordReader<NullWritable, OrcStruct> rr =
-      inf.getRecordReader(splits[0], job, Reporter.NULL);
+            inf.getRecordReader(splits[0], job, Reporter.NULL);
 
     NullWritable key = rr.createKey();
     OrcStruct value = rr.createValue();
@@ -830,13 +588,12 @@ public class TestStreaming {
     }
     Assert.assertEquals(false, rr.next(key, value));
   }
-
   /**
    * @param validationQuery query to read from table to compare data against {@code records}
-   * @param records         expected data.  each row is CVS list of values
+   * @param records expected data.  each row is CVS list of values
    */
   private void checkDataWritten2(Path partitionPath, long minTxn, long maxTxn, int numExpectedFiles,
-    String validationQuery, boolean vectorize, String... records) throws Exception {
+                                String validationQuery, boolean vectorize, String... records) throws Exception {
     ValidWriteIdList txns = msClient.getValidWriteIds(AcidUtils.getFullTableName(dbName, tblName));
     AcidUtils.Directory dir = AcidUtils.getAcidState(partitionPath, conf, txns);
     Assert.assertEquals(0, dir.getObsolete().size());
@@ -862,13 +619,12 @@ public class TestStreaming {
     Assert.assertEquals(minTxn, min);
     Assert.assertEquals(maxTxn, max);
     boolean isVectorizationEnabled = conf.getBoolVar(HiveConf.ConfVars.HIVE_VECTORIZATION_ENABLED);
-    if (vectorize) {
+    if(vectorize) {
       conf.setBoolVar(HiveConf.ConfVars.HIVE_VECTORIZATION_ENABLED, true);
     }
 
     String currStrategy = conf.getVar(HiveConf.ConfVars.HIVE_ORC_SPLIT_STRATEGY);
-    for (String strategy : ((Validator.StringSet) HiveConf.ConfVars.HIVE_ORC_SPLIT_STRATEGY.getValidator())
-      .getExpected()) {
+    for(String strategy : ((Validator.StringSet)HiveConf.ConfVars.HIVE_ORC_SPLIT_STRATEGY.getValidator()).getExpected()) {
       //run it with each split strategy - make sure there are differences
       conf.setVar(HiveConf.ConfVars.HIVE_ORC_SPLIT_STRATEGY, strategy.toUpperCase());
       List<String> actualResult = queryTable(driver, validationQuery);
@@ -893,44 +649,35 @@ public class TestStreaming {
   @Test
   public void testEndpointConnection() throws Exception {
     // For partitioned table, partitionVals are specified
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName, partitionVals);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName()); //shouldn't throw
     connection.close();
 
     // For unpartitioned table, partitionVals are not specified
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    connection.close();
+    endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    endPt.newConnection(false, "UT_" + Thread.currentThread().getName()).close(); // should not throw
 
-    // For unpartitioned table, partition values are specified
+    // For partitioned table, partitionVals are not specified
     try {
-      connection = HiveStreamingConnection.newBuilder()
-        .withDatabase(dbName2)
-        .withTable(tblName2)
-        .withStaticPartitionValues(partitionVals)
-        .withAgentInfo("UT_" + Thread.currentThread().getName())
-        .withRecordWriter(writer)
-        .withHiveConf(conf)
-        .connect();
+      endPt = new HiveEndPoint(metaStoreURI, dbName, tblName, null);
+      connection = endPt.newConnection(true, "UT_" + Thread.currentThread().getName());
       Assert.assertTrue("ConnectionError was not thrown", false);
       connection.close();
     } catch (ConnectionError e) {
       // expecting this exception
-      String errMsg = "specifies partitions for un-partitioned table";
+      String errMsg = "doesn't specify any partitions for partitioned table";
+      Assert.assertTrue(e.toString().endsWith(errMsg));
+    }
+
+    // For unpartitioned table, partition values are specified
+    try {
+      endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, partitionVals);
+      connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+      Assert.assertTrue("ConnectionError was not thrown", false);
+      connection.close();
+    } catch (ConnectionError e) {
+      // expecting this exception
+      String errMsg = "specifies partitions for unpartitioned table";
       Assert.assertTrue(e.toString().endsWith(errMsg));
     }
   }
@@ -941,536 +688,417 @@ public class TestStreaming {
     newPartVals.add(PART1_CONTINENT);
     newPartVals.add("Nepal");
 
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(newPartVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName
+            , newPartVals);
+
+    // Ensure partition is absent
+    try {
+      msClient.getPartition(endPt.database, endPt.table, endPt.partitionVals);
+      Assert.assertTrue("Partition already exists", false);
+    } catch (NoSuchObjectException e) {
+      // expect this exception
+    }
 
     // Create partition
-    Assert.assertNotNull(connection);
+    Assert.assertNotNull(endPt.newConnection(true, "UT_" + Thread.currentThread().getName()));
 
     // Ensure partition is present
-    Partition p = msClient.getPartition(dbName, tblName, partitionVals);
+    Partition p = msClient.getPartition(endPt.database, endPt.table, endPt.partitionVals);
     Assert.assertNotNull("Did not find added partition", p);
   }
 
   @Test
   public void testTransactionBatchEmptyCommit() throws Exception {
     // 1)  to partitioned table
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    connection.beginTransaction();
-    connection.commitTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt, connection);
+
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+
+    txnBatch.beginNextTransaction();
+    txnBatch.commit();
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+            , txnBatch.getCurrentTransactionState());
+    txnBatch.close();
     connection.close();
 
     // 2) To unpartitioned table
-    writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    writer = new DelimitedInputWriter(fieldNames2,",", endPt);
+    connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
 
-    connection.beginTransaction();
-    connection.commitTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.commit();
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+            , txnBatch.getCurrentTransactionState());
+    txnBatch.close();
     connection.close();
   }
 
   /**
    * check that transactions that have not heartbeated and timedout get properly aborted
-   *
    * @throws Exception
    */
   @Test
   public void testTimeOutReaper() throws Exception {
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames2,",", endPt);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
 
-    connection.beginTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(5, writer);
+    txnBatch.beginNextTransaction();
     conf.setTimeVar(HiveConf.ConfVars.HIVE_TIMEDOUT_TXN_REAPER_START, 0, TimeUnit.SECONDS);
     //ensure txn timesout
-    conf.setTimeVar(HiveConf.ConfVars.HIVE_TXN_TIMEOUT, 2, TimeUnit.MILLISECONDS);
+    conf.setTimeVar(HiveConf.ConfVars.HIVE_TXN_TIMEOUT, 1, TimeUnit.MILLISECONDS);
     AcidHouseKeeperService houseKeeperService = new AcidHouseKeeperService();
     houseKeeperService.setConf(conf);
     houseKeeperService.run();
     try {
       //should fail because the TransactionBatch timed out
-      connection.commitTransaction();
-    } catch (TransactionError e) {
+      txnBatch.commit();
+    }
+    catch(TransactionError e) {
       Assert.assertTrue("Expected aborted transaction", e.getCause() instanceof TxnAbortedException);
     }
-    connection.close();
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    connection.beginTransaction();
-    connection.commitTransaction();
-    connection.beginTransaction();
+    txnBatch.close();
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.commit();
+    txnBatch.beginNextTransaction();
     houseKeeperService.run();
     try {
       //should fail because the TransactionBatch timed out
-      connection.commitTransaction();
-    } catch (TransactionError e) {
+      txnBatch.commit();
+    }
+    catch(TransactionError e) {
       Assert.assertTrue("Expected aborted transaction", e.getCause() instanceof TxnAbortedException);
     }
+    txnBatch.close();
     connection.close();
   }
 
   @Test
   public void testHeartbeat() throws Exception {
-    int transactionBatch = 20;
-    conf.setTimeVar(HiveConf.ConfVars.HIVE_TXN_TIMEOUT, 200, TimeUnit.MILLISECONDS);
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withTransactionBatchSize(transactionBatch)
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    try {
-      connection.beginTransaction();
-      ShowLocksRequest request = new ShowLocksRequest();
-      request.setDbname(dbName2);
-      request.setTablename(tblName2);
-      ShowLocksResponse response = msClient.showLocks(request);
-      Assert.assertEquals("Wrong number of locks: " + response, 1, response.getLocks().size());
-      ShowLocksResponseElement lock = response.getLocks().get(0);
-      long acquiredAt = lock.getAcquiredat();
-      long heartbeatAt = lock.getLastheartbeat();
-      response = msClient.showLocks(request);
-      Assert.assertEquals("Wrong number of locks2: " + response, 1, response.getLocks().size());
-      lock = response.getLocks().get(0);
-      Assert.assertEquals("Acquired timestamp didn'table match", acquiredAt, lock.getAcquiredat());
-      Assert.assertTrue("Expected new heartbeat (" + lock.getLastheartbeat() +
-        ") == old heartbeat(" + heartbeatAt + ")", lock.getLastheartbeat() == heartbeatAt);
-      for (int i = 0; i < transactionBatch * 3; i++) {
-        connection.beginTransaction();
-        if (i % 10 == 0) {
-          connection.abortTransaction();
-        } else {
-          connection.commitTransaction();
-        }
-        Thread.sleep(10);
-      }
-    } finally {
-      conf.unset(HiveConf.ConfVars.HIVE_TXN_TIMEOUT.varname);
-      connection.close();
-    }
-  }
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames2,",", endPt, connection);
 
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(5, writer);
+    txnBatch.beginNextTransaction();
+    //todo: this should ideally check Transaction heartbeat as well, but heartbeat
+    //timestamp is not reported yet
+    //GetOpenTxnsInfoResponse txnresp = msClient.showTxns();
+    ShowLocksRequest request = new ShowLocksRequest();
+    request.setDbname(dbName2);
+    request.setTablename(tblName2);
+    ShowLocksResponse response = msClient.showLocks(request);
+    Assert.assertEquals("Wrong nubmer of locks: " + response, 1, response.getLocks().size());
+    ShowLocksResponseElement lock = response.getLocks().get(0);
+    long acquiredAt = lock.getAcquiredat();
+    long heartbeatAt = lock.getLastheartbeat();
+    txnBatch.heartbeat();
+    response = msClient.showLocks(request);
+    Assert.assertEquals("Wrong number of locks2: " + response, 1, response.getLocks().size());
+    lock = response.getLocks().get(0);
+    Assert.assertEquals("Acquired timestamp didn't match", acquiredAt, lock.getAcquiredat());
+    Assert.assertTrue("Expected new heartbeat (" + lock.getLastheartbeat() +
+      ") == old heartbeat(" + heartbeatAt +")", lock.getLastheartbeat() == heartbeatAt);
+    txnBatch.close();
+    int txnBatchSize = 200;
+    txnBatch = connection.fetchTransactionBatch(txnBatchSize, writer);
+    for(int i = 0; i < txnBatchSize; i++) {
+      txnBatch.beginNextTransaction();
+      if(i % 47 == 0) {
+        txnBatch.heartbeat();
+      }
+      if(i % 10 == 0) {
+        txnBatch.abort();
+      }
+      else {
+        txnBatch.commit();
+      }
+      if(i % 37 == 0) {
+        txnBatch.heartbeat();
+      }
+    }
+
+  }
   @Test
   public void testTransactionBatchEmptyAbort() throws Exception {
     // 1) to partitioned table
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    StreamingConnection connection = endPt.newConnection(true, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt, connection);
 
-    connection.beginTransaction();
-    connection.abortTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.ABORTED
-      , connection.getCurrentTransactionState());
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.abort();
+    Assert.assertEquals(TransactionBatch.TxnState.ABORTED
+            , txnBatch.getCurrentTransactionState());
+    txnBatch.close();
     connection.close();
 
     // 2) to unpartitioned table
-    writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    writer = new DelimitedInputWriter(fieldNames,",", endPt);
+    connection = endPt.newConnection(true, "UT_" + Thread.currentThread().getName());
 
-    connection.beginTransaction();
-    connection.abortTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.ABORTED
-      , connection.getCurrentTransactionState());
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.abort();
+    Assert.assertEquals(TransactionBatch.TxnState.ABORTED
+            , txnBatch.getCurrentTransactionState());
+    txnBatch.close();
     connection.close();
   }
 
   @Test
-  public void testTransactionBatchCommitDelimited() throws Exception {
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .withTransactionBatchSize(10)
-      .connect();
+  public void testTransactionBatchCommit_Delimited() throws Exception {
+    testTransactionBatchCommit_Delimited(null);
+  }
+  @Test
+  public void testTransactionBatchCommit_DelimitedUGI() throws Exception {
+    testTransactionBatchCommit_Delimited(Utils.getUGI());
+  }
+  private void testTransactionBatchCommit_Delimited(UserGroupInformation ugi) throws Exception {
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+      partitionVals);
+    StreamingConnection connection = endPt.newConnection(true, conf, ugi, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt, conf, connection);
 
     // 1st Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
-    connection.write("1,Hello streaming".getBytes());
-    connection.commitTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+      , txnBatch.getCurrentTransactionState());
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.commit();
 
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+      , txnBatch.getCurrentTransactionState());
 
     // 2nd Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
-    connection.write("2,Welcome to streaming".getBytes());
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+      , txnBatch.getCurrentTransactionState());
+    txnBatch.write("2,Welcome to streaming".getBytes());
 
     // data should not be visible
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
 
-    connection.commitTransaction();
+    txnBatch.commit();
 
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}",
       "{2, Welcome to streaming}");
 
-    connection.close();
+    txnBatch.close();
+    Assert.assertEquals(TransactionBatch.TxnState.INACTIVE
+      , txnBatch.getCurrentTransactionState());
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.INACTIVE
-      , connection.getCurrentTransactionState());
+
+    connection.close();
 
 
     // To Unpartitioned table
-    writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .connect();
-    // 1st Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
-    connection.write("1,Hello streaming".getBytes());
-    connection.commitTransaction();
+    endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    connection = endPt.newConnection(true, conf, ugi, "UT_" + Thread.currentThread().getName());
+    writer = new DelimitedInputWriter(fieldNames,",", endPt, conf, connection);
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    // 1st Txn
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+      , txnBatch.getCurrentTransactionState());
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.commit();
+
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+      , txnBatch.getCurrentTransactionState());
     connection.close();
   }
 
   @Test
-  public void testTransactionBatchCommitRegex() throws Exception {
+  public void testTransactionBatchCommit_Regex() throws Exception {
+    testTransactionBatchCommit_Regex(null);
+  }
+  @Test
+  public void testTransactionBatchCommit_RegexUGI() throws Exception {
+    testTransactionBatchCommit_Regex(Utils.getUGI());
+  }
+  private void testTransactionBatchCommit_Regex(UserGroupInformation ugi) throws Exception {
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+      partitionVals);
+    StreamingConnection connection = endPt.newConnection(true, conf, ugi, "UT_" + Thread.currentThread().getName());
     String regex = "([^,]*),(.*)";
-    StrictRegexWriter writer = StrictRegexWriter.newBuilder()
-      .withRegex(regex)
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .withTransactionBatchSize(10)
-      .connect();
+    StrictRegexWriter writer = new StrictRegexWriter(regex, endPt, conf, connection);
 
     // 1st Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
-    connection.write("1,Hello streaming".getBytes());
-    connection.commitTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+      , txnBatch.getCurrentTransactionState());
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.commit();
 
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+      , txnBatch.getCurrentTransactionState());
 
     // 2nd Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
-    connection.write("2,Welcome to streaming".getBytes());
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+      , txnBatch.getCurrentTransactionState());
+    txnBatch.write("2,Welcome to streaming".getBytes());
 
     // data should not be visible
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
 
-    connection.commitTransaction();
+    txnBatch.commit();
 
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}",
       "{2, Welcome to streaming}");
 
+    txnBatch.close();
+    Assert.assertEquals(TransactionBatch.TxnState.INACTIVE
+      , txnBatch.getCurrentTransactionState());
+
+
     connection.close();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.INACTIVE
-      , connection.getCurrentTransactionState());
+
 
     // To Unpartitioned table
+    endPt = new HiveEndPoint(metaStoreURI, dbName2, tblName2, null);
+    connection = endPt.newConnection(true, conf, ugi, "UT_" + Thread.currentThread().getName());
     regex = "([^:]*):(.*)";
-    writer = StrictRegexWriter.newBuilder()
-      .withRegex(regex)
-      .build();
-
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName2)
-      .withTable(tblName2)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .connect();
+    writer = new StrictRegexWriter(regex, endPt, conf, connection);
 
     // 1st Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
-    connection.write("1:Hello streaming".getBytes());
-    connection.commitTransaction();
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+      , txnBatch.getCurrentTransactionState());
+    txnBatch.write("1:Hello streaming".getBytes());
+    txnBatch.commit();
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+      , txnBatch.getCurrentTransactionState());
     connection.close();
   }
 
   @Test
-  public void testRegexInputStream() throws Exception {
-    String regex = "([^,]*),(.*)";
-    StrictRegexWriter writer = StrictRegexWriter.newBuilder()
-      // if unspecified, default one or [\r\n] will be used for line break
-      .withRegex(regex)
-      .build();
-    StreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .connect();
-
-    String rows = "1,foo\r2,bar\r3,baz";
-    ByteArrayInputStream bais = new ByteArrayInputStream(rows.getBytes());
-    connection.beginTransaction();
-    connection.write(bais);
-    connection.commitTransaction();
-    bais.close();
-    connection.close();
-
-    List<String> rs = queryTable(driver, "select * from " + dbName + "." + tblName);
-    Assert.assertEquals(3, rs.size());
-    Assert.assertEquals("1\tfoo\tAsia\tIndia", rs.get(0));
-    Assert.assertEquals("2\tbar\tAsia\tIndia", rs.get(1));
-    Assert.assertEquals("3\tbaz\tAsia\tIndia", rs.get(2));
-  }
-
-  @Test
-  public void testTransactionBatchCommitJson() throws Exception {
-    StrictJsonWriter writer = StrictJsonWriter.newBuilder()
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(10)
-      .connect();
+  public void testTransactionBatchCommit_Json() throws Exception {
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    StreamingConnection connection = endPt.newConnection(true, "UT_" + Thread.currentThread().getName());
+    StrictJsonWriter writer = new StrictJsonWriter(endPt, connection);
 
     // 1st Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-      , connection.getCurrentTransactionState());
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    Assert.assertEquals(TransactionBatch.TxnState.OPEN
+            , txnBatch.getCurrentTransactionState());
     String rec1 = "{\"id\" : 1, \"msg\": \"Hello streaming\"}";
-    connection.write(rec1.getBytes());
-    connection.commitTransaction();
+    txnBatch.write(rec1.getBytes());
+    txnBatch.commit();
 
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}");
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+            , txnBatch.getCurrentTransactionState());
+
+    txnBatch.close();
+    Assert.assertEquals(TransactionBatch.TxnState.INACTIVE
+            , txnBatch.getCurrentTransactionState());
 
     connection.close();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.INACTIVE
-      , connection.getCurrentTransactionState());
-
     List<String> rs = queryTable(driver, "select * from " + dbName + "." + tblName);
     Assert.assertEquals(1, rs.size());
   }
 
   @Test
-  public void testJsonInputStream() throws Exception {
-    StrictJsonWriter writer = StrictJsonWriter.newBuilder()
-      .withLineDelimiterPattern("\\|")
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-
-    // 1st Txn
-    connection.beginTransaction();
-    Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN, connection.getCurrentTransactionState());
-    String records = "{\"id\" : 1, \"msg\": \"Hello streaming\"}|{\"id\" : 2, \"msg\": \"Hello world\"}|{\"id\" : 3, " +
-      "\"msg\": \"Hello world!!\"}";
-    ByteArrayInputStream bais = new ByteArrayInputStream(records.getBytes());
-    connection.write(bais);
-    connection.commitTransaction();
-    bais.close();
-    connection.close();
-    List<String> rs = queryTable(driver, "select * from " + dbName + "." + tblName);
-    Assert.assertEquals(3, rs.size());
-    Assert.assertEquals("1\tHello streaming\tAsia\tIndia", rs.get(0));
-    Assert.assertEquals("2\tHello world\tAsia\tIndia", rs.get(1));
-    Assert.assertEquals("3\tHello world!!\tAsia\tIndia", rs.get(2));
-  }
-
-  @Test
   public void testRemainingTransactions() throws Exception {
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    connection.beginTransaction();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt);
+    StreamingConnection connection = endPt.newConnection(true, "UT_" + Thread.currentThread().getName());
+
     // 1) test with txn.Commit()
-    int batch = 0;
-    int initialCount = connection.remainingTransactions();
-    while (connection.remainingTransactions() > 0) {
-      connection.beginTransaction();
-      Assert.assertEquals(--initialCount, connection.remainingTransactions());
-      for (int rec = 0; rec < 2; ++rec) {
-        Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-          , connection.getCurrentTransactionState());
-        connection.write((batch * rec + ",Hello streaming").getBytes());
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    int batch=0;
+    int initialCount = txnBatch.remainingTransactions();
+    while (txnBatch.remainingTransactions()>0) {
+      txnBatch.beginNextTransaction();
+      Assert.assertEquals(--initialCount, txnBatch.remainingTransactions());
+      for (int rec=0; rec<2; ++rec) {
+        Assert.assertEquals(TransactionBatch.TxnState.OPEN
+                , txnBatch.getCurrentTransactionState());
+        txnBatch.write((batch * rec + ",Hello streaming").getBytes());
       }
-      connection.commitTransaction();
-      Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-        , connection.getCurrentTransactionState());
+      txnBatch.commit();
+      Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+              , txnBatch.getCurrentTransactionState());
       ++batch;
     }
-    Assert.assertEquals(0, connection.remainingTransactions());
-    connection.close();
+    Assert.assertEquals(0, txnBatch.remainingTransactions());
+    txnBatch.close();
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.INACTIVE
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.INACTIVE
+            , txnBatch.getCurrentTransactionState());
 
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
     // 2) test with txn.Abort()
-    connection.beginTransaction();
-    batch = 0;
-    initialCount = connection.remainingTransactions();
-    while (connection.remainingTransactions() > 0) {
-      connection.beginTransaction();
-      Assert.assertEquals(--initialCount, connection.remainingTransactions());
-      for (int rec = 0; rec < 2; ++rec) {
-        Assert.assertEquals(HiveStreamingConnection.TxnState.OPEN
-          , connection.getCurrentTransactionState());
-        connection.write((batch * rec + ",Hello streaming").getBytes());
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    batch=0;
+    initialCount = txnBatch.remainingTransactions();
+    while (txnBatch.remainingTransactions()>0) {
+      txnBatch.beginNextTransaction();
+      Assert.assertEquals(--initialCount,txnBatch.remainingTransactions());
+      for (int rec=0; rec<2; ++rec) {
+        Assert.assertEquals(TransactionBatch.TxnState.OPEN
+                , txnBatch.getCurrentTransactionState());
+        txnBatch.write((batch * rec + ",Hello streaming").getBytes());
       }
-      connection.abortTransaction();
-      Assert.assertEquals(HiveStreamingConnection.TxnState.ABORTED
-        , connection.getCurrentTransactionState());
+      txnBatch.abort();
+      Assert.assertEquals(TransactionBatch.TxnState.ABORTED
+              , txnBatch.getCurrentTransactionState());
       ++batch;
     }
-    Assert.assertEquals(0, connection.remainingTransactions());
-    connection.close();
+    Assert.assertEquals(0, txnBatch.remainingTransactions());
+    txnBatch.close();
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.INACTIVE
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.INACTIVE
+            , txnBatch.getCurrentTransactionState());
+
+    connection.close();
   }
 
   @Test
   public void testTransactionBatchAbort() throws Exception {
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt, connection);
 
-    connection.beginTransaction();
-    connection.write("1,Hello streaming".getBytes());
-    connection.write("2,Welcome to streaming".getBytes());
-    connection.abortTransaction();
+
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.write("2,Welcome to streaming".getBytes());
+    txnBatch.abort();
 
     checkNothingWritten(partLoc);
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.ABORTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.ABORTED
+            , txnBatch.getCurrentTransactionState());
 
+    txnBatch.close();
     connection.close();
 
     checkNothingWritten(partLoc);
@@ -1481,162 +1109,123 @@ public class TestStreaming {
   @Test
   public void testTransactionBatchAbortAndCommit() throws Exception {
     String agentInfo = "UT_" + Thread.currentThread().getName();
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    StreamingConnection connection = endPt.newConnection(false, agentInfo);
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt, connection);
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo(agentInfo)
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(10)
-      .connect();
-
-    connection.beginTransaction();
-    connection.write("1,Hello streaming".getBytes());
-    connection.write("2,Welcome to streaming".getBytes());
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.write("2,Welcome to streaming".getBytes());
     ShowLocksResponse resp = msClient.showLocks(new ShowLocksRequest());
     Assert.assertEquals("LockCount", 1, resp.getLocksSize());
     Assert.assertEquals("LockType", LockType.SHARED_READ, resp.getLocks().get(0).getType());
     Assert.assertEquals("LockState", LockState.ACQUIRED, resp.getLocks().get(0).getState());
     Assert.assertEquals("AgentInfo", agentInfo, resp.getLocks().get(0).getAgentInfo());
-    connection.abortTransaction();
+    txnBatch.abort();
 
     checkNothingWritten(partLoc);
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.ABORTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.ABORTED
+            , txnBatch.getCurrentTransactionState());
 
-    connection.beginTransaction();
-    connection.write("1,Hello streaming".getBytes());
-    connection.write("2,Welcome to streaming".getBytes());
-    connection.commitTransaction();
+    txnBatch.beginNextTransaction();
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.write("2,Welcome to streaming".getBytes());
+    txnBatch.commit();
 
     checkDataWritten(partLoc, 1, 10, 1, 1, "{1, Hello streaming}",
-      "{2, Welcome to streaming}");
+            "{2, Welcome to streaming}");
 
+    txnBatch.close();
     connection.close();
   }
 
   @Test
   public void testMultipleTransactionBatchCommits() throws Exception {
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames,",", endPt);
+    StreamingConnection connection = endPt.newConnection(true, "UT_" + Thread.currentThread().getName());
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withTransactionBatchSize(10)
-      .withHiveConf(conf)
-      .connect();
-
-    connection.beginTransaction();
-    connection.write("1,Hello streaming".getBytes());
-    connection.commitTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("1,Hello streaming".getBytes());
+    txnBatch.commit();
     String validationQuery = "select id, msg from " + dbName + "." + tblName + " order by id, msg";
     checkDataWritten2(partLoc, 1, 10, 1, validationQuery, false, "1\tHello streaming");
 
-    connection.beginTransaction();
-    connection.write("2,Welcome to streaming".getBytes());
-    connection.commitTransaction();
+    txnBatch.beginNextTransaction();
+    txnBatch.write("2,Welcome to streaming".getBytes());
+    txnBatch.commit();
 
-    checkDataWritten2(partLoc, 1, 10, 1, validationQuery, true, "1\tHello streaming",
-      "2\tWelcome to streaming");
+    checkDataWritten2(partLoc, 1, 10,  1, validationQuery, true, "1\tHello streaming",
+            "2\tWelcome to streaming");
 
-    connection.close();
+    txnBatch.close();
 
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withTransactionBatchSize(10)
-      .withHiveConf(conf)
-      .connect();
     // 2nd Txn Batch
-    connection.beginTransaction();
-    connection.write("3,Hello streaming - once again".getBytes());
-    connection.commitTransaction();
+    txnBatch =  connection.fetchTransactionBatch(10, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("3,Hello streaming - once again".getBytes());
+    txnBatch.commit();
 
-    checkDataWritten2(partLoc, 1, 20, 2, validationQuery, false, "1\tHello streaming",
-      "2\tWelcome to streaming", "3\tHello streaming - once again");
+    checkDataWritten2(partLoc, 1, 20,  2, validationQuery, false, "1\tHello streaming",
+            "2\tWelcome to streaming", "3\tHello streaming - once again");
 
-    connection.beginTransaction();
-    connection.write("4,Welcome to streaming - once again".getBytes());
-    connection.commitTransaction();
+    txnBatch.beginNextTransaction();
+    txnBatch.write("4,Welcome to streaming - once again".getBytes());
+    txnBatch.commit();
 
-    checkDataWritten2(partLoc, 1, 20, 2, validationQuery, true, "1\tHello streaming",
-      "2\tWelcome to streaming", "3\tHello streaming - once again",
-      "4\tWelcome to streaming - once again");
+    checkDataWritten2(partLoc, 1, 20,  2, validationQuery, true, "1\tHello streaming",
+            "2\tWelcome to streaming", "3\tHello streaming - once again",
+            "4\tWelcome to streaming - once again");
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+            , txnBatch.getCurrentTransactionState());
+
+    txnBatch.close();
 
     connection.close();
   }
 
   @Test
   public void testInterleavedTransactionBatchCommits() throws Exception {
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(10)
-      .connect();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName, tblName,
+            partitionVals);
+    DelimitedInputWriter writer = new DelimitedInputWriter(fieldNames, ",", endPt);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
 
     // Acquire 1st Txn Batch
-    connection.beginTransaction();
+    TransactionBatch txnBatch1 =  connection.fetchTransactionBatch(10, writer);
+    txnBatch1.beginNextTransaction();
 
     // Acquire 2nd Txn Batch
-    StrictDelimitedInputWriter writer2 = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-    HiveStreamingConnection connection2 = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName)
-      .withTable(tblName)
-      .withStaticPartitionValues(partitionVals)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer2)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(10)
-      .connect();
-    connection2.beginTransaction();
+    DelimitedInputWriter writer2 = new DelimitedInputWriter(fieldNames, ",", endPt);
+    TransactionBatch txnBatch2 =  connection.fetchTransactionBatch(10, writer2);
+    txnBatch2.beginNextTransaction();
 
     // Interleaved writes to both batches
-    connection.write("1,Hello streaming".getBytes());
-    connection2.write("3,Hello streaming - once again".getBytes());
+    txnBatch1.write("1,Hello streaming".getBytes());
+    txnBatch2.write("3,Hello streaming - once again".getBytes());
 
     checkNothingWritten(partLoc);
 
-    connection2.commitTransaction();
+    txnBatch2.commit();
 
     String validationQuery = "select id, msg from " + dbName + "." + tblName + " order by id, msg";
     checkDataWritten2(partLoc, 11, 20, 1,
       validationQuery, true, "3\tHello streaming - once again");
 
-    connection.commitTransaction();
+    txnBatch1.commit();
     /*now both batches have committed (but not closed) so we for each primary file we expect a side
     file to exist and indicate the true length of primary file*/
     FileSystem fs = partLoc.getFileSystem(conf);
     AcidUtils.Directory dir = AcidUtils.getAcidState(partLoc, conf,
-      msClient.getValidWriteIds(AcidUtils.getFullTableName(dbName, tblName)));
-    for (AcidUtils.ParsedDelta pd : dir.getCurrentDirectories()) {
-      for (FileStatus stat : fs.listStatus(pd.getPath(), AcidUtils.bucketFileFilter)) {
+            msClient.getValidWriteIds(AcidUtils.getFullTableName(dbName, tblName)));
+    for(AcidUtils.ParsedDelta pd : dir.getCurrentDirectories()) {
+      for(FileStatus stat : fs.listStatus(pd.getPath(), AcidUtils.bucketFileFilter)) {
         Path lengthFile = OrcAcidUtils.getSideFile(stat.getPath());
         Assert.assertTrue(lengthFile + " missing", fs.exists(lengthFile));
         long lengthFileSize = fs.getFileStatus(lengthFile).getLen();
@@ -1648,20 +1237,20 @@ public class TestStreaming {
       }
     }
     checkDataWritten2(partLoc, 1, 20, 2,
-      validationQuery, false, "1\tHello streaming", "3\tHello streaming - once again");
+      validationQuery, false,"1\tHello streaming", "3\tHello streaming - once again");
 
-    connection.beginTransaction();
-    connection.write("2,Welcome to streaming".getBytes());
+    txnBatch1.beginNextTransaction();
+    txnBatch1.write("2,Welcome to streaming".getBytes());
 
-    connection2.beginTransaction();
-    connection2.write("4,Welcome to streaming - once again".getBytes());
+    txnBatch2.beginNextTransaction();
+    txnBatch2.write("4,Welcome to streaming - once again".getBytes());
     //here each batch has written data and committed (to bucket0 since table only has 1 bucket)
     //so each of 2 deltas has 1 bucket0 and 1 bucket0_flush_length.  Furthermore, each bucket0
     //has now received more data(logically - it's buffered) but it is not yet committed.
     //lets check that side files exist, etc
     dir = AcidUtils.getAcidState(partLoc, conf, msClient.getValidWriteIds(AcidUtils.getFullTableName(dbName, tblName)));
-    for (AcidUtils.ParsedDelta pd : dir.getCurrentDirectories()) {
-      for (FileStatus stat : fs.listStatus(pd.getPath(), AcidUtils.bucketFileFilter)) {
+    for(AcidUtils.ParsedDelta pd : dir.getCurrentDirectories()) {
+      for(FileStatus stat : fs.listStatus(pd.getPath(), AcidUtils.bucketFileFilter)) {
         Path lengthFile = OrcAcidUtils.getSideFile(stat.getPath());
         Assert.assertTrue(lengthFile + " missing", fs.exists(lengthFile));
         long lengthFileSize = fs.getFileStatus(lengthFile).getLen();
@@ -1673,97 +1262,103 @@ public class TestStreaming {
       }
     }
     checkDataWritten2(partLoc, 1, 20, 2,
-      validationQuery, true, "1\tHello streaming", "3\tHello streaming - once again");
+      validationQuery, true,"1\tHello streaming", "3\tHello streaming - once again");
 
-    connection.commitTransaction();
+    txnBatch1.commit();
 
     checkDataWritten2(partLoc, 1, 20, 2,
       validationQuery, false, "1\tHello streaming",
-      "2\tWelcome to streaming",
-      "3\tHello streaming - once again");
+        "2\tWelcome to streaming",
+        "3\tHello streaming - once again");
 
-    connection2.commitTransaction();
+    txnBatch2.commit();
 
     checkDataWritten2(partLoc, 1, 20, 2,
       validationQuery, true, "1\tHello streaming",
-      "2\tWelcome to streaming",
-      "3\tHello streaming - once again",
-      "4\tWelcome to streaming - once again");
+        "2\tWelcome to streaming",
+        "3\tHello streaming - once again",
+        "4\tWelcome to streaming - once again");
 
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection.getCurrentTransactionState());
-    Assert.assertEquals(HiveStreamingConnection.TxnState.COMMITTED
-      , connection2.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+            , txnBatch1.getCurrentTransactionState());
+    Assert.assertEquals(TransactionBatch.TxnState.COMMITTED
+            , txnBatch2.getCurrentTransactionState());
+
+    txnBatch1.close();
+    txnBatch2.close();
 
     connection.close();
-    connection2.close();
   }
 
   private static class WriterThd extends Thread {
 
     private final StreamingConnection conn;
+    private final DelimitedInputWriter writer;
     private final String data;
     private Throwable error;
 
-    WriterThd(String data) throws Exception {
+    WriterThd(HiveEndPoint ep, String data) throws Exception {
       super("Writer_" + data);
-      RecordWriter writer = StrictDelimitedInputWriter.newBuilder()
-        .withFieldDelimiter(',')
-        .build();
-      HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-        .withDatabase(dbName)
-        .withTable(tblName)
-        .withStaticPartitionValues(partitionVals)
-        .withRecordWriter(writer)
-        .withHiveConf(conf)
-        .connect();
-      this.conn = connection;
+      writer = new DelimitedInputWriter(fieldNames, ",", ep);
+      conn = ep.newConnection(false, "UT_" + Thread.currentThread().getName());
       this.data = data;
-      setUncaughtExceptionHandler((thread, throwable) -> {
-        error = throwable;
-        LOG.error(connection.toTransactionString());
-        LOG.error("Thread " + thread.getName() + " died: " + throwable.getMessage(), throwable);
+      setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+        @Override
+        public void uncaughtException(Thread thread, Throwable throwable) {
+          error = throwable;
+          LOG.error("Thread " + thread.getName() + " died: " + throwable.getMessage(), throwable);
+        }
       });
     }
 
     @Override
     public void run() {
+      TransactionBatch txnBatch = null;
       try {
-        for (int i = 0; i < 10; i++) {
-          conn.beginTransaction();
-          conn.write(data.getBytes());
-          conn.write(data.getBytes());
-          conn.commitTransaction();
+        txnBatch =  conn.fetchTransactionBatch(10, writer);
+        while (txnBatch.remainingTransactions() > 0) {
+          txnBatch.beginNextTransaction();
+          txnBatch.write(data.getBytes());
+          txnBatch.write(data.getBytes());
+          txnBatch.commit();
         } // while
       } catch (Exception e) {
         throw new RuntimeException(e);
       } finally {
-        if (conn != null) {
+        if (txnBatch != null) {
           try {
-            conn.close();
+            txnBatch.close();
           } catch (Exception e) {
             LOG.error("txnBatch.close() failed: " + e.getMessage(), e);
+            conn.close();
           }
         }
+        try {
+          conn.close();
+        } catch (Exception e) {
+          LOG.error("conn.close() failed: " + e.getMessage(), e);
+        }
+
       }
     }
   }
 
   @Test
   public void testConcurrentTransactionBatchCommits() throws Exception {
+    final HiveEndPoint ep = new HiveEndPoint(metaStoreURI, dbName, tblName, partitionVals);
     List<WriterThd> writers = new ArrayList<WriterThd>(3);
-    writers.add(new WriterThd("1,Matrix"));
-    writers.add(new WriterThd("2,Gandhi"));
-    writers.add(new WriterThd("3,Silence"));
+    writers.add(new WriterThd(ep, "1,Matrix"));
+    writers.add(new WriterThd(ep, "2,Gandhi"));
+    writers.add(new WriterThd(ep, "3,Silence"));
 
-    for (WriterThd w : writers) {
+    for(WriterThd w : writers) {
       w.start();
     }
-    for (WriterThd w : writers) {
+    for(WriterThd w : writers) {
       w.join();
     }
-    for (WriterThd w : writers) {
-      if (w.error != null) {
+    for(WriterThd w : writers) {
+      if(w.error != null) {
         Assert.assertFalse("Writer thread" + w.getName() + " died: " + w.error.getMessage() +
           " See log file for stack trace", true);
       }
@@ -1774,11 +1369,11 @@ public class TestStreaming {
   private ArrayList<SampleRec> dumpBucket(Path orcFile) throws IOException {
     org.apache.hadoop.fs.FileSystem fs = org.apache.hadoop.fs.FileSystem.getLocal(new Configuration());
     Reader reader = OrcFile.createReader(orcFile,
-      OrcFile.readerOptions(conf).filesystem(fs));
+            OrcFile.readerOptions(conf).filesystem(fs));
 
     RecordReader rows = reader.rows();
     StructObjectInspector inspector = (StructObjectInspector) reader
-      .getObjectInspector();
+            .getObjectInspector();
 
     System.out.format("Found Bucket File : %s \n", orcFile.getName());
     ArrayList<SampleRec> result = new ArrayList<SampleRec>();
@@ -1800,7 +1395,7 @@ public class TestStreaming {
     WritableLongObjectInspector f1ins = (WritableLongObjectInspector) fields.get(1).getFieldObjectInspector();
     WritableIntObjectInspector f2ins = (WritableIntObjectInspector) fields.get(2).getFieldObjectInspector();
     WritableLongObjectInspector f3ins = (WritableLongObjectInspector) fields.get(3).getFieldObjectInspector();
-    WritableLongObjectInspector f4ins = (WritableLongObjectInspector) fields.get(4).getFieldObjectInspector();
+    WritableLongObjectInspector f4ins = (WritableLongObjectInspector)  fields.get(4).getFieldObjectInspector();
     StructObjectInspector f5ins = (StructObjectInspector) fields.get(5).getFieldObjectInspector();
 
     int f0 = f0ins.get(inspector.getStructFieldData(row, fields.get(0)));
@@ -1810,7 +1405,7 @@ public class TestStreaming {
     long f4 = f4ins.get(inspector.getStructFieldData(row, fields.get(4)));
     SampleRec f5 = deserializeInner(inspector.getStructFieldData(row, fields.get(5)), f5ins);
 
-    return new Object[]{f0, f1, f2, f3, f4, f5};
+    return new Object[] {f0, f1, f2, f3, f4, f5};
   }
 
   // Assumes row schema => string,int,string
@@ -1835,67 +1430,49 @@ public class TestStreaming {
 
     // 1) Create two bucketed tables
     String dbLocation = dbFolder.newFolder(dbName3).getCanonicalPath() + ".db";
-    dbLocation = dbLocation.replaceAll("\\\\", "/"); // for windows paths
+    dbLocation = dbLocation.replaceAll("\\\\","/"); // for windows paths
     String[] colNames = "key1,key2,data".split(",");
     String[] colTypes = "string,int,string".split(",");
     String[] bucketNames = "key1,key2".split(",");
     int bucketCount = 4;
     createDbAndTable(driver, dbName3, tblName3, null, colNames, colTypes, bucketNames
-      , null, dbLocation, bucketCount);
+            , null, dbLocation, bucketCount);
 
     String dbLocation2 = dbFolder.newFolder(dbName4).getCanonicalPath() + ".db";
-    dbLocation2 = dbLocation2.replaceAll("\\\\", "/"); // for windows paths
+    dbLocation2 = dbLocation2.replaceAll("\\\\","/"); // for windows paths
     String[] colNames2 = "key3,key4,data2".split(",");
     String[] colTypes2 = "string,int,string".split(",");
     String[] bucketNames2 = "key3,key4".split(",");
     createDbAndTable(driver, dbName4, tblName4, null, colNames2, colTypes2, bucketNames2
-      , null, dbLocation2, bucketCount);
+            , null, dbLocation2, bucketCount);
 
 
     // 2) Insert data into both tables
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName3, tblName3, null);
+    StreamingConnection connection = endPt.newConnection(false, agentInfo);
+    DelimitedInputWriter writer = new DelimitedInputWriter(colNames,",", endPt, connection);
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName3)
-      .withTable(tblName3)
-      .withAgentInfo(agentInfo)
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-
-    connection.beginTransaction();
-    connection.write("name0,1,Hello streaming".getBytes());
-    connection.write("name2,2,Welcome to streaming".getBytes());
-    connection.write("name4,2,more Streaming unlimited".getBytes());
-    connection.write("name5,2,even more Streaming unlimited".getBytes());
-    connection.commitTransaction();
-    connection.close();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name0,1,Hello streaming".getBytes());
+    txnBatch.write("name2,2,Welcome to streaming".getBytes());
+    txnBatch.write("name4,2,more Streaming unlimited".getBytes());
+    txnBatch.write("name5,2,even more Streaming unlimited".getBytes());
+    txnBatch.commit();
 
 
-    StrictDelimitedInputWriter writer2 = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt2 = new HiveEndPoint(metaStoreURI, dbName4, tblName4, null);
+    StreamingConnection connection2 = endPt2.newConnection(false, agentInfo);
+    DelimitedInputWriter writer2 = new DelimitedInputWriter(colNames2,",", endPt2, connection);
+    TransactionBatch txnBatch2 =  connection2.fetchTransactionBatch(2, writer2);
+    txnBatch2.beginNextTransaction();
 
-    HiveStreamingConnection connection2 = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName4)
-      .withTable(tblName4)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer2)
-      .withHiveConf(conf)
-      .connect();
+    txnBatch2.write("name5,2,fact3".getBytes());  // bucket 0
+    txnBatch2.write("name8,2,fact3".getBytes());  // bucket 1
+    txnBatch2.write("name0,1,fact1".getBytes());  // bucket 2
 
+    txnBatch2.commit();
 
-    connection2.beginTransaction();
-
-    connection2.write("name5,2,fact3".getBytes());  // bucket 0
-    connection2.write("name8,2,fact3".getBytes());  // bucket 1
-    connection2.write("name0,1,fact1".getBytes());  // bucket 2
-
-    connection2.commitTransaction();
-
-    connection2.close();
     // 3 Check data distribution in  buckets
 
     HashMap<Integer, ArrayList<SampleRec>> actual1 = dumpAllBuckets(dbLocation, tblName3);
@@ -1907,13 +1484,12 @@ public class TestStreaming {
 
     // assert bucket listing is as expected
     Assert.assertEquals("number of buckets does not match expectation", actual1.values().size(), 3);
-    Assert.assertTrue("bucket 0 shouldn't have been created", actual1.get(0) == null);
+    Assert.assertEquals("records in bucket does not match expectation", actual1.get(0).size(), 2);
     Assert.assertEquals("records in bucket does not match expectation", actual1.get(1).size(), 1);
-    Assert.assertEquals("records in bucket does not match expectation", actual1.get(2).size(), 2);
+    Assert.assertTrue("bucket 2 shouldn't have been created", actual1.get(2) == null);
     Assert.assertEquals("records in bucket does not match expectation", actual1.get(3).size(), 1);
   }
-
-  private void runCmdOnDriver(String cmd) {
+  private void runCmdOnDriver(String cmd) throws QueryFailedException {
     boolean t = runDDL(driver, cmd);
     Assert.assertTrue(cmd + " failed", t);
   }
@@ -1927,41 +1503,35 @@ public class TestStreaming {
 
     // 1) Create two bucketed tables
     String dbLocation = dbFolder.newFolder(dbName3).getCanonicalPath() + ".db";
-    dbLocation = dbLocation.replaceAll("\\\\", "/"); // for windows paths
+    dbLocation = dbLocation.replaceAll("\\\\","/"); // for windows paths
     String[] colNames = "key1,key2,data".split(",");
     String[] colTypes = "string,int,string".split(",");
     String[] bucketNames = "key1,key2".split(",");
     int bucketCount = 4;
     createDbAndTable(driver, dbName3, tblName3, null, colNames, colTypes, bucketNames
-      , null, dbLocation, bucketCount);
+        , null, dbLocation, bucketCount);
 
     String dbLocation2 = dbFolder.newFolder(dbName4).getCanonicalPath() + ".db";
-    dbLocation2 = dbLocation2.replaceAll("\\\\", "/"); // for windows paths
+    dbLocation2 = dbLocation2.replaceAll("\\\\","/"); // for windows paths
     String[] colNames2 = "key3,key4,data2".split(",");
     String[] colTypes2 = "string,int,string".split(",");
     String[] bucketNames2 = "key3,key4".split(",");
     createDbAndTable(driver, dbName4, tblName4, null, colNames2, colTypes2, bucketNames2
-      , null, dbLocation2, bucketCount);
+        , null, dbLocation2, bucketCount);
 
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName3)
-      .withTable(tblName3)
-      .withAgentInfo(agentInfo)
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .connect();
     // 2) Insert data into both tables
-    connection.beginTransaction();
-    connection.write("name0,1,Hello streaming".getBytes());
-    connection.write("name2,2,Welcome to streaming".getBytes());
-    connection.write("name4,2,more Streaming unlimited".getBytes());
-    connection.write("name5,2,even more Streaming unlimited".getBytes());
-    connection.commitTransaction();
-    connection.close();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName3, tblName3, null);
+    StreamingConnection connection = endPt.newConnection(false, agentInfo);
+    DelimitedInputWriter writer = new DelimitedInputWriter(colNames,",", endPt, connection);
+
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name0,1,Hello streaming".getBytes());
+    txnBatch.write("name2,2,Welcome to streaming".getBytes());
+    txnBatch.write("name4,2,more Streaming unlimited".getBytes());
+    txnBatch.write("name5,2,even more Streaming unlimited".getBytes());
+    txnBatch.commit();
 
     PrintStream origErr = System.err;
     ByteArrayOutputStream myErr = new ByteArrayOutputStream();
@@ -1979,27 +1549,18 @@ public class TestStreaming {
     // for writes (transaction batch not closed yet)
     Assert.assertEquals(false, errDump.contains("is still open for writes."));
 
-    StrictDelimitedInputWriter writer2 = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt2 = new HiveEndPoint(metaStoreURI, dbName4, tblName4, null);
+    DelimitedInputWriter writer2 = new DelimitedInputWriter(colNames2,",", endPt2);
+    StreamingConnection connection2 = endPt2.newConnection(false, agentInfo);
+    TransactionBatch txnBatch2 =  connection2.fetchTransactionBatch(2, writer2);
+    txnBatch2.beginNextTransaction();
 
-    HiveStreamingConnection connection2 = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName4)
-      .withTable(tblName4)
-      .withAgentInfo(agentInfo)
-      .withRecordWriter(writer2)
-      .withHiveConf(conf)
-      .connect();
-
-    connection2.beginTransaction();
-
-    connection2.write("name5,2,fact3".getBytes());  // bucket 0
-    connection2.write("name8,2,fact3".getBytes());  // bucket 1
-    connection2.write("name0,1,fact1".getBytes());  // bucket 2
+    txnBatch2.write("name5,2,fact3".getBytes());  // bucket 0
+    txnBatch2.write("name8,2,fact3".getBytes());  // bucket 1
+    txnBatch2.write("name0,1,fact1".getBytes());  // bucket 2
     // no data for bucket 3 -- expect 0 length bucket file
 
-    connection2.commitTransaction();
-    connection2.close();
+    txnBatch2.commit();
 
     origErr = System.err;
     myErr = new ByteArrayOutputStream();
@@ -2018,175 +1579,37 @@ public class TestStreaming {
   }
 
   @Test
-  public void testFileDumpDeltaFilesWithStreamingOptimizations() throws Exception {
-    String agentInfo = "UT_" + Thread.currentThread().getName();
-    dropDB(msClient, dbName3);
-    dropDB(msClient, dbName4);
-
-    // 1) Create two bucketed tables
-    String dbLocation = dbFolder.newFolder(dbName3).getCanonicalPath() + ".db";
-    dbLocation = dbLocation.replaceAll("\\\\", "/"); // for windows paths
-    String[] colNames = "key1,key2,data".split(",");
-    String[] colTypes = "string,int,string".split(",");
-    String[] bucketNames = "key1,key2".split(",");
-    int bucketCount = 4;
-    createDbAndTable(driver, dbName3, tblName3, null, colNames, colTypes, bucketNames
-      , null, dbLocation, bucketCount);
-
-    // 2) Insert data into both tables
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName3)
-      .withTable(tblName3)
-      .withAgentInfo(agentInfo)
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .withStreamingOptimizations(true)
-      .connect();
-    connection.beginTransaction();
-    connection.write("name0,1,streaming".getBytes());
-    connection.write("name2,2,streaming".getBytes());
-    connection.write("name4,2,unlimited".getBytes());
-    connection.write("name5,2,unlimited".getBytes());
-    for (int i = 0; i < 6000; i++) {
-      if (i % 2 == 0) {
-        connection.write(("name" + i + "," + i + "," + "streaming").getBytes());
-      } else {
-        connection.write(("name" + i + "," + i + "," + "unlimited").getBytes());
-      }
-    }
-    connection.commitTransaction();
-    connection.close();
-    connection.close();
-
-    PrintStream origOut = System.out;
-    ByteArrayOutputStream myOut = new ByteArrayOutputStream();
-
-    // replace stderr and run command
-    System.setOut(new PrintStream(myOut));
-    FileDump.main(new String[]{dbLocation});
-    System.out.flush();
-    System.setOut(origOut);
-
-    String outDump = new String(myOut.toByteArray());
-    // make sure delta files are written with no indexes, no compression and no dictionary
-    // no compression
-    Assert.assertEquals(true, outDump.contains("Compression: NONE"));
-    // no stats/indexes
-    Assert.assertEquals(true, outDump.contains("Column 0: count: 0 hasNull: false"));
-    Assert.assertEquals(true, outDump.contains("Column 1: count: 0 hasNull: false bytesOnDisk: 12 sum: 0"));
-    Assert.assertEquals(true, outDump.contains("Column 2: count: 0 hasNull: false bytesOnDisk: 12 sum: 0"));
-    Assert.assertEquals(true, outDump.contains("Column 3: count: 0 hasNull: false bytesOnDisk: 24 sum: 0"));
-    Assert.assertEquals(true, outDump.contains("Column 4: count: 0 hasNull: false bytesOnDisk: 14 sum: 0"));
-    Assert.assertEquals(true, outDump.contains("Column 5: count: 0 hasNull: false bytesOnDisk: 12 sum: 0"));
-    Assert.assertEquals(true, outDump.contains("Column 6: count: 0 hasNull: false"));
-    Assert.assertEquals(true, outDump.contains("Column 7: count: 0 hasNull: false bytesOnDisk: 11864"));
-    Assert.assertEquals(true, outDump.contains("Column 8: count: 0 hasNull: false bytesOnDisk: 2033 sum: 0"));
-    Assert.assertEquals(true, outDump.contains("Column 9: count: 0 hasNull: false bytesOnDisk: 13629"));
-    // no dictionary
-    Assert.assertEquals(true, outDump.contains("Encoding column 7: DIRECT_V2"));
-    Assert.assertEquals(true, outDump.contains("Encoding column 9: DIRECT_V2"));
-  }
-
-  @Test
-  public void testFileDumpDeltaFilesWithoutStreamingOptimizations() throws Exception {
-    String agentInfo = "UT_" + Thread.currentThread().getName();
-    dropDB(msClient, dbName3);
-    dropDB(msClient, dbName4);
-
-    // 1) Create two bucketed tables
-    String dbLocation = dbFolder.newFolder(dbName3).getCanonicalPath() + ".db";
-    dbLocation = dbLocation.replaceAll("\\\\", "/"); // for windows paths
-    String[] colNames = "key1,key2,data".split(",");
-    String[] colTypes = "string,int,string".split(",");
-    String[] bucketNames = "key1,key2".split(",");
-    int bucketCount = 4;
-    createDbAndTable(driver, dbName3, tblName3, null, colNames, colTypes, bucketNames
-      , null, dbLocation, bucketCount);
-
-    // 2) Insert data into both tables
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName3)
-      .withTable(tblName3)
-      .withAgentInfo(agentInfo)
-      .withHiveConf(conf)
-      .withRecordWriter(writer)
-      .withStreamingOptimizations(false)
-      .connect();
-    connection.beginTransaction();
-    connection.write("name0,1,streaming".getBytes());
-    connection.write("name2,2,streaming".getBytes());
-    connection.write("name4,2,unlimited".getBytes());
-    connection.write("name5,2,unlimited".getBytes());
-    for (int i = 0; i < 6000; i++) {
-      if (i % 2 == 0) {
-        connection.write(("name" + i + "," + i + "," + "streaming").getBytes());
-      } else {
-        connection.write(("name" + i + "," + i + "," + "unlimited").getBytes());
-      }
-    }
-    connection.commitTransaction();
-    connection.close();
-
-    PrintStream origOut = System.out;
-    ByteArrayOutputStream myOut = new ByteArrayOutputStream();
-
-    // replace stderr and run command
-    System.setOut(new PrintStream(myOut));
-    FileDump.main(new String[]{dbLocation});
-    System.out.flush();
-    System.setOut(origOut);
-
-    String outDump = new String(myOut.toByteArray());
-    Assert.assertEquals(true, outDump.contains("Compression: ZLIB"));
-    Assert.assertEquals(true, outDump.contains("Encoding column 9: DICTIONARY"));
-  }
-
-  @Test
   public void testFileDumpCorruptDataFiles() throws Exception {
     dropDB(msClient, dbName3);
 
     // 1) Create two bucketed tables
     String dbLocation = dbFolder.newFolder(dbName3).getCanonicalPath() + ".db";
-    dbLocation = dbLocation.replaceAll("\\\\", "/"); // for windows paths
+    dbLocation = dbLocation.replaceAll("\\\\","/"); // for windows paths
     String[] colNames = "key1,key2,data".split(",");
     String[] colTypes = "string,int,string".split(",");
     String[] bucketNames = "key1,key2".split(",");
     int bucketCount = 4;
     createDbAndTable(driver, dbName3, tblName3, null, colNames, colTypes, bucketNames
-      , null, dbLocation, bucketCount);
+        , null, dbLocation, bucketCount);
 
     // 2) Insert data into both tables
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName3, tblName3, null);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(colNames,",", endPt, connection);
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName3)
-      .withTable(tblName3)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(10)
-      .connect();
     // we need side file for this test, so we create 2 txn batch and test with only one
-    connection.beginTransaction();
-    connection.write("name0,1,Hello streaming".getBytes());
-    connection.write("name2,2,Welcome to streaming".getBytes());
-    connection.write("name4,2,more Streaming unlimited".getBytes());
-    connection.write("name5,2,even more Streaming unlimited".getBytes());
-    connection.commitTransaction();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name0,1,Hello streaming".getBytes());
+    txnBatch.write("name2,2,Welcome to streaming".getBytes());
+    txnBatch.write("name4,2,more Streaming unlimited".getBytes());
+    txnBatch.write("name5,2,even more Streaming unlimited".getBytes());
+    txnBatch.commit();
 
     // intentionally corrupt some files
     Path path = new Path(dbLocation);
     Collection<String> files = FileDump.getAllFilesInPath(path, conf);
+    int readableFooter = -1;
     for (String file : files) {
       if (file.contains("bucket_00000")) {
         // empty out the file
@@ -2194,7 +1617,7 @@ public class TestStreaming {
       } else if (file.contains("bucket_00001")) {
         corruptDataFile(file, conf, -1);
       } else if (file.contains("bucket_00002")) {
-        corruptDataFile(file, conf, 100);
+        Assert.assertFalse("bucket 2 shouldn't have been created", true);
       } else if (file.contains("bucket_00003")) {
         corruptDataFile(file, conf, 100);
       }
@@ -2224,9 +1647,9 @@ public class TestStreaming {
     System.setErr(origErr);
 
     errDump = new String(myErr.toByteArray());
-    Assert.assertEquals(true, errDump.contains("bucket_00001 recovered successfully!"));
+    Assert.assertEquals(true, errDump.contains("bucket_00000 recovered successfully!"));
     Assert.assertEquals(true, errDump.contains("No readable footers found. Creating empty orc file."));
-    Assert.assertEquals(true, errDump.contains("bucket_00002 recovered successfully!"));
+    Assert.assertEquals(true, errDump.contains("bucket_00001 recovered successfully!"));
     Assert.assertEquals(true, errDump.contains("bucket_00003 recovered successfully!"));
     Assert.assertEquals(false, errDump.contains("Exception"));
     Assert.assertEquals(false, errDump.contains("is still open for writes."));
@@ -2246,17 +1669,17 @@ public class TestStreaming {
     Assert.assertEquals(false, errDump.contains("file(s) are corrupted"));
     Assert.assertEquals(false, errDump.contains("is still open for writes."));
 
-    // after recovery there shouldn'table be any *_flush_length files
+    // after recovery there shouldn't be any *_flush_length files
     files = FileDump.getAllFilesInPath(path, conf);
     for (String file : files) {
       Assert.assertEquals(false, file.contains("_flush_length"));
     }
 
-    connection.close();
+    txnBatch.close();
   }
 
   private void corruptDataFile(final String file, final Configuration conf, final int addRemoveBytes)
-    throws Exception {
+      throws Exception {
     Path bPath = new Path(file);
     Path cPath = new Path(bPath.getParent(), bPath.getName() + ".corrupt");
     FileSystem fs = bPath.getFileSystem(conf);
@@ -2279,56 +1702,48 @@ public class TestStreaming {
 
     // 1) Create two bucketed tables
     String dbLocation = dbFolder.newFolder(dbName3).getCanonicalPath() + ".db";
-    dbLocation = dbLocation.replaceAll("\\\\", "/"); // for windows paths
+    dbLocation = dbLocation.replaceAll("\\\\","/"); // for windows paths
     String[] colNames = "key1,key2,data".split(",");
     String[] colTypes = "string,int,string".split(",");
     String[] bucketNames = "key1,key2".split(",");
     int bucketCount = 4;
     createDbAndTable(driver, dbName3, tblName3, null, colNames, colTypes, bucketNames
-      , null, dbLocation, bucketCount);
+        , null, dbLocation, bucketCount);
 
     // 2) Insert data into both tables
-    StrictDelimitedInputWriter writer = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, dbName3, tblName3, null);
+    StreamingConnection connection = endPt.newConnection(false, "UT_" + Thread.currentThread().getName());
+    DelimitedInputWriter writer = new DelimitedInputWriter(colNames,",", endPt, connection);
 
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase(dbName3)
-      .withTable(tblName3)
-      .withAgentInfo("UT_" + Thread.currentThread().getName())
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .withTransactionBatchSize(10)
-      .connect();
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name0,1,Hello streaming".getBytes());
+    txnBatch.write("name2,2,Welcome to streaming".getBytes());
+    txnBatch.write("name4,2,more Streaming unlimited".getBytes());
+    txnBatch.write("name5,2,even more Streaming unlimited".getBytes());
+    txnBatch.write("name6,3,aHello streaming".getBytes());
+    txnBatch.commit();
 
-    connection.beginTransaction();
-    connection.write("name0,1,Hello streaming".getBytes());
-    connection.write("name2,2,Welcome to streaming".getBytes());
-    connection.write("name4,2,more Streaming unlimited".getBytes());
-    connection.write("name5,2,even more Streaming unlimited".getBytes());
-    connection.write("name6,3,aHello streaming".getBytes());
-    connection.commitTransaction();
-
-    Map<String, List<Long>> offsetMap = new HashMap<String, List<Long>>();
+    Map<String,List<Long>> offsetMap = new HashMap<String,List<Long>>();
     recordOffsets(conf, dbLocation, offsetMap);
 
-    connection.beginTransaction();
-    connection.write("name01,11,-Hello streaming".getBytes());
-    connection.write("name21,21,-Welcome to streaming".getBytes());
-    connection.write("name41,21,-more Streaming unlimited".getBytes());
-    connection.write("name51,21,-even more Streaming unlimited".getBytes());
-    connection.write("name02,12,--Hello streaming".getBytes());
-    connection.write("name22,22,--Welcome to streaming".getBytes());
-    connection.write("name42,22,--more Streaming unlimited".getBytes());
-    connection.write("name52,22,--even more Streaming unlimited".getBytes());
-    connection.write("name7,4,aWelcome to streaming".getBytes());
-    connection.write("name8,5,amore Streaming unlimited".getBytes());
-    connection.write("name9,6,aeven more Streaming unlimited".getBytes());
-    connection.write("name10,7,bHello streaming".getBytes());
-    connection.write("name11,8,bWelcome to streaming".getBytes());
-    connection.write("name12,9,bmore Streaming unlimited".getBytes());
-    connection.write("name13,10,beven more Streaming unlimited".getBytes());
-    connection.commitTransaction();
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name01,11,-Hello streaming".getBytes());
+    txnBatch.write("name21,21,-Welcome to streaming".getBytes());
+    txnBatch.write("name41,21,-more Streaming unlimited".getBytes());
+    txnBatch.write("name51,21,-even more Streaming unlimited".getBytes());
+    txnBatch.write("name02,12,--Hello streaming".getBytes());
+    txnBatch.write("name22,22,--Welcome to streaming".getBytes());
+    txnBatch.write("name42,22,--more Streaming unlimited".getBytes());
+    txnBatch.write("name52,22,--even more Streaming unlimited".getBytes());
+    txnBatch.write("name7,4,aWelcome to streaming".getBytes());
+    txnBatch.write("name8,5,amore Streaming unlimited".getBytes());
+    txnBatch.write("name9,6,aeven more Streaming unlimited".getBytes());
+    txnBatch.write("name10,7,bHello streaming".getBytes());
+    txnBatch.write("name11,8,bWelcome to streaming".getBytes());
+    txnBatch.write("name12,9,bmore Streaming unlimited".getBytes());
+    txnBatch.write("name13,10,beven more Streaming unlimited".getBytes());
+    txnBatch.commit();
 
     recordOffsets(conf, dbLocation, offsetMap);
 
@@ -2405,18 +1820,18 @@ public class TestStreaming {
     Assert.assertEquals(false, errDump.contains("file(s) are corrupted"));
     Assert.assertEquals(false, errDump.contains("is still open for writes."));
 
-    // after recovery there shouldn'table be any *_flush_length files
+    // after recovery there shouldn't be any *_flush_length files
     files = FileDump.getAllFilesInPath(path, conf);
     for (String file : files) {
       Assert.assertEquals(false, file.contains("_flush_length"));
     }
 
-    connection.close();
+    txnBatch.close();
   }
 
   private void corruptSideFile(final String file, final HiveConf conf,
-    final Map<String, List<Long>> offsetMap, final String key, final int numEntries)
-    throws IOException {
+      final Map<String, List<Long>> offsetMap, final String key, final int numEntries)
+      throws IOException {
     Path dataPath = new Path(file);
     Path sideFilePath = OrcAcidUtils.getSideFile(dataPath);
     Path cPath = new Path(sideFilePath.getParent(), sideFilePath.getName() + ".corrupt");
@@ -2435,7 +1850,7 @@ public class TestStreaming {
     } else if (numEntries > 0) {
       int firstRun = Math.min(offsets.size(), numEntries);
       // add original entries
-      for (int i = 0; i < firstRun; i++) {
+      for (int i=0; i < firstRun; i++) {
         fdos.writeLong(offsets.get(i));
       }
 
@@ -2451,17 +1866,17 @@ public class TestStreaming {
     fs.rename(cPath, sideFilePath);
   }
 
-  private byte[] longToBytes(long x) {
+  private  byte[] longToBytes(long x) {
     ByteBuffer buffer = ByteBuffer.allocate(8);
     buffer.putLong(x);
     return buffer.array();
   }
 
   private void recordOffsets(final HiveConf conf, final String dbLocation,
-    final Map<String, List<Long>> offsetMap) throws IOException {
+      final Map<String, List<Long>> offsetMap) throws IOException {
     Path path = new Path(dbLocation);
     Collection<String> files = FileDump.getAllFilesInPath(path, conf);
-    for (String file : files) {
+    for (String file: files) {
       Path bPath = new Path(file);
       FileSystem fs = bPath.getFileSystem(conf);
       FileStatus fileStatus = fs.getFileStatus(bPath);
@@ -2516,107 +1931,89 @@ public class TestStreaming {
     String agentInfo = "UT_" + Thread.currentThread().getName();
     runCmdOnDriver("create database testErrors");
     runCmdOnDriver("use testErrors");
-    runCmdOnDriver(
-      "create table T(a int, b int) clustered by (b) into 2 buckets stored as orc TBLPROPERTIES ('transactional'='true')");
+    runCmdOnDriver("create table T(a int, b int) clustered by (b) into 2 buckets stored as orc TBLPROPERTIES ('transactional'='true')");
 
-    StrictDelimitedInputWriter innerWriter = StrictDelimitedInputWriter.newBuilder()
-      .withFieldDelimiter(',')
-      .build();
-
-    HiveStreamingConnection connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("testErrors")
-      .withTable("T")
-      .withAgentInfo(agentInfo)
-      .withTransactionBatchSize(2)
-      .withRecordWriter(innerWriter)
-      .withHiveConf(conf)
-      .connect();
-    connection.beginTransaction();
+    HiveEndPoint endPt = new HiveEndPoint(metaStoreURI, "testErrors", "T", null);
+    StreamingConnection connection = endPt.newConnection(false, agentInfo);
+    DelimitedInputWriter innerWriter = new DelimitedInputWriter("a,b".split(","),",", endPt, connection);
     FaultyWriter writer = new FaultyWriter(innerWriter);
 
-    connection.close();
-    Exception expectedEx = null;
+    TransactionBatch txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.close();
+    txnBatch.heartbeat();//this is no-op on closed batch
+    txnBatch.abort();//ditto
     GetOpenTxnsInfoResponse r = msClient.showTxns();
-    Assert.assertEquals("HWM didn'table match", 17, r.getTxn_high_water_mark());
+    Assert.assertEquals("HWM didn't match", 17, r.getTxn_high_water_mark());
     List<TxnInfo> ti = r.getOpen_txns();
     Assert.assertEquals("wrong status ti(0)", TxnState.ABORTED, ti.get(0).getState());
     Assert.assertEquals("wrong status ti(1)", TxnState.ABORTED, ti.get(1).getState());
 
-
+    Exception expectedEx = null;
     try {
-      connection.beginTransaction();
-    } catch (StreamingException ex) {
+      txnBatch.beginNextTransaction();
+    }
+    catch(IllegalStateException ex) {
       expectedEx = ex;
     }
-    Assert.assertTrue("beginTransaction() should have failed",
-      expectedEx != null && expectedEx.getMessage().contains("Streaming connection is closed already."));
-
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("testErrors")
-      .withTable("T")
-      .withAgentInfo(agentInfo)
-      .withTransactionBatchSize(2)
-      .withRecordWriter(innerWriter)
-      .withHiveConf(conf)
-      .connect();
+    Assert.assertTrue("beginNextTransaction() should have failed",
+      expectedEx != null && expectedEx.getMessage().contains("has been closed()"));
     expectedEx = null;
     try {
-      connection.write("name0,1,Hello streaming".getBytes());
-    } catch (StreamingException ex) {
+      txnBatch.write("name0,1,Hello streaming".getBytes());
+    }
+    catch(IllegalStateException ex) {
       expectedEx = ex;
     }
-    Assert.assertTrue("write() should have failed",
-      expectedEx != null && expectedEx.getMessage().equals("Transaction batch is null. Missing beginTransaction?"));
+    Assert.assertTrue("write()  should have failed",
+      expectedEx != null && expectedEx.getMessage().contains("has been closed()"));
     expectedEx = null;
     try {
-      connection.commitTransaction();
-    } catch (StreamingException ex) {
+      txnBatch.commit();
+    }
+    catch(IllegalStateException ex) {
       expectedEx = ex;
     }
-    Assert.assertTrue("commitTransaction() should have failed",
-      expectedEx != null && expectedEx.getMessage().equals("Transaction batch is null. Missing beginTransaction?"));
+    Assert.assertTrue("commit() should have failed",
+      expectedEx != null && expectedEx.getMessage().contains("has been closed()"));
 
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("testErrors")
-      .withTable("T")
-      .withAgentInfo(agentInfo)
-      .withTransactionBatchSize(2)
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    connection.beginTransaction();
-    connection.write("name2,2,Welcome to streaming".getBytes());
-    connection.write("name4,2,more Streaming unlimited".getBytes());
-    connection.write("name5,2,even more Streaming unlimited".getBytes());
-    connection.commitTransaction();
+    txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name2,2,Welcome to streaming".getBytes());
+    txnBatch.write("name4,2,more Streaming unlimited".getBytes());
+    txnBatch.write("name5,2,even more Streaming unlimited".getBytes());
+    txnBatch.commit();
 
     //test toString()
-    String s = connection.toTransactionString();
-    Assert.assertTrue("Actual: " + s, s.contains("LastUsed " + JavaUtils.txnIdToString(connection.getCurrentTxnId())));
+    String s = txnBatch.toString();
+    Assert.assertTrue("Actual: " + s, s.contains("LastUsed " + JavaUtils.txnIdToString(txnBatch.getCurrentTxnId())));
     Assert.assertTrue("Actual: " + s, s.contains("TxnStatus[CO]"));
 
     expectedEx = null;
-    connection.beginTransaction();
+    txnBatch.beginNextTransaction();
     writer.enableErrors();
     try {
-      connection.write("name6,2,Doh!".getBytes());
-    } catch (StreamingIOFailure ex) {
+      txnBatch.write("name6,2,Doh!".getBytes());
+    }
+    catch(StreamingIOFailure ex) {
       expectedEx = ex;
+      txnBatch.getCurrentTransactionState();
+      txnBatch.getCurrentTxnId();//test it doesn't throw ArrayIndexOutOfBounds...
     }
     Assert.assertTrue("Wrong exception: " + (expectedEx != null ? expectedEx.getMessage() : "?"),
       expectedEx != null && expectedEx.getMessage().contains("Simulated fault occurred"));
     expectedEx = null;
     try {
-      connection.commitTransaction();
-    } catch (StreamingException ex) {
+      txnBatch.commit();
+    }
+    catch(IllegalStateException ex) {
       expectedEx = ex;
     }
-    Assert.assertTrue("commitTransaction() should have failed",
-      expectedEx != null && expectedEx.getMessage().equals("Transaction state is not OPEN. Missing beginTransaction?"));
+    Assert.assertTrue("commit() should have failed",
+      expectedEx != null && expectedEx.getMessage().contains("has been closed()"));
 
     //test toString()
-    s = connection.toTransactionString();
-    Assert.assertTrue("Actual: " + s, s.contains("LastUsed " + JavaUtils.txnIdToString(connection.getCurrentTxnId())));
+    s = txnBatch.toString();
+    Assert.assertTrue("Actual: " + s, s.contains("LastUsed " + JavaUtils.txnIdToString(txnBatch.getCurrentTxnId())));
     Assert.assertTrue("Actual: " + s, s.contains("TxnStatus[CA]"));
 
     r = msClient.showTxns();
@@ -2626,44 +2023,39 @@ public class TestStreaming {
     Assert.assertEquals("wrong status ti(1)", TxnState.ABORTED, ti.get(1).getState());
     //txnid 3 was committed and thus not open
     Assert.assertEquals("wrong status ti(2)", TxnState.ABORTED, ti.get(2).getState());
-    connection.close();
 
     writer.disableErrors();
-    connection = HiveStreamingConnection.newBuilder()
-      .withDatabase("testErrors")
-      .withTable("T")
-      .withAgentInfo(agentInfo)
-      .withTransactionBatchSize(2)
-      .withRecordWriter(writer)
-      .withHiveConf(conf)
-      .connect();
-    connection.beginTransaction();
-    connection.write("name2,2,Welcome to streaming".getBytes());
+    txnBatch =  connection.fetchTransactionBatch(2, writer);
+    txnBatch.beginNextTransaction();
+    txnBatch.write("name2,2,Welcome to streaming".getBytes());
     writer.enableErrors();
     expectedEx = null;
     try {
-      connection.commitTransaction();
-    } catch (StreamingIOFailure ex) {
+      txnBatch.commit();
+    }
+    catch(StreamingIOFailure ex) {
       expectedEx = ex;
     }
     Assert.assertTrue("Wrong exception: " + (expectedEx != null ? expectedEx.getMessage() : "?"),
       expectedEx != null && expectedEx.getMessage().contains("Simulated fault occurred"));
 
     r = msClient.showTxns();
-    Assert.assertEquals("HWM didn'table match", 21, r.getTxn_high_water_mark());
+    Assert.assertEquals("HWM didn't match", 21, r.getTxn_high_water_mark());
     ti = r.getOpen_txns();
     Assert.assertEquals("wrong status ti(3)", TxnState.ABORTED, ti.get(3).getState());
     Assert.assertEquals("wrong status ti(4)", TxnState.ABORTED, ti.get(4).getState());
+
+    txnBatch.abort();
   }
 
-  // assumes un partitioned table
+    // assumes un partitioned table
   // returns a map<bucketNum, list<record> >
   private HashMap<Integer, ArrayList<SampleRec>> dumpAllBuckets(String dbLocation, String tableName)
-    throws IOException {
+          throws IOException {
     HashMap<Integer, ArrayList<SampleRec>> result = new HashMap<Integer, ArrayList<SampleRec>>();
 
     for (File deltaDir : new File(dbLocation + "/" + tableName).listFiles()) {
-      if (!deltaDir.getName().startsWith("delta")) {
+      if(!deltaDir.getName().startsWith("delta")) {
         continue;
       }
       File[] bucketFiles = deltaDir.listFiles(new FileFilter() {
@@ -2674,11 +2066,11 @@ public class TestStreaming {
         }
       });
       for (File bucketFile : bucketFiles) {
-        if (bucketFile.toString().endsWith("length")) {
+        if(bucketFile.toString().endsWith("length")) {
           continue;
         }
         Integer bucketNum = getBucketNumber(bucketFile);
-        ArrayList<SampleRec> recs = dumpBucket(new Path(bucketFile.toString()));
+        ArrayList<SampleRec>  recs = dumpBucket(new Path(bucketFile.toString()));
         result.put(bucketNum, recs);
       }
     }
@@ -2689,14 +2081,14 @@ public class TestStreaming {
   private Integer getBucketNumber(File bucketFile) {
     String fname = bucketFile.getName();
     int start = fname.indexOf('_');
-    String number = fname.substring(start + 1, fname.length());
+    String number = fname.substring(start+1, fname.length());
     return Integer.parseInt(number);
   }
 
   // delete db and all tables in it
   public static void dropDB(IMetaStoreClient client, String databaseName) {
     try {
-      for (String table : client.listTableNamesByFilter(databaseName, "", (short) -1)) {
+      for (String table : client.listTableNamesByFilter(databaseName, "", (short)-1)) {
         client.dropTable(databaseName, table, true, true);
       }
       client.dropDatabase(databaseName);
@@ -2706,14 +2098,15 @@ public class TestStreaming {
   }
 
 
+
   ///////// -------- UTILS ------- /////////
   // returns Path of the partition created (if any) else Path of table
-  private static Path createDbAndTable(IDriver driver, String databaseName,
-    String tableName, List<String> partVals,
-    String[] colNames, String[] colTypes,
-    String[] bucketCols,
-    String[] partNames, String dbLocation, int bucketCount)
-    throws Exception {
+  public static Path createDbAndTable(IDriver driver, String databaseName,
+                                      String tableName, List<String> partVals,
+                                      String[] colNames, String[] colTypes,
+                                      String[] bucketCols,
+                                      String[] partNames, String dbLocation, int bucketCount)
+          throws Exception {
 
     String dbUri = "raw://" + new Path(dbLocation).toUri().toString();
     String tableLoc = dbUri + Path.SEPARATOR + tableName;
@@ -2721,24 +2114,24 @@ public class TestStreaming {
     runDDL(driver, "create database IF NOT EXISTS " + databaseName + " location '" + dbUri + "'");
     runDDL(driver, "use " + databaseName);
     String crtTbl = "create table " + tableName +
-      " ( " + getTableColumnsStr(colNames, colTypes) + " )" +
-      getPartitionStmtStr(partNames) +
-      " clustered by ( " + join(bucketCols, ",") + " )" +
-      " into " + bucketCount + " buckets " +
-      " stored as orc " +
-      " location '" + tableLoc + "'" +
-      " TBLPROPERTIES ('transactional'='true') ";
+            " ( " +  getTableColumnsStr(colNames,colTypes) + " )" +
+            getPartitionStmtStr(partNames) +
+            " clustered by ( " + join(bucketCols, ",") + " )" +
+            " into " + bucketCount + " buckets " +
+            " stored as orc " +
+            " location '" + tableLoc +  "'" +
+            " TBLPROPERTIES ('transactional'='true') ";
     runDDL(driver, crtTbl);
-    if (partNames != null && partNames.length != 0) {
+    if(partNames!=null && partNames.length!=0) {
       return addPartition(driver, tableName, partVals, partNames);
     }
     return new Path(tableLoc);
   }
 
   private static Path addPartition(IDriver driver, String tableName, List<String> partVals, String[] partNames)
-    throws Exception {
+      throws Exception {
     String partSpec = getPartsSpec(partNames, partVals);
-    String addPart = "alter table " + tableName + " add partition ( " + partSpec + " )";
+    String addPart = "alter table " + tableName + " add partition ( " + partSpec  + " )";
     runDDL(driver, addPart);
     return getPartitionPath(driver, tableName, partSpec);
   }
@@ -2747,15 +2140,15 @@ public class TestStreaming {
     ArrayList<String> res = queryTable(driver, "describe extended " + tableName + " PARTITION (" + partSpec + ")");
     String partInfo = res.get(res.size() - 1);
     int start = partInfo.indexOf("location:") + "location:".length();
-    int end = partInfo.indexOf(",", start);
-    return new Path(partInfo.substring(start, end));
+    int end = partInfo.indexOf(",",start);
+    return new Path( partInfo.substring(start,end) );
   }
 
   private static String getTableColumnsStr(String[] colNames, String[] colTypes) {
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < colNames.length; ++i) {
-      sb.append(colNames[i]).append(" ").append(colTypes[i]);
-      if (i < colNames.length - 1) {
+    for (int i=0; i < colNames.length; ++i) {
+      sb.append(colNames[i] + " " + colTypes[i]);
+      if (i<colNames.length-1) {
         sb.append(",");
       }
     }
@@ -2764,13 +2157,13 @@ public class TestStreaming {
 
   // converts partNames into "partName1 string, partName2 string"
   private static String getTablePartsStr(String[] partNames) {
-    if (partNames == null || partNames.length == 0) {
+    if (partNames==null || partNames.length==0) {
       return "";
     }
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < partNames.length; ++i) {
-      sb.append(partNames[i]).append(" string");
-      if (i < partNames.length - 1) {
+    for (int i=0; i < partNames.length; ++i) {
+      sb.append(partNames[i] + " string");
+      if (i < partNames.length-1) {
         sb.append(",");
       }
     }
@@ -2780,9 +2173,9 @@ public class TestStreaming {
   // converts partNames,partVals into "partName1=val1, partName2=val2"
   private static String getPartsSpec(String[] partNames, List<String> partVals) {
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < partVals.size(); ++i) {
-      sb.append(partNames[i]).append(" = '").append(partVals.get(i)).append("'");
-      if (i < partVals.size() - 1) {
+    for (int i=0; i < partVals.size(); ++i) {
+      sb.append(partNames[i] + " = '" + partVals.get(i) + "'");
+      if(i < partVals.size()-1) {
         sb.append(",");
       }
     }
@@ -2790,33 +2183,28 @@ public class TestStreaming {
   }
 
   private static String join(String[] values, String delimiter) {
-    if (values == null) {
+    if(values==null) {
       return null;
     }
     StringBuilder strbuf = new StringBuilder();
 
     boolean first = true;
 
-    for (Object value : values) {
-      if (!first) {
-        strbuf.append(delimiter);
-      } else {
-        first = false;
-      }
+    for (Object value : values)  {
+      if (!first) { strbuf.append(delimiter); } else { first = false; }
       strbuf.append(value.toString());
     }
 
     return strbuf.toString();
   }
-
   private static String getPartitionStmtStr(String[] partNames) {
-    if (partNames == null || partNames.length == 0) {
+    if ( partNames == null || partNames.length == 0) {
       return "";
     }
     return " partitioned by (" + getTablePartsStr(partNames) + " )";
   }
 
-  private static boolean runDDL(IDriver driver, String sql) {
+  private static boolean runDDL(IDriver driver, String sql) throws QueryFailedException {
     LOG.debug(sql);
     System.out.println(sql);
     //LOG.debug("Running Hive Query: "+ sql);
@@ -2829,9 +2217,9 @@ public class TestStreaming {
   }
 
 
-  private static ArrayList<String> queryTable(IDriver driver, String query) throws IOException {
+  public static ArrayList<String> queryTable(IDriver driver, String query) throws IOException {
     CommandProcessorResponse cpr = driver.run(query);
-    if (cpr.getResponseCode() != 0) {
+    if(cpr.getResponseCode() != 0) {
       throw new RuntimeException(query + " failed: " + cpr);
     }
     ArrayList<String> res = new ArrayList<String>();
@@ -2882,13 +2270,12 @@ public class TestStreaming {
     @Override
     public String toString() {
       return " { " +
-        "'" + field1 + '\'' +
-        "," + field2 +
-        ",'" + field3 + '\'' +
-        " }";
+              "'" + field1 + '\'' +
+              "," + field2 +
+              ",'" + field3 + '\'' +
+              " }";
     }
   }
-
   /**
    * This is test-only wrapper around the real RecordWriter.
    * It can simulate faults from lower levels to test error handling logic.
@@ -2901,56 +2288,41 @@ public class TestStreaming {
       assert delegate != null;
       this.delegate = delegate;
     }
-
-    @Override
-    public void init(final StreamingConnection connection, final long minWriteId, final long maxWriteID)
-      throws StreamingException {
-      delegate.init(connection, minWriteId, maxWriteID);
-    }
-
     @Override
     public void write(long writeId, byte[] record) throws StreamingException {
       delegate.write(writeId, record);
       produceFault();
     }
-
-    @Override
-    public void write(final long writeId, final InputStream inputStream) throws StreamingException {
-      delegate.write(writeId, inputStream);
-      produceFault();
-    }
-
     @Override
     public void flush() throws StreamingException {
       delegate.flush();
       produceFault();
     }
-
     @Override
-    public void close() throws StreamingException {
-      delegate.close();
+    public void clear() throws StreamingException {
+      delegate.clear();
     }
-
     @Override
-    public Set<String> getPartitions() {
-      return delegate.getPartitions();
+    public void newBatch(Long minTxnId, Long maxTxnID) throws StreamingException {
+      delegate.newBatch(minTxnId, maxTxnID);
+    }
+    @Override
+    public void closeBatch() throws StreamingException {
+      delegate.closeBatch();
     }
 
     /**
      * allows testing of "unexpected" errors
-     *
      * @throws StreamingIOFailure
      */
     private void produceFault() throws StreamingIOFailure {
-      if (shouldThrow) {
+      if(shouldThrow) {
         throw new StreamingIOFailure("Simulated fault occurred");
       }
     }
-
     void enableErrors() {
       shouldThrow = true;
     }
-
     void disableErrors() {
       shouldThrow = false;
     }
