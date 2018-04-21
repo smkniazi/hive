@@ -203,7 +203,6 @@ public class HiveAlterHandler implements AlterHandler {
           && (oldt.getSd().getLocation().compareTo(newt.getSd().getLocation()) == 0
             || StringUtils.isEmpty(newt.getSd().getLocation()))
           && !MetaStoreUtils.isExternalTable(oldt)) {
-<<<<<<< HEAD
         // TODO(Fabio) See the thesis for an idea on how to implement it
         throw new MetaException("Alter table rename on a managed table is not supported on HopsHive");
 
@@ -211,119 +210,8 @@ public class HiveAlterHandler implements AlterHandler {
         (newt.getPartitionKeysSize() == 0)) {
           Database db = msdb.getDatabase(newt.getDbName());
           // Update table stats. For partitioned table, we update stats in
-=======
-        Database olddb = msdb.getDatabase(catName, dbname);
-        // if a table was created in a user specified location using the DDL like
-        // create table tbl ... location ...., it should be treated like an external table
-        // in the table rename, its data location should not be changed. We can check
-        // if the table directory was created directly under its database directory to tell
-        // if it is such a table
-        srcPath = new Path(oldt.getSd().getLocation());
-        String oldtRelativePath = (new Path(olddb.getLocationUri()).toUri())
-            .relativize(srcPath.toUri()).toString();
-        boolean tableInSpecifiedLoc = !oldtRelativePath.equalsIgnoreCase(name)
-            && !oldtRelativePath.equalsIgnoreCase(name + Path.SEPARATOR);
-
-        if (!tableInSpecifiedLoc) {
-          srcFs = wh.getFs(srcPath);
-
-          // get new location
-          Database db = msdb.getDatabase(catName, newDbName);
-          Path databasePath = constructRenamedPath(wh.getDatabasePath(db), srcPath);
-          destPath = new Path(databasePath, newTblName);
-          destFs = wh.getFs(destPath);
-
-          newt.getSd().setLocation(destPath.toString());
-
-          // check that destination does not exist otherwise we will be
-          // overwriting data
-          // check that src and dest are on the same file system
-          if (!FileUtils.equalsFileSystem(srcFs, destFs)) {
-            throw new InvalidOperationException("table new location " + destPath
-                + " is on a different file system than the old location "
-                + srcPath + ". This operation is not supported");
-          }
-
-          try {
-            if (destFs.exists(destPath)) {
-              throw new InvalidOperationException("New location for this table " +
-                  Warehouse.getCatalogQualifiedTableName(catName, newDbName, newTblName) +
-                      " already exists : " + destPath);
-            }
-            // check that src exists and also checks permissions necessary, rename src to dest
-            if (srcFs.exists(srcPath) && wh.renameDir(srcPath, destPath, true)) {
-              dataWasMoved = true;
-            }
-          } catch (IOException | MetaException e) {
-            LOG.error("Alter Table operation for " + dbname + "." + name + " failed.", e);
-            throw new InvalidOperationException("Alter Table operation for " + dbname + "." + name +
-                " failed to move data due to: '" + getSimpleMessage(e)
-                + "' See hive log file for details.");
-          }
+          MetaStoreUtils.updateTableStatsSlow(db, newt, wh, false, true, environmentContext);
         }
-
-        if (isPartitionedTable) {
-          String oldTblLocPath = srcPath.toUri().getPath();
-          String newTblLocPath = dataWasMoved ? destPath.toUri().getPath() : null;
-
-          // also the location field in partition
-          parts = msdb.getPartitions(catName, dbname, name, -1);
-          Map<Partition, ColumnStatistics> columnStatsNeedUpdated = new HashMap<>();
-          for (Partition part : parts) {
-            String oldPartLoc = part.getSd().getLocation();
-            if (dataWasMoved && oldPartLoc.contains(oldTblLocPath)) {
-              URI oldUri = new Path(oldPartLoc).toUri();
-              String newPath = oldUri.getPath().replace(oldTblLocPath, newTblLocPath);
-              Path newPartLocPath = new Path(oldUri.getScheme(), oldUri.getAuthority(), newPath);
-              part.getSd().setLocation(newPartLocPath.toString());
-            }
-            part.setDbName(newDbName);
-            part.setTableName(newTblName);
-            ColumnStatistics colStats = updateOrGetPartitionColumnStats(msdb, catName, dbname, name,
-                part.getValues(), part.getSd().getCols(), oldt, part, null);
-            if (colStats != null) {
-              columnStatsNeedUpdated.put(part, colStats);
-            }
-          }
-          msdb.alterTable(catName, dbname, name, newt);
-          // alterPartition is only for changing the partition location in the table rename
-          if (dataWasMoved) {
-
-            int partsToProcess = parts.size();
-            int partitionBatchSize = MetastoreConf.getIntVar(handler.getConf(),
-                MetastoreConf.ConfVars.BATCH_RETRIEVE_MAX);
-            int batchStart = 0;
-            while (partsToProcess > 0) {
-              int batchEnd = Math.min(batchStart + partitionBatchSize, parts.size());
-              List<Partition> partBatch = parts.subList(batchStart, batchEnd);
-              int partBatchSize = partBatch.size();
-              partsToProcess -= partBatchSize;
-              batchStart += partBatchSize;
-              List<List<String>> partValues = new ArrayList<>(partBatchSize);
-              for (Partition part : partBatch) {
-                partValues.add(part.getValues());
-              }
-              msdb.alterPartitions(catName, newDbName, newTblName, partValues, partBatch);
-            }
-          }
-
-          for (Entry<Partition, ColumnStatistics> partColStats : columnStatsNeedUpdated.entrySet()) {
-            ColumnStatistics newPartColStats = partColStats.getValue();
-            newPartColStats.getStatsDesc().setDbName(newDbName);
-            newPartColStats.getStatsDesc().setTableName(newTblName);
-            msdb.updatePartitionColumnStatistics(newPartColStats, partColStats.getKey().getValues());
-          }
-        } else {
-          alterTableUpdateTableColumnStats(msdb, oldt, newt);
-        }
-      } else {
-        // operations other than table rename
-        if (MetaStoreUtils.requireCalStats(null, null, newt, environmentContext) &&
-            !isPartitionedTable) {
-          Database db = msdb.getDatabase(catName, newDbName);
-          // Update table stats. For partitioned table, we update stats in alterPartition()
->>>>>>> ba8a99e115... HIVE-18755 Modifications to the metastore for catalogs (Alan Gates, reviewed by Thejas Nair)
-          MetaStoreUtils.updateTableStatsFast(db, newt, wh, false, true, environmentContext, false);
 
         if (isPartitionedTable) {
           //Currently only column related changes can be cascaded in alter table
@@ -582,73 +470,8 @@ public class HiveAlterHandler implements AlterHandler {
             new_part.getValues());
       }
 
-<<<<<<< HEAD
       // if the external partition is renamed, the file should not change
       if (tbl.getTableType().equals(TableType.EXTERNAL_TABLE.toString())) {
-=======
-      // when renaming a partition, we should update
-      // 1) partition SD Location
-      // 2) partition column stats if there are any because of part_name field in HMS table PART_COL_STATS
-      // 3) rename the partition directory if it is not an external table
-      if (!tbl.getTableType().equals(TableType.EXTERNAL_TABLE.toString())) {
-        try {
-          // if tbl location is available use it
-          // else derive the tbl location from database location
-          destPath = wh.getPartitionPath(msdb.getDatabase(catName, dbname), tbl, new_part.getValues());
-          destPath = constructRenamedPath(destPath, new Path(new_part.getSd().getLocation()));
-        } catch (NoSuchObjectException e) {
-          LOG.debug("Didn't find object in metastore ", e);
-          throw new InvalidOperationException(
-            "Unable to change partition or table. Database " + dbname + " does not exist"
-              + " Check metastore logs for detailed stack." + e.getMessage());
-        }
-
-        if (destPath != null) {
-          newPartLoc = destPath.toString();
-          oldPartLoc = oldPart.getSd().getLocation();
-          LOG.info("srcPath:" + oldPartLoc);
-          LOG.info("descPath:" + newPartLoc);
-          srcPath = new Path(oldPartLoc);
-          srcFs = wh.getFs(srcPath);
-          destFs = wh.getFs(destPath);
-          // check that src and dest are on the same file system
-          if (!FileUtils.equalsFileSystem(srcFs, destFs)) {
-            throw new InvalidOperationException("New table location " + destPath
-              + " is on a different file system than the old location "
-              + srcPath + ". This operation is not supported.");
-          }
-
-          try {
-            if (srcFs.exists(srcPath)) {
-              if (newPartLoc.compareTo(oldPartLoc) != 0 && destFs.exists(destPath)) {
-                throw new InvalidOperationException("New location for this table "
-                  + tbl.getDbName() + "." + tbl.getTableName()
-                  + " already exists : " + destPath);
-              }
-              //if destPath's parent path doesn't exist, we should mkdir it
-              Path destParentPath = destPath.getParent();
-              if (!wh.mkdirs(destParentPath)) {
-                  throw new MetaException("Unable to create path " + destParentPath);
-              }
-
-              //rename the data directory
-              wh.renameDir(srcPath, destPath, true);
-              LOG.info("Partition directory rename from " + srcPath + " to " + destPath + " done.");
-              dataWasMoved = true;
-            }
-          } catch (IOException e) {
-            LOG.error("Cannot rename partition directory from " + srcPath + " to " + destPath, e);
-            throw new InvalidOperationException("Unable to access src or dest location for partition "
-                + tbl.getDbName() + "." + tbl.getTableName() + " " + new_part.getValues());
-          } catch (MetaException me) {
-            LOG.error("Cannot rename partition directory from " + srcPath + " to " + destPath, me);
-            throw me;
-          }
-
-          new_part.getSd().setLocation(newPartLoc);
-        }
-      } else {
->>>>>>> ba8a99e115... HIVE-18755 Modifications to the metastore for catalogs (Alan Gates, reviewed by Thejas Nair)
         new_part.getSd().setLocation(oldPart.getSd().getLocation());
       }
 
