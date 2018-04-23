@@ -318,7 +318,6 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
       ensureFileFormatsMatch(ts, files, fromURI);
     }
     inputs.add(toReadEntity(new Path(fromURI)));
-    Task<? extends Serializable> rTask = null;
 
     // create final load/move work
 
@@ -354,7 +353,8 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
 
     Long writeId = null;
     int stmtId = -1;
-    if (AcidUtils.isTransactionalTable(ts.tableHandle)) {
+    boolean isTxnTable = AcidUtils.isTransactionalTable(ts.tableHandle);
+    if (isTxnTable) {
       try {
         writeId = SessionState.get().getTxnMgr().getTableWriteId(ts.tableHandle.getDbName(),
                 ts.tableHandle.getTableName());
@@ -367,10 +367,11 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
     // Note: this sets LoadFileType incorrectly for ACID; is that relevant for load?
     //       See setLoadFileType and setIsAcidIow calls elsewhere for an example.
     LoadTableDesc loadTableWork = new LoadTableDesc(new Path(fromURI),
-      Utilities.getTableDesc(ts.tableHandle), partSpec,
-      isOverWrite ? LoadFileType.REPLACE_ALL : LoadFileType.KEEP_EXISTING, writeId);
+      Utilities.getTableDesc(ts.tableHandle), partSpec, isOverWrite
+        ? LoadFileType.REPLACE_ALL : LoadFileType.KEEP_EXISTING, writeId);
     loadTableWork.setStmtId(stmtId);
-    if (preservePartitionSpecs){
+    loadTableWork.setInsertOverwrite(isOverWrite);
+    if (preservePartitionSpecs) {
       // Note : preservePartitionSpecs=true implies inheritTableSpecs=false but
       // but preservePartitionSpecs=false(default) here is not sufficient enough
       // info to set inheritTableSpecs=true
@@ -381,13 +382,8 @@ public class LoadSemanticAnalyzer extends BaseSemanticAnalyzer {
         new MoveWork(getInputs(), getOutputs(), loadTableWork, null, true,
             isLocal)
     );
-    if (rTask != null) {
-      rTask.addDependentTask(childTask);
-    } else {
-      rTask = childTask;
-    }
 
-    rootTasks.add(rTask);
+    rootTasks.add(childTask);
 
     // The user asked for stats to be collected.
     // Some stats like number of rows require a scan of the data

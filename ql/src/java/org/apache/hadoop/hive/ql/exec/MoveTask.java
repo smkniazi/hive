@@ -373,7 +373,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
           }
           db.loadTable(tbd.getSourcePath(), tbd.getTable().getTableName(), tbd.getLoadFileType(),
               work.isSrcLocal(), isSkewedStoredAsDirs(tbd), isFullAcidOp, hasFollowingStatsTask(),
-              tbd.getWriteId(), tbd.getStmtId());
+              tbd.getWriteId(), tbd.getStmtId(), tbd.isInsertOverwrite());
           if (work.getOutputs() != null) {
             DDLTask.addIfAbsentByName(new WriteEntity(table,
               getWriteType(tbd, work.getLoadTableWork().getWriteType())), work.getOutputs());
@@ -469,12 +469,13 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         + " into " + tbd.getTable().getTableName());
     }
 
-    db.loadPartition(tbd.getSourcePath(), tbd.getTable().getTableName(),
-        tbd.getPartitionSpec(), tbd.getReplace(),
-        tbd.getInheritTableSpecs(), isSkewedStoredAsDirs(tbd), work.isSrcLocal(),
-        work.getLoadTableWork().getWriteType() != AcidUtils.Operation.NOT_ACID &&
+    db.loadPartition(tbd.getSourcePath(), db.getTable(tbd.getTable().getTableName()),
+        tbd.getPartitionSpec(), tbd.getLoadFileType(), tbd.getInheritTableSpecs(),
+        isSkewedStoredAsDirs(tbd), work.isSrcLocal(),
+         work.getLoadTableWork().getWriteType() != AcidUtils.Operation.NOT_ACID &&
             !tbd.isMmTable(),
-        hasFollowingStatsTask(), tbd.getWriteId(), tbd.getStmtId());
+         hasFollowingStatsTask(),
+        tbd.getWriteId(), tbd.getStmtId(), tbd.isInsertOverwrite());
     Partition partn = db.getPartition(table, tbd.getPartitionSpec(), false);
 
     // See the comment inside updatePartitionBucketSortColumns.
