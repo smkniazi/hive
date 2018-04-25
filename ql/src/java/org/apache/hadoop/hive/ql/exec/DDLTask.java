@@ -4355,21 +4355,6 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
         + " to MM is not supported. Please re-create a table in the desired format.");
   }
 
-  private static void ensureDelete(FileSystem fs, Path path, String what) throws IOException {
-    if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
-      Utilities.FILE_OP_LOGGER.trace("Deleting " + what + " " + path);
-    }
-    try {
-      if (!fs.delete(path, true)) {
-        throw new IOException("delete returned false");
-      }
-    } catch (Exception ex) {
-      String error = "Couldn't delete " + path + "; cannot remove MM setting from the table";
-      LOG.error(error, ex);
-      throw (ex instanceof IOException) ? (IOException)ex : new IOException(ex);
-    }
-  }
-
   private List<Task<?>> generateAddMmTasks(Table tbl, Long writeId) throws HiveException {
     // We will move all the files in the table/partition directories into the first MM
     // directory, then commit the first write ID.
