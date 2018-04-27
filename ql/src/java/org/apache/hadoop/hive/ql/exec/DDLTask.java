@@ -2723,7 +2723,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     return prop_string;
   }
 
-  private StringBuilder appendSerdeParams(StringBuilder builder, Map<String, String> serdeParam) {
+  public static StringBuilder appendSerdeParams(
+      StringBuilder builder, Map<String, String> serdeParam) {
     serdeParam = new TreeMap<String, String>(serdeParam);
     builder.append("WITH SERDEPROPERTIES ( \n");
     List<String> serdeCols = new ArrayList<String>();
