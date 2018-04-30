@@ -29,7 +29,6 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.common.ValidTxnList;
-import org.apache.hadoop.hive.common.ValidTxnWriteIdList;
 import org.apache.hadoop.hive.common.ValidWriteIdList;
 import org.apache.hadoop.hive.common.classification.RetrySemantics;
 import org.apache.hadoop.hive.metastore.annotation.NoReconnect;
@@ -3649,6 +3648,6 @@ public interface IMetaStoreClient {
   void addRuntimeStat(RuntimeStat stat) throws TException;
 
   /** Reads runtime statistics. */
-  List<RuntimeStat> getRuntimeStats() throws TException;
+  List<RuntimeStat> getRuntimeStats(int maxWeight, int maxCreateTime) throws TException;
 
 }

@@ -1558,6 +1558,8 @@ struct RuntimeStat {
 }
 
 struct GetRuntimeStatsRequest {
+  1: required i32 maxWeight,
+  2: required i32 maxCreateTime
 }
 
 // Exceptions.

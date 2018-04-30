@@ -31471,6 +31471,14 @@ GetRuntimeStatsRequest::~GetRuntimeStatsRequest() throw() {
 }
 
 
+void GetRuntimeStatsRequest::__set_maxWeight(const int32_t val) {
+  this->maxWeight = val;
+}
+
+void GetRuntimeStatsRequest::__set_maxCreateTime(const int32_t val) {
+  this->maxCreateTime = val;
+}
+
 uint32_t GetRuntimeStatsRequest::read(::apache::thrift::protocol::TProtocol* iprot) {
 
   apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
@@ -31483,6 +31491,8 @@ uint32_t GetRuntimeStatsRequest::read(::apache::thrift::protocol::TProtocol* ipr
 
   using ::apache::thrift::protocol::TProtocolException;
 
+  bool isset_maxWeight = false;
+  bool isset_maxCreateTime = false;
 
   while (true)
   {
@@ -31490,12 +31500,37 @@ uint32_t GetRuntimeStatsRequest::read(::apache::thrift::protocol::TProtocol* ipr
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->maxWeight);
+          isset_maxWeight = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->maxCreateTime);
+          isset_maxCreateTime = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
   xfer += iprot->readStructEnd();
 
+  if (!isset_maxWeight)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
+  if (!isset_maxCreateTime)
+    throw TProtocolException(TProtocolException::INVALID_DATA);
   return xfer;
 }
 
@@ -31504,6 +31539,14 @@ uint32_t GetRuntimeStatsRequest::write(::apache::thrift::protocol::TProtocol* op
   apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
   xfer += oprot->writeStructBegin("GetRuntimeStatsRequest");
 
+  xfer += oprot->writeFieldBegin("maxWeight", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32(this->maxWeight);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("maxCreateTime", ::apache::thrift::protocol::T_I32, 2);
+  xfer += oprot->writeI32(this->maxCreateTime);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -31511,20 +31554,24 @@ uint32_t GetRuntimeStatsRequest::write(::apache::thrift::protocol::TProtocol* op
 
 void swap(GetRuntimeStatsRequest &a, GetRuntimeStatsRequest &b) {
   using ::std::swap;
-  (void) a;
-  (void) b;
+  swap(a.maxWeight, b.maxWeight);
+  swap(a.maxCreateTime, b.maxCreateTime);
 }
 
 GetRuntimeStatsRequest::GetRuntimeStatsRequest(const GetRuntimeStatsRequest& other1179) {
-  (void) other1179;
+  maxWeight = other1179.maxWeight;
+  maxCreateTime = other1179.maxCreateTime;
 }
 GetRuntimeStatsRequest& GetRuntimeStatsRequest::operator=(const GetRuntimeStatsRequest& other1180) {
-  (void) other1180;
+  maxWeight = other1180.maxWeight;
+  maxCreateTime = other1180.maxCreateTime;
   return *this;
 }
 void GetRuntimeStatsRequest::printTo(std::ostream& out) const {
   using ::apache::thrift::to_string;
   out << "GetRuntimeStatsRequest(";
+  out << "maxWeight=" << to_string(maxWeight);
+  out << ", " << "maxCreateTime=" << to_string(maxCreateTime);
   out << ")";
 }
 
