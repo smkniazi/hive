@@ -73,10 +73,7 @@ import org.apache.hadoop.hive.ql.plan.SkewedColumnPositionPair;
 import org.apache.hadoop.hive.ql.plan.api.OperatorType;
 import org.apache.hadoop.hive.ql.stats.StatsCollectionContext;
 import org.apache.hadoop.hive.ql.stats.StatsPublisher;
-import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
-import org.apache.hadoop.hive.serde2.SerDeException;
-import org.apache.hadoop.hive.serde2.SerDeStats;
-import org.apache.hadoop.hive.serde2.Serializer;
+import org.apache.hadoop.hive.serde2.*;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.ObjectInspectorCopyOption;
@@ -93,6 +90,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hive.common.util.HiveStringUtils;
+import org.apache.hive.common.util.Murmur3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,6 +105,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_TEMPORARY_TABLE_STORAGE;
 
@@ -152,6 +151,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   private transient Path destTablePath;
   private transient boolean isInsertOverwrite;
   private transient String counterGroup;
+  private transient BiFunction<Object[], ObjectInspector[], Integer> hashFunc;
   /**
    * Counters.
    */
@@ -573,6 +573,11 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       logEveryNRows = HiveConf.getLongVar(hconf, HiveConf.ConfVars.HIVE_LOG_N_RECORDS);
 
       statsMap.put(getCounterName(Counter.RECORDS_OUT), row_count);
+
+      // Setup hashcode
+      hashFunc = conf.getTableInfo().getBucketingVersion() == 2 ?
+          ObjectInspectorUtils::getBucketHashCode :
+          ObjectInspectorUtils::getBucketHashCodeOld;
     } catch (HiveException e) {
       throw e;
     } catch (Exception e) {
@@ -1036,7 +1041,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       for(int i = 0; i < partitionEval.length; i++) {
         bucketFieldValues[i] = partitionEval[i].evaluate(row);
       }
-      int keyHashCode = ObjectInspectorUtils.getBucketHashCode(bucketFieldValues, partitionObjectInspectors);
+      int keyHashCode = hashFunc.apply(bucketFieldValues, partitionObjectInspectors);
       key.setHashCode(keyHashCode);
       int bucketNum = prtner.getBucket(key, null, totalFiles);
       return bucketMap.get(bucketNum);
@@ -1556,4 +1561,5 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   private boolean isNativeTable() {
     return !conf.getTableInfo().isNonNative();
   }
+
 }

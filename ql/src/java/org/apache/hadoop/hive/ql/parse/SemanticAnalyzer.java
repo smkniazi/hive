@@ -236,6 +236,7 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.Mode;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFCardinalityViolation;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFHash;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFMurmurHash;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPOr;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDTF;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDTFInline;
@@ -8415,9 +8416,15 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         sortCols.add(exprNode);
       }
     }
+
+    Table dest_tab = qb.getMetaData().getDestTableForAlias(dest);
+    AcidUtils.Operation acidOp = Operation.NOT_ACID;
+    if (AcidUtils.isFullAcidTable(dest_tab)) {
+      acidOp = getAcidType(Utilities.getTableDesc(dest_tab).getOutputFileFormatClass(), dest);
+    }
     Operator result = genReduceSinkPlan(
         input, partCols, sortCols, order.toString(), nullOrder.toString(),
-        numReducers, Operation.NOT_ACID, true);
+        numReducers, acidOp, true);
     if (result.getParentOperators().size() == 1 &&
         result.getParentOperators().get(0) instanceof ReduceSinkOperator) {
       ((ReduceSinkOperator) result.getParentOperators().get(0))
@@ -10810,7 +10817,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
    */
   private ExprNodeDesc genSamplePredicate(TableSample ts,
                                           List<String> bucketCols, boolean useBucketCols, String alias,
-                                          RowResolver rwsch, QBMetaData qbm, ExprNodeDesc planExpr)
+                                          RowResolver rwsch, QBMetaData qbm, ExprNodeDesc planExpr,
+                                          int bucketingVersion)
       throws SemanticException {
 
     ExprNodeDesc numeratorExpr = new ExprNodeConstantDesc(
@@ -10840,22 +10848,19 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
     ExprNodeDesc equalsExpr = null;
     {
       ExprNodeDesc hashfnExpr = new ExprNodeGenericFuncDesc(
-          TypeInfoFactory.intTypeInfo, new GenericUDFHash(), args);
-      assert (hashfnExpr != null);
+          TypeInfoFactory.intTypeInfo,
+              bucketingVersion == 2 ? new GenericUDFMurmurHash() : new GenericUDFHash(), args);
       LOG.info("hashfnExpr = " + hashfnExpr);
       ExprNodeDesc andExpr = TypeCheckProcFactory.DefaultExprProcessor
           .getFuncExprNodeDesc("&", hashfnExpr, intMaxExpr);
-      assert (andExpr != null);
       LOG.info("andExpr = " + andExpr);
       ExprNodeDesc modExpr = TypeCheckProcFactory.DefaultExprProcessor
           .getFuncExprNodeDesc("%", andExpr, denominatorExpr);
-      assert (modExpr != null);
       LOG.info("modExpr = " + modExpr);
       LOG.info("numeratorExpr = " + numeratorExpr);
       equalsExpr = TypeCheckProcFactory.DefaultExprProcessor
           .getFuncExprNodeDesc("==", modExpr, numeratorExpr);
       LOG.info("equalsExpr = " + equalsExpr);
-      assert (equalsExpr != null);
     }
     return equalsExpr;
   }
@@ -10956,6 +10961,9 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         topToTableProps.put(top, properties);
         tsDesc.setOpProps(properties);
       }
+
+      // Set the bucketing Version
+      top.setBucketingVersion(tsDesc.getTableMetadata().getBucketingVersion());
     } else {
       rwsch = opParseCtx.get(top).getRowResolver();
       top.setChildOperators(null);
@@ -11024,7 +11032,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         // later
         LOG.info("No need for sample filter");
         ExprNodeDesc samplePredicate = genSamplePredicate(ts, tabBucketCols,
-            colsEqual, alias, rwsch, qb.getMetaData(), null);
+            colsEqual, alias, rwsch, qb.getMetaData(), null,
+                tab.getBucketingVersion());
         FilterDesc filterDesc = new FilterDesc(
             samplePredicate, true, new SampleDesc(ts.getNumerator(),
             ts.getDenominator(), tabBucketCols, true));
@@ -11036,7 +11045,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
         // create tableOp to be filterDesc and set as child to 'top'
         LOG.info("Need sample filter");
         ExprNodeDesc samplePredicate = genSamplePredicate(ts, tabBucketCols,
-            colsEqual, alias, rwsch, qb.getMetaData(), null);
+            colsEqual, alias, rwsch, qb.getMetaData(), null,
+                tab.getBucketingVersion());
         FilterDesc filterDesc = new FilterDesc(samplePredicate, true);
         filterDesc.setGenerated(true);
         op = OperatorFactory.getAndMakeChild(filterDesc,
@@ -11067,7 +11077,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
             tsSample.setInputPruning(true);
             qb.getParseInfo().setTabSample(alias, tsSample);
             ExprNodeDesc samplePred = genSamplePredicate(tsSample, tab
-                .getBucketCols(), true, alias, rwsch, qb.getMetaData(), null);
+                .getBucketCols(), true, alias, rwsch, qb.getMetaData(), null,
+                    tab.getBucketingVersion());
             FilterDesc filterDesc = new FilterDesc(samplePred, true,
                 new SampleDesc(tsSample.getNumerator(), tsSample
                     .getDenominator(), tab.getBucketCols(), true));
@@ -11086,7 +11097,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
                 .getFuncExprNodeDesc("rand", new ExprNodeConstantDesc(Integer
                     .valueOf(460476415)));
             ExprNodeDesc samplePred = genSamplePredicate(tsSample, null, false,
-                alias, rwsch, qb.getMetaData(), randFunc);
+                alias, rwsch, qb.getMetaData(), randFunc, tab.getBucketingVersion());
             FilterDesc filterDesc = new FilterDesc(samplePred, true);
             filterDesc.setGenerated(true);
             op = OperatorFactory.getAndMakeChild(filterDesc,
