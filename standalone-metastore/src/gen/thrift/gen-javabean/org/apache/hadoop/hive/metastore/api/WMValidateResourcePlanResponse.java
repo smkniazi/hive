@@ -441,13 +441,13 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
           case 1: // ERRORS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list888 = iprot.readListBegin();
-                struct.errors = new ArrayList<String>(_list888.size);
-                String _elem889;
-                for (int _i890 = 0; _i890 < _list888.size; ++_i890)
+                org.apache.thrift.protocol.TList _list896 = iprot.readListBegin();
+                struct.errors = new ArrayList<String>(_list896.size);
+                String _elem897;
+                for (int _i898 = 0; _i898 < _list896.size; ++_i898)
                 {
-                  _elem889 = iprot.readString();
-                  struct.errors.add(_elem889);
+                  _elem897 = iprot.readString();
+                  struct.errors.add(_elem897);
                 }
                 iprot.readListEnd();
               }
@@ -459,13 +459,13 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
           case 2: // WARNINGS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list891 = iprot.readListBegin();
-                struct.warnings = new ArrayList<String>(_list891.size);
-                String _elem892;
-                for (int _i893 = 0; _i893 < _list891.size; ++_i893)
+                org.apache.thrift.protocol.TList _list899 = iprot.readListBegin();
+                struct.warnings = new ArrayList<String>(_list899.size);
+                String _elem900;
+                for (int _i901 = 0; _i901 < _list899.size; ++_i901)
                 {
-                  _elem892 = iprot.readString();
-                  struct.warnings.add(_elem892);
+                  _elem900 = iprot.readString();
+                  struct.warnings.add(_elem900);
                 }
                 iprot.readListEnd();
               }
@@ -492,9 +492,9 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
           oprot.writeFieldBegin(ERRORS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.errors.size()));
-            for (String _iter894 : struct.errors)
+            for (String _iter902 : struct.errors)
             {
-              oprot.writeString(_iter894);
+              oprot.writeString(_iter902);
             }
             oprot.writeListEnd();
           }
@@ -506,9 +506,9 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
           oprot.writeFieldBegin(WARNINGS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.warnings.size()));
-            for (String _iter895 : struct.warnings)
+            for (String _iter903 : struct.warnings)
             {
-              oprot.writeString(_iter895);
+              oprot.writeString(_iter903);
             }
             oprot.writeListEnd();
           }
@@ -543,18 +543,18 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
       if (struct.isSetErrors()) {
         {
           oprot.writeI32(struct.errors.size());
-          for (String _iter896 : struct.errors)
+          for (String _iter904 : struct.errors)
           {
-            oprot.writeString(_iter896);
+            oprot.writeString(_iter904);
           }
         }
       }
       if (struct.isSetWarnings()) {
         {
           oprot.writeI32(struct.warnings.size());
-          for (String _iter897 : struct.warnings)
+          for (String _iter905 : struct.warnings)
           {
-            oprot.writeString(_iter897);
+            oprot.writeString(_iter905);
           }
         }
       }
@@ -566,26 +566,26 @@ public class WMValidateResourcePlanResponse implements org.apache.thrift.TBase<W
       BitSet incoming = iprot.readBitSet(2);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list898 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.errors = new ArrayList<String>(_list898.size);
-          String _elem899;
-          for (int _i900 = 0; _i900 < _list898.size; ++_i900)
+          org.apache.thrift.protocol.TList _list906 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.errors = new ArrayList<String>(_list906.size);
+          String _elem907;
+          for (int _i908 = 0; _i908 < _list906.size; ++_i908)
           {
-            _elem899 = iprot.readString();
-            struct.errors.add(_elem899);
+            _elem907 = iprot.readString();
+            struct.errors.add(_elem907);
           }
         }
         struct.setErrorsIsSet(true);
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list901 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.warnings = new ArrayList<String>(_list901.size);
-          String _elem902;
-          for (int _i903 = 0; _i903 < _list901.size; ++_i903)
+          org.apache.thrift.protocol.TList _list909 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.warnings = new ArrayList<String>(_list909.size);
+          String _elem910;
+          for (int _i911 = 0; _i911 < _list909.size; ++_i911)
           {
-            _elem902 = iprot.readString();
-            struct.warnings.add(_elem902);
+            _elem910 = iprot.readString();
+            struct.warnings.add(_elem910);
           }
         }
         struct.setWarningsIsSet(true);

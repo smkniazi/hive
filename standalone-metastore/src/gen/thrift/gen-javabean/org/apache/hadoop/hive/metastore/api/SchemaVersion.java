@@ -1119,14 +1119,14 @@ public class SchemaVersion implements org.apache.thrift.TBase<SchemaVersion, Sch
           case 4: // COLS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list912 = iprot.readListBegin();
-                struct.cols = new ArrayList<FieldSchema>(_list912.size);
-                FieldSchema _elem913;
-                for (int _i914 = 0; _i914 < _list912.size; ++_i914)
+                org.apache.thrift.protocol.TList _list920 = iprot.readListBegin();
+                struct.cols = new ArrayList<FieldSchema>(_list920.size);
+                FieldSchema _elem921;
+                for (int _i922 = 0; _i922 < _list920.size; ++_i922)
                 {
-                  _elem913 = new FieldSchema();
-                  _elem913.read(iprot);
-                  struct.cols.add(_elem913);
+                  _elem921 = new FieldSchema();
+                  _elem921.read(iprot);
+                  struct.cols.add(_elem921);
                 }
                 iprot.readListEnd();
               }
@@ -1212,9 +1212,9 @@ public class SchemaVersion implements org.apache.thrift.TBase<SchemaVersion, Sch
         oprot.writeFieldBegin(COLS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.cols.size()));
-          for (FieldSchema _iter915 : struct.cols)
+          for (FieldSchema _iter923 : struct.cols)
           {
-            _iter915.write(oprot);
+            _iter923.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -1323,9 +1323,9 @@ public class SchemaVersion implements org.apache.thrift.TBase<SchemaVersion, Sch
       if (struct.isSetCols()) {
         {
           oprot.writeI32(struct.cols.size());
-          for (FieldSchema _iter916 : struct.cols)
+          for (FieldSchema _iter924 : struct.cols)
           {
-            _iter916.write(oprot);
+            _iter924.write(oprot);
           }
         }
       }
@@ -1368,14 +1368,14 @@ public class SchemaVersion implements org.apache.thrift.TBase<SchemaVersion, Sch
       }
       if (incoming.get(3)) {
         {
-          org.apache.thrift.protocol.TList _list917 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.cols = new ArrayList<FieldSchema>(_list917.size);
-          FieldSchema _elem918;
-          for (int _i919 = 0; _i919 < _list917.size; ++_i919)
+          org.apache.thrift.protocol.TList _list925 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.cols = new ArrayList<FieldSchema>(_list925.size);
+          FieldSchema _elem926;
+          for (int _i927 = 0; _i927 < _list925.size; ++_i927)
           {
-            _elem918 = new FieldSchema();
-            _elem918.read(iprot);
-            struct.cols.add(_elem918);
+            _elem926 = new FieldSchema();
+            _elem926.read(iprot);
+            struct.cols.add(_elem926);
           }
         }
         struct.setColsIsSet(true);

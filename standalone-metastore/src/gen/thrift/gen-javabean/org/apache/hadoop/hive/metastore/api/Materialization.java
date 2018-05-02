@@ -589,13 +589,13 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
           case 1: // TABLES_USED
             if (schemeField.type == org.apache.thrift.protocol.TType.SET) {
               {
-                org.apache.thrift.protocol.TSet _set840 = iprot.readSetBegin();
-                struct.tablesUsed = new HashSet<String>(2*_set840.size);
-                String _elem841;
-                for (int _i842 = 0; _i842 < _set840.size; ++_i842)
+                org.apache.thrift.protocol.TSet _set848 = iprot.readSetBegin();
+                struct.tablesUsed = new HashSet<String>(2*_set848.size);
+                String _elem849;
+                for (int _i850 = 0; _i850 < _set848.size; ++_i850)
                 {
-                  _elem841 = iprot.readString();
-                  struct.tablesUsed.add(_elem841);
+                  _elem849 = iprot.readString();
+                  struct.tablesUsed.add(_elem849);
                 }
                 iprot.readSetEnd();
               }
@@ -645,9 +645,9 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
         oprot.writeFieldBegin(TABLES_USED_FIELD_DESC);
         {
           oprot.writeSetBegin(new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, struct.tablesUsed.size()));
-          for (String _iter843 : struct.tablesUsed)
+          for (String _iter851 : struct.tablesUsed)
           {
-            oprot.writeString(_iter843);
+            oprot.writeString(_iter851);
           }
           oprot.writeSetEnd();
         }
@@ -689,9 +689,9 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
       TTupleProtocol oprot = (TTupleProtocol) prot;
       {
         oprot.writeI32(struct.tablesUsed.size());
-        for (String _iter844 : struct.tablesUsed)
+        for (String _iter852 : struct.tablesUsed)
         {
-          oprot.writeString(_iter844);
+          oprot.writeString(_iter852);
         }
       }
       BitSet optionals = new BitSet();
@@ -720,13 +720,13 @@ public class Materialization implements org.apache.thrift.TBase<Materialization,
     public void read(org.apache.thrift.protocol.TProtocol prot, Materialization struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       {
-        org.apache.thrift.protocol.TSet _set845 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-        struct.tablesUsed = new HashSet<String>(2*_set845.size);
-        String _elem846;
-        for (int _i847 = 0; _i847 < _set845.size; ++_i847)
+        org.apache.thrift.protocol.TSet _set853 = new org.apache.thrift.protocol.TSet(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+        struct.tablesUsed = new HashSet<String>(2*_set853.size);
+        String _elem854;
+        for (int _i855 = 0; _i855 < _set853.size; ++_i855)
         {
-          _elem846 = iprot.readString();
-          struct.tablesUsed.add(_elem846);
+          _elem854 = iprot.readString();
+          struct.tablesUsed.add(_elem854);
         }
       }
       struct.setTablesUsedIsSet(true);
