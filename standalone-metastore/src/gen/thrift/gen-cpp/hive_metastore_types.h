@@ -3055,7 +3055,7 @@ inline std::ostream& operator<<(std::ostream& out, const StorageDescriptor& obj)
 }
 
 typedef struct _Table__isset {
-  _Table__isset() : tableName(false), dbName(false), owner(false), createTime(false), lastAccessTime(false), retention(false), sd(false), partitionKeys(false), parameters(false), viewOriginalText(false), viewExpandedText(false), tableType(false), privileges(false), temporary(true), rewriteEnabled(false), creationMetadata(false), catName(false) {}
+  _Table__isset() : tableName(false), dbName(false), owner(false), createTime(false), lastAccessTime(false), retention(false), sd(false), partitionKeys(false), parameters(false), viewOriginalText(false), viewExpandedText(false), tableType(false), privileges(false), temporary(true), rewriteEnabled(false), creationMetadata(false), catName(false), ownerType(true) {}
   bool tableName :1;
   bool dbName :1;
   bool owner :1;
@@ -3073,6 +3073,7 @@ typedef struct _Table__isset {
   bool rewriteEnabled :1;
   bool creationMetadata :1;
   bool catName :1;
+  bool ownerType :1;
 } _Table__isset;
 
 class Table {
@@ -3080,7 +3081,9 @@ class Table {
 
   Table(const Table&);
   Table& operator=(const Table&);
-  Table() : tableName(), dbName(), owner(), createTime(0), lastAccessTime(0), retention(0), viewOriginalText(), viewExpandedText(), tableType(), temporary(false), rewriteEnabled(0), catName() {
+  Table() : tableName(), dbName(), owner(), createTime(0), lastAccessTime(0), retention(0), viewOriginalText(), viewExpandedText(), tableType(), temporary(false), rewriteEnabled(0), catName(), ownerType((PrincipalType::type)1) {
+    ownerType = (PrincipalType::type)1;
+
   }
 
   virtual ~Table() throw();
@@ -3101,6 +3104,7 @@ class Table {
   bool rewriteEnabled;
   CreationMetadata creationMetadata;
   std::string catName;
+  PrincipalType::type ownerType;
 
   _Table__isset __isset;
 
@@ -3137,6 +3141,8 @@ class Table {
   void __set_creationMetadata(const CreationMetadata& val);
 
   void __set_catName(const std::string& val);
+
+  void __set_ownerType(const PrincipalType::type val);
 
   bool operator == (const Table & rhs) const
   {
@@ -3183,6 +3189,10 @@ class Table {
     if (__isset.catName != rhs.__isset.catName)
       return false;
     else if (__isset.catName && !(catName == rhs.catName))
+      return false;
+    if (__isset.ownerType != rhs.__isset.ownerType)
+      return false;
+    else if (__isset.ownerType && !(ownerType == rhs.ownerType))
       return false;
     return true;
   }
