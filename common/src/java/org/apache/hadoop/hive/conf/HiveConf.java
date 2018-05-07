@@ -2427,7 +2427,8 @@ public class HiveConf extends Configuration {
         "2. When HiveServer2 supports service discovery via Zookeeper.\n" +
         "3. For delegation token storage if zookeeper store is used, if\n" +
         "hive.cluster.delegation.token.store.zookeeper.connectString is not set\n" +
-        "4. LLAP daemon registry service"),
+        "4. LLAP daemon registry service\n" +
+        "5. Leader selection for privilege synchronizer"),
 
     HIVE_ZOOKEEPER_CLIENT_PORT("hive.zookeeper.client.port", "2181",
         "The port of ZooKeeper servers to talk to.\n" +
@@ -2987,6 +2988,12 @@ public class HiveConf extends Configuration {
 
     HIVE_HTTPS_SSL_PROTOCOL_BLACKLIST("hive.https.ssl.protocol.blacklist", "SSLv2,SSLv3",
         "SSL Versions to disable for all Hive Servers"),
+
+    HIVE_PRIVILEGE_SYNCHRONIZER("hive.privilege.synchronizer", false,
+        "Synchronize privileges from external authorizer such as ranger to Hive periodically in HS2"),
+    HIVE_PRIVILEGE_SYNCHRONIZER_INTERVAL("hive.privilege.synchronizer.interval",
+        "1800s", new TimeValidator(TimeUnit.SECONDS),
+        "Interval to synchronize privileges from external authorizer periodically in HS2"),
 
      // HiveServer2 specific configs
     HIVE_SERVER2_CLEAR_DANGLING_SCRATCH_DIR("hive.server2.clear.dangling.scratchdir", false,
@@ -4306,6 +4313,8 @@ public class HiveConf extends Configuration {
             "hive.server2.authentication.ldap.userMembershipKey," +
             "hive.server2.authentication.ldap.groupClassKey," +
             "hive.server2.authentication.ldap.customLDAPQuery," +
+            "hive.privilege.synchronizer," +
+            "hive.privilege.synchronizer.interval," +
             "hive.spark.client.connect.timeout," +
             "hive.spark.client.server.connect.timeout," +
             "hive.spark.client.channel.log.level," +

@@ -56,6 +56,7 @@ import org.apache.curator.framework.api.ACLProvider;
 import org.apache.curator.framework.api.BackgroundCallback;
 import org.apache.curator.framework.api.CuratorEvent;
 import org.apache.curator.framework.api.CuratorEventType;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.recipes.nodes.PersistentEphemeralNode;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -83,6 +84,8 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.metadata.HiveMaterializedViewsRegistry;
 import org.apache.hadoop.hive.ql.metadata.events.NotificationEventPoll;
 import org.apache.hadoop.hive.ql.plan.mapper.StatsSources;
+import org.apache.hadoop.hive.ql.security.authorization.PrivilegeSynchonizer;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizer;
 import org.apache.hadoop.hive.ql.session.ClearDanglingScratchDir;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.hive.ql.util.ZooKeeperHiveHelper;
@@ -141,6 +144,7 @@ public class HiveServer2 extends CompositeService {
   private ArrayList<Service> thriftCLIServices;
   private PersistentEphemeralNode znode;
   private CuratorFramework zooKeeperClient;
+  private CuratorFramework zKClientForPrivSync = null;
   private boolean deregisteredWithZooKeeper = false; // Set to true only when deregistration happens
   private HttpServer webServer; // Web UI
   private CertificateLocalizationService certLocService = null;
@@ -495,17 +499,9 @@ public class HiveServer2 extends CompositeService {
     }
   };
 
-  /**
-   * Adds a server instance to ZooKeeper as a znode.
-   *
-   * @param hiveConf
-   * @throws Exception
-   */
-  private void addServerInstanceToZooKeeper(HiveConf hiveConf, Map<String, String> confsToPublish) throws Exception {
-    String zooKeeperEnsemble = ZooKeeperHiveHelper.getQuorumServers(hiveConf);
-    String rootNamespace = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_NAMESPACE);
-    List<String> instanceURIs = getServerInstanceURI();
+  private CuratorFramework startZookeeperClient(HiveConf hiveConf) throws Exception {
     setUpZooKeeperAuth(hiveConf);
+    String zooKeeperEnsemble = ZooKeeperHiveHelper.getQuorumServers(hiveConf);
     int sessionTimeout =
         (int) hiveConf.getTimeVar(HiveConf.ConfVars.HIVE_ZOOKEEPER_SESSION_TIMEOUT,
             TimeUnit.MILLISECONDS);
@@ -515,14 +511,16 @@ public class HiveServer2 extends CompositeService {
     int maxRetries = hiveConf.getIntVar(HiveConf.ConfVars.HIVE_ZOOKEEPER_CONNECTION_MAX_RETRIES);
     // Create a CuratorFramework instance to be used as the ZooKeeper client
     // Use the zooKeeperAclProvider to create appropriate ACLs
-    zooKeeperClient =
+    CuratorFramework zkClient =
         CuratorFrameworkFactory.builder().connectString(zooKeeperEnsemble)
             .sessionTimeoutMs(sessionTimeout).aclProvider(zooKeeperAclProvider)
             .retryPolicy(new ExponentialBackoffRetry(baseSleepTime, maxRetries)).build();
-    zooKeeperClient.start();
+    zkClient.start();
+
     // Create the parent znodes recursively; ignore if the parent already exists.
+    String rootNamespace = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_NAMESPACE);
     try {
-      zooKeeperClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT)
+      zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT)
           .forPath(ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + rootNamespace);
       LOG.info("Created the root name space: " + rootNamespace + " on ZooKeeper for HiveServer2");
     } catch (KeeperException e) {
@@ -531,7 +529,21 @@ public class HiveServer2 extends CompositeService {
         throw e;
       }
     }
-    for (String instanceURI : instanceURIs) {
+
+    return zkClient;
+  }
+
+  /**
+   * Adds a server instance to ZooKeeper as a znode.
+   *
+   * @param hiveConf
+   * @throws Exception
+   */
+  private void addServerInstanceToZooKeeper(HiveConf hiveConf, Map<String, String> confsToPublish) throws Exception {
+    zooKeeperClient = startZookeeperClient(hiveConf);
+    String rootNamespace = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_NAMESPACE);
+
+    for (String instanceURI : getServerInstanceURI()) {
       // Create a znode under the rootNamespace parent for this instance of the server
       // Znode name: serverUri=host:port;version=versionInfo;sequence=sequenceNumber
       try {
@@ -573,7 +585,6 @@ public class HiveServer2 extends CompositeService {
         if (znode != null) {
           znode.close();
         }
-        throw (e);
       }
     }
   }
@@ -769,6 +780,14 @@ public class HiveServer2 extends CompositeService {
         throw new ServiceException(e);
       }
     }
+
+    try {
+      startPrivilegeSynchonizer(hiveConf);
+    } catch (Exception e) {
+      LOG.error("Error starting priviledge synchonizer: ", e);
+      throw new ServiceException(e);
+    }
+
     if (webServer != null) {
       try {
         webServer.start();
@@ -980,11 +999,16 @@ public class HiveServer2 extends CompositeService {
       }
     }
 
+<<<<<<< HEAD
 
     if (hiveConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
         CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
       // Stop the CertificateLocalizationService
       certLocService.stop();
+=======
+    if (zKClientForPrivSync != null) {
+      zKClientForPrivSync.close();
+>>>>>>> 61ec445c02... HIVE-19161: Add authorizations to information schema (Daniel Dai, reviewed by Thejas Nair)
     }
   }
 
@@ -1016,6 +1040,27 @@ public class HiveServer2 extends CompositeService {
           HiveConf.getVar(hiveConf, HiveConf.ConfVars.SCRATCHDIR), hiveConf), initialWaitInSec,
           HiveConf.getTimeVar(hiveConf, ConfVars.HIVE_SERVER2_CLEAR_DANGLING_SCRATCH_DIR_INTERVAL,
           TimeUnit.SECONDS), TimeUnit.SECONDS);
+    }
+  }
+
+  public void startPrivilegeSynchonizer(HiveConf hiveConf) throws Exception {
+    if (hiveConf.getBoolVar(ConfVars.HIVE_PRIVILEGE_SYNCHRONIZER)) {
+      zKClientForPrivSync = startZookeeperClient(hiveConf);
+      String rootNamespace = hiveConf.getVar(HiveConf.ConfVars.HIVE_SERVER2_ZOOKEEPER_NAMESPACE);
+      String path = ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + rootNamespace
+          + ZooKeeperHiveHelper.ZOOKEEPER_PATH_SEPARATOR + "leader";
+      LeaderLatch privilegeSynchonizerLatch = new LeaderLatch(zKClientForPrivSync, path);
+      privilegeSynchonizerLatch.start();
+      HiveAuthorizer authorizer = SessionState.get().getAuthorizerV2();
+      if (authorizer.getHivePolicyProvider() == null) {
+        LOG.warn(
+            "Cannot start PrivilegeSynchonizer, policyProvider of " + authorizer.getClass().getName() + " is null");
+        privilegeSynchonizerLatch.close();
+        return;
+      }
+      Thread privilegeSynchonizerThread = new Thread(
+          new PrivilegeSynchonizer(privilegeSynchonizerLatch, authorizer, hiveConf), "PrivilegeSynchonizer");
+      privilegeSynchonizerThread.start();
     }
   }
 

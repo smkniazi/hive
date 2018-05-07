@@ -40,6 +40,7 @@ import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.FileMetadataExprType;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.HiveObjectPrivilege;
+import org.apache.hadoop.hive.metastore.api.HiveObjectRef;
 import org.apache.hadoop.hive.metastore.api.ISchema;
 import org.apache.hadoop.hive.metastore.api.InvalidInputException;
 import org.apache.hadoop.hive.metastore.api.InvalidObjectException;
@@ -524,6 +525,12 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   public boolean revokePrivileges(PrivilegeBag privileges, boolean grantOption)
       throws InvalidObjectException, MetaException, NoSuchObjectException {
 
+    return false;
+  }
+
+  @Override
+  public boolean refreshPrivileges(HiveObjectRef objToRefresh, PrivilegeBag grantPrivileges)
+      throws InvalidObjectException, MetaException, NoSuchObjectException {
     return false;
   }
 
