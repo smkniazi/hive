@@ -178,7 +178,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
     Path[] finalPaths;
     RecordWriter[] outWriters;
     RecordUpdater[] updaters;
-    private Stat stat;
+    Stat stat;
     int acidLastBucket = -1;
     int acidFileOffset = -1;
     private boolean isMmTable;
@@ -238,7 +238,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         try {
           commitOneOutPath(idx, fs, commitPaths);
         } catch (IOException e) {
-          throw new HiveException("Unable to rename output from: " +
+          throw new HiveException("Unable to commit output from: " +
               outPaths[idx] + " to: " + finalPaths[idx], e);
         }
       }
@@ -262,8 +262,18 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           assert outPaths[idx].equals(finalPaths[idx]);
           commitPaths.add(outPaths[idx]);
         } else if (!fs.rename(outPaths[idx], finalPaths[idx])) {
-          throw new HiveException("Unable to rename output from: "
-              + outPaths[idx] + " to: " + finalPaths[idx]);
+            FileStatus fileStatus = FileUtils.getFileStatusOrNull(fs, finalPaths[idx]);
+            if (fileStatus != null) {
+              LOG.warn("Target path " + finalPaths[idx] + " with a size " + fileStatus.getLen() + " exists. Trying to delete it.");
+              if (!fs.delete(finalPaths[idx], true)) {
+                throw new HiveException("Unable to delete existing target output: " + finalPaths[idx]);
+              }
+            }
+
+            if (!fs.rename(outPaths[idx], finalPaths[idx])) {
+              throw new HiveException("Unable to rename output from: "
+                + outPaths[idx] + " to: " + finalPaths[idx]);
+            }
         }
       }
 
@@ -730,8 +740,15 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       Utilities.copyTableJobPropertiesToConf(conf.getTableInfo(), jc);
       // only create bucket files only if no dynamic partitions,
       // buckets of dynamic partitions will be created for each newly created partition
+      //todo IOW integration. Full Acid uses the else if block to create Acid's RecordUpdater (HiveFileFormatUtils)
+      // and that will set writingBase(conf.getInsertOverwrite())
+      // If MM wants to create a new base for IOW (instead of delta dir), it should specify it here
       if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID || conf.isMmTable()) {
         Path outPath = fsp.outPaths[filesIdx];
+        if (conf.isMmTable()
+            && !FileUtils.mkdir(fs, outPath.getParent(), hconf)) {
+          LOG.warn("Unable to create directory with inheritPerms: " + outPath);
+        }
         fsp.outWriters[filesIdx] = HiveFileFormatUtils.getHiveRecordWriter(jc, conf.getTableInfo(),
             outputClass, conf, outPath, reporter);
         // If the record writer provides stats, get it from there instead of the serde
@@ -938,7 +955,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       // for a given operator branch prediction should work quite nicely on it.
       // RecordUpdateer expects to get the actual row, not a serialized version of it.  Thus we
       // pass the row rather than recordValue.
-      if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID) {
+      if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID || conf.isMmTable()) {
         rowOutWriters[findWriterOffset(row)].write(recordValue);
       } else if (conf.getWriteType() == AcidUtils.Operation.INSERT) {
         fpaths.updaters[findWriterOffset(row)].insert(conf.getTableWriteId(), row);
@@ -1049,6 +1066,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   /**
    * create new path.
    *
+   * @param dirName
    * @return
    * @throws HiveException
    */

@@ -671,7 +671,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
       // or else the metastore won't be able to operate on the FS if the certificate is rotated.
 
       clientCertUpdaterThread = new Thread(new ClientCertUpdater(client, securityMaterial));
-      clientCertUpdaterThread.run();
+      clientCertUpdaterThread.start();
     }
 
     return securityMaterial;

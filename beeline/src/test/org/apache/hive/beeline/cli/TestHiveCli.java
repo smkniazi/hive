@@ -295,7 +295,10 @@ public class TestHiveCli {
 
   @Before
   public void setup() {
-    System.setProperty("datanucleus.schema.autoCreateAll", "true");
+    System.setProperty("datanucleus.schema.autoCreateSchema", "true");
+    System.setProperty("datanucleus.schema.autoCreateTables", "true");
+    System.setProperty("datanucleus.schema.autoCreateColumns", "true");
+    System.setProperty("hops.metadata.consistent", "false");
     cli = new HiveCli();
     redirectOutputStream();
     initFromFile();

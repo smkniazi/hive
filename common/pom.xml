@@ -308,9 +308,15 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk16</artifactId>
-      <version>1.46</version>
+      <artifactId>bcprov-jdk15on</artifactId>
       <scope>test</scope>
+      <version>1.60</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <scope>test</scope>
+      <version>1.60</version>
     </dependency>
     <dependency>
       <groupId>javolution</groupId>

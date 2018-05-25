@@ -1289,6 +1289,14 @@ public class HiveConf extends Configuration {
     @Deprecated
     METASTORE_CONNECTION_USER_NAME("javax.jdo.option.ConnectionUserName", "APP",
         "Username to use against metastore database"),
+
+    /**
+     * @deprecated Use MetastoreConf.HOPSMETADATACONSISTENCY
+     */
+    @Deprecated
+    HOPSMETADATACONSISTENCY("hops.metadata.consistent", true,
+        "Whether or not to enforce HopsFS/Hive metadata consistency"),
+
     /**
      * @deprecated Use MetastoreConf.END_FUNCTION_LISTENERS
      */
@@ -5161,10 +5169,8 @@ public class HiveConf extends Configuration {
       addResource(hiveServer2SiteUrl);
     }
 
-    // Load ssl-server.xml (in HADOOP_CONF_DIR) if SSL is enabled
-    // and we are not in the context of a client
-    if (!client && getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
-        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+    // Load ssl-server.xml (in HADOOP_CONF_DIR) if we are not in the context of a client
+    if (!client) {
       addResource(get(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml"));
     }
 

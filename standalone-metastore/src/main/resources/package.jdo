@@ -27,6 +27,7 @@
 -->
 <jdo>
   <package name="org.apache.hadoop.hive.metastore.model">
+
     <class name="MDatabase" identity-type="datastore" table="DBS" detachable="true">
       <datastore-identity>
         <column name="DB_ID"/>

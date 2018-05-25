@@ -496,7 +496,7 @@ public class TestTxnCommands2 {
         sawNewBase = true;
         FileStatus[] buckets = fs.listStatus(status[i].getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER);
         Assert.assertEquals(2, buckets.length);
-        Assert.assertTrue(buckets[0].getPath().getName().matches("bucket_00001"));
+        Assert.assertTrue(buckets[0].getPath().getName().matches("bucket_0000[01]"));
       }
     }
     Assert.assertTrue(sawNewBase);
@@ -529,7 +529,7 @@ public class TestTxnCommands2 {
     Assert.assertTrue(status[0].getPath().getName().matches("base_.*"));
     FileStatus[] buckets = fs.listStatus(status[0].getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER);
     Assert.assertEquals(2, buckets.length);
-    Assert.assertTrue(buckets[0].getPath().getName().matches("bucket_00001"));
+    Assert.assertTrue(buckets[0].getPath().getName().matches("bucket_0000[01]"));
     rs = runStatementOnDriver("select a,b from " + Table.NONACIDORCTBL);
     resultData = new int[][] {{3, 4}, {1, 2}};
     Assert.assertEquals(stringifyValuesNoSort(resultData), rs);
@@ -634,7 +634,7 @@ public class TestTxnCommands2 {
         sawNewBase = true;
         FileStatus[] buckets = fs.listStatus(status[i].getPath(), FileUtils.HIDDEN_FILES_PATH_FILTER);
         Assert.assertEquals(BUCKET_COUNT - 1, buckets.length);
-        Assert.assertTrue(buckets[0].getPath().getName().matches("bucket_00001"));
+        Assert.assertTrue(buckets[0].getPath().getName().matches("bucket_0000[01]"));
       }
     }
     Assert.assertTrue(sawNewBase);

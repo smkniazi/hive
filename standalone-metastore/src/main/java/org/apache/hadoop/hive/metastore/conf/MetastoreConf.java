@@ -934,8 +934,7 @@ public class MetastoreConf {
         new TimeValidator(TimeUnit.MILLISECONDS, 500L, false, 1500L, false), "comment"),
     BOOLEAN_TEST_ENTRY("test.bool", "hive.test.bool", true, "comment"),
     CLASS_TEST_ENTRY("test.class", "hive.test.class", "", "comment"),
-    HOPSDBURLKEY("hops.db.ConnectionURL", "hops.db.ConnectionURL",
-        "jdbc:mysql:://myhost/hops",
+    HOPSDBURLKEY("hops.db.ConnectionURL", "hops.db.ConnectionURL","",
         "JDBC connect string to connect to HOPS db.\n" +
         "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
         "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
@@ -1177,12 +1176,8 @@ public class MetastoreConf {
       conf.addResource(metastoreSiteURL);
     }
 
-    // Load ssl-server.xml (in HADOOP_CONF_DIR) if SSL is enabled
-    // and we are not in the context of a client
-    if (conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
-        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
-      conf.addResource(conf.get(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml"));
-    }
+    // Load ssl-server.xml (in HADOOP_CONF_DIR)
+    conf.addResource(conf.get(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml"));
 
     // If a system property that matches one of our conf value names is set then use the value
     // it's set to to set our own conf value.

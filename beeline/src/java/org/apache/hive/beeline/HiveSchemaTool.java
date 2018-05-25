@@ -202,9 +202,11 @@ public class HiveSchemaTool {
     boolean isValid = true;
     int numOfInvalid = 0;
     if (needsQuotedIdentifier) {
-      dbLoc = "select dbt.\"DB_ID\", dbt.\"NAME\", dbt.\"DB_LOCATION_URI\" from \"DBS\" dbt order by dbt.\"DB_ID\" ";
+      dbLoc = "select dbt.\"DB_ID\", dbt.\"NAME\", sdt.\"LOCATION\" " +
+          "from \"DBS\" dbt left outer join \"SDS\" sdt  order by dbt.\"DB_ID\" ";
     } else {
-      dbLoc = "select dbt.DB_ID, dbt.NAME, dbt.DB_LOCATION_URI from DBS dbt order by dbt.DB_ID";
+      dbLoc = "select dbt.DB_ID, dbt.NAME, sdt.LOCATION " +
+          "from DBS dbt left outer join SDS sdt order by dbt.DB_ID";
     }
 
     try(Statement stmt = conn.createStatement();

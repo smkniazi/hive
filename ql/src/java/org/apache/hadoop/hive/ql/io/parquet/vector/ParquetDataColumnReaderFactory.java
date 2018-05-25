@@ -28,6 +28,8 @@ import org.apache.hadoop.hive.serde2.typeinfo.CharTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
+import org.apache.parquet.bytes.ByteBufferInputStream;
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.column.values.ValuesReader;
 import org.apache.parquet.io.api.Binary;
@@ -72,13 +74,9 @@ public final class ParquetDataColumnReaderFactory {
       this.length = length;
     }
 
-    public void initFromPage(int i, ByteBuffer byteBuffer, int i1) throws IOException {
-      valuesReader.initFromPage(i, byteBuffer, i1);
-    }
-
     @Override
-    public void initFromPage(int valueCount, byte[] page, int offset) throws IOException {
-      this.initFromPage(valueCount, ByteBuffer.wrap(page), offset);
+    public void initFromPage(int i, ByteBufferInputStream in) throws IOException {
+      valuesReader.initFromPage(i, in);
     }
 
     @Override
