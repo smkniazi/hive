@@ -203,7 +203,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 17008
+   HDFS_BYTES_READ: 17011
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 6
    HDFS_LARGE_READ_OPS: 0
@@ -779,7 +779,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 16898
+   HDFS_BYTES_READ: 16901
    HDFS_BYTES_WRITTEN: 104
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -798,7 +798,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 17728
+   HDFS_BYTES_READ: 17731
    HDFS_BYTES_WRITTEN: 104
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -817,7 +817,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 16898
+   HDFS_BYTES_READ: 16901
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -836,7 +836,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 17728
+   HDFS_BYTES_READ: 17731
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -855,7 +855,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 16898
+   HDFS_BYTES_READ: 16901
    HDFS_BYTES_WRITTEN: 102
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -874,7 +874,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 17728
+   HDFS_BYTES_READ: 17731
    HDFS_BYTES_WRITTEN: 102
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -951,7 +951,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 21458
+   HDFS_BYTES_READ: 21461
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -970,7 +970,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 23336
+   HDFS_BYTES_READ: 23339
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -993,7 +993,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 21458
+   HDFS_BYTES_READ: 21461
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1012,7 +1012,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 23336
+   HDFS_BYTES_READ: 23339
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1089,7 +1089,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 20629
+   HDFS_BYTES_READ: 20632
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1108,7 +1108,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 22364
+   HDFS_BYTES_READ: 22367
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1185,7 +1185,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 20629
+   HDFS_BYTES_READ: 20632
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1204,7 +1204,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 22364
+   HDFS_BYTES_READ: 22367
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1308,7 +1308,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 18747
+   HDFS_BYTES_READ: 18750
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0
@@ -1354,7 +1354,7 @@ PREHOOK: type: QUERY
 PREHOOK: Input: default@orc_ppd
 #### A masked pattern was here ####
 Stage-1 FILE SYSTEM COUNTERS:
-   HDFS_BYTES_READ: 20073
+   HDFS_BYTES_READ: 20076
    HDFS_BYTES_WRITTEN: 101
    HDFS_READ_OPS: 4
    HDFS_LARGE_READ_OPS: 0

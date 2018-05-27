@@ -114,6 +114,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hive.common.util.Ref;
 import org.apache.orc.ColumnStatistics;
+import org.apache.orc.FileFormatException;
 import org.apache.orc.OrcProto;
 import org.apache.orc.OrcProto.Footer;
 import org.apache.orc.OrcUtils;
@@ -2100,7 +2101,7 @@ public class OrcInputFormat implements InputFormat<NullWritable, OrcStruct>,
 
   public static boolean[] pickStripesViaTranslatedSarg(SearchArgument sarg,
       OrcFile.WriterVersion writerVersion, List<OrcProto.Type> types,
-      List<StripeStatistics> stripeStats, int stripeCount) {
+      List<StripeStatistics> stripeStats, int stripeCount) throws FileFormatException {
     LOG.info("Translated ORC pushdown predicate: " + sarg);
     assert sarg != null;
     if (stripeStats == null || writerVersion == OrcFile.WriterVersion.ORIGINAL) {
