@@ -79,7 +79,7 @@ public class TestInodeHelper {
     PreparedStatement stmt = conn.prepareStatement(
           "SELECT id FROM hdfs_inodes WHERE id = ?" +
               " and name = ?");
-    stmt.setInt(1, inodePk.parentId);
+    stmt.setLong(1, inodePk.parentId);
     stmt.setString(2, wh.getWhRoot().getName());
     ResultSet rs = stmt.executeQuery();
 
