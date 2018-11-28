@@ -89,9 +89,6 @@
       <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>true</useTransitiveFiltering>
-      <excludes>
-        <exclude>io.hops:*</exclude>
-      </excludes>
       <includes>
         <include>io.hops.hive.hcatalog:hive-webhcat:*</include>
       </includes>

@@ -45,7 +45,7 @@ public class InodeHelper {
   private int ROOT_DIR_PARTITION_KEY = 0;
   private short ROOT_DIR_DEPTH = 0;
   private int RANDOM_PARTITIONING_MAX_LEVEL = 1;
-  private int ROOT_INODE_ID = 1;
+  private long ROOT_INODE_ID = 1;
 
   private final Logger logger = LoggerFactory.getLogger(InodeHelper.class.getName());
 
@@ -67,7 +67,7 @@ public class InodeHelper {
     ROOT_DIR_PARTITION_KEY = hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTDIRPARTITIONKEY);
     ROOT_DIR_DEPTH = (short)hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTDIRDEPTH);
     RANDOM_PARTITIONING_MAX_LEVEL = hiveConf.getIntVar(HiveConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL);
-    ROOT_INODE_ID = hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTINODEID);
+    ROOT_INODE_ID = hiveConf.getLongVar(HiveConf.ConfVars.HOPSROOTINODEID);
   }
 
   private synchronized void initConnections() {
@@ -151,11 +151,11 @@ public class InodeHelper {
       throw new MetaException("Invalid Path");
     }
 
-    int partitionId = calculatePartitionId(ROOT_INODE_ID, p[0], ROOT_DIR_DEPTH + 1);
-    int parentId = ROOT_INODE_ID;
+    long partitionId = calculatePartitionId(ROOT_INODE_ID, p[0], ROOT_DIR_DEPTH + 1);
+    long parentId = ROOT_INODE_ID;
 
     //Get the right root node
-    int curr = findByInodePK(dbConn, parentId, p[0], partitionId);
+    long curr = findByInodePK(dbConn, parentId, p[0], partitionId);
     if (curr == -1) {
       try {
         dbConn.close();
@@ -166,7 +166,7 @@ public class InodeHelper {
     //Move down the path
     for (int i = 1; i < p.length; i++) {
       partitionId = calculatePartitionId(curr, p[i], i+1);
-      int next = findByInodePK(dbConn, curr, p[i], partitionId);
+      long next = findByInodePK(dbConn, curr, p[i], partitionId);
       if (next == -1) {
         try {
           dbConn.close();
@@ -181,7 +181,7 @@ public class InodeHelper {
     return new InodePK(partitionId, parentId, p[p.length-1]);
   }
 
-  private int findByInodePK(Connection conn, int parentId, String name, int partitionId) throws MetaException{
+  private long findByInodePK(Connection conn, long parentId, String name, long partitionId) throws MetaException{
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
@@ -189,12 +189,12 @@ public class InodeHelper {
           "SELECT id FROM hdfs_inodes WHERE partition_id = ? " +
               " and parent_id = ? " +
               " and name = ?");
-      stmt.setInt(1, partitionId);
-      stmt.setInt(2, parentId);
+      stmt.setLong(1, partitionId);
+      stmt.setLong(2, parentId);
       stmt.setString(3, name);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        return rs.getInt("id");
+        return rs.getLong("id");
       }
     } catch (SQLException e) {
       throw new MetaException(e.getMessage());
@@ -214,7 +214,7 @@ public class InodeHelper {
     return -1;
   }
 
-  private int calculatePartitionId(int parentId, String name, int depth) {
+  private long calculatePartitionId(long parentId, String name, int depth) {
     if (depth <= RANDOM_PARTITIONING_MAX_LEVEL) {
       if (depth == ROOT_DIR_DEPTH) {
         return ROOT_DIR_PARTITION_KEY;

@@ -1,11 +1,11 @@
 package org.apache.hadoop.hive.metastore.model.helper;
 
 public class InodePK {
-  public Integer partitionId;
-  public Integer parentId;
+  public Long partitionId;
+  public Long parentId;
   public String name;
 
-  public InodePK(Integer partitionId, Integer parentId, String name) {
+  public InodePK(Long partitionId, Long parentId, String name) {
     this.partitionId = partitionId;
     this.parentId = parentId;
     this.name = name;
