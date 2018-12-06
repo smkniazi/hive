@@ -43,8 +43,8 @@ public class MStorageDescriptor {
   private boolean isStoredAsSubDirectories;
 
   // Inode foreign key
-  private Integer partitionId;
-  private Integer parentId;
+  private Long partitionId;
+  private Long parentId;
   private String name;
 
   public MStorageDescriptor() {}
@@ -73,7 +73,7 @@ public class MStorageDescriptor {
       List<String> bucketCols, List<MOrder> sortOrder, Map<String, String> parameters,
       List<String> skewedColNames, List<MStringList> skewedColValues,
       Map<MStringList, String> skewedColValueLocationMaps, boolean storedAsSubDirectories,
-      Integer partitionId, Integer parentId, String name) throws MetaException {
+      Long partitionId, Long parentId, String name) throws MetaException {
     this.cd = cd;
     this.location = location;
     this.inputFormat = inputFormat;
@@ -112,19 +112,19 @@ public class MStorageDescriptor {
     setInodePK();
   }
 
-  public Integer getPartitionId() {
+  public Long getPartitionId() {
     return partitionId;
   }
 
-  public void setPartitionId(Integer partitionId) {
+  public void setPartitionId(Long partitionId) {
     this.partitionId = partitionId;
   }
 
-  public Integer getParentId() {
+  public Long getParentId() {
     return parentId;
   }
 
-  public void setParentId(Integer parentId) {
+  public void setParentId(Long parentId) {
     this.parentId = parentId;
   }
 

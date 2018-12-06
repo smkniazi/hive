@@ -50,7 +50,7 @@ public class TestInodeHelper {
   public void TestTmp() throws MetaException{
     InodePK inodePk = inodeHelper.getInodePK("hdfs://0.0.0.0:0/tmp");
     Assert.assertEquals("tmp", inodePk.name);
-    Assert.assertEquals(new Integer(1), inodePk.parentId);
+    Assert.assertEquals(new Long(1), inodePk.parentId);
   }
 
   @Test
@@ -79,7 +79,7 @@ public class TestInodeHelper {
     PreparedStatement stmt = conn.prepareStatement(
           "SELECT id FROM hdfs_inodes WHERE id = ?" +
               " and name = ?");
-    stmt.setInt(1, inodePk.parentId);
+    stmt.setLong(1, inodePk.parentId);
     stmt.setString(2, wh.getWhRoot().getName());
     ResultSet rs = stmt.executeQuery();
 

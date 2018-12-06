@@ -605,7 +605,7 @@ public class HiveConf extends Configuration {
         "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
     HOPSROOTDIRPARTITIONKEY("hops.root.dir.partition_key", 0, "Partition Key of root inode"),
     HOPSROOTDIRDEPTH("hops.root.dir.depth", 0, "Root dir depth"),
-    HOPSROOTINODEID("hops.root.inode.id", 1, "Id of the root inode"),
+    HOPSROOTINODEID("hops.root.inode.id", 1L, "Id of the root inode"),
     HOPSRANDOMPARTITIONINGMAXLEVEL("hops.random.partitioning.level", 1, "Number of levels of random partitioning"),
     METADATACONSISTENCY("hops.metadata.consistent", true, "enable hops metadata consistency. This option is meant to be disabled for" +
         "testing purposes"),
