@@ -246,7 +246,9 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTORE_VALIDATE_COLUMNS,
       HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS,
       HiveConf.ConfVars.METASTORE_STORE_MANAGER_TYPE,
-      HiveConf.ConfVars.METASTORE_AUTO_CREATE_ALL,
+      HiveConf.ConfVars.METASTORE_AUTO_CREATE_SCHEMA,
+      HiveConf.ConfVars.METASTORE_AUTO_CREATE_TABLES,
+      HiveConf.ConfVars.METASTORE_AUTO_CREATE_COLUMNS,
       HiveConf.ConfVars.METASTORE_MYSQL_ENGINE,
       HiveConf.ConfVars.METASTORE_MYSQL_CHARSET,
       HiveConf.ConfVars.METASTORE_TRANSACTION_ISOLATION,
@@ -776,10 +778,9 @@ public class HiveConf extends Configuration {
     METASTORE_VALIDATE_CONSTRAINTS("datanucleus.schema.validateConstraints", false,
         "validates existing schema against code. turn this on if you want to verify existing schema"),
     METASTORE_STORE_MANAGER_TYPE("datanucleus.storeManagerType", "rdbms", "metadata store type"),
-    METASTORE_AUTO_CREATE_ALL("datanucleus.schema.autoCreateAll", false,
-        "Auto creates necessary schema on a startup if one doesn't exist. Set this to false, after creating it once."
-        + "To enable auto create also set hive.metastore.schema.verification=false. Auto creation is not "
-        + "recommended for production use cases, run schematool command instead." ),
+    METASTORE_AUTO_CREATE_SCHEMA("datanucleus.schema.autoCreateSchema", false, "Datanucleus autoCreateSchema"),
+    METASTORE_AUTO_CREATE_TABLES("datanucleus.schema.autoCreateTables", false, "Datanucleus autoCreateTables"),
+    METASTORE_AUTO_CREATE_COLUMNS("datanucleus.schema.autoCreateColumns", false, "Datanucleus autoCreateColumns"),
     METASTORE_MYSQL_ENGINE("datanucleus.rdbms.mysql.engineType", "ndbcluster", "MySQL engine to use"),
     METASTORE_MYSQL_CHARSET("datanucleus.rdbms.mysql.characterSet", "latin1", "MySQL character set to use"),
     METASTORE_SCHEMA_VERIFICATION("hive.metastore.schema.verification", true,
@@ -4153,7 +4154,9 @@ public class HiveConf extends Configuration {
     }
 
     if (getBoolVar(ConfVars.METASTORE_SCHEMA_VERIFICATION)) {
-      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_ALL, false);
+      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_SCHEMA, false);
+      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_TABLES, false);
+      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_COLUMNS, false);
     }
 
     if (getBoolVar(HiveConf.ConfVars.HIVECONFVALIDATION)) {

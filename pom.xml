@@ -1403,15 +1403,10 @@
 
   <distributionManagement>
     <repository>
-      <id>sics-release-repository</id>
-      <name>SICS Repository</name>
-      <url>scpexe://kompics.i.sics.se/home/maven/repository</url>
+      <id>Hops</id>
+      <name>Hops Repo</name>
+      <url>https://bbc1.sics.se/archiva/repository/Hops/</url>
     </repository>
-    <snapshotRepository>
-      <id>sics-snapshot-repository</id>
-      <name>SICS Snapshot Repository</name>
-      <url>scpexe://kompics.i.sics.se/home/maven/snapshotrepository</url>
-    </snapshotRepository>
   </distributionManagement>
 
 </project>
