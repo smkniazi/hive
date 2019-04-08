@@ -3649,7 +3649,8 @@ private void constructOneLBLocationMap(FileStatus fSta,
    *          Output the list of new files replaced in the destination path
    */
   protected void replaceFiles(Path tablePath, Path srcf, Path destf, Path oldPath, HiveConf conf,
-          boolean isSrcLocal, PathFilter deletePathFilter, boolean isMmTable) throws HiveException {
+          boolean isSrcLocal, boolean purge, List<Path> newFiles,
+          PathFilter deletePathFilter, boolean isMmTable) throws HiveException {
     try {
 
       FileSystem destFs = destf.getFileSystem(conf);
