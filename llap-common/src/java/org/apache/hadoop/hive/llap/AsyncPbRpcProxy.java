@@ -16,6 +16,7 @@ package org.apache.hadoop.hive.llap;
 
 import java.io.IOException;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,6 +43,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.retry.RetryPolicies;
 import org.apache.hadoop.io.retry.RetryPolicy;
 import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
@@ -376,7 +378,7 @@ public abstract class AsyncPbRpcProxy<ProtocolType, TokenType extends TokenIdent
   }
 
   public AsyncPbRpcProxy(String name, int numThreads, Configuration conf, Token<TokenType> token,
-      long connectionTimeoutMs, long retrySleepMs, int expectedNodes, int maxPerNode) {
+      long connectionTimeoutMs, long retrySleepMs, int expectedNodes, int maxPerNode) throws SSLCertificateException {
     super(name);
     // Note: we may make size/etc. configurable later.
     CacheBuilder<String, ProtocolType> cb = CacheBuilder.newBuilder().expireAfterAccess(
@@ -443,7 +445,7 @@ public abstract class AsyncPbRpcProxy<ProtocolType, TokenType extends TokenIdent
   }
 
   private ProtocolType createProxy(
-      final LlapNodeId nodeId, Token<TokenType> nodeToken) throws IOException {
+      final LlapNodeId nodeId, Token<TokenType> nodeToken) throws IOException, InterruptedException {
     if (nodeToken == null && this.token == null) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Creating a client without a token for " + nodeId);
@@ -471,9 +473,9 @@ public abstract class AsyncPbRpcProxy<ProtocolType, TokenType extends TokenIdent
     if (LOG.isDebugEnabled()) {
       LOG.debug("Creating a client for " + nodeId + "; the token is " + nodeToken);
     }
-    return ugi.doAs(new PrivilegedAction<ProtocolType>() {
+    return ugi.doAs(new PrivilegedExceptionAction<ProtocolType>() {
       @Override
-      public ProtocolType run() {
+      public ProtocolType run() throws SSLCertificateException {
        return createProtocolImpl(getConfig(), nodeId.getHostname(),
            nodeId.getPort(), ugi, retryPolicy, socketFactory);
       }
@@ -485,7 +487,7 @@ public abstract class AsyncPbRpcProxy<ProtocolType, TokenType extends TokenIdent
   }
 
   protected abstract ProtocolType createProtocolImpl(Configuration config, String hostname, int port,
-      UserGroupInformation ugi, RetryPolicy retryPolicy, SocketFactory socketFactory);
+      UserGroupInformation ugi, RetryPolicy retryPolicy, SocketFactory socketFactory) throws SSLCertificateException;
 
   protected abstract void shutdownProtocolImpl(ProtocolType proxy);
 

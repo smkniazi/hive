@@ -37,7 +37,6 @@ import org.apache.hadoop.hive.metastore.api.Partition;
 import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.QueryState;
 import org.apache.hadoop.hive.ql.exec.ReplCopyTask;
-import org.apache.hadoop.hive.ql.exec.ImportCommitWork;
 import org.apache.hadoop.hive.ql.exec.Task;
 import org.apache.hadoop.hive.ql.exec.TaskFactory;
 import org.apache.hadoop.hive.ql.exec.Utilities;
@@ -359,7 +358,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
 
   private static AddPartitionDesc getBaseAddPartitionDescFromPartition(
       Path fromPath, String dbname,
-      CreateTableDesc tblDesc, Partition partition) throws MetaException, SemanticException {
+      ImportTableDesc tblDesc, Partition partition) throws MetaException, SemanticException {
     AddPartitionDesc partsDesc = new AddPartitionDesc(dbname, tblDesc.getTableName(),
         EximUtil.makePartSpec(tblDesc.getPartCols(), partition.getValues()),
         partition.getSd().getLocation(), partition.getParameters());
@@ -377,38 +376,10 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
     return partsDesc;
   }
 
-  private static CreateTableDesc getBaseCreateTableDescFromTable(String dbName,
-                                                                 org.apache.hadoop.hive.metastore.api.Table table) {
-
-    if ((table.getPartitionKeys() == null) || (table.getPartitionKeys().size() == 0)){
-      table.putToParameters(StatsSetupConst.DO_NOT_UPDATE_STATS, StatsSetupConst.TRUE);
-    }
-    CreateTableDesc tblDesc = new CreateTableDesc(
-        dbName,
-        table.getTableName(),
-        false, // isExternal: set to false here, can be overwritten by the
-        // IMPORT stmt
-        table.isTemporary(),
-        table.getSd().getCols(),
-        table.getPartitionKeys(),
-        table.getSd().getBucketCols(),
-        table.getSd().getSortCols(),
-        table.getSd().getNumBuckets(),
-        null, null, null, null, null, // these 5 delims passed as serde params
-        null, // comment passed as table params
-        table.getSd().getInputFormat(),
-        table.getSd().getOutputFormat(),
-        null, // location: set to null here, can be
-        // overwritten by the IMPORT stmt
-        table.getSd().getSerdeInfo().getSerializationLib(),
-        null, // storagehandler passed as table params
-        table.getSd().getSerdeInfo().getParameters(),
-        table.getParameters(), false,
-        (null == table.getSd().getSkewedInfo()) ? null : table.getSd().getSkewedInfo()
-            .getSkewedColNames(),
-        (null == table.getSd().getSkewedInfo()) ? null : table.getSd().getSkewedInfo()
-            .getSkewedColValues(), null, null);
-    tblDesc.setStoredAsSubDirectories(table.getSd().isStoredAsSubDirectories());
+  private static ImportTableDesc getBaseCreateTableDescFromTable(String dbName,
+      org.apache.hadoop.hive.metastore.api.Table tblObj) throws Exception {
+    Table table = new Table(tblObj);
+    ImportTableDesc tblDesc = new ImportTableDesc(dbName, table);
     return tblDesc;
   }
 
@@ -493,7 +464,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   private static Task<? extends Serializable> alterSinglePartition(
-      URI fromURI, FileSystem fs, CreateTableDesc tblDesc,
+      URI fromURI, FileSystem fs, ImportTableDesc tblDesc,
       Table table, Warehouse wh, AddPartitionDesc addPartitionDesc,
       ReplicationSpec replicationSpec, org.apache.hadoop.hive.ql.metadata.Partition ptn,
       EximUtil.SemanticAnalyzerWrapperContext x) throws MetaException, IOException, HiveException {
@@ -576,7 +547,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
    * Helper method to set location properly in partSpec
    */
   private static void fixLocationInPartSpec(
-      FileSystem fs, CreateTableDesc tblDesc, Table table,
+      FileSystem fs, ImportTableDesc tblDesc, Table table,
       Warehouse wh, ReplicationSpec replicationSpec,
       AddPartitionDesc.OnePartitionDesc partSpec,
       EximUtil.SemanticAnalyzerWrapperContext x) throws MetaException, HiveException, IOException {
@@ -854,7 +825,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
    * @param wh
    */
   private static void createRegularImportTasks(
-      CreateTableDesc tblDesc, List<AddPartitionDesc> partitionDescs, boolean isPartSpecSet,
+      ImportTableDesc tblDesc, List<AddPartitionDesc> partitionDescs, boolean isPartSpecSet,
       ReplicationSpec replicationSpec, Table table, URI fromURI, FileSystem fs, Warehouse wh,
       EximUtil.SemanticAnalyzerWrapperContext x, Long writeId, int stmtId)
       throws HiveException, IOException, MetaException {
@@ -1120,7 +1091,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
         }
         if (replicationSpec.isMetadataOnly() && partitionDescs.isEmpty()){
           // MD-ONLY table alter
-          x.getTasks().add(alterTableTask(tblDesc, x));
+          x.getTasks().add(alterTableTask(tblDesc, x, replicationSpec));
           if (lockType == WriteEntity.WriteType.DDL_NO_LOCK){
             lockType = WriteEntity.WriteType.DDL_SHARED;
           }
@@ -1132,7 +1103,7 @@ public class ImportSemanticAnalyzer extends BaseSemanticAnalyzer {
           loadTable(fromURI, table, replicationSpec.isReplace(), new Path(tblDesc.getLocation()),
             replicationSpec, x, writeId, stmtId, isSourceMm);
         } else {
-          x.getTasks().add(alterTableTask(tblDesc, x));
+          x.getTasks().add(alterTableTask(tblDesc, x, replicationSpec));
         }
         if (lockType == WriteEntity.WriteType.DDL_NO_LOCK){
           lockType = WriteEntity.WriteType.DDL_SHARED;

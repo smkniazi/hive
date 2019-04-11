@@ -47,8 +47,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.hive.common.JavaUtils;
-import org.apache.hadoop.hive.common.ValidCompactorWriteIdList;
-import org.apache.hadoop.hive.common.ValidReaderWriteIdList;
 import org.apache.hadoop.hive.common.ValidTxnList;
 import org.apache.hadoop.hive.common.ValidTxnWriteIdList;
 import org.apache.hadoop.hive.common.ValidWriteIdList;
@@ -63,10 +61,7 @@ import org.apache.hadoop.hive.metastore.ColumnType;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreUtils;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
-import org.apache.hadoop.hive.metastore.api.LockComponent;
 import org.apache.hadoop.hive.metastore.api.Schema;
-import org.apache.hadoop.hive.metastore.api.TableValidWriteIds;
-import org.apache.hadoop.hive.metastore.txn.TxnUtils;
 import org.apache.hadoop.hive.ql.cache.results.CacheUsage;
 import org.apache.hadoop.hive.ql.cache.results.QueryResultsCache;
 import org.apache.hadoop.hive.ql.cache.results.QueryResultsCache.CacheEntry;
@@ -1876,32 +1871,6 @@ public class Driver implements IDriver {
         lDrvState.driverState = isFinishedWithError ? DriverState.ERROR : DriverState.EXECUTED;
       } finally {
         lDrvState.stateLock.unlock();
-      }
-    }
-  }
-
-  private static void acquireWriteIds(QueryPlan plan, HiveConf conf) throws HiveException {
-    // Output IDs are put directly into FileSinkDesc; here, we only need to take care of inputs.
-    Configuration fetchConf = null;
-    if (plan.getFetchTask() != null) {
-      fetchConf = plan.getFetchTask().getFetchConf();
-    }
-    for (ReadEntity input : plan.getInputs()) {
-      Utilities.LOG14535.debug("Looking at " + input);
-      Table t = extractTable(input);
-      if (t == null) continue;
-      Utilities.LOG14535.info("Checking " + t.getTableName() + " for being a MM table: " + t.getParameters());
-      if (!MetaStoreUtils.isInsertOnlyTable(t.getParameters())) {
-        ValidWriteIds.clearConf(conf, t.getDbName(), t.getTableName());
-        if (fetchConf != null) {
-          ValidWriteIds.clearConf(fetchConf, t.getDbName(), t.getTableName());
-        }
-        continue;
-      }
-      ValidWriteIds ids = Hive.get().getValidWriteIdsForTable(t.getDbName(), t.getTableName());
-      ids.addToConf(conf, t.getDbName(), t.getTableName());
-      if (fetchConf != null) {
-        ids.addToConf(fetchConf, t.getDbName(), t.getTableName());
       }
     }
   }

@@ -38,6 +38,7 @@ import org.apache.hadoop.hive.llap.impl.LlapProtocolClientImpl;
 import org.apache.hadoop.hive.llap.protocol.LlapProtocolBlockingPB;
 import org.apache.hadoop.hive.llap.security.LlapTokenIdentifier;
 import org.apache.hadoop.io.retry.RetryPolicy;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 
@@ -45,7 +46,7 @@ public class LlapProtocolClientProxy
   extends AsyncPbRpcProxy<LlapProtocolBlockingPB, LlapTokenIdentifier> {
 
   public LlapProtocolClientProxy(
-      int numThreads, Configuration conf, Token<LlapTokenIdentifier> llapToken) {
+      int numThreads, Configuration conf, Token<LlapTokenIdentifier> llapToken) throws SSLCertificateException {
     // We could pass in the number of nodes that we expect instead of -1.
     // Also, a single concurrent request per node is currently hardcoded.
     super(LlapProtocolClientProxy.class.getSimpleName(), numThreads, conf, llapToken,
@@ -162,7 +163,7 @@ public class LlapProtocolClientProxy
 
   @Override
   protected LlapProtocolBlockingPB createProtocolImpl(Configuration config, String hostname, int port,
-      UserGroupInformation ugi, RetryPolicy retryPolicy, SocketFactory socketFactory) {
+      UserGroupInformation ugi, RetryPolicy retryPolicy, SocketFactory socketFactory) throws SSLCertificateException {
     return new LlapProtocolClientImpl(config, hostname, port, ugi, retryPolicy, socketFactory);
   }
 

@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.tez;
 
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hive.common.util.Ref;
 
 import java.util.concurrent.TimeoutException;
@@ -50,7 +51,7 @@ public class LlapPluginEndpointClientImpl extends
   private static final Logger LOG = LoggerFactory.getLogger(LlapPluginEndpointClientImpl.class);
 
   public LlapPluginEndpointClientImpl(
-      Configuration conf, Token<JobTokenIdentifier> token, int expectedNodes) {
+      Configuration conf, Token<JobTokenIdentifier> token, int expectedNodes) throws SSLCertificateException {
     // A single concurrent request per node is currently hardcoded. The node includes a port number
     // so different AMs on the same host count as different nodes; we only have one request type,
     // and it is not useful to send more than one in parallel.
@@ -65,7 +66,7 @@ public class LlapPluginEndpointClientImpl extends
   @Override
   protected LlapPluginProtocolPB createProtocolImpl(Configuration conf,
       String hostname, int port, UserGroupInformation ugi,
-      RetryPolicy retryPolicy, SocketFactory socketFactory) {
+      RetryPolicy retryPolicy, SocketFactory socketFactory) throws SSLCertificateException {
     return new LlapPluginProtocolClientImpl(conf, hostname, port, retryPolicy, socketFactory, ugi);
   }
 

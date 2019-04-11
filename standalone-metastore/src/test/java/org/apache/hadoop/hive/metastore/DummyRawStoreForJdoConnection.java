@@ -135,12 +135,6 @@ public class DummyRawStoreForJdoConnection implements RawStore {
   }
 
   @Override
-  @CanNotRetry
-  public Boolean commitTransactionExpectDeadlock() {
-    return false;
-  }
-
-  @Override
   public boolean isActiveTransaction() {
     return false;
   }

@@ -354,7 +354,7 @@ public class HiveMetaTool {
   }
 
   public void updateFSRootLocation(URI oldURI, URI newURI, String serdePropKey, String
-      tablePropKey, boolean isDryRun) {
+      tablePropKey, boolean isDryRun) throws MetaException {
     Configuration conf = MetastoreConf.newMetastoreConf();
     initObjectStore(conf);
 
@@ -773,7 +773,7 @@ public class HiveMetaTool {
     System.exit(1);
   }
 
-  public static void main(String[] args) throws MetaException{
+  public static void main(String[] args) throws MetaException {
     HiveMetaTool metaTool = new HiveMetaTool();
     metaTool.init();
     CommandLineParser parser = new GnuParser();

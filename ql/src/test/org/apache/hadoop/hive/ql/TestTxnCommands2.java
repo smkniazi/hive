@@ -91,7 +91,8 @@ public class TestTxnCommands2 {
     NONACIDORCTBL("nonAcidOrcTbl"),
     NONACIDPART("nonAcidPart", "p"),
     NONACIDPART2("nonAcidPart2", "p2"),
-    ACIDNESTEDPART("acidNestedPart", "p,q");
+    ACIDNESTEDPART("acidNestedPart", "p,q"),
+    MMTBL("mmTbl");
 
     private final String name;
     private final String partitionColumns;
@@ -2209,7 +2210,7 @@ public class TestTxnCommands2 {
     }
   }
 
-  String makeValuesClause(int[][] rows) {
+  static String makeValuesClause(int[][] rows) {
     assert rows.length > 0;
     StringBuilder sb = new StringBuilder(" values");
     for(int[] row : rows) {

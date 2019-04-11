@@ -18,14 +18,9 @@
 
 package org.apache.hive.service.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -113,7 +108,6 @@ import org.apache.hive.service.cli.thrift.ThriftHttpCLIService;
 import org.apache.hive.service.servlet.HS2LeadershipStatus;
 import org.apache.hive.service.servlet.HS2Peers;
 import org.apache.hive.service.servlet.QueryProfileServlet;
-import org.apache.http.HttpHeaders;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -264,7 +258,7 @@ public class HiveServer2 extends CompositeService {
     super.init(hiveConf);
     // Set host name in conf
     try {
-      hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST.varname, getServerHost().get(0));
+      hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST.varname, getServerHosts().get(0));
     } catch (Throwable t) {
       throw new Error("Unable to initialize HiveServer2", t);
     }
@@ -316,7 +310,7 @@ public class HiveServer2 extends CompositeService {
 
     try {
       if (serviceDiscovery) {
-        serviceUri = getServerInstanceURI();
+        serviceUri = getServerInstanceURI().get(0);
         addConfsToPublish(hiveConf, confsToPublish, serviceUri);
         if (activePassiveHA) {
           hiveConf.set(INSTANCE_URI_CONFIG, serviceUri);
@@ -621,9 +615,6 @@ public class HiveServer2 extends CompositeService {
       confsToPublish.put(ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL.varname,
           hiveConf.getVar(ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL));
     }
-    // SSL conf
-    confsToPublish.put(ConfVars.HIVE_SERVER2_USE_SSL.varname,
-        Boolean.toString(hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL)));
   }
 
   /**
@@ -741,7 +732,7 @@ public class HiveServer2 extends CompositeService {
     return serverInstanceURIS;
   }
 
-  private List<String> getServerHost() throws Exception {
+  public List<String> getServerHosts() throws Exception {
     List<String> serverHosts = new ArrayList<>();
 
     for (Service service : thriftCLIServices) {
@@ -999,16 +990,15 @@ public class HiveServer2 extends CompositeService {
       }
     }
 
-<<<<<<< HEAD
 
     if (hiveConf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
         CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
       // Stop the CertificateLocalizationService
       certLocService.stop();
-=======
+    }
+
     if (zKClientForPrivSync != null) {
       zKClientForPrivSync.close();
->>>>>>> 61ec445c02... HIVE-19161: Add authorizations to information schema (Daniel Dai, reviewed by Thejas Nair)
     }
   }
 

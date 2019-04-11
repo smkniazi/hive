@@ -120,6 +120,9 @@ public class HdfsUtils {
 
   public static boolean isPathEncrypted(Configuration conf, URI fsUri, Path path)
       throws IOException {
+    return false;
+
+    /* TODO(Fabio): Hops does not have these methods yet.
     Path fullPath;
     if (path.isAbsolute()) {
       fullPath = path;
@@ -135,7 +138,7 @@ public class HdfsUtils {
     } catch (FileNotFoundException fnfe) {
       LOG.debug("Failed to get EZ for non-existent path: "+ fullPath, fnfe);
       return false;
-    }
+    } */
   }
 
   private static boolean arrayContains(String[] array, String value) {
@@ -164,11 +167,10 @@ public class HdfsUtils {
 
   public static boolean runDistCp(List<Path> srcPaths, Path dst, Configuration conf)
       throws IOException {
-    DistCpOptions options = new DistCpOptions.Builder(srcPaths, dst)
-        .withSyncFolder(true)
-        .withCRC(true)
-        .preserve(FileAttribute.BLOCKSIZE)
-        .build();
+    DistCpOptions options = new DistCpOptions(srcPaths, dst);
+    options.setSyncFolder(true);
+    options.setSkipCRC(false);
+    options.preserve(FileAttribute.BLOCKSIZE);
 
     // Creates the command-line parameters for distcp
     List<String> params = constructDistCpParams(srcPaths, dst, conf);

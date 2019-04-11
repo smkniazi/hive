@@ -129,7 +129,6 @@ public class FetchOperator implements Serializable {
 
   private transient StructObjectInspector outputOI;
   private transient Object[] row;
-  private transient Map<String, ValidWriteIds> writeIdMap;
 
   public FetchOperator(FetchWork work, JobConf job) throws HiveException {
     this(work, job, null, null);
@@ -436,7 +435,7 @@ public class FetchOperator implements Serializable {
       LOG.debug("FetchOperator get writeIdStr: " + txnString);
       return txnString == null ? new ValidReaderWriteIdList() : new ValidReaderWriteIdList(txnString);
     }
-    return HiveInputFormat.extractWriteIds(writeIdMap, job, currDesc.getTableName());
+    return null; // not fetching from a table directly but from a temp location
   }
 
   private FetchInputFormatSplit[] splitSampling(SplitSample splitSample,

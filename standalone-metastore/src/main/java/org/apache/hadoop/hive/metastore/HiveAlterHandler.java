@@ -206,9 +206,11 @@ public class HiveAlterHandler implements AlterHandler {
         // TODO(Fabio) See the thesis for an idea on how to implement it
         throw new MetaException("Alter table rename on a managed table is not supported on HopsHive");
 
-      } else if (MetaStoreUtils.requireCalStats(null, null, newt, environmentContext) &&
-        (newt.getPartitionKeysSize() == 0)) {
-          Database db = msdb.getDatabase(newt.getDbName());
+      } else {
+
+        if (MetaStoreUtils.requireCalStats(null, null, newt, environmentContext) &&
+            (newt.getPartitionKeysSize() == 0)) {
+          Database db = msdb.getDatabase(newt.getCatName(), newt.getDbName());
           // Update table stats. For partitioned table, we update stats in
           MetaStoreUtils.updateTableStatsSlow(db, newt, wh, false, true, environmentContext);
         }
@@ -473,6 +475,9 @@ public class HiveAlterHandler implements AlterHandler {
       // if the external partition is renamed, the file should not change
       if (tbl.getTableType().equals(TableType.EXTERNAL_TABLE.toString())) {
         new_part.getSd().setLocation(oldPart.getSd().getLocation());
+      } else {
+        //TODO(Fabio) See thesis for an idea on how to implement this
+        throw new MetaException("Alter partition rename on a managed partition is not supported in HopsHive");
       }
 
       if (MetaStoreUtils.requireCalStats(oldPart, new_part, tbl, environmentContext)) {
@@ -488,16 +493,12 @@ public class HiveAlterHandler implements AlterHandler {
         cs.getStatsDesc().setPartName(newPartName);
         try {
           //existing partition column stats is no longer valid, remove
-          msdb.deletePartitionColumnStatistics(dbname, name, oldPartName, oldPart.getValues(), null);
+          msdb.updatePartitionColumnStatistics(cs, new_part.getValues());
         } catch (NoSuchObjectException nsoe) {
           //ignore
         } catch (InvalidInputException iie) {
           throw new InvalidOperationException("Unable to update partition stats in table rename." + iie);
         }
-        msdb.alterPartition(dbname, name, part_vals, new_part);
-      } else {
-        //TODO(Fabio) See thesis for an idea on how to implement this
-        throw new MetaException("Alter partition rename on a managed partition is not supported in HopsHive");
       }
 
       if (transactionalListeners != null && !transactionalListeners.isEmpty()) {

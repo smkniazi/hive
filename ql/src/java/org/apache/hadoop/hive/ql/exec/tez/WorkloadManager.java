@@ -76,6 +76,7 @@ import org.apache.hadoop.hive.ql.wm.TriggerActionHandler;
 import org.apache.hadoop.hive.ql.wm.WmContext;
 import org.apache.hadoop.metrics2.MetricsSystem;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hive.common.util.Ref;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -184,7 +185,7 @@ public class WorkloadManager extends TezSessionPoolSession.AbstractTriggerValida
 
   /** Called once, when HS2 initializes. */
   public static WorkloadManager create(String yarnQueue, HiveConf conf, WMFullResourcePlan plan)
-    throws ExecutionException, InterruptedException {
+    throws ExecutionException, InterruptedException, SSLCertificateException {
     assert INSTANCE == null;
     // We could derive the expected number of AMs to pass in.
     // Note: we pass a null token here; the tokens to talk to plugin endpoints will only be

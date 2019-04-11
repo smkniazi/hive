@@ -490,7 +490,6 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
           assert t != null;
           if(AcidUtils.isTransactionalTable(t)) {
             compBuilder.setShared();
-            compBuilder.setIsAcid(true);
           }
           else {
             if (conf.getBoolVar(HiveConf.ConfVars.HIVE_TXN_STRICT_LOCKING_MODE)) {
@@ -498,7 +497,6 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
             } else {  // this is backward compatible for non-ACID resources, w/o ACID semantics
               compBuilder.setShared();
             }
-            compBuilder.setIsAcid(false);
           }
           compBuilder.setOperationType(DataOperationType.INSERT);
           break;

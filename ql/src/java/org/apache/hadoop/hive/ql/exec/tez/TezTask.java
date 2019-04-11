@@ -335,14 +335,14 @@ public class TezTask extends Task<TezWork> {
     closeDagClientWithoutEx(dagClient);
   }
 
-  private void logResources(Map<String, LocalResource> additionalLr) {
+  private void logResources(List<LocalResource> additionalLr) {
     // log which resources we're adding (apart from the hive exec)
     if (!LOG.isDebugEnabled()) return;
     if (additionalLr == null || additionalLr.size() == 0) {
       LOG.debug("No local resources to process (other than hive-exec)");
     } else {
-      for (Map.Entry<String, LocalResource> lr: additionalLr.entrySet()) {
-        LOG.debug("Adding local resource: " + lr.getValue() + " materialized as: " + lr.getKey());
+      for (LocalResource lr: additionalLr) {
+        LOG.debug("Adding local resource: " + lr.getResource());
       }
     }
   }

@@ -52,6 +52,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidTxnList;
 import org.apache.hadoop.hive.common.ValidWriteIdList;
@@ -75,6 +76,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
@@ -433,42 +435,22 @@ public class HiveMetaStoreClientPreCatalog implements IMetaStoreClient, AutoClos
   private void open() throws MetaException {
     isConnected = false;
     TTransportException tte = null;
-    boolean useSSL = MetastoreConf.getBoolVar(conf, ConfVars.USE_SSL);
+    boolean hopsTLS = conf.getBoolean(
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT);
     boolean useSasl = MetastoreConf.getBoolVar(conf, ConfVars.USE_THRIFT_SASL);
     boolean useFramedTransport = MetastoreConf.getBoolVar(conf, ConfVars.USE_THRIFT_FRAMED_TRANSPORT);
     boolean useCompactProtocol = MetastoreConf.getBoolVar(conf, ConfVars.USE_THRIFT_COMPACT_PROTOCOL);
     int clientSocketTimeout = (int) MetastoreConf.getTimeVar(conf,
         ConfVars.CLIENT_SOCKET_TIMEOUT, TimeUnit.MILLISECONDS);
 
+    HiveMetaStoreClient.HopsSecurityMaterial hopsSecurityMaterial = null;
+
     for (int attempt = 0; !isConnected && attempt < retries; ++attempt) {
       for (URI store : metastoreUris) {
         LOG.info("Trying to connect to metastore with URI " + store);
 
         try {
-          if (useSSL) {
-            try {
-              String trustStorePath = MetastoreConf.getVar(conf, ConfVars.SSL_TRUSTSTORE_PATH).trim();
-              if (trustStorePath.isEmpty()) {
-                throw new IllegalArgumentException(ConfVars.SSL_TRUSTSTORE_PATH.toString()
-                    + " Not configured for SSL connection");
-              }
-              String trustStorePassword =
-                  MetastoreConf.getPassword(conf, MetastoreConf.ConfVars.SSL_TRUSTSTORE_PASSWORD);
-
-              // Create an SSL socket and connect
-              transport = SecurityUtils.getSSLSocket(store.getHost(), store.getPort(), clientSocketTimeout,
-                  trustStorePath, trustStorePassword );
-              LOG.info("Opened an SSL connection to metastore, current connections: " + connCount.incrementAndGet());
-            } catch(IOException e) {
-              throw new IllegalArgumentException(e);
-            } catch(TTransportException e) {
-              tte = e;
-              throw new MetaException(e.toString());
-            }
-          } else {
-            transport = new TSocket(store.getHost(), store.getPort(), clientSocketTimeout);
-          }
-
           if (useSasl) {
             // Wrap thrift connection with SASL for secure connection.
             try {
@@ -489,20 +471,45 @@ public class HiveMetaStoreClientPreCatalog implements IMetaStoreClient, AutoClos
                 // authenticate using delegation tokens via the "DIGEST" mechanism
                 transport = authBridge.createClientTransport(null, store.getHost(),
                     "DIGEST", tokenStrForm, transport,
-                        MetaStoreUtils.getMetaStoreSaslProperties(conf, useSSL));
+                        MetaStoreUtils.getMetaStoreSaslProperties(conf, false));
               } else {
                 LOG.info("HMSC::open(): Could not find delegation token. Creating KERBEROS-based thrift connection.");
                 String principalConfig =
                     MetastoreConf.getVar(conf, ConfVars.KERBEROS_PRINCIPAL);
                 transport = authBridge.createClientTransport(
                     principalConfig, store.getHost(), "KERBEROS", null,
-                    transport, MetaStoreUtils.getMetaStoreSaslProperties(conf, useSSL));
+                    transport, MetaStoreUtils.getMetaStoreSaslProperties(conf, false));
               }
             } catch (IOException ioe) {
               LOG.error("Couldn't create client transport", ioe);
               throw new MetaException(ioe.toString());
             }
           } else {
+            if (hopsTLS) {
+              // TODO(Fabio) Think about some test cases
+              // try {
+              //   hopsSecurityMaterial = getHopsSecurityMaterial();
+              //   TSSLTransportFactory.TSSLTransportParameters params =
+              //       new TSSLTransportFactory.TSSLTransportParameters();
+
+              //   params.setTrustStore(hopsSecurityMaterial.getTrustStorePath(),
+              //       hopsSecurityMaterial.getTrustStorePassword());
+              //   params.setKeyStore(hopsSecurityMaterial.getKeyStorePath(),
+              //    hopsSecurityMaterial.getKeyStorePassword());
+              //   transport = TSSLTransportFactory.getClientSocket(store.getHost(), store.getPort(), clientSocketTimeout, params);
+              // } catch (IOException | LoginException e) {
+              //   throw new MetaException(e.toString());
+              // } catch (TTransportException e) {
+              //   tte = e;
+              //   throw new MetaException(e.toString());
+              // }
+            } else {
+              transport = new TSocket(store.getHost(), store.getPort(), clientSocketTimeout);
+            }
+
+            if (useFramedTransport) {
+              transport = new TFramedTransport(transport);
+            }
             if (useFramedTransport) {
               transport = new TFramedTransport(transport);
             }
@@ -535,7 +542,8 @@ public class HiveMetaStoreClientPreCatalog implements IMetaStoreClient, AutoClos
             // Call set_ugi, only in unsecure mode.
             try {
               UserGroupInformation ugi = SecurityUtils.getUGI();
-              client.set_ugi(ugi.getUserName(), Arrays.asList(ugi.getGroupNames()));
+              // In Hops user/group mapping is known only to the Namenodes.
+              client.set_ugi(ugi.getUserName(), new ArrayList<>());
             } catch (LoginException e) {
               LOG.warn("Failed to do login. set_ugi() is not successful, " +
                        "Continuing without it.", e);

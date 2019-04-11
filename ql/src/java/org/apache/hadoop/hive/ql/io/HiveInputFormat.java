@@ -569,11 +569,11 @@ public class HiveInputFormat<K extends WritableComparable, V extends Writable>
       finalPaths.add(dir);
       return;
     }
-    FileStatus[] files = fs.listStatus(dir); // TODO: batch?
+
+    // Tez require the use of recursive input dirs for union processing, so we have to look into the
+    // directory to find out
     LinkedList<Path> subdirs = new LinkedList<>();
-    for (FileStatus file : files) {
-      handleNonMmDirChild(file, validWriteIdList, subdirs, finalPaths);
-    }
+    subdirs.add(dir); // add itself as a starting point
     while (!subdirs.isEmpty()) {
       Path currDir = subdirs.poll();
       FileStatus[] files = fs.listStatus(currDir);
@@ -606,27 +606,6 @@ public class HiveInputFormat<K extends WritableComparable, V extends Writable>
         }
       }
     }
-  }
-
-  private static void handleNonMmDirChild(FileStatus file, ValidWriteIds writeIds,
-      LinkedList<Path> subdirs, List<Path> finalPaths) {
-    Path path = file.getPath();
-    Utilities.LOG14535.warn("Checking " + path + " for inputs");
-    if (!file.isDirectory()) {
-      Utilities.LOG14535.warn("Ignoring a file not in MM directory " + path);
-      return;
-    }
-    Long writeId = ValidWriteIds.extractWriteId(path);
-    if (writeId == null) {
-      subdirs.add(path);
-      return;
-    }
-    if (!writeIds.isValid(writeId)) {
-      Utilities.LOG14535.warn("Ignoring an uncommitted directory " + path);
-      return;
-    }
-    Utilities.LOG14535.info("Adding input " + path);
-    finalPaths.add(path);
   }
 
   Path[] getInputPaths(JobConf job) throws IOException {

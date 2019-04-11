@@ -4047,6 +4047,17 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   private List<Task<?>> alterTableOrSinglePartition(
       AlterTableDesc alterTbl, Table tbl, Partition part) throws HiveException {
 
+    EnvironmentContext environmentContext = alterTbl.getEnvironmentContext();
+    if (environmentContext == null) {
+      environmentContext = new EnvironmentContext();
+      alterTbl.setEnvironmentContext(environmentContext);
+    }
+    // do not need update stats in alter table/partition operations
+    if (environmentContext.getProperties() == null ||
+        environmentContext.getProperties().get(StatsSetupConst.DO_NOT_UPDATE_STATS) == null) {
+      environmentContext.putToProperties(StatsSetupConst.DO_NOT_UPDATE_STATS, StatsSetupConst.TRUE);
+    }
+
     if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.RENAME) {
       tbl.setDbName(Utilities.getDatabaseName(alterTbl.getNewName()));
       tbl.setTableName(Utilities.getTableName(alterTbl.getNewName()));
@@ -4194,9 +4205,9 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       }
       sd.setCols(alterTbl.getNewCols());
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDPROPS) {
-      return alterTableAddProps(alterTbl, tbl, part);
+      return alterTableAddProps(alterTbl, tbl, part, environmentContext);
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.DROPPROPS) {
-      return alterTableDropProps(alterTbl, tbl, part);
+      return alterTableDropProps(alterTbl, tbl, part, environmentContext);
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSERDEPROPS) {
       StorageDescriptor sd = retrieveStorageDescriptor(tbl, part);
       sd.getSerdeInfo().getParameters().putAll(alterTbl.getProps());
@@ -4283,6 +4294,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       } catch (URISyntaxException e) {
         throw new HiveException(e);
       }
+      environmentContext.getProperties().remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
+
     } else if (alterTbl.getOp() == AlterTableDesc.AlterTableTypes.ADDSKEWEDBY) {
       // Validation's been done at compile time. no validation is needed here.
       List<String> skewedColNames = null;
@@ -4333,6 +4346,8 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
           throw new HiveException(e);
         }
       }
+
+      environmentContext.getProperties().remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
     } else if (alterTbl.getOp() == AlterTableTypes.ALTERBUCKETNUM) {
       if (part != null) {
         if (part.getBucketCount() == alterTbl.getNumberBuckets()) {
@@ -4355,7 +4370,13 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   }
 
   private List<Task<?>> alterTableDropProps(
-      AlterTableDesc alterTbl, Table tbl, Partition part) throws HiveException {
+      AlterTableDesc alterTbl, Table tbl, Partition part, EnvironmentContext environmentContext) throws HiveException {
+    if (StatsSetupConst.USER.equals(environmentContext.getProperties()
+        .get(StatsSetupConst.STATS_GENERATED))) {
+      // drop a stats parameter, which triggers recompute stats update automatically
+      environmentContext.getProperties().remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
+    }
+
     List<Task<?>> result = null;
     if (part == null) {
       Set<String> removedSet = alterTbl.getProps().keySet();
@@ -4436,12 +4457,12 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   }
 
   private List<Task<?>> alterTableAddProps(AlterTableDesc alterTbl, Table tbl,
-      Partition part) throws HiveException {
+      Partition part, EnvironmentContext environmentContext) throws HiveException {
     List<Task<?>> result = null;
 
-    if(alterTbl.getProps().containsKey(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY)) {
-      NanoTimeUtils.validateTimeZone(
-          alterTbl.getProps().get(ParquetTableUtils.PARQUET_INT96_WRITE_ZONE_PROPERTY));
+    if (StatsSetupConst.USER.equals(environmentContext.getProperties()
+        .get(StatsSetupConst.STATS_GENERATED))) {
+      environmentContext.getProperties().remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
     }
 
     if (part != null) {
@@ -4902,24 +4923,10 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       Long mmWriteId = crtTbl.getInitialMmWriteId();
       if (crtTbl.isCTAS() || mmWriteId != null) {
         Table createdTable = db.getTable(tbl.getDbName(), tbl.getTableName());
-        if (mmWriteId != null) {
-          // TODO# this would be retrieved via ACID before the query runs; for now we rely on it
-          //       being zero at start; we can't create a write ID before we create the table here.
-          long initialWriteId = db.getNextTableWriteId(tbl.getDbName(), tbl.getTableName());
-          if (initialWriteId != mmWriteId) {
-            throw new HiveException("Initial write ID mismatch - expected " + mmWriteId
-                + " but got " + initialWriteId);
-          }
-          // CTAS create the table on a directory that already exists; import creates the table
-          // first  (in parallel with copies?), then commits after all the loads.
-          if (crtTbl.isCTAS()) {
-            db.commitMmTableWrite(tbl, initialWriteId);
-          }
-        }
         if (crtTbl.isCTAS()) {
           DataContainer dc = new DataContainer(createdTable.getTTable());
           queryState.getLineageState().setLineage(
-                  createdTable.getPath(), dc, createdTable.getCols()
+              createdTable.getPath(), dc, createdTable.getCols()
           );
         }
       }

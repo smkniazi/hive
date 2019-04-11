@@ -360,8 +360,6 @@ public class HS2ActivePassiveHARegistry extends ZkRegistryBase<HiveServer2Instan
         conf.get(HiveConf.ConfVars.HIVE_SERVER2_KERBEROS_PRINCIPAL.varname));
     }
     // SSL conf
-    confsToPublish.put(HiveConf.ConfVars.HIVE_SERVER2_USE_SSL.varname,
-      conf.get(HiveConf.ConfVars.HIVE_SERVER2_USE_SSL.varname));
     return confsToPublish;
   }
 

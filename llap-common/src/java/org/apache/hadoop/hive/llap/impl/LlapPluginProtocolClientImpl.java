@@ -21,6 +21,7 @@ import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.retry.RetryPolicy;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.hive.llap.plugin.rpc.LlapPluginProtocolProtos.UpdateQueryRequestProto;
 import org.apache.hadoop.hive.llap.plugin.rpc.LlapPluginProtocolProtos.UpdateQueryResponseProto;
@@ -30,7 +31,7 @@ public class LlapPluginProtocolClientImpl implements LlapPluginProtocolPB {
   private ProtobufProxy<LlapPluginProtocolPB> protobuf;
 
   public LlapPluginProtocolClientImpl(Configuration conf, String hostname, int port,
-      RetryPolicy retryPolicy, SocketFactory socketFactory, UserGroupInformation ugi) {
+      RetryPolicy retryPolicy, SocketFactory socketFactory, UserGroupInformation ugi) throws SSLCertificateException {
     protobuf = new ProtobufProxy<>(
         conf, ugi, hostname, port, retryPolicy, socketFactory, LlapPluginProtocolPB.class);
   }

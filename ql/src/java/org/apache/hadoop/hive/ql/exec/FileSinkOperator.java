@@ -328,9 +328,9 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           finalPaths[filesIdx] = finalPath;
           outPaths[filesIdx] = finalPath;
         }
-        if (isInfoEnabled) {
+        if (LOG.isInfoEnabled()) {
           LOG.info("Final Path: FS " + finalPaths[filesIdx]);
-          if (isInfoEnabled && !isMmTable) {
+          if (LOG.isInfoEnabled() && !isMmTable) {
             LOG.info("Writing to temp file: FS " + outPaths[filesIdx]);
           }
         }
@@ -730,8 +730,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
       Utilities.copyTableJobPropertiesToConf(conf.getTableInfo(), jc);
       // only create bucket files only if no dynamic partitions,
       // buckets of dynamic partitions will be created for each newly created partition
-      if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID ||
-          conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY) {
+      if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID || conf.isMmTable()) {
         Path outPath = fsp.outPaths[filesIdx];
         fsp.outWriters[filesIdx] = HiveFileFormatUtils.getHiveRecordWriter(jc, conf.getTableInfo(),
             outputClass, conf, outPath, reporter);
@@ -1016,8 +1015,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   protected boolean areAllTrue(boolean[] statsFromRW) {
     // If we are doing an acid operation they will always all be true as RecordUpdaters always
     // collect stats
-    if (conf.getWriteType() != AcidUtils.Operation.NOT_ACID &&
-        conf.getWriteType() != AcidUtils.Operation.INSERT_ONLY) {
+    if (conf.getWriteType() != AcidUtils.Operation.NOT_ACID && !conf.isMmTable()) {
       return true;
     }
     for(boolean b : statsFromRW) {
@@ -1051,7 +1049,6 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
   /**
    * create new path.
    *
-   * @param dirName
    * @return
    * @throws HiveException
    */
@@ -1174,8 +1171,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
           // stats from the record writer and store in the previous fsp that is cached
           if (conf.isGatherStats() && isCollectRWStats) {
             SerDeStats stats = null;
-            if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID ||
-                conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY) {
+            if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID || conf.isMmTable()) {
               RecordWriter outWriter = prevFsp.outWriters[0];
               if (outWriter != null) {
                 stats = ((StatsProvidingRecordWriter) outWriter).getStats();
@@ -1265,8 +1261,7 @@ public class FileSinkOperator extends TerminalOperator<FileSinkDesc> implements
         // record writer already gathers the statistics, it can simply return the
         // accumulated statistics which will be aggregated in case of spray writers
         if (conf.isGatherStats() && isCollectRWStats) {
-          if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID ||
-              conf.getWriteType() == AcidUtils.Operation.INSERT_ONLY) {
+          if (conf.getWriteType() == AcidUtils.Operation.NOT_ACID || conf.isMmTable()) {
             for (int idx = 0; idx < fsp.outWriters.length; idx++) {
               RecordWriter outWriter = fsp.outWriters[idx];
               if (outWriter != null) {

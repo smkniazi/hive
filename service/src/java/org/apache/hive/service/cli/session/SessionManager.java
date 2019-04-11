@@ -47,7 +47,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.ql.hooks.HookUtils;
 import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
-import org.apache.hadoop.hive.ql.hooks.HooksLoader;
 import org.apache.hive.service.CompositeService;
 import org.apache.hive.service.cli.HiveSQLException;
 import org.apache.hive.service.cli.SessionHandle;
@@ -695,7 +694,7 @@ public class SessionManager extends CompositeService {
     if (hiveServer2 == null) {
       return null;
     }
-    return hiveServer2.getServerHost();
+    return hiveServer2.getServerHosts().get(0);
   }
 }
 

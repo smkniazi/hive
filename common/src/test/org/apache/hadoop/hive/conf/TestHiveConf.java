@@ -21,6 +21,8 @@ import com.google.common.collect.Lists;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+import org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory;
+import org.apache.hadoop.security.ssl.SSLFactory;
 import org.apache.hadoop.util.Shell;
 import org.apache.hive.common.util.HiveTestUtils;
 import org.junit.Assert;
@@ -144,19 +146,16 @@ public class TestHiveConf {
       // the verifyAndSet in this case is expected to fail with the IllegalArgumentException
     }
 
-    //TODO(Fabio): fix this
-    // check stripHiddenConfigurations
     Configuration conf2 = new Configuration(conf);
-    conf2.set(HiveConf.ConfVars.METASTOREPWD.varname, "password");
     conf.stripHiddenConfigurations(conf2);
     Assert.assertTrue(conf.isHiddenConfig(HiveConf.ConfVars.METASTOREPWD.varname + "postfix"));
-    Assert.assertTrue(
-        conf.isHiddenConfig(HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname + "postfix"));
+    Assert.assertTrue(conf.isHiddenConfig(
+        FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER,
+            FileBasedKeyStoresFactory.SSL_KEYSTORE_KEYPASSWORD_TPL_KEY) + "postfix"));
     Assert.assertEquals("", conf2.get(HiveConf.ConfVars.METASTOREPWD.varname));
 
     ArrayList<String> hiddenList = Lists.newArrayList(
         HiveConf.ConfVars.METASTOREPWD.varname,
-        HiveConf.ConfVars.HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname,
         "fs.s3.awsSecretAccessKey",
         "fs.s3n.awsSecretAccessKey",
         "dfs.adls.oauth2.credential",
@@ -168,7 +167,6 @@ public class TestHiveConf {
       Assert.assertTrue("config " + hiddenConfig + " should be hidden",
           conf.isHiddenConfig(hiddenConfig));
       // check stripHiddenConfigurations removes the property
-      Configuration conf2 = new Configuration(conf);
       conf2.set(hiddenConfig, "password");
       conf.stripHiddenConfigurations(conf2);
       // check that a property that begins the same is also hidden

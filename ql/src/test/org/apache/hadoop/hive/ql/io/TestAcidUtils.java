@@ -39,9 +39,6 @@ import org.apache.hadoop.hive.ql.io.orc.TestInputOutputFormat.MockFileSystem;
 import org.apache.hadoop.hive.ql.io.orc.TestInputOutputFormat.MockPath;
 import org.apache.hadoop.hive.ql.io.orc.TestOrcRawRecordMerger;
 import org.apache.hadoop.hive.shims.HadoopShims.HdfsFileStatusWithId;
-import org.apache.hive.common.util.MockFileSystem;
-import org.apache.hive.common.util.MockFileSystem.MockFile;
-import org.apache.hive.common.util.MockFileSystem.MockPath;
 import org.junit.Assert;
 import org.junit.Test;
 

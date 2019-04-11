@@ -518,7 +518,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         tbd.getSourcePath(),
         tbd.getTable().getTableName(),
         tbd.getPartitionSpec(),
-        tbd.getReplace(),
+        tbd.getLoadFileType(),
         dpCtx.getNumDPCols(),
         (tbd.getLbCtx() == null) ? 0 : tbd.getLbCtx().calculateListBucketingLevel(),
         work.getLoadTableWork().getWriteType() != AcidUtils.Operation.NOT_ACID &&

@@ -36,7 +36,6 @@
     <!-- intra-proect -->
     <dependency>
       <groupId>io.hops.hive</groupId>
-      <groupId>org.apache.hive</groupId>
       <artifactId>hive-classification</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -275,13 +274,8 @@
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
       <version>${jackson.version}</version>
     </dependency>
     <dependency>

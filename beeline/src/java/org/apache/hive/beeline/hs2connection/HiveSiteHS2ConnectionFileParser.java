@@ -23,6 +23,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.ServerUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
@@ -74,7 +75,9 @@ public class HiveSiteHS2ConnectionFileParser implements HS2ConnectionFileParser 
   }
 
   private void addSSL(Properties props) {
-    if (!HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVE_SERVER2_USE_SSL)) {
+    if (!conf.getBoolean(
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)){
       return;
     } else {
       props.setProperty("ssl", "true");

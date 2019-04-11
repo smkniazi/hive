@@ -90,7 +90,7 @@ public abstract class AbstractFileMergeOperator<T extends FileMergeDesc>
         .isListBucketingAlterTableConcatenate();
     listBucketingDepth = conf.getListBucketingDepth();
     Path specPath = conf.getOutputPath();
-    isMmTable = conf.getMmWriteId() != null;
+    isMmTable = conf.getIsMmTable();
     if (isMmTable) {
       updatePaths(specPath, null);
     } else {

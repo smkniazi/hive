@@ -654,6 +654,12 @@ public class AcidUtils {
      * more up to date ones.  Not {@code null}.
      */
     List<FileStatus> getObsolete();
+
+    /**
+     * Get the list of directories that has nothing but aborted transactions.
+     * @return the list of aborted directories
+     */
+    List<FileStatus> getAbortedDirectories();
   }
 
   /**
@@ -919,7 +925,8 @@ public class AcidUtils {
                                        Configuration conf,
                                        ValidWriteIdList writeIdList,
                                        Ref<Boolean> useFileIds,
-                                       boolean ignoreEmptyFiles
+                                       boolean ignoreEmptyFiles,
+                                       Map<String, String> tblproperties
                                        ) throws IOException {
     FileSystem fs = directory.getFileSystem(conf);
     // The following 'deltas' includes all kinds of delta files including insert & delete deltas.
@@ -927,6 +934,7 @@ public class AcidUtils {
     List<ParsedDelta> working = new ArrayList<ParsedDelta>();
     List<FileStatus> originalDirectories = new ArrayList<FileStatus>();
     final List<FileStatus> obsolete = new ArrayList<FileStatus>();
+    final List<FileStatus> abortedDirectories = new ArrayList<FileStatus>();
     List<HdfsFileStatusWithId> childrenWithId = null;
     Boolean val = useFileIds.value;
     if (val == null || val) {
@@ -1079,6 +1087,11 @@ public class AcidUtils {
       @Override
       public List<FileStatus> getObsolete() {
         return obsolete;
+      }
+
+      @Override
+      public List<FileStatus> getAbortedDirectories() {
+        return abortedDirectories;
       }
     };
   }

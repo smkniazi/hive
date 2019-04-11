@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.metastore.conf;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.metastore.DefaultStorageSchemaReader;
 import org.apache.hadoop.hive.metastore.HiveAlterHandler;
 import org.apache.hadoop.hive.metastore.MaterializationsCacheCleanerTask;
@@ -32,6 +33,8 @@ import org.apache.hadoop.hive.metastore.txn.AcidHouseKeeperService;
 import org.apache.hadoop.hive.metastore.txn.AcidOpenTxnsCounterService;
 import org.apache.hadoop.hive.metastore.txn.AcidWriteSetService;
 import org.apache.hadoop.hive.metastore.utils.StringUtils;
+import org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory;
+import org.apache.hadoop.security.ssl.SSLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +144,6 @@ public class MetastoreConf {
       ConfVars.VALIDATE_COLUMNS,
       ConfVars.VALIDATE_CONSTRAINTS,
       ConfVars.STORE_MANAGER_TYPE,
-      ConfVars.AUTO_CREATE_ALL,
       ConfVars.DATANUCLEUS_TRANSACTION_ISOLATION,
       ConfVars.DATANUCLEUS_CACHE_LEVEL2,
       ConfVars.DATANUCLEUS_CACHE_LEVEL2_TYPE,
@@ -212,10 +214,17 @@ public class MetastoreConf {
   private static final Set<String> unprintables = StringUtils.asSet(
       ConfVars.PWD.varname,
       ConfVars.PWD.hiveName,
-      ConfVars.SSL_KEYSTORE_PASSWORD.varname,
-      ConfVars.SSL_KEYSTORE_PASSWORD.hiveName,
       ConfVars.SSL_TRUSTSTORE_PASSWORD.varname,
-      ConfVars.SSL_TRUSTSTORE_PASSWORD.hiveName
+      ConfVars.SSL_TRUSTSTORE_PASSWORD.hiveName,
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_LOCATION_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_PASSWORD_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_KEYPASSWORD_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_KEYSTORE_TYPE_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_LOCATION_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_PASSWORD_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_RELOAD_INTERVAL_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_TRUSTSTORE_TYPE_TPL_KEY),
+      FileBasedKeyStoresFactory.resolvePropertyName(SSLFactory.Mode.SERVER, FileBasedKeyStoresFactory.SSL_EXCLUDE_CIPHER_LIST)
   );
 
   public static ConfVars getMetaConf(String name) {
@@ -271,10 +280,19 @@ public class MetastoreConf {
             "for operations like drop-partition (disallow the drop-partition if the user in\n" +
             "question doesn't have permissions to delete the corresponding directory\n" +
             "on the storage)."),
-    AUTO_CREATE_ALL("datanucleus.schema.autoCreateAll", "datanucleus.schema.autoCreateAll", false,
-        "Auto creates necessary schema on a startup if one doesn't exist. Set this to false, after creating it once."
-            + "To enable auto create also set hive.metastore.schema.verification=false. Auto creation is not "
-            + "recommended for production use cases, run schematool command instead." ),
+
+
+    AUTO_CREATE_SCHEMA("datanucleus.schema.autoCreateSchema",
+        "datanucleus.schema.autoCreateSchema", false, "Datanucleus autoCreateSchema"),
+    AUTO_CREATE_TABLES("datanucleus.schema.autoCreateTables",
+        "datanucleus.schema.autoCreateTables", false, "Datanucleus autoCreateTables"),
+    AUTO_CREATE_COLUMNS("datanucleus.schema.autoCreateColumns",
+        "datanucleus.schema.autoCreateColumns", false, "Datanucleus autoCreateColumns"),
+    MYSQL_ENGINE("datanucleus.rdbms.mysql.engineType",
+        "datanucleus.rdbms.mysql.engineType", "ndbcluster", "MySQL engine to use"),
+    MYSQL_CHARSET("datanucleus.rdbms.mysql.characterSet",
+        "datanucleus.rdbms.mysql.characterSet", "latin1", "MySQL character set to use"),
+
     BATCH_RETRIEVE_MAX("metastore.batch.retrieve.max", "hive.metastore.batch.retrieve.max", 300,
         "Maximum number of objects (tables/partitions) can be retrieved from metastore in one batch. \n" +
             "The higher the number, the less the number of round trips is needed to the Hive metastore server, \n" +
@@ -915,7 +933,19 @@ public class MetastoreConf {
         TimeUnit.SECONDS,
         new TimeValidator(TimeUnit.MILLISECONDS, 500L, false, 1500L, false), "comment"),
     BOOLEAN_TEST_ENTRY("test.bool", "hive.test.bool", true, "comment"),
-    CLASS_TEST_ENTRY("test.class", "hive.test.class", "", "comment");
+    CLASS_TEST_ENTRY("test.class", "hive.test.class", "", "comment"),
+    HOPSDBURLKEY("hops.db.ConnectionURL", "hops.db.ConnectionURL",
+        "jdbc:mysql:://myhost/hops",
+        "JDBC connect string to connect to HOPS db.\n" +
+        "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
+        "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
+    HOPSROOTDIRPARTITIONKEY("hops.root.dir.partition_key", "hops.root.dir.partition_key", 0, "Partition Key of root inode"),
+    HOPSROOTDIRDEPTH("hops.root.dir.depth", "hops.root.dir.depth", 0, "Root dir depth"),
+    HOPSROOTINODEID("hops.root.inode.id", "hops.root.inode.id", 1L, "Id of the root inode"),
+    HOPSRANDOMPARTITIONINGMAXLEVEL("hops.random.partitioning.level","hops.random.partitioning.level", 1, "Number of levels of random partitioning"),
+    METADATACONSISTENCY("hops.metadata.consistent", "hops.metadata.consistent", true,
+        "enable hops metadata consistency. This option is meant to be disabled for testing purposes"),
+    HIVE_SUPER_USER("hive.superuser", "hive.superuser", "hive", "The user to use to create databases");
 
     private final String varname;
     private final String hiveName;
@@ -1068,7 +1098,9 @@ public class MetastoreConf {
   }
 
   public static final ConfVars[] dataNucleusAndJdoConfs = {
-      ConfVars.AUTO_CREATE_ALL,
+      ConfVars.AUTO_CREATE_COLUMNS,
+      ConfVars.AUTO_CREATE_SCHEMA,
+      ConfVars.AUTO_CREATE_TABLES,
       ConfVars.CONNECTION_DRIVER,
       ConfVars.CONNECTION_POOLING_MAX_CONNECTIONS,
       ConfVars.CONNECTION_POOLING_TYPE,
@@ -1090,7 +1122,9 @@ public class MetastoreConf {
       ConfVars.STORE_MANAGER_TYPE,
       ConfVars.VALIDATE_COLUMNS,
       ConfVars.VALIDATE_CONSTRAINTS,
-      ConfVars.VALIDATE_TABLES
+      ConfVars.VALIDATE_TABLES,
+      ConfVars.MYSQL_CHARSET,
+      ConfVars.MYSQL_ENGINE
   };
 
   // Make sure no one calls this
@@ -1143,6 +1177,13 @@ public class MetastoreConf {
       conf.addResource(metastoreSiteURL);
     }
 
+    // Load ssl-server.xml (in HADOOP_CONF_DIR) if SSL is enabled
+    // and we are not in the context of a client
+    if (conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      conf.addResource(conf.get(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml"));
+    }
+
     // If a system property that matches one of our conf value names is set then use the value
     // it's set to to set our own conf value.
     for (ConfVars var : ConfVars.values()) {
@@ -1166,7 +1207,9 @@ public class MetastoreConf {
 
     // If we are going to validate the schema, make sure we don't create it
     if (getBoolVar(conf, ConfVars.SCHEMA_VERIFICATION)) {
-      setBoolVar(conf, ConfVars.AUTO_CREATE_ALL, false);
+      setBoolVar(conf, ConfVars.AUTO_CREATE_SCHEMA, false);
+      setBoolVar(conf, ConfVars.AUTO_CREATE_TABLES, false);
+      setBoolVar(conf, ConfVars.AUTO_CREATE_COLUMNS, false);
     }
 
     if (!beenDumped.getAndSet(true) && getBoolVar(conf, ConfVars.DUMP_CONFIG_ON_CREATION) &&

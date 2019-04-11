@@ -255,25 +255,6 @@ public class ContainerRunnerImpl extends CompositeService implements ContainerRu
       QueryIdentifier queryIdentifier = new QueryIdentifier(
           qIdProto.getApplicationIdString(), dagIdentifier);
 
-      // If HopsTLS is enabled, the client has put key/trustStore in the protobuf.
-      // Extract it and materialize the certificate
-      if (hopsTLS) {
-        if (request.hasKeyStore()) {
-          CertificateLocalization certificateLocalization =
-              CertificateLocalizationCtx.getInstance().getCertificateLocalization();
-          String username = UserGroupInformation.getCurrentUser().getUserName();
-          try {
-            certificateLocalization.materializeCertificates(username, queryIdentifier.getAppIdentifier(), username,
-                    ProtoUtils.convertFromProtoFormat(request.getKeyStore()), request.getKeyStorePassword(),
-                    ProtoUtils.convertFromProtoFormat(request.getTrustStore()), request.getTrustStorePassword());
-          } catch (InterruptedException e) {
-            throw new IOException("Error materializing the certificates", e);
-          }
-        } else {
-          throw new IOException("Certificates not provided");
-        }
-      }
-
       Credentials credentials = new Credentials();
       DataInputBuffer dib = new DataInputBuffer();
       byte[] tokenBytes = request.getCredentialsBinary().toByteArray();

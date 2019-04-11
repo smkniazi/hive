@@ -124,15 +124,6 @@ public interface RawStore extends Configurable {
   boolean isActiveTransaction();
 
   /**
-   * Commits transaction and detects if the failure to do so is a deadlock or not.
-   * Must be called on the top level with regard to openTransaction calls; attempting to
-   * call this after several nested openTransaction calls will throw.
-   * @return true or false - same as commitTransaction; null in case of deadlock.
-   */
-  @CanNotRetry
-  public abstract Boolean commitTransactionExpectDeadlock();
-
-  /**
    * Rolls back the current transaction if it is active
    */
   @CanNotRetry

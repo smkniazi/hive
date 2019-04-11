@@ -147,7 +147,6 @@ import org.apache.hadoop.hive.metastore.events.PreReadISchemaEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadTableEvent;
 import org.apache.hadoop.hive.metastore.events.PreReadhSchemaVersionEvent;
 import org.apache.hadoop.hive.metastore.messaging.EventMessage.EventType;
-import org.apache.hadoop.hive.metastore.model.MTableWrite;
 import org.apache.hadoop.hive.metastore.metrics.JvmPauseMonitor;
 import org.apache.hadoop.hive.metastore.metrics.Metrics;
 import org.apache.hadoop.hive.metastore.metrics.MetricsConstants;
@@ -155,6 +154,7 @@ import org.apache.hadoop.hive.metastore.metrics.PerfLogger;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
 import org.apache.hadoop.hive.metastore.security.HadoopThriftAuthBridge;
 import org.apache.hadoop.hive.metastore.security.MetastoreDelegationTokenManager;
+import org.apache.hadoop.hive.metastore.security.TSSLBasedProcessor;
 import org.apache.hadoop.hive.metastore.security.TUGIContainingTransport;
 import org.apache.hadoop.hive.metastore.txn.TxnStore;
 import org.apache.hadoop.hive.metastore.txn.TxnUtils;
@@ -173,9 +173,6 @@ import org.apache.hadoop.yarn.server.security.CertificateLocalizationService;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.ShutdownHookManager;
 import org.apache.hadoop.util.StringUtils;
-import org.apache.hive.common.util.HiveStringUtils;
-import org.apache.hive.common.util.ShutdownHookManager;
-import org.apache.hive.service.rpc.thrift.TCLIService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.thrift.TException;
@@ -195,12 +192,6 @@ import org.apache.thrift.transport.TTransportFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.facebook.fb303.FacebookBase;
-import com.facebook.fb303.fb_status;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
  * TODO:pc remove application logic to a separate interface.
@@ -438,10 +429,10 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       threadLocalIpAddress.set(ipAddress);
     }
 
-    // This will return null if the metastore is not being accessed from a metastore Thrift server,
+    // This will return null if the metastore is not being accessed from a metastore hrift server,
     // or if the TTransport being used to connect is not an instance of TSocket, or if kereberos
     // is used
-    static String getThreadLocalIpAddress() {
+    public static String getThreadLocalIpAddress() {
       return threadLocalIpAddress.get();
     }
 
@@ -7785,214 +7776,12 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       }
     }
 
-    private final Random random = new Random();
-    @Override
-    public GetNextWriteIdResult get_next_write_id(GetNextWriteIdRequest req) throws TException {
-      RawStore ms = getMS();
-      String dbName = HiveStringUtils.normalizeIdentifier(req.getDbName()),
-          tblName = HiveStringUtils.normalizeIdentifier(req.getTblName());
-      startFunction("get_next_write_id", " : db=" + dbName + " tbl=" + tblName);
-      Exception exception = null;
-      long writeId = -1;
-      try {
-        int deadlockTryCount = 10;
-        int deadlockRetryBackoffMs = 200;
-        while (deadlockTryCount > 0) {
-          boolean ok = false;
-          ms.openTransaction();
-          try {
-            Table tbl = ms.getTable(dbName, tblName);
-            if (tbl == null) {
-              throw new NoSuchObjectException(dbName + "." + tblName);
-            }
-            writeId = tbl.isSetMmNextWriteId() ? tbl.getMmNextWriteId() : 0;
-            tbl.setMmNextWriteId(writeId + 1);
-            ms.alterTable(dbName, tblName, tbl);
-
-            ok = true;
-          } finally {
-            if (!ok) {
-              ms.rollbackTransaction();
-              // Exception should propagate; don't override it by breaking out of the loop.
-            } else {
-              Boolean commitResult = ms.commitTransactionExpectDeadlock();
-              if (commitResult != null) {
-                if (commitResult) break; // Assume no exception; ok to break out of the loop.
-                throw new MetaException("Failed to commit");
-              }
-            }
-          }
-          LOG.warn("Getting the next write ID failed due to a deadlock; retrying");
-          Thread.sleep(random.nextInt(deadlockRetryBackoffMs));
-        }
-
-        // Do a separate txn after we have reserved the number.
-        boolean ok = false;
-        ms.openTransaction();
-        try {
-          Table tbl = ms.getTable(dbName, tblName);
-          ms.createTableWrite(tbl, writeId, MM_WRITE_OPEN, System.currentTimeMillis());
-          ok = true;
-        } finally {
-          commitOrRollback(ms, ok);
-        }
-      } catch (Exception e) {
-        exception = e;
-        throwMetaException(e);
-      } finally {
-        endFunction("get_next_write_id", exception == null, exception, tblName);
-      }
-      return new GetNextWriteIdResult(writeId);
-    }
-
-    @Override
-    public FinalizeWriteIdResult finalize_write_id(FinalizeWriteIdRequest req) throws TException {
-      RawStore ms = getMS();
-      String dbName =  HiveStringUtils.normalizeIdentifier(req.getDbName()),
-          tblName = HiveStringUtils.normalizeIdentifier(req.getTblName());
-      long writeId = req.getWriteId();
-      boolean commit = req.isCommit();
-      startFunction("finalize_write_id", " : db=" + dbName + " tbl=" + tblName
-          + " writeId=" + writeId + " commit=" + commit);
-      Exception ex = null;
-      try {
-        boolean ok = false;
-        ms.openTransaction();
-        try {
-          MTableWrite tw = getActiveTableWrite(ms, dbName, tblName, writeId);
-          if (tw == null) {
-            throw new MetaException("Write ID " + writeId + " for " + dbName + "." + tblName
-                + " does not exist or is not active");
-          }
-          tw.setState(String.valueOf(commit ? MM_WRITE_COMMITTED : MM_WRITE_ABORTED));
-          ms.updateTableWrite(tw);
-          ok = true;
-        } finally {
-          commitOrRollback(ms, ok);
-        }
-      } catch (Exception e) {
-        ex = e;
-        throwMetaException(e);
-      } finally {
-        endFunction("finalize_write_id", ex == null, ex, tblName);
-      }
-      return new FinalizeWriteIdResult();
-    }
-
     private void commitOrRollback(RawStore ms, boolean ok) throws MetaException {
       if (ok) {
         if (!ms.commitTransaction()) throw new MetaException("Failed to commit");
       } else {
         ms.rollbackTransaction();
       }
-    }
-
-    @Override
-    public HeartbeatWriteIdResult heartbeat_write_id(HeartbeatWriteIdRequest req)
-        throws TException {
-      RawStore ms = getMS();
-      String dbName = HiveStringUtils.normalizeIdentifier(req.getDbName()),
-          tblName = HiveStringUtils.normalizeIdentifier(req.getTblName());
-      long writeId = req.getWriteId();
-      startFunction("heartbeat_write_id", " : db="
-          + dbName + " tbl=" + tblName + " writeId=" + writeId);
-      Exception ex = null;
-      boolean wasAborted = false;
-      try {
-        boolean ok = false;
-        ms.openTransaction();
-        try {
-          MTableWrite tw = getActiveTableWrite(ms, dbName, tblName, writeId);
-          long absTimeout = HiveConf.getTimeVar(getConf(),
-              ConfVars.HIVE_METASTORE_MM_ABSOLUTE_TIMEOUT, TimeUnit.MILLISECONDS);
-          if (tw.getCreated() + absTimeout < System.currentTimeMillis()) {
-            tw.setState(String.valueOf(MM_WRITE_ABORTED));
-            wasAborted = true;
-          }
-          tw.setLastHeartbeat(System.currentTimeMillis());
-          ms.updateTableWrite(tw);
-          ok = true;
-        } finally {
-          commitOrRollback(ms, ok);
-        }
-      } catch (Exception e) {
-        ex = e;
-        throwMetaException(e);
-      } finally {
-        endFunction("heartbeat_write_id", ex == null, ex, tblName);
-      }
-      if (wasAborted) throw new MetaException("The write was aborted due to absolute timeout");
-      return new HeartbeatWriteIdResult();
-    }
-
-    private MTableWrite getActiveTableWrite(RawStore ms, String dbName,
-        String tblName, long writeId) throws MetaException {
-      MTableWrite tw = ms.getTableWrite(dbName, tblName, writeId);
-      if (tw == null) {
-        return null;
-      }
-      assert tw.getState().length() == 1;
-      char state = tw.getState().charAt(0);
-      if (state != MM_WRITE_OPEN) {
-        throw new MetaException("Invalid write state: " + state);
-      }
-      return tw;
-    }
-
-    @Override
-    public GetValidWriteIdsResult get_valid_write_ids(
-        GetValidWriteIdsRequest req) throws TException {
-      RawStore ms = getMS();
-      String dbName = req.getDbName(), tblName = req.getTblName();
-      startFunction("get_valid_write_ids", " : db=" + dbName + " tbl=" + tblName);
-      GetValidWriteIdsResult result = new GetValidWriteIdsResult();
-      Exception ex = null;
-      try {
-        boolean ok = false;
-        ms.openTransaction();
-        try {
-          Table tbl = ms.getTable(dbName, tblName);
-          if (tbl == null) {
-            throw new InvalidObjectException(dbName + "." + tblName);
-          }
-          long nextId = tbl.isSetMmNextWriteId() ? tbl.getMmNextWriteId() : 0;
-          long watermarkId = tbl.isSetMmWatermarkWriteId() ? tbl.getMmWatermarkWriteId() : -1;
-          if (nextId > (watermarkId + 1)) {
-            // There may be some intermediate failed or active writes; get the valid ones.
-            List<Long> ids = ms.getTableWriteIds(
-                dbName, tblName, watermarkId, nextId, MM_WRITE_COMMITTED);
-            // TODO: we could optimize here and send the smaller of the lists, and also use ranges
-            if (!ids.isEmpty()) {
-              Iterator<Long> iter = ids.iterator();
-              long oldWatermarkId = watermarkId;
-              while (iter.hasNext()) {
-                Long nextWriteId = iter.next();
-                if (nextWriteId != watermarkId + 1) break;
-                ++watermarkId;
-              }
-              long removed = watermarkId - oldWatermarkId;
-              if (removed > 0) {
-                ids = ids.subList((int) removed, ids.size());
-              }
-              if (!ids.isEmpty()) {
-                result.setIds(ids);
-                result.setAreIdsValid(true);
-              }
-            }
-          }
-          result.setHighWatermarkId(nextId);
-          result.setLowWatermarkId(watermarkId);
-          ok = true;
-        } finally {
-          commitOrRollback(ms, ok);
-        }
-      } catch (Exception e) {
-        ex = e;
-        throwMetaException(e);
-      } finally {
-        endFunction("get_valid_write_ids", ex == null, ex, tblName);
-      }
-      return result;
     }
 
     @Override
@@ -9174,14 +8963,11 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         CertificateLocalizationCtx.getInstance().setCertificateLocalization(certLocService);
 
         // Add shutdown hook to shutdown the CertificateLocalizationService
-        ShutdownHookManager.addShutdownHook(new Runnable() {
-          @Override
-          public void run() {
+        shutdownHookMgr.addShutdownHook(() -> {
             String shutdownMsg = "Shutting down the CertificateLocalizationService.";
             HMSHandler.LOG.info(shutdownMsg);
             certLocService.stop();
-          }
-        });
+        }, 10);
 
         // enable SSL support for HMS
         List<String> sslVersionBlacklist = new ArrayList<String>();
@@ -9357,7 +9143,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
           startCompactorInitiator(conf);
           startCompactorWorkers(conf);
           startCompactorCleaner(conf);
-          startMmHousekeepingThread(conf);
           startRemoteOnlyTasks(conf);
         } catch (Throwable e) {
           LOG.error("Failure when starting the compactor, compactions may not happen, " +
@@ -9398,16 +9183,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       initializeAndStartThread(cleaner, conf);
     }
   }
-
-  private static void startMmHousekeepingThread(HiveConf conf) throws Exception {
-    long intervalMs = HiveConf.getTimeVar(conf,
-        ConfVars.HIVE_METASTORE_MM_THREAD_SCAN_INTERVAL, TimeUnit.MILLISECONDS);
-    if (intervalMs > 0) {
-      MetaStoreThread thread = new MmCleanerThread(intervalMs);
-      initializeAndStartThread(thread, conf);
-    }
-  }
-
 
   private static MetaStoreThread instantiateThread(String classname) throws Exception {
     Class<?> c = Class.forName(classname);

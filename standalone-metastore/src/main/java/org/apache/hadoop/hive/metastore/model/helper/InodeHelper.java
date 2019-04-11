@@ -18,8 +18,6 @@
 
 package org.apache.hadoop.hive.metastore.model.helper;
 
-import org.apache.hadoop.hive.conf.HiveConf;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +25,9 @@ import java.sql.SQLException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class InodeHelper {
   private static InodeHelper instance = null;
   private static DataSource connPool = null;
 
-  private HiveConf hiveConf = null;
+  private Configuration metastoreConf = null;
 
   public static InodeHelper getInstance() {
     if (instance == null) {
@@ -63,20 +63,20 @@ public class InodeHelper {
   }
 
   private InodeHelper() {
-    hiveConf = new HiveConf(this.getClass());
-    ROOT_DIR_PARTITION_KEY = hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTDIRPARTITIONKEY);
-    ROOT_DIR_DEPTH = (short)hiveConf.getIntVar(HiveConf.ConfVars.HOPSROOTDIRDEPTH);
-    RANDOM_PARTITIONING_MAX_LEVEL = hiveConf.getIntVar(HiveConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL);
-    ROOT_INODE_ID = hiveConf.getLongVar(HiveConf.ConfVars.HOPSROOTINODEID);
+    metastoreConf = MetastoreConf.newMetastoreConf();
+    ROOT_DIR_PARTITION_KEY = MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSROOTDIRPARTITIONKEY);
+    ROOT_DIR_DEPTH = (short)MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSROOTDIRDEPTH);
+    RANDOM_PARTITIONING_MAX_LEVEL = MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL);
+    ROOT_INODE_ID = MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSROOTINODEID);
   }
 
   private synchronized void initConnections() {
 
     // Setup connections.
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl(hiveConf.getVar(HiveConf.ConfVars.HOPSDBURLKEY));
-    config.setUsername(hiveConf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME));
-    config.setPassword(hiveConf.getVar(HiveConf.ConfVars.METASTOREPWD));
+    config.setJdbcUrl(MetastoreConf.getVar(metastoreConf, MetastoreConf.ConfVars.HOPSDBURLKEY));
+    config.setUsername(MetastoreConf.getVar(metastoreConf, MetastoreConf.ConfVars.CONNECTION_USER_NAME));
+    config.setPassword(MetastoreConf.getVar(metastoreConf, MetastoreConf.ConfVars.PWD));
 
     connPool = new HikariDataSource(config);
   }
@@ -105,8 +105,8 @@ public class InodeHelper {
 
   public InodePK getInodePK(String path) throws MetaException{
 
-    // Check HiveConf if consistency disabled.
-    if (!hiveConf.getBoolVar(HiveConf.ConfVars.METADATACONSISTENCY)){
+    // Check MetastoreConf if consistency disabled.
+    if (!MetastoreConf.getBoolVar(metastoreConf, MetastoreConf.ConfVars.METADATACONSISTENCY)){
       return new InodePK();
     }
 

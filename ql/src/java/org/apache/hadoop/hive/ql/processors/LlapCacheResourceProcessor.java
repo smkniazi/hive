@@ -54,6 +54,7 @@ import org.apache.hadoop.hive.ql.session.SessionState;
 import org.apache.hadoop.io.retry.RetryPolicies;
 import org.apache.hadoop.io.retry.RetryPolicy;
 import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,7 +156,7 @@ public class LlapCacheResourceProcessor implements CommandProcessor {
     private SocketFactory socketFactory;
     private RetryPolicy retryPolicy;
 
-    PurgeCallable(Configuration conf, LlapServiceInstance llapServiceInstance) {
+    PurgeCallable(Configuration conf, LlapServiceInstance llapServiceInstance) throws SSLCertificateException {
       this.conf = conf;
       this.instance = llapServiceInstance;
       this.socketFactory = NetUtils.getDefaultSocketFactory(conf);

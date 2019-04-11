@@ -108,8 +108,6 @@ public class CreateTableDesc extends DDLDesc implements Serializable {
   // The FSOP configuration for the FSOP that is going to write initial data during ctas.
   // This is not needed beyond compilation, so it is transient.
   private transient FileSinkDesc writer;
-  List<SQLUniqueConstraint> uniqueConstraints;
-  List<SQLNotNullConstraint> notNullConstraints;
 
   public CreateTableDesc() {
   }

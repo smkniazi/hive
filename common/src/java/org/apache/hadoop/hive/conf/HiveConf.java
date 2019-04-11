@@ -226,14 +226,7 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY,
       HiveConf.ConfVars.METASTORE_CLIENT_SOCKET_TIMEOUT,
       HiveConf.ConfVars.METASTORE_CLIENT_SOCKET_LIFETIME,
-      HiveConf.ConfVars.METASTOREPWD,
       HiveConf.ConfVars.METASTORECONNECTURLHOOK,
-      HiveConf.ConfVars.HOPSDBURLKEY,
-      HiveConf.ConfVars.HOPSROOTDIRPARTITIONKEY,
-      HiveConf.ConfVars.HOPSROOTDIRDEPTH,
-      HiveConf.ConfVars.HOPSROOTINODEID,
-      HiveConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL,
-      HiveConf.ConfVars.METADATACONSISTENCY,
       HiveConf.ConfVars.METASTORECONNECTURLKEY,
       HiveConf.ConfVars.METASTORESERVERMINTHREADS,
       HiveConf.ConfVars.METASTORESERVERMAXTHREADS,
@@ -252,11 +245,6 @@ public class HiveConf extends Configuration {
       HiveConf.ConfVars.METASTORE_VALIDATE_COLUMNS,
       HiveConf.ConfVars.METASTORE_VALIDATE_CONSTRAINTS,
       HiveConf.ConfVars.METASTORE_STORE_MANAGER_TYPE,
-      HiveConf.ConfVars.METASTORE_AUTO_CREATE_SCHEMA,
-      HiveConf.ConfVars.METASTORE_AUTO_CREATE_TABLES,
-      HiveConf.ConfVars.METASTORE_AUTO_CREATE_COLUMNS,
-      HiveConf.ConfVars.METASTORE_MYSQL_ENGINE,
-      HiveConf.ConfVars.METASTORE_MYSQL_CHARSET,
       HiveConf.ConfVars.METASTORE_TRANSACTION_ISOLATION,
       HiveConf.ConfVars.METASTORE_CACHE_LEVEL2,
       HiveConf.ConfVars.METASTORE_CACHE_LEVEL2_TYPE,
@@ -646,18 +634,6 @@ public class HiveConf extends Configuration {
     // number of reducers.
     HADOOPNUMREDUCERS("mapreduce.job.reduces", -1, "", true),
 
-    // Metastore stuff. Be sure to update HiveConf.metaVars when you add something here!
-    HOPSDBURLKEY("hops.db.ConnectionURL",
-        "jdbc:mysql:://myhost/hops",
-        "JDBC connect string to connect to HOPS db.\n" +
-        "To use SSL to encrypt/authenticate the connection, provide database-specific SSL flag in the connection URL.\n" +
-        "For example, jdbc:mysql://myhost/hops?ssl=true for postgres database."),
-    HOPSROOTDIRPARTITIONKEY("hops.root.dir.partition_key", 0, "Partition Key of root inode"),
-    HOPSROOTDIRDEPTH("hops.root.dir.depth", 0, "Root dir depth"),
-    HOPSROOTINODEID("hops.root.inode.id", 1L, "Id of the root inode"),
-    HOPSRANDOMPARTITIONINGMAXLEVEL("hops.random.partitioning.level", 1, "Number of levels of random partitioning"),
-    METADATACONSISTENCY("hops.metadata.consistent", true, "enable hops metadata consistency. This option is meant to be disabled for" +
-        "testing purposes"),
     METASTOREDBTYPE("hive.metastore.db.type", "DERBY", new StringSet("DERBY", "ORACLE", "MYSQL", "MSSQL", "POSTGRES"),
         "Type of database used by the metastore. Information schema & JDBCStorageHandler depend on it."),
     /**
@@ -982,12 +958,6 @@ public class HiveConf extends Configuration {
      */
     @Deprecated
     METASTORE_STORE_MANAGER_TYPE("datanucleus.storeManagerType", "rdbms", "metadata store type"),
-
-    METASTORE_AUTO_CREATE_SCHEMA("datanucleus.schema.autoCreateSchema", false, "Datanucleus autoCreateSchema"),
-    METASTORE_AUTO_CREATE_TABLES("datanucleus.schema.autoCreateTables", false, "Datanucleus autoCreateTables"),
-    METASTORE_AUTO_CREATE_COLUMNS("datanucleus.schema.autoCreateColumns", false, "Datanucleus autoCreateColumns"),
-    METASTORE_MYSQL_ENGINE("datanucleus.rdbms.mysql.engineType", "ndbcluster", "MySQL engine to use"),
-    METASTORE_MYSQL_CHARSET("datanucleus.rdbms.mysql.characterSet", "latin1", "MySQL character set to use"),
 
     METASTORE_SCHEMA_VERIFICATION("hive.metastore.schema.verification", true,
         "Enforce metastore schema version consistency.\n" +
@@ -1419,48 +1389,9 @@ public class HiveConf extends Configuration {
     METASTORE_INIT_METADATA_COUNT_ENABLED("hive.metastore.initial.metadata.count.enabled", true,
       "Enable a metadata count at metastore startup for metrics."),
 
-<<<<<<< HEAD
     // SSL settings
     // Keystore and truststore information are read from the ssl-server.xml file which contains the information
     // about the machine certificates.
-    HIVE_SERVER2_USE_SSL("hive.server2.use.SSL", false,
-        "Set this to true for using SSL encryption in HiveServer2."),
-    TLS_USER_CERTS_REMOTE_PATH("hive.tls.user.cert.remote.path", "hdfs:///user/hdfs/kafkacerts/",
-        "The remote location where to materialize the certificates to be then materialized by the node managers"),
-
-=======
-    // Metastore SSL settings
-    /**
-     * @deprecated Use MetastoreConf.USE_SSL
-     */
-    @Deprecated
-    HIVE_METASTORE_USE_SSL("hive.metastore.use.SSL", false,
-        "Set this to true for using SSL encryption in HMS server."),
-    /**
-     * @deprecated Use MetastoreConf.SSL_KEYSTORE_PATH
-     */
-    @Deprecated
-    HIVE_METASTORE_SSL_KEYSTORE_PATH("hive.metastore.keystore.path", "",
-        "Metastore SSL certificate keystore location."),
-    /**
-     * @deprecated Use MetastoreConf.SSL_KEYSTORE_PASSWORD
-     */
-    @Deprecated
-    HIVE_METASTORE_SSL_KEYSTORE_PASSWORD("hive.metastore.keystore.password", "",
-        "Metastore SSL certificate keystore password."),
-    /**
-     * @deprecated Use MetastoreConf.SSL_TRUSTSTORE_PATH
-     */
-    @Deprecated
-    HIVE_METASTORE_SSL_TRUSTSTORE_PATH("hive.metastore.truststore.path", "",
-        "Metastore SSL certificate truststore location."),
-    /**
-     * @deprecated Use MetastoreConf.SSL_TRUSTSTORE_PASSWORD
-     */
-    @Deprecated
-    HIVE_METASTORE_SSL_TRUSTSTORE_PASSWORD("hive.metastore.truststore.password", "",
-        "Metastore SSL certificate truststore password."),
->>>>>>> 105cc65430... HIVE-19031 Mark duplicate configs in HiveConf as deprecated (Alan Gates, reviewed by Thejas Nair)
 
     // Parameters for exporting metadata on table drop (requires the use of the)
     // org.apache.hadoop.hive.ql.parse.MetaDataExportListener preevent listener
@@ -3366,7 +3297,7 @@ public class HiveConf extends Configuration {
     HIVE_SERVER2_SESSION_HOOK("hive.server2.session.hook", "", ""),
 
     // SSL settings
-    HIVE_SUPER_USER("hive.server2.superuser", "hive", "The user to use to create databases"),
+    HIVE_SUPER_USER("hive.superuser", "hive", "The user to use to create databases"),
     HIVE_SERVER2_MAP_FAIR_SCHEDULER_QUEUE("hive.server2.map.fair.scheduler.queue", true,
         "If the YARN fair scheduler is configured and HiveServer2 is running in non-impersonation mode,\n" +
         "this setting determines the user for fair scheduler queue mapping.\n" +
@@ -4361,7 +4292,6 @@ public class HiveConf extends Configuration {
         + ",fs.s3a.secret.key"
         + ",fs.s3a.proxy.password"
         // HopsTLS config
-        + "," + TLS_USER_CERTS_REMOTE_PATH.varname
         + ",dfs.adls.oauth2.credential"
         + ",fs.adl.oauth2.credential",
         "Comma separated list of configuration options which should not be read by normal user like passwords"),
@@ -5257,11 +5187,6 @@ public class HiveConf extends Configuration {
       auxJars = StringUtils.join(FileUtils.getJarFilesByPath(this.get(ConfVars.HIVEAUXJARS.varname), this), ',');
     }
 
-    if (getBoolVar(ConfVars.METASTORE_SCHEMA_VERIFICATION)) {
-      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_SCHEMA, false);
-      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_TABLES, false);
-      setBoolVar(ConfVars.METASTORE_AUTO_CREATE_COLUMNS, false);
-    }
 
     if (getBoolVar(HiveConf.ConfVars.HIVECONFVALIDATION)) {
       List<String> trimmed = new ArrayList<String>();

@@ -79,7 +79,6 @@ import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.calcite.tools.RelBuilder;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.derby.impl.store.raw.RawStore;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileChecksum;
 import org.apache.hadoop.fs.FileStatus;
@@ -2204,7 +2203,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
                   + " table=" + tbl.getTableName() + ", "
                   + " partSpec=" + fullPartSpec + ", "
                   + " loadFileType=" + loadFileType.toString() + ", "
-                  + " listBucketingEnabled=" + listBucketingEnabled + ", "
+                  + " listBucketingEnabled=" + numLB + ", "
                   + " isAcid=" + isAcid + ", "
                   + " hasFollowingStatsTask=" + hasFollowingStatsTask, t);
               throw t;
@@ -2318,7 +2317,6 @@ private void constructOneLBLocationMap(FileStatus fSta,
         replaceFiles(tblPath, loadPath, destPath, tblPath, conf, isSrcLocal, isAutopurge,
             newFiles, FileUtils.HIDDEN_FILES_PATH_FILTER, !tbl.isTemporary());
       } else {
-        FileSystem fs;
         try {
           FileSystem fs = tbl.getDataLocation().getFileSystem(conf);
           copyFiles(conf, loadPath, destPath, fs, isSrcLocal, isAcidIUDoperation,
@@ -4120,7 +4118,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
    * @throws IOException
    */
   public static boolean trashFiles(final FileSystem fs, final FileStatus[] statuses,
-      final Configuration conf)
+      final Configuration conf, final boolean purge)
       throws IOException {
     boolean result = true;
 
@@ -4134,13 +4132,13 @@ private void constructOneLBLocationMap(FileStatus fSta,
     final SessionState parentSession = SessionState.get();
     for (final FileStatus status : statuses) {
       if (null == pool) {
-        result &= FileUtils.moveToTrash(fs, status.getPath(), conf);
+        result &= FileUtils.moveToTrash(fs, status.getPath(), conf, purge);
       } else {
         futures.add(pool.submit(new Callable<Boolean>() {
           @Override
           public Boolean call() throws Exception {
             SessionState.setCurrentSessionState(parentSession);
-            return FileUtils.moveToTrash(fs, status.getPath(), conf);
+            return FileUtils.moveToTrash(fs, status.getPath(), conf, purge);
           }
         }));
       }
@@ -4963,27 +4961,6 @@ private void constructOneLBLocationMap(FileStatus fSta,
     throws HiveException, NoSuchObjectException {
     try {
       getMSC().addForeignKey(foreignKeyCols);
-    } catch (Exception e) {
-      throw new HiveException(e);
-    }
-  }
-
-  public long getNextTableWriteId(String dbName, String tableName) throws HiveException {
-    try {
-      return getMSC().getNextTableWriteId(dbName, tableName);
-    } catch (Exception e) {
-      throw new HiveException(e);
-    }
-  }
-
-  public ValidWriteIds getValidWriteIdsForTable(
-      String dbName, String tableName) throws HiveException {
-    try {
-      // TODO: decode ID ranges here if we use that optimization
-      GetValidWriteIdsResult result = getMSC().getValidWriteIds(dbName, tableName);
-      return new ValidWriteIds(result.getLowWatermarkId(), result.getHighWatermarkId(),
-          result.isSetAreIdsValid() && result.isAreIdsValid(),
-          result.isSetIds() ? new HashSet<Long>(result.getIds()) : null);
     } catch (Exception e) {
       throw new HiveException(e);
     }

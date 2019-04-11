@@ -26,6 +26,7 @@ import org.apache.hadoop.ipc.ProtobufRpcEngine;
 import org.apache.hadoop.ipc.ProtocolProxy;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.net.SSLCertificateException;
 import org.apache.hadoop.security.UserGroupInformation;
 
 // TODO: move other protocols to use this too.
@@ -42,7 +43,7 @@ public class ProtobufProxy<BlockingInterface> {
 
   public ProtobufProxy(Configuration conf, UserGroupInformation ugi,
       String hostname, int port, @Nullable RetryPolicy retryPolicy,
-      @Nullable SocketFactory socketFactory, Class<?> blockingInterfaceClass) {
+      @Nullable SocketFactory socketFactory, Class<?> blockingInterfaceClass) throws SSLCertificateException {
     this.conf = conf;
     this.serverAddr = NetUtils.createSocketAddr(hostname, port);
     this.retryPolicy = retryPolicy;

@@ -17,7 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore.utils;
 
-import org.apache.curator.shaded.com.google.common.collect.Lists;
+import com.google.common.collect.Lists;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;

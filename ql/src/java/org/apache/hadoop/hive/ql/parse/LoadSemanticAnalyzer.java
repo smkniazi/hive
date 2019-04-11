@@ -321,6 +321,7 @@ public class LoadSemanticAnalyzer extends SemanticAnalyzer {
       return;
     }
 
+    List<String> bucketCols = ts.tableHandle.getBucketCols();
     if (bucketCols != null && !bucketCols.isEmpty()) {
       String error = StrictChecks.checkBucketing(conf);
       if (error != null) {

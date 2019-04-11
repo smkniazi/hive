@@ -83,6 +83,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
@@ -499,9 +500,14 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
             if (hopsTLS) {
               try {
                 hopsSecurityMaterial = getHopsSecurityMaterial();
-                transport = HiveAuthUtils.get2WayTLSClientSocket(store.getHost(), store.getPort(), clientSocketTimeout,
-                    hopsSecurityMaterial.getTrustStorePath(), hopsSecurityMaterial.getTrustStorePassword(),
-                    hopsSecurityMaterial.getKeyStorePath(), hopsSecurityMaterial.getKeyStorePassword());
+                TSSLTransportFactory.TSSLTransportParameters params =
+                    new TSSLTransportFactory.TSSLTransportParameters();
+
+                params.setTrustStore(hopsSecurityMaterial.getTrustStorePath(),
+                    hopsSecurityMaterial.getTrustStorePassword());
+                params.setKeyStore(hopsSecurityMaterial.getKeyStorePath(),
+                    hopsSecurityMaterial.getKeyStorePassword());
+                transport = TSSLTransportFactory.getClientSocket(store.getHost(), store.getPort(), clientSocketTimeout, params);
               } catch (IOException | LoginException e) {
                 throw new MetaException(e.toString());
               } catch (TTransportException e) {
@@ -570,7 +576,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
 
               // For the superuser with don't need to send the certificate to the hive metastore, as it will use the
               // machine's certificates.
-              if (!username.equals(conf.getVar(ConfVars.HIVE_SUPER_USER))) {
+              if (!username.equals(MetastoreConf.getVar(conf, ConfVars.HIVE_SUPER_USER))) {
                 client.set_crypto(hopsSecurityMaterial.getKeyStore(), hopsSecurityMaterial.getKeyStorePassword(),
                     hopsSecurityMaterial.getTrustStore(), hopsSecurityMaterial.getTrustStorePassword());
               }
@@ -614,8 +620,8 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
    */
   private HopsSecurityMaterial getHopsSecurityMaterial() throws IOException, LoginException, MetaException {
     HopsSecurityMaterial securityMaterial;
-    String username = Utils.getUGI().getUserName();
-    if (username.equals(conf.getVar(ConfVars.HIVE_SUPER_USER))) {
+    String username = UserGroupInformation.getCurrentUser().getUserName();
+    if (username.equals(MetastoreConf.getVar(conf, ConfVars.HIVE_SUPER_USER))) {
       // Hive superuser, use machine (server) certificate
       securityMaterial = getMaterialForSuperuser();
     } else {
@@ -679,7 +685,7 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
         "t_certificate", trustStore, key);
   }
 
-  private class HopsSecurityMaterial {
+  public class HopsSecurityMaterial {
     private String keyStorePath;
     private ByteBuffer keyStore;
     private String keyStorePassword;
@@ -3219,29 +3225,6 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
     }
     CacheFileMetadataResult result = client.cache_file_metadata(req);
     return result.isIsSupported();
-  }
-
-  @Override
-  public long getNextTableWriteId(String dbName, String tableName) throws TException {
-    return client.get_next_write_id(new GetNextWriteIdRequest(dbName, tableName)).getWriteId();
-  }
-
-  @Override
-  public void finalizeTableWrite(
-      String dbName, String tableName, long writeId, boolean commit) throws TException {
-    client.finalize_write_id(new FinalizeWriteIdRequest(dbName, tableName, writeId, commit));
-  }
-
-  @Override
-  public void heartbeatTableWrite(
-      String dbName, String tableName, long writeId) throws TException {
-    client.heartbeat_write_id(new HeartbeatWriteIdRequest(dbName, tableName, writeId));
-  }
-
-  @Override
-  public GetValidWriteIdsResult getValidWriteIds(
-      String dbName, String tableName) throws TException {
-    return client.get_valid_write_ids(new GetValidWriteIdsRequest(dbName, tableName));
   }
 
   public String getMetastoreDbUuid() throws TException {

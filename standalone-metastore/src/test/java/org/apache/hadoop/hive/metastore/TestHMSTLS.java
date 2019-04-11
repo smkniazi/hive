@@ -19,7 +19,8 @@ package org.apache.hadoop.hive.metastore;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
-import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
+import org.apache.hadoop.hive.metastore.utils.MetaStoreUtils;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.ssl.CertificateLocalization;
@@ -53,7 +54,7 @@ public class TestHMSTLS {
   private static final String fakeUser = "fake__user";
   private static final String password = "123456";
 
-  private static HiveConf hiveConf;
+  private static Configuration hiveConf;
 
   private HiveMetaStoreClient hmsc = null;
 
@@ -72,9 +73,10 @@ public class TestHMSTLS {
     KeyStoreTestUtil.saveConfig(sslServer, sslServerConf);
 
     // Configure SSL
-    hiveConf = new HiveConf();
+    hiveConf = MetastoreConf.newMetastoreConf();
 
-    hiveConf.setVar(HiveConf.ConfVars.HIVE_SUPER_USER, UserGroupInformation.getCurrentUser().getUserName());
+    hiveConf.set(MetastoreConf.ConfVars.HIVE_SUPER_USER.getVarname(),
+        UserGroupInformation.getCurrentUser().getUserName());
 
     hiveConf.setBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED, true);
     hiveConf.addResource("ssl-server.xml");
@@ -83,16 +85,15 @@ public class TestHMSTLS {
 
 
     // Start Hivemetastore
-    hiveConf.setClass(HiveConf.ConfVars.METASTORE_EXPRESSION_PROXY_CLASS.varname,
+    hiveConf.setClass(MetastoreConf.ConfVars.EXPRESSION_PROXY_CLASS.getVarname(),
         MockPartitionExpressionForMetastore.class, PartitionExpressionProxy.class);
-    hiveConf.setBoolVar(HiveConf.ConfVars.METASTORE_EXECUTE_SET_UGI, true);
-    int msPort = MetaStoreUtils.startMetaStore(hiveConf);
-    hiveConf.setVar(HiveConf.ConfVars.METASTOREURIS, "thrift://localhost:" + msPort);
-    hiveConf.setVar(HiveConf.ConfVars.PREEXECHOOKS, "");
-    hiveConf.setVar(HiveConf.ConfVars.POSTEXECHOOKS, "");
-    hiveConf.setBoolVar(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
-    hiveConf.setIntVar(HiveConf.ConfVars.METASTORETHRIFTCONNECTIONRETRIES, 1);
+    hiveConf.setBoolean(MetastoreConf.ConfVars.EXECUTE_SET_UGI.getVarname(), true);
 
+    int msPort = MetaStoreUtils.startMetaStore(hiveConf);
+    hiveConf.set(MetastoreConf.ConfVars.THRIFT_URIS.getVarname(), "thrift://localhost:" + msPort);
+    hiveConf.set(MetastoreConf.ConfVars.INIT_HOOKS.getVarname(), "");
+    hiveConf.setBoolean(MetastoreConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.getVarname(), false);
+    hiveConf.setInt(MetastoreConf.ConfVars.THRIFT_CONNECTION_RETRIES.getVarname(), 1);
 
     /*
      * Test run in a single JVM so the CertificateLocalizationContext is shared between the Metastore and the client

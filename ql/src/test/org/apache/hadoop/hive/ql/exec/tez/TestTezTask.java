@@ -220,8 +220,7 @@ public class TestTezTask {
   @Test
   public void testSubmit() throws Exception {
     DAG dag = DAG.create("test");
-    task.submit(conf, dag, path, appLr, sessionState, Collections.<String, LocalResource> emptyMap(),
-        new String[0], Collections.<String,LocalResource> emptyMap());
+    task.submit(conf, dag, Ref.from(sessionState));
     // validate close/reopen
     verify(sessionState, times(1)).reopen();
     verify(session, times(2)).submitDAG(any(DAG.class));

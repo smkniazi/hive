@@ -141,6 +141,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
       Utilities.FILE_OP_LOGGER.trace("creating LTD from " + sourcePath + " to " + table.getTableName());
     }
     this.dpCtx = dpCtx;
+    LoadFileType lft = isReplace ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING;
     if (dpCtx != null && dpCtx.getPartSpec() != null && partitionSpec == null) {
       init(table, dpCtx.getPartSpec(), lft, writeId);
     } else {
@@ -186,6 +187,16 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     return loadFileType;
   }
 
+
+  @Explain(displayName = "micromanaged table")
+  public Boolean isMmTableExplain() {
+    return isMmTable() ? true : null;
+  }
+
+  public boolean isMmTable() {
+    return AcidUtils.isInsertOnlyTable(table.getProperties());
+  }
+
   public void setLoadFileType(LoadFileType loadFileType) {
     this.loadFileType = loadFileType;
   }
@@ -226,6 +237,10 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
    */
   public void setLbCtx(ListBucketingCtx lbCtx) {
     this.lbCtx = lbCtx;
+  }
+
+  public long getWriteId() {
+    return currentWriteId == null ? 0 : currentWriteId;
   }
 
   public int getStmtId() {

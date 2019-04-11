@@ -1833,7 +1833,7 @@ public final class GenMapRedUtils {
     // create resolver
     cndTsk.setResolver(new ConditionalResolverMergeFiles());
     ConditionalResolverMergeFilesCtx mrCtx =
-        new ConditionalResolverMergeFilesCtx(listTasks, inputPath);
+        new ConditionalResolverMergeFilesCtx(listTasks, condInputPath.toString());
     cndTsk.setResolverCtx(mrCtx);
 
     // make the conditional task as the child of the current leaf task

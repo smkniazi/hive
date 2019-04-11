@@ -1548,7 +1548,6 @@ public final class Utilities {
    *
    * @param hconf
    * @param paths A list of empty buckets to create
-   * @param conf The definition of the FileSink.
    * @param reporter The mapreduce reporter object
    * @throws HiveException
    * @throws IOException
@@ -3308,7 +3307,8 @@ public final class Utilities {
           throw new IOException("Operation is Canceled.");
         }
 
-        List<String> aliases = work.getPathToAliases().get(file);
+        Path file = e.getKey();
+        List<String> aliases = e.getValue();
         if (aliases.contains(alias)) {
           if (file != null) {
             isEmptyTable = false;

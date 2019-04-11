@@ -18,12 +18,15 @@
 
 package org.apache.hadoop.hive.ql.parse;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.ql.Context;
@@ -38,11 +41,16 @@ import org.apache.hadoop.hive.ql.parse.repl.DumpType;
 import org.apache.hadoop.hive.ql.parse.repl.dump.Utils;
 import org.apache.hadoop.hive.ql.parse.repl.dump.io.DBSerializer;
 import org.apache.hadoop.hive.ql.parse.repl.dump.io.JsonWriter;
+import org.apache.hadoop.hive.ql.parse.repl.dump.io.ReplicationSpecSerializer;
 import org.apache.hadoop.hive.ql.parse.repl.dump.io.TableSerializer;
 import org.apache.hadoop.hive.ql.parse.repl.load.MetaData;
 import org.apache.hadoop.hive.ql.parse.repl.load.MetadataJson;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TJSONProtocol;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -265,7 +273,7 @@ public class EximUtil {
   }
 
   public static void createExportDump(FileSystem fs, Path metadataPath, Table tableHandle,
-      Iterable<Partition> partitions, ReplicationSpec replicationSpec, HiveConf hiveConf)
+                                      Iterable<Partition> partitions, ReplicationSpec replicationSpec, HiveConf hiveConf)
       throws SemanticException, IOException {
 
     if (replicationSpec == null) {
@@ -276,74 +284,12 @@ public class EximUtil {
       replicationSpec.setNoop(true);
     }
 
-    OutputStream out = fs.create(metadataPath);
-    JsonGenerator jgen = (new JsonFactory()).createJsonGenerator(out);
-    jgen.writeStartObject();
-    jgen.writeStringField("version",METADATA_FORMAT_VERSION);
-    if (METADATA_FORMAT_FORWARD_COMPATIBLE_VERSION != null) {
-      jgen.writeStringField("fcversion",METADATA_FORMAT_FORWARD_COMPATIBLE_VERSION);
-    }
-
-    if (replicationSpec.isInReplicationScope()){
-      for (ReplicationSpec.KEY key : ReplicationSpec.KEY.values()){
-        String value = replicationSpec.get(key);
-        if (value != null){
-          jgen.writeStringField(key.toString(), value);
-        }
-      }
-      if (tableHandle != null){
-        Table ttable = tableHandle.getTTable();
-        ttable.putToParameters(
-            ReplicationSpec.KEY.CURR_STATE_ID.toString(), replicationSpec.getCurrentReplicationState());
-        if ((ttable.getParameters().containsKey("EXTERNAL")) &&
-            (ttable.getParameters().get("EXTERNAL").equalsIgnoreCase("TRUE"))){
-          // Replication destination will not be external - override if set
-          ttable.putToParameters("EXTERNAL","FALSE");
-        }
-        if (ttable.isSetTableType() && ttable.getTableType().equalsIgnoreCase(TableType.EXTERNAL_TABLE.toString())){
-          // Replication dest will not be external - override if set
-          ttable.setTableType(TableType.MANAGED_TABLE.toString());
-        }
-      }
-    } else {
-      // ReplicationSpec.KEY scopeKey = ReplicationSpec.KEY.REPL_SCOPE;
-      // write(out, ",\""+ scopeKey.toString() +"\":\"" + replicationSpec.get(scopeKey) + "\"");
-      // TODO: if we want to be explicit about this dump not being a replication dump, we can
-      // uncomment this else section, but currently unnneeded. Will require a lot of golden file
-      // regen if we do so.
-    }
-    if ((tableHandle != null) && (!replicationSpec.isNoop())){
-      TSerializer serializer = new TSerializer(new TJSONProtocol.Factory());
-      try {
-        jgen.writeStringField("table", serializer.toString(tableHandle.getTTable(), "UTF-8"));
-        jgen.writeFieldName("partitions");
-        jgen.writeStartArray();
-        if (partitions != null) {
-          for (org.apache.hadoop.hive.ql.metadata.Partition partition : partitions) {
-            Partition tptn = partition.getTPartition();
-            if (replicationSpec.isInReplicationScope()){
-              tptn.putToParameters(
-                  ReplicationSpec.KEY.CURR_STATE_ID.toString(), replicationSpec.getCurrentReplicationState());
-              if ((tptn.getParameters().containsKey("EXTERNAL")) &&
-                  (tptn.getParameters().get("EXTERNAL").equalsIgnoreCase("TRUE"))){
-                // Replication destination will not be external
-                tptn.putToParameters("EXTERNAL", "FALSE");
-              }
-            }
-            jgen.writeString(serializer.toString(tptn, "UTF-8"));
-            jgen.flush();
-          }
-        }
-        jgen.writeEndArray();
-      } catch (TException e) {
-        throw new SemanticException(
-            ErrorMsg.ERROR_SERIALIZE_METASTORE
-                .getMsg(), e);
+    try (JsonWriter writer = new JsonWriter(fs, metadataPath)) {
+      if (replicationSpec.isInReplicationScope()) {
+        new ReplicationSpecSerializer().writeTo(writer, replicationSpec);
       }
       new TableSerializer(tableHandle, partitions, hiveConf).writeTo(writer, replicationSpec);
     }
-    jgen.writeEndObject();
-    jgen.close(); // JsonGenerator owns the OutputStream, so it closes it when we call close.
   }
 
   public static MetaData readMetaData(FileSystem fs, Path metadataPath)

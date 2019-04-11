@@ -18,9 +18,10 @@
 
 package org.apache.hadoop.hive.metastore;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.metastore.model.helper.InodePK;
 import org.junit.After;
@@ -33,11 +34,11 @@ import java.sql.*;
 public class TestInodeHelper {
 
   private InodeHelper inodeHelper = null;
-  private HiveConf hiveConf = null;
+  private Configuration hiveConf = null;
 
   @Before
   public void setUp() throws Exception {
-    hiveConf = new HiveConf(this.getClass());
+    hiveConf = MetastoreConf.newMetastoreConf();
     inodeHelper = InodeHelper.getInstance();
   }
 
@@ -72,9 +73,11 @@ public class TestInodeHelper {
     // Assert the dir is correct and that the parent is the warehouse dir
     Assert.assertEquals("testdir", inodePk.name);
 
-    Connection conn = DriverManager.getConnection(hiveConf.getVar(HiveConf.ConfVars.HOPSDBURLKEY),
-        hiveConf.getVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME),
-        hiveConf.getVar(HiveConf.ConfVars.METASTOREPWD));
+    Connection conn = DriverManager.getConnection(
+        MetastoreConf.getVar(hiveConf, MetastoreConf.ConfVars.HOPSDBURLKEY),
+        MetastoreConf.getVar(hiveConf, MetastoreConf.ConfVars.CONNECTION_USER_NAME),
+        MetastoreConf.getVar(hiveConf, MetastoreConf.ConfVars.PWD)
+        );
 
     PreparedStatement stmt = conn.prepareStatement(
           "SELECT id FROM hdfs_inodes WHERE id = ?" +

@@ -27,6 +27,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.HttpMethod;
 
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.metrics.common.Metrics;
 import org.apache.hadoop.hive.common.metrics.common.MetricsConstant;
 import org.apache.hadoop.hive.common.metrics.common.MetricsFactory;
@@ -99,7 +100,9 @@ public class ThriftHttpCLIService extends ThriftCLIService {
       conf.setResponseHeaderSize(responseHeaderSize);
       final HttpConnectionFactory http = new HttpConnectionFactory(conf);
 
-      boolean useSsl = hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_USE_SSL);
+      boolean useSsl = hiveConf.getBoolean(
+          CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+          CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT);
       String schemeName = useSsl ? "https" : "http";
 
       // Change connector if SSL is used

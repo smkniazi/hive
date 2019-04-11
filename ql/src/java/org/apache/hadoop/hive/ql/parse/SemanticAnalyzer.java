@@ -7559,7 +7559,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       genPartnCols(dest, input, qb, table_desc, dest_tab, rsCtx);
     }
 
-    assert isMmTable == (mmWriteId != null);
     FileSinkDesc fileSinkDesc = createFileSinkDesc(dest, table_desc, dest_part,
         dest_path, currentTableId, destTableIsFullAcid, destTableIsTemporary,//this was 1/4 acid
         destTableIsMaterialization, queryTmpdir, rsCtx, dpCtx, lbCtx, fsRS,
@@ -7671,12 +7670,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       }
     }
     return result;
-  }
-
-  private static Long getMmWriteId(Table tbl, boolean isMmTable) throws HiveException {
-    if (!isMmTable) return null;
-    // Get the next write ID for this table. We will prefix files with this write ID.
-    return Hive.get().getNextTableWriteId(tbl.getDbName(), tbl.getTableName());
   }
 
   private FileSinkDesc createFileSinkDesc(String dest, TableDesc table_desc,
@@ -7916,12 +7909,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   private void checkAcidConstraints(QB qb, TableDesc tableDesc,
-                                    Table table, AcidUtils.Operation acidOp) throws SemanticException {
-    String tableName = tableDesc.getTableName();
-    if (!qb.getParseInfo().isInsertIntoTable(tableName) && !Operation.INSERT_ONLY.equals(acidOp)) {
-      LOG.debug("Couldn't find table " + tableName + " in insertIntoTable");
-      throw new SemanticException(ErrorMsg.NO_INSERT_OVERWRITE_WITH_ACID, tableName);
-    }
+                                    Table table) throws SemanticException {
     /*
     LOG.info("Modifying config values for ACID write");
     conf.setBoolVar(ConfVars.HIVEOPTREDUCEDEDUPLICATION, true);
@@ -14434,8 +14422,6 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
   private AcidUtils.Operation getAcidType(Class<? extends OutputFormat> of, String dest) {
     if (SessionState.get() == null || !getTxnMgr().supportsAcid()) {
       return AcidUtils.Operation.NOT_ACID;
-    } else if (MetaStoreUtils.isInsertOnlyTable(table.getParameters())) {
-      return AcidUtils.Operation.INSERT_ONLY;
     } else if (isAcidOutputFormat(of)) {
       return getAcidType(dest);
     } else {

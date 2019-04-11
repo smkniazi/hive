@@ -21,8 +21,6 @@
  */
 package org.apache.hadoop.hive.metastore.model;
 
-import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
-
 import java.util.Map;
 
 /**
