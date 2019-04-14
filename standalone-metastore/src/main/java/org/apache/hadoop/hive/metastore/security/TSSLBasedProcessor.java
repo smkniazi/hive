@@ -222,7 +222,7 @@ public class TSSLBasedProcessor<I extends Iface> extends TUGIBasedProcessor<Ifac
         throw new TTransportException("Client not authorized.");
       }
 
-      ugiTrans.setClientUGI(UserGroupInformation.createRemoteUser(user, SaslRpcServer.AuthMethod.SIMPLE, false));
+      ugiTrans.setClientUGI(UserGroupInformation.createRemoteUser(user));
       oprot.writeMessageBegin(new TMessage(msg.name, TMessageType.REPLY, msg.seqid));
       result.write(oprot);
       oprot.writeMessageEnd();

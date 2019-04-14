@@ -305,13 +305,13 @@
         </value>
       </field>
       <field name="description">
-        <column name="DESCRIPTION" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="DESCRIPTION" length="2000" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       <field name="serializerClass">
-        <column name="SERIALIZER_CLASS" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="SERIALIZER_CLASS" length="2000" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       <field name="deserializerClass">
-        <column name="DESERIALIZER_CLASS" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
+        <column name="DESERIALIZER_CLASS" length="2000" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
       <field name="serdeType">
         <column name="SERDE_TYPE" jdbc-type="integer" allows-null="true"/>

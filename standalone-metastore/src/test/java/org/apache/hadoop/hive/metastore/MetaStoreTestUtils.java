@@ -224,6 +224,8 @@ public class MetaStoreTestUtils {
       MetastoreConf.setClass(conf, ConfVars.EXPRESSION_PROXY_CLASS,
           DefaultPartitionExpressionProxy.class, PartitionExpressionProxy.class);
     }
+
+    setAutoCreate(conf);
   }
 
 
@@ -248,5 +250,14 @@ public class MetaStoreTestUtils {
       }
       client.dropCatalog(catName);
     }
+  }
+
+  /**
+   * Setup schema schema autocreation
+   */
+  private static void setAutoCreate(Configuration conf) {
+    MetastoreConf.setBoolVar(conf, ConfVars.AUTO_CREATE_COLUMNS, true);
+    MetastoreConf.setBoolVar(conf, ConfVars.AUTO_CREATE_TABLES, true);
+    MetastoreConf.setBoolVar(conf, ConfVars.AUTO_CREATE_SCHEMA, true);
   }
 }
