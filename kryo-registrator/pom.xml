@@ -46,7 +46,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.apache.hadoop</groupId>
-          <artifactId>*</artifactId>
+          <artifactId>hadoop-client</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

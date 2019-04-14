@@ -39,7 +39,8 @@
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>true</useTransitiveFiltering>
       <excludes>
-        <exclude>org.apache.hadoop:*</exclude>
+        <exclude>io.hops:*</exclude>
+        <exclude>io.hops.metadata:*</exclude>
         <exclude>org.slf4j:*</exclude>
         <exclude>log4j:*</exclude>
       </excludes>

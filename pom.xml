@@ -1143,7 +1143,8 @@
                   <excludes>
                     <!--LGPL licenced library-->
                     <exclude>com.google.code.findbugs:annotations</exclude>
-                    <exclude>org.apache.hadoop</exclude>
+                    <exclude>org.apache.hadoop:*</exclude>
+                    <exclude>org.apache.hive:*</exclude>
                   </excludes>
                 </bannedDependencies>
               </rules>
