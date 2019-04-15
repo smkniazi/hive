@@ -118,7 +118,7 @@
       <classifier>tests</classifier>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-dag</artifactId>
       <version>${tez.version}</version>
       <scope>test</scope>

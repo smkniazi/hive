@@ -447,7 +447,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-runtime-internals</artifactId>
       <version>${tez.version}</version>
       <scope>test</scope>

@@ -54,12 +54,12 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-api</artifactId>
        <version>${tez.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-runtime-internals</artifactId>
        <version>${tez.version}</version>
     </dependency>

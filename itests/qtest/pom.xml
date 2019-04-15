@@ -382,7 +382,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-tests</artifactId>
       <version>${tez.version}</version>
       <type>test-jar</type>
@@ -394,7 +394,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-api</artifactId>
       <version>${tez.version}</version>
       <scope>test</scope>
@@ -406,7 +406,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-runtime-library</artifactId>
       <version>${tez.version}</version>
       <scope>test</scope>
@@ -426,7 +426,7 @@
       </exclusions>
    </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-mapreduce</artifactId>
       <version>${tez.version}</version>
       <scope>test</scope>
@@ -438,7 +438,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.tez</groupId>
+      <groupId>io.hops.tez</groupId>
       <artifactId>tez-dag</artifactId>
       <version>${tez.version}</version>
       <scope>test</scope>
