@@ -326,7 +326,7 @@ class MetaStoreDirectSql {
           + "\"DBS\".\"OWNER_NAME\", \"DBS\".\"OWNER_TYPE\" "
           + "FROM \"DBS\" left outer join \"SDS\" on \"DBS\".\"SD_ID\" = \"SDS\".\"SD_ID\" "
           + "where \"DBS\".\"NAME\" = ? and \"DBS\".\"CTLG_NAME\" = ? ";
-      Object[] params = new Object[] { dbName };
+      Object[] params = new Object[] { dbName, catName };
       queryDbSelector = pm.newQuery("javax.jdo.query.SQL", queryTextDbSelector);
 
       if (LOG.isTraceEnabled()) {
