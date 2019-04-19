@@ -205,6 +205,7 @@ import org.apache.hadoop.hive.metastore.model.MWMPool;
 import org.apache.hadoop.hive.metastore.model.MWMResourcePlan;
 import org.apache.hadoop.hive.metastore.model.MWMResourcePlan.Status;
 import org.apache.hadoop.hive.metastore.model.MWMTrigger;
+import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
 import org.apache.hadoop.hive.metastore.parser.ExpressionTree;
 import org.apache.hadoop.hive.metastore.parser.ExpressionTree.FilterBuilder;
 import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
@@ -379,6 +380,9 @@ public class ObjectStore implements RawStore, Configurable {
       } else {
         partitionValidationPattern = null;
       }
+
+      // Hops code. Initialize InodeHelper class
+      InodeHelper.getInstance().setConf(conf);
 
       // Note, if metrics have not been initialized this will return null, which means we aren't
       // using metrics.  Thus we should always check whether this is non-null before using.
@@ -1419,11 +1423,6 @@ public class ObjectStore implements RawStore, Configurable {
           pm.deletePersistentAll(tabConstraints);
         }
 
-        List<MTableWrite> tableWrites = listAllTableWrites(dbName, tableName);
-        if (tableWrites != null && tableWrites.size() > 0) {
-          pm.deletePersistentAll(tableWrites);
-        }
-
         preDropStorageDescriptor(tbl.getSd());
 
         if (materializedView) {
@@ -1514,25 +1513,6 @@ public class ObjectStore implements RawStore, Configurable {
       }
     }
     return mConstraints;
-  }
-
-
-  private List<MTableWrite> listAllTableWrites(String dbName, String tableName) {
-    List<MTableWrite> result = null;
-    Query query = null;
-    boolean success = false;
-    openTransaction();
-    try {
-      String queryStr = "table.tableName == t1 && table.database.name == t2";
-      query = pm.newQuery(MTableWrite.class, queryStr);
-      query.declareParameters("java.lang.String t1, java.lang.String t2");
-      result = new ArrayList<>((List<MTableWrite>) query.executeWithArray(tableName, dbName));
-      pm.retrieveAll(result);
-      success = true;
-    } finally {
-      closeTransaction(success, query);
-    }
-    return result;
   }
 
   @Override

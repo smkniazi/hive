@@ -71,6 +71,7 @@ import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars;
+import org.apache.hadoop.hive.metastore.model.MCatalog;
 import org.apache.hadoop.hive.metastore.model.MConstraint;
 import org.apache.hadoop.hive.metastore.model.MCreationMetadata;
 import org.apache.hadoop.hive.metastore.model.MDatabase;
@@ -226,6 +227,7 @@ class MetaStoreDirectSql {
 
     try {
       // Force the underlying db to initialize.
+      initQueries.add(pm.newQuery(MCatalog.class, "name == ''"));
       initQueries.add(pm.newQuery(MDatabase.class, "name == ''"));
       initQueries.add(pm.newQuery(MTableColumnStatistics.class, "dbName == ''"));
       initQueries.add(pm.newQuery(MPartitionColumnStatistics.class, "dbName == ''"));
@@ -323,7 +325,7 @@ class MetaStoreDirectSql {
 
       String queryTextDbSelector= "select "
           + "\"DBS\".\"DB_ID\", \"DBS\".\"NAME\", \"SDS\".\"LOCATION\", \"DBS\".\"DESC\", "
-          + "\"DBS\".\"OWNER_NAME\", \"DBS\".\"OWNER_TYPE\" "
+          + "\"DBS\".\"OWNER_NAME\", \"DBS\".\"OWNER_TYPE\", \"DBS\".\"CTLG_NAME\" "
           + "FROM \"DBS\" left outer join \"SDS\" on \"DBS\".\"SD_ID\" = \"SDS\".\"SD_ID\" "
           + "where \"DBS\".\"NAME\" = ? and \"DBS\".\"CTLG_NAME\" = ? ";
       Object[] params = new Object[] { dbName, catName };

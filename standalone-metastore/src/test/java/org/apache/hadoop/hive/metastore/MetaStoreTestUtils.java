@@ -226,6 +226,9 @@ public class MetaStoreTestUtils {
     }
 
     setAutoCreate(conf);
+
+    // TODO(Fabio): Add class to test consistency, in the general case disable it though
+    conf.setBoolean(ConfVars.METADATACONSISTENCY.getVarname(), false);
   }
 
 

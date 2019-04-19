@@ -210,6 +210,9 @@
       <field name="viewExpandedText" default-fetch-group="false">
         <column name="VIEW_EXPANDED_TEXT" jdbc-type="LONGVARCHAR"/>
       </field>
+      <field name="rewriteEnabled">
+        <column name="IS_REWRITE_ENABLED"/>
+      </field>
       <field name="tableType">
         <column name="TBL_TYPE" length="128" jdbc-type="VARCHAR"/>
       </field>
@@ -1075,6 +1078,7 @@
         <column name="LAST_ANALYZED" jdbc-type="BIGINT" allows-null="false"/>
       </field>
     </class>
+
     <class name="MVersionTable" table="VERSION" identity-type="datastore" detachable="true">
       <datastore-identity>
         <column name="VER_ID"/>
@@ -1196,32 +1200,6 @@
       </datastore-identity>
       <field name="nextEventId">
         <column name="NEXT_EVENT_ID" jdbc-type="BIGINT" allows-null="false"/>
-      </field>
-    </class>
-
-    <!-- using datastore identity here, cause composite application PKs are a PITA -->
-    <class name="MTableWrite" table="TBL_WRITES" identity-type="datastore" detachable="true">
-      <datastore-identity>
-        <column name="TW_ID"/>
-      </datastore-identity>
-      <index name="UniqueWrite" unique="true">
-        <column name="TBL_ID"/>
-        <column name="WRITE_ID"/>
-      </index>
-      <field name="writeId">
-        <column name="WRITE_ID" jdbc-type="BIGINT" allows-null="false"/>
-      </field>
-      <field name="table">
-        <column name="TBL_ID"/>
-      </field>
-      <field name="state">
-        <column name="STATE" length="1" jdbc-type="CHAR" allows-null="false"/>
-      </field>
-      <field name="created">
-        <column name="CREATED" jdbc-type="BIGINT" allows-null="false"/>
-      </field>
-      <field name="lastHeartbeat">
-        <column name="LAST_HEARTBEAT" jdbc-type="BIGINT" allows-null="false"/>
       </field>
     </class>
 

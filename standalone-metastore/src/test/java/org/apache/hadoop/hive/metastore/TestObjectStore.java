@@ -114,8 +114,9 @@ public class TestObjectStore {
 
     objectStore = new ObjectStore();
     objectStore.setConf(conf);
+    wh = new Warehouse(conf);
     dropAllStoreObjects(objectStore);
-    HiveMetaStore.HMSHandler.createDefaultCatalog(objectStore, new Warehouse(conf));
+    HiveMetaStore.HMSHandler.createDefaultCatalog(objectStore, wh);
   }
 
   @Test
@@ -215,7 +216,7 @@ public class TestObjectStore {
 
     Path tbl1Path = new Path(db1Path, TABLE1);
     wh.mkdirs(tbl1Path);
-    StorageDescriptor sd = createFakeSd(tbl1Path.toString());
+    StorageDescriptor sd = createFakeSd(tbl1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
     HashMap<String,String> params = new HashMap<String,String>();
     params.put("EXTERNAL", "false");
     Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
@@ -227,8 +228,8 @@ public class TestObjectStore {
 
     Path tbl2Path = new Path(db1Path, "new" + TABLE1);
     wh.mkdirs(tbl2Path);
-    StorageDescriptor sd2 = createFakeSd(tbl2Path.toString());
-    Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1, 2, 3, sd2, null, params, null, null,
+    StorageDescriptor sd2 = createFakeSd(tbl1Path.toString(), ImmutableList.of(new FieldSchema("fk_col", "double", null)));
+    Table newTbl1 = new Table("new" + TABLE1, DB1, "owner", 1,2, 3, sd2, null, params, null, null,
         "MANAGED_TABLE");
 
     // Change different fields and verify they were altered
@@ -290,8 +291,8 @@ public class TestObjectStore {
     objectStore.dropDatabase(db1.getCatalogName(), DB1);
   }
 
-  private StorageDescriptor createFakeSd(String location) {
-    return new StorageDescriptor(null, location, null, null, false, 0,
+  private StorageDescriptor createFakeSd(String location, List<FieldSchema> cols) {
+    return new StorageDescriptor(cols, location, null, null, false, 0,
         new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
   }
 
@@ -312,7 +313,7 @@ public class TestObjectStore {
 
     Path tbl1Path = new Path(db1Path, TABLE1);
     wh.mkdirs(tbl1Path);
-    StorageDescriptor sd = createFakeSd(tbl1Path.toString());
+    StorageDescriptor sd = createFakeSd(tbl1Path.toString(), null);
     HashMap<String,String> tableParams = new HashMap<String,String>();
     tableParams.put("EXTERNAL", "false");
     FieldSchema partitionKey1 = new FieldSchema("Country", ColumnType.STRING_TYPE_NAME, "");

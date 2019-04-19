@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
@@ -37,7 +38,7 @@ import javax.sql.DataSource;
  * This class helps retrieve the inode id given the path of the file/directory
  */
 
-public class InodeHelper {
+public class InodeHelper implements Configurable {
 
   /**
    * STATIC VARIABLES FOR HOPS
@@ -62,12 +63,20 @@ public class InodeHelper {
     return instance;
   }
 
-  private InodeHelper() {
-    metastoreConf = MetastoreConf.newMetastoreConf();
+  public void setConf(Configuration metastoreConf) {
+    this.metastoreConf = metastoreConf;
     ROOT_DIR_PARTITION_KEY = MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSROOTDIRPARTITIONKEY);
     ROOT_DIR_DEPTH = (short)MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSROOTDIRDEPTH);
     RANDOM_PARTITIONING_MAX_LEVEL = MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSRANDOMPARTITIONINGMAXLEVEL);
     ROOT_INODE_ID = MetastoreConf.getIntVar(metastoreConf, MetastoreConf.ConfVars.HOPSROOTINODEID);
+
+    if (connPool == null && MetastoreConf.getBoolVar(metastoreConf, MetastoreConf.ConfVars.METADATACONSISTENCY)){
+      initConnections();
+    }
+  }
+
+  public Configuration getConf() {
+    return metastoreConf;
   }
 
   private synchronized void initConnections() {
@@ -82,10 +91,6 @@ public class InodeHelper {
   }
 
   private Connection getDbConn() throws SQLException {
-    if (connPool == null){
-      initConnections();
-    }
-
     //Rety to get a connection up to 10 times
     int rc = 10;
     Connection dbConn = null;

@@ -47,7 +47,7 @@ public class MDatabase {
    * @param sd StorageDescriptor of the database in the warehouse
    * @param description Comment describing the database
    */
-  public MDatabase(String catalogName, String name, MStorageDescriptor sd, String locationUri, String description,
+  public MDatabase(String catalogName, String name, MStorageDescriptor sd, String description,
       Map<String, String> parameters) {
     this.name = name;
     this.sd = sd;
