@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.hive.ql.CompilationOpContext;
@@ -188,10 +187,6 @@ public class FetchTask extends Task<FetchWork> implements Serializable {
     if (fetch != null) {
       fetch.clearFetchContext();
     }
-  }
-
-  public Configuration getFetchConf() {
-    return fetch.getJobConf();
   }
 
   @Override

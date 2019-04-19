@@ -148,7 +148,7 @@ public final class TxnDbUtil {
           " CQ_WORKER_ID varchar(128)," +
           " CQ_START bigint," +
           " CQ_RUN_AS varchar(128)," +
-          " CQ_HIGHEST_TXN_ID bigint," +
+          " CQ_HIGHEST_WRITE_ID bigint," +
           " CQ_META_INFO varchar(2048)," +
           " CQ_HADOOP_JOB_ID varchar(32))");
 

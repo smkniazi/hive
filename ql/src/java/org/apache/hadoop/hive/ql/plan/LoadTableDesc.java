@@ -38,11 +38,6 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   private ListBucketingCtx lbCtx;
   private boolean inheritTableSpecs = true; //For partitions, flag controlling whether the current
                                             //table specs are to be used
-  /*
-  if the writeType above is NOT_ACID then the currentTransactionId will be null
-   */
-
-  private Long txnId;
   private int stmtId;
   private Long currentWriteId;
   private boolean isInsertOverwrite;
@@ -81,7 +76,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
     this.partitionSpec = o.partitionSpec;
   }
 
-  private LoadTableDesc(final Path sourcePath,
+  public LoadTableDesc(final Path sourcePath,
       final TableDesc table,
       final Map<String, String> partitionSpec,
       final LoadFileType loadFileType,
@@ -141,7 +136,7 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
       Utilities.FILE_OP_LOGGER.trace("creating LTD from " + sourcePath + " to " + table.getTableName());
     }
     this.dpCtx = dpCtx;
-    LoadFileType lft = isReplace ? LoadFileType.REPLACE_ALL : LoadFileType.OVERWRITE_EXISTING;
+    LoadFileType lft = isReplace ?  LoadFileType.REPLACE_ALL :  LoadFileType.OVERWRITE_EXISTING;
     if (dpCtx != null && dpCtx.getPartSpec() != null && partitionSpec == null) {
       init(table, dpCtx.getPartSpec(), lft, writeId);
     } else {
@@ -186,7 +181,6 @@ public class LoadTableDesc extends LoadDesc implements Serializable {
   public LoadFileType getLoadFileType() {
     return loadFileType;
   }
-
 
   @Explain(displayName = "micromanaged table")
   public Boolean isMmTableExplain() {

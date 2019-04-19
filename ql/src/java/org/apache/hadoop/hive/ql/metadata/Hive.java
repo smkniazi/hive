@@ -61,7 +61,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.jdo.JDODataStoreException;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.apache.calcite.plan.RelOptMaterialization;
 import org.apache.calcite.plan.RelOptRule;
@@ -89,6 +88,7 @@ import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.HiveStatsUtils;
+import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.ObjectPair;
 import org.apache.hadoop.hive.common.StatsSetupConst;
 import org.apache.hadoop.hive.common.ValidTxnWriteIdList;
@@ -102,6 +102,7 @@ import org.apache.hadoop.hive.io.HdfsUtils;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.HiveMetaHook;
 import org.apache.hadoop.hive.metastore.HiveMetaHookLoader;
+import org.apache.hadoop.hive.metastore.HiveMetaStore;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreUtils;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
@@ -130,7 +131,6 @@ import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.GetOpenTxnsInfoResponse;
 import org.apache.hadoop.hive.metastore.api.GetRoleGrantsForPrincipalRequest;
 import org.apache.hadoop.hive.metastore.api.GetRoleGrantsForPrincipalResponse;
-import org.apache.hadoop.hive.metastore.api.GetValidWriteIdsResult;
 import org.apache.hadoop.hive.metastore.api.HiveObjectPrivilege;
 import org.apache.hadoop.hive.metastore.api.HiveObjectRef;
 import org.apache.hadoop.hive.metastore.api.HiveObjectType;
@@ -460,6 +460,9 @@ public class Hive {
     if (metaStoreClient != null) {
       metaStoreClient.close();
       metaStoreClient = null;
+    }
+    if (syncMetaStoreClient != null) {
+      syncMetaStoreClient.close();
     }
     if (owner != null) {
       owner = null;
@@ -1658,7 +1661,6 @@ public class Hive {
    * @param isInsertOverwrite 
    * @return Partition object being loaded with data
    */
-
   public Partition loadPartition(Path loadPath, Table tbl, Map<String, String> partSpec,
       LoadFileType loadFileType, boolean inheritTableSpecs, boolean isSkewedStoreAsSubdir,
       boolean isSrcLocal, boolean isAcidIUDoperation, boolean hasFollowingStatsTask, Long writeId,
@@ -1761,7 +1763,6 @@ public class Hive {
               tbl.getNumBuckets() > 0, isFullAcidTable);
         }
       }
-
       perfLogger.PerfLogEnd("MoveTask", "FileMoves");
       Partition newTPart = oldPart != null ? oldPart : new Partition(tbl, partSpec, newPartPath);
       alterPartitionSpecInMemory(tbl, partSpec, newTPart.getTPartition(), inheritTableSpecs, newPartPath.toString());
@@ -2196,6 +2197,12 @@ private void constructOneLBLocationMap(FileStatus fSta,
                       + partsToLoad + " partitions.");
                 }
               }
+              // Add embedded rawstore, so we can cleanup later to avoid memory leak
+              if (getMSC().isLocalMetaStore()) {
+                if (!rawStoreMap.containsKey(Thread.currentThread().getId())) {
+                  rawStoreMap.put(Thread.currentThread().getId(), HiveMetaStore.HMSHandler.getRawStore());
+                }
+              }
               return null;
             } catch (Exception t) {
               LOG.error("Exception when loading partition with parameters "
@@ -2203,7 +2210,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
                   + " table=" + tbl.getTableName() + ", "
                   + " partSpec=" + fullPartSpec + ", "
                   + " loadFileType=" + loadFileType.toString() + ", "
-                  + " listBucketingEnabled=" + numLB + ", "
+                  + " listBucketingLevel=" + numLB + ", "
                   + " isAcid=" + isAcid + ", "
                   + " hasFollowingStatsTask=" + hasFollowingStatsTask, t);
               throw t;
@@ -3311,19 +3318,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
       for (final FileStatus srcFile : files) {
         final Path srcP = srcFile.getPath();
         final boolean needToCopy = needToCopy(srcP, destf, srcFs, destFs);
-        // Strip off the file type, if any so we don't make:
-        // 000000_0.gz -> 000000_0.gz_copy_1
-        final String name;
-        final String filetype;
-        String itemName = srcP.getName();
-        int index = itemName.lastIndexOf('.');
-        if (index >= 0) {
-          filetype = itemName.substring(index);
-          name = itemName.substring(0, index);
-        } else {
-          name = itemName;
-          filetype = "";
-        }
+
         final boolean isRenameAllowed = !needToCopy && !isSrcLocal;
 
         final String msg = "Unable to move source " + srcP + " to destination " + destf;
@@ -4967,7 +4962,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
   }
 
   public void addUniqueConstraint(List<SQLUniqueConstraint> uniqueConstraintCols)
-      throws HiveException, NoSuchObjectException {
+    throws HiveException, NoSuchObjectException {
     try {
       getMSC().addUniqueConstraint(uniqueConstraintCols);
     } catch (Exception e) {
@@ -4976,7 +4971,7 @@ private void constructOneLBLocationMap(FileStatus fSta,
   }
 
   public void addNotNullConstraint(List<SQLNotNullConstraint> notNullConstraintCols)
-      throws HiveException, NoSuchObjectException {
+    throws HiveException, NoSuchObjectException {
     try {
       getMSC().addNotNullConstraint(notNullConstraintCols);
     } catch (Exception e) {

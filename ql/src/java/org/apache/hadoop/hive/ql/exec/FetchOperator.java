@@ -435,7 +435,7 @@ public class FetchOperator implements Serializable {
       LOG.debug("FetchOperator get writeIdStr: " + txnString);
       return txnString == null ? new ValidReaderWriteIdList() : new ValidReaderWriteIdList(txnString);
     }
-    return null; // not fetching from a table directly but from a temp location
+    return null;  // not fetching from a table directly but from a temp location
   }
 
   private FetchInputFormatSplit[] splitSampling(SplitSample splitSample,
@@ -750,10 +750,6 @@ public class FetchOperator implements Serializable {
     }
   }
 
-  public Configuration getJobConf() {
-    return job;
-  }
-
   private static class FetchInputFormatSplitComparator implements Comparator<FetchInputFormatSplit> {
     @Override
     public int compare(FetchInputFormatSplit a, FetchInputFormatSplit b) {
@@ -764,5 +760,9 @@ public class FetchOperator implements Serializable {
       }
       return Long.signum(a.getLength() - b.getLength());
     }
+  }
+
+  public Configuration getJobConf() {
+    return job;
   }
 }

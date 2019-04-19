@@ -23,7 +23,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.Expression;
@@ -68,14 +67,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
@@ -1127,9 +1124,6 @@ public final class Utilities {
     if (orig.getName().indexOf(tmpPrefix) == 0) {
       return orig;
     }
-    if (orig.getName().contains("=1")) {
-      LOG.error("TODO# creating tmp path from " + orig, new Exception());
-    }
     return new Path(orig.getParent(), tmpPrefix + orig.getName());
   }
 
@@ -1515,6 +1509,7 @@ public final class Utilities {
           perfLogger.PerfLogBegin("FileSinkOperator", "CreateEmptyBuckets");
           createEmptyBuckets(
               hconf, emptyBuckets, conf.getCompressed(), conf.getTableInfo(), reporter);
+          filesKept.addAll(emptyBuckets);
           perfLogger.PerfLogEnd("FileSinkOperator", "CreateEmptyBuckets");
         }
 
@@ -1548,6 +1543,7 @@ public final class Utilities {
    *
    * @param hconf
    * @param paths A list of empty buckets to create
+   * @param conf The definition of the FileSink.
    * @param reporter The mapreduce reporter object
    * @throws HiveException
    * @throws IOException
@@ -1682,6 +1678,9 @@ public final class Utilities {
 
         FileStatus[] items = fs.listStatus(path);
         taskIDToFile = removeTempOrDuplicateFilesNonMm(items, fs);
+        if (filesKept != null && taskIDToFile != null) {
+          addFilesToPathSet(taskIDToFile.values(), filesKept);
+        }
 
         addBucketFileToResults(taskIDToFile, numBuckets, hconf, result);
       }
@@ -1710,6 +1709,9 @@ public final class Utilities {
       } else {
         Path mmDir = extractNonDpMmDir(writeId, stmtId, items, isBaseDir);
         taskIDToFile = removeTempOrDuplicateFilesNonMm(fs.listStatus(mmDir), fs);
+        if (filesKept != null && taskIDToFile != null) {
+          addFilesToPathSet(taskIDToFile.values(), filesKept);
+        }
       }
       addBucketFileToResults2(taskIDToFile, numBuckets, hconf, result);
     }
@@ -3278,7 +3280,7 @@ public final class Utilities {
    * @throws Exception
    */
   public static List<Path> getInputPaths(JobConf job, MapWork work, Path hiveScratchDir,
-                                         Context ctx, boolean skipDummy) throws Exception {
+      Context ctx, boolean skipDummy) throws Exception {
 
     Set<Path> pathsProcessed = new HashSet<Path>();
     List<Path> pathsToAdd = new LinkedList<Path>();
@@ -3325,13 +3327,13 @@ public final class Utilities {
 
           StringInternUtils.internUriStringsInPath(file);
           pathsProcessed.add(file);
-
           LOG.debug("Adding input file {}", file);
           if (!hasLogged) {
             hasLogged = true;
             LOG.info("Adding {} inputs; the first input is {}",
               work.getPathToAliases().size(), file);
           }
+
           pathsToAdd.add(file);
         }
       }

@@ -154,6 +154,7 @@ public class TestTxnCommands2 {
     runStatementOnDriver("create table " + Table.ACIDNESTEDPART +
       "(a int, b int) partitioned by (p int, q int) clustered by (a) into " + BUCKET_COUNT +
       " buckets stored as orc TBLPROPERTIES (" + tableProperties + ")");
+    runStatementOnDriver("create table " + Table.MMTBL + "(a int, b int) TBLPROPERTIES ('transactional'='true', 'transactional_properties'='insert_only')");
   }
 
   protected void dropTables() throws Exception {
@@ -379,7 +380,8 @@ public class TestTxnCommands2 {
     };
     Assert.assertEquals("Unexpected row count before compaction", expected.length, rs.size());
     for(int i = 0; i < expected.length; i++) {
-      Assert.assertTrue("Actual line " + i + " bc: " + rs.get(i), rs.get(i).startsWith(expected[i][0]));
+      Assert.assertTrue("Actual line " + i + " bc: " + rs.get(i) + "; expected " + expected[i][0],
+          rs.get(i).startsWith(expected[i][0]));
     }
     //run Compaction
     runStatementOnDriver("alter table "+ TestTxnCommands2.Table.NONACIDORCTBL +" compact 'major'");
@@ -2155,7 +2157,6 @@ public class TestTxnCommands2 {
   }
 
   /**
->>>>>>> f9efd84f8b... HIVE-18589 java.io.IOException: Not enough history available (Eugene Koifman reviewed by Gopal V)
    * takes raw data and turns it into a string as if from Driver.getResults()
    * sorts rows in dictionary order
    */
@@ -2209,7 +2210,6 @@ public class TestTxnCommands2 {
       return 0;
     }
   }
-
   static String makeValuesClause(int[][] rows) {
     assert rows.length > 0;
     StringBuilder sb = new StringBuilder(" values");

@@ -28,7 +28,6 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.InvalidOperationException;
 import org.apache.hadoop.hive.metastore.api.Order;
-import org.apache.hadoop.hive.metastore.model.MMasterKey;
 import org.apache.hadoop.hive.metastore.utils.MetaStoreUtils;
 import org.apache.hadoop.hive.ql.Context;
 import org.apache.hadoop.hive.ql.DriverContext;
@@ -487,9 +486,8 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
     DataContainer dc = new DataContainer(table.getTTable(), partn.getTPartition());
     // add this partition to post-execution hook
     if (work.getOutputs() != null) {
-      work.getOutputs().add(new WriteEntity(partn,
-          (tbd.getReplace() ? WriteEntity.WriteType.INSERT_OVERWRITE
-              : WriteEntity.WriteType.INSERT)));
+      DDLTask.addIfAbsentByName(new WriteEntity(partn,
+        getWriteType(tbd, work.getLoadTableWork().getWriteType())), work.getOutputs());
     }
     return dc;
   }
@@ -500,10 +498,6 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
     DataContainer dc;
     List<LinkedHashMap<String, String>> dps = Utilities.getFullDPSpecs(conf, dpCtx);
 
-    // publish DP columns to its subscribers
-    if (dps != null && dps.size() > 0) {
-      pushFeed(FeedType.DYNAMIC_PARTITIONS, dps);
-    }
     console.printInfo(System.getProperty("line.separator"));
     long startTime = System.currentTimeMillis();
     // load the list of DP partitions and return the list of partition specs
@@ -557,10 +551,9 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
       }
 
       WriteEntity enty = new WriteEntity(partn,
-          (tbd.getReplace() ? WriteEntity.WriteType.INSERT_OVERWRITE :
-              WriteEntity.WriteType.INSERT));
+        getWriteType(tbd, work.getLoadTableWork().getWriteType()));
       if (work.getOutputs() != null) {
-        work.getOutputs().add(enty);
+        DDLTask.addIfAbsentByName(enty, work.getOutputs());
       }
       // Need to update the queryPlan's output as well so that post-exec hook get executed.
       // This is only needed for dynamic partitioning since for SP the the WriteEntity is
@@ -683,8 +676,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
             }
           }
           if (!flag) {
-            throw new HiveException(
-                "Wrong file format. Please check the file's format.");
+            throw new HiveException(ErrorMsg.WRONG_FILE_FORMAT);
           }
         } else {
           LOG.warn("Skipping file format check as dpCtx is not null");
@@ -692,6 +684,7 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
       }
     }
   }
+
 
   /**
    * so to make sure we crate WriteEntity with the right WriteType.  This is (at this point) only
@@ -711,7 +704,6 @@ public class MoveTask extends Task<MoveWork> implements Serializable {
         return WriteEntity.WriteType.INSERT;
     }
   }
-
 
   private boolean isSkewedStoredAsDirs(LoadTableDesc tbd) {
     return (tbd.getLbCtx() == null) ? false : tbd.getLbCtx()

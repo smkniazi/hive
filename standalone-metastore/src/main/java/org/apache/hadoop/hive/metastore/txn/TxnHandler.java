@@ -4175,6 +4175,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
       throw new RuntimeException("Unknown JDBC connection pooling " + connectionPooler);
     }
   }
+
   private static synchronized void buildJumpTable() {
     if (jumpTable != null) return;
 

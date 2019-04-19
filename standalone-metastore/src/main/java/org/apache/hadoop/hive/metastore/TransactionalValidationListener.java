@@ -393,6 +393,7 @@ public final class TransactionalValidationListener extends MetaStorePreEventList
     boolean isValid = false;
     switch (transactionalProperties) {
       case DEFAULT_TRANSACTIONAL_PROPERTY:
+      case INSERTONLY_TRANSACTIONAL_PROPERTY:
         isValid = true;
         break;
       default:

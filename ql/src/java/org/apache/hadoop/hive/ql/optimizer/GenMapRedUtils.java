@@ -1373,15 +1373,10 @@ public final class GenMapRedUtils {
       dummyMv = new MoveWork(null, null, null,
           new LoadFileDesc(inputDirName, finalName, true, null, null, false), false);
     }
-
-    //
-    // 3. add the moveTask as the children of the conditional task
-    //
     // Use the original fsOp path here in case of MM - while the new FSOP merges files inside the
     // MM directory, the original MoveTask still commits based on the parent. Note that this path
     // can only be triggered for a merge that's part of insert for now; MM tables do not support
     // concatenate. Keeping the old logic for non-MM tables with temp directories and stuff.
-    // TODO# is this correct?
     Path fsopPath = srcMmWriteId != null ? fsInputDesc.getFinalDirName() : finalName;
 
     Task<MoveWork> mvTask = GenMapRedUtils.findMoveTaskForFsopOutput(
@@ -1395,10 +1390,8 @@ public final class GenMapRedUtils {
     mrCtx.setDPCtx(fsInputDesc.getDynPartCtx());
     mrCtx.setLbCtx(fsInputDesc.getLbCtx());
 
-    for (Task<? extends Serializable> tsk : cndTsk.getListTasks()) {
-      linkMoveTask(mvTask, tsk, conf, dependencyTask);
-    }
   }
+
 
   /**
    * Follows the task tree down from task and makes all leaves parents of mvTask
@@ -1587,19 +1580,20 @@ public final class GenMapRedUtils {
    * @return the MapredWork
    */
   private static MapWork createMRWorkForMergingFiles (HiveConf conf,
-                                                      TableScanOperator topOp,  FileSinkDesc fsDesc) {
+    TableScanOperator topOp,  FileSinkDesc fsDesc) {
 
     ArrayList<String> aliases = new ArrayList<String>();
-    Path inputDir = fsDesc.getMergeInputDirName();
+    Path inputDir = StringInternUtils.internUriStringsInPath(fsDesc.getMergeInputDirName());
+    String inputDirStr = inputDir.toString().intern();
     TableDesc tblDesc = fsDesc.getTableInfo();
-    aliases.add(inputDir.toString()); // dummy alias: just use the input path
+    aliases.add(inputDirStr); // dummy alias: just use the input path
 
     // constructing the default MapredWork
     MapredWork cMrPlan = GenMapRedUtils.getMapRedWorkFromConf(conf);
     MapWork cplan = cMrPlan.getMapWork();
     cplan.addPathToAlias(inputDir, aliases);
     cplan.addPathToPartitionInfo(inputDir, new PartitionDesc(tblDesc, null));
-    cplan.getAliasToWork().put(inputDir.toString(), topOp);
+    cplan.getAliasToWork().put(inputDirStr, topOp);
     cplan.setMapperCannotSpanPartns(true);
 
     return cplan;
@@ -1741,7 +1735,7 @@ public final class GenMapRedUtils {
       fileDesc.setSourcePath(condInputPath);
       lineageState.updateDirToOpMap(condInputPath, linkedMoveWork.getLoadFileWork().getSourcePath());
     } else if (linkedMoveWork.getLoadTableWork() != null) {
-      //tableDesc = new LoadTableDesc(linkedMoveWork.getLoadTableWork());
+      tableDesc = new LoadTableDesc(linkedMoveWork.getLoadTableWork());
       tableDesc.setSourcePath(condInputPath);
       lineageState.updateDirToOpMap(condInputPath, linkedMoveWork.getLoadTableWork().getSourcePath());
     } else {
@@ -1817,7 +1811,7 @@ public final class GenMapRedUtils {
     mergeAndMoveMergeTask.addDependentTask(mergeAndMoveMoveTask);
 
     List<Serializable> listWorks = new ArrayList<Serializable>();
-    listWorks.add(moveWork);
+    listWorks.add(workForMoveOnlyTask);
     listWorks.add(mergeWork);
 
     ConditionalWork cndWork = new ConditionalWork(listWorks);
@@ -1838,6 +1832,21 @@ public final class GenMapRedUtils {
 
     // make the conditional task as the child of the current leaf task
     currTask.addDependentTask(cndTsk);
+
+    if (shouldMergeMovePaths) {
+      // If a new MoveWork was created, then we should link all dependent tasks from the MoveWork to link.
+      if (moveTaskToLink.getDependentTasks() != null) {
+        for (Task dependentTask : moveTaskToLink.getDependentTasks()) {
+          moveOnlyMoveTask.addDependentTask(dependentTask);
+        }
+      }
+    } else {
+      addDependentMoveTasks(moveTaskToLink, conf, moveOnlyMoveTask, dependencyTask);
+    }
+
+
+    addDependentMoveTasks(moveTaskToLink, conf, mergeOnlyMergeTask, dependencyTask);
+    addDependentMoveTasks(moveTaskToLink, conf, mergeAndMoveMoveTask, dependencyTask);
 
     return cndTsk;
   }
@@ -1867,7 +1876,7 @@ public final class GenMapRedUtils {
           srcDir = srcDir.getParent();
         }
       } else if (mvWork.getLoadTableWork() != null) {
-        srcDir = mvWork.getLoadTableWork().getSourcePath(); // TODO# THIS
+        srcDir = mvWork.getLoadTableWork().getSourcePath();
       }
       if (Utilities.FILE_OP_LOGGER.isTraceEnabled()) {
         Utilities.FILE_OP_LOGGER.trace("Observing MoveWork " + System.identityHashCode(mvWork)
@@ -1970,7 +1979,6 @@ public final class GenMapRedUtils {
     FileSinkDesc fileSinkDesc = fsOp.getConf();
     boolean isMmTable = fileSinkDesc.isMmTable();
     if (chDir) {
-
       dest = fileSinkDesc.getMergeInputDirName();
       if (!isMmTable) {
         // generate the temporary file

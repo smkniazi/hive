@@ -223,9 +223,13 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
 
   @VisibleForTesting
   long openTxn(Context ctx, String user, long delay) throws LockException {
-    //todo: why don't we lock the snapshot here???  Instead of having client make an explicit call
-    //whenever it chooses
+    /*Q: why don't we lock the snapshot here???  Instead of having client make an explicit call
+    whenever it chooses
+    A: If we want to rely on locks for transaction scheduling we must get the snapshot after lock
+    acquisition.  Relying on locks is a pessimistic strategy which works better under high
+    contention.*/
     init();
+    getLockManager();
     if(isTxnOpen()) {
       throw new LockException("Transaction already opened. " + JavaUtils.txnIdToString(txnId));
     }
@@ -245,8 +249,8 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
   }
 
   /**
-   * we don't expect multiple thread to call this method concurrently but {@link #lockMgr} will
-   * be read by a different threads that one writing it, thus it's {@code volatile}
+   * we don't expect multiple threads to call this method concurrently but {@link #lockMgr} will
+   * be read by a different threads than one writing it, thus it's {@code volatile}
    */
   @Override
   public HiveLockManager getLockManager() throws LockException {
@@ -396,13 +400,20 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
    * @param isBlocking if false, the method will return immediately; thus the locks may be in LockState.WAITING
    * @return null if no locks were needed
    */
+  @VisibleForTesting
   LockState acquireLocks(QueryPlan plan, Context ctx, String username, boolean isBlocking) throws LockException {
     init();
-        // Make sure we've built the lock manager
+    // Make sure we've built the lock manager
     getLockManager();
-
+    verifyState(plan);
     boolean atLeastOneLock = false;
     queryId = plan.getQueryId();
+    switch (plan.getOperation()) {
+      case SET_AUTOCOMMIT:
+        /**This is here for documentation purposes.  This TM doesn't support this - only has one
+        * mode of operation documented at {@link DbTxnManager#isExplicitTransaction}*/
+        return  null;
+    }
 
     LockRequestBuilder rqstBuilder = new LockRequestBuilder(queryId);
     //link queryId to txnId
@@ -467,7 +478,33 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
       }
       LockComponentBuilder compBuilder = new LockComponentBuilder();
       Table t = null;
+      switch (output.getType()) {
+        case DATABASE:
+          compBuilder.setDbName(output.getDatabase().getName());
+          break;
+
+        case TABLE:
+        case DUMMYPARTITION:   // in case of dynamic partitioning lock the table
+          t = output.getTable();
+          compBuilder.setDbName(t.getDbName());
+          compBuilder.setTableName(t.getTableName());
+          break;
+
+        case PARTITION:
+          compBuilder.setPartitionName(output.getPartition().getName());
+          t = output.getPartition().getTable();
+          compBuilder.setDbName(t.getDbName());
+          compBuilder.setTableName(t.getTableName());
+          break;
+
+        default:
+          // This is a file or something we don't hold locks for.
+          continue;
+      }
       switch (output.getWriteType()) {
+        /* base this on HiveOperation instead?  this and DDL_NO_LOCK is peppered all over the code...
+         Seems much cleaner if each stmt is identified as a particular HiveOperation (which I'd think
+         makes sense everywhere).  This however would be problematic for merge...*/
         case DDL_EXCLUSIVE:
           compBuilder.setExclusive();
           compBuilder.setOperationType(DataOperationType.NO_TXN);
@@ -508,12 +545,10 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
         case UPDATE:
           compBuilder.setSemiShared();
           compBuilder.setOperationType(DataOperationType.UPDATE);
-          t = getTable(output);
           break;
         case DELETE:
           compBuilder.setSemiShared();
           compBuilder.setOperationType(DataOperationType.DELETE);
-          t = getTable(output);
           break;
 
         case DDL_NO_LOCK:
@@ -522,7 +557,6 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
         default:
           throw new RuntimeException("Unknown write type " +
               output.getWriteType().toString());
-
       }
       if(t != null) {
         compBuilder.setIsTransactional(AcidUtils.isTransactionalTable(t));
@@ -822,6 +856,26 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
   public boolean supportsExplicitLock() {
     return false;
   }
+  @Override
+  public int lockTable(Hive db, LockTableDesc lockTbl) throws HiveException {
+    super.lockTable(db, lockTbl);
+    throw new UnsupportedOperationException();
+  }
+  @Override
+  public int unlockTable(Hive hiveDB, UnlockTableDesc unlockTbl) throws HiveException {
+    super.unlockTable(hiveDB, unlockTbl);
+    throw new UnsupportedOperationException();
+  }
+  @Override
+  public int lockDatabase(Hive hiveDB, LockDatabaseDesc lockDb) throws HiveException {
+    super.lockDatabase(hiveDB, lockDb);
+    throw new UnsupportedOperationException();
+  }
+  @Override
+  public int unlockDatabase(Hive hiveDB, UnlockDatabaseDesc unlockDb) throws HiveException {
+    super.unlockDatabase(hiveDB, unlockDb);
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   public boolean useNewShowLocksFormat() {
@@ -832,7 +886,6 @@ public final class DbTxnManager extends HiveTxnManagerImpl {
   public boolean supportsAcid() {
     return true;
   }
-
   /**
    * In an explicit txn start_transaction is the 1st statement and we record the snapshot at the
    * start of the txn for Snapshot Isolation.  For Read Committed (not supported yet) we'd record

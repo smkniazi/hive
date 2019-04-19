@@ -390,7 +390,6 @@ public class AcidUtils {
     }
     return result;
   }
-
   //This is used for (full) Acid tables.  InsertOnly use NOT_ACID
   public enum Operation implements Serializable {
     NOT_ACID, INSERT, UPDATE, DELETE;
@@ -479,13 +478,14 @@ public class AcidUtils {
     public static final String SPLIT_UPDATE_STRING = "split_update";
     public static final int HASH_BASED_MERGE_BIT = 0x02;
     public static final String HASH_BASED_MERGE_STRING = "hash_merge";
-    public static final int INSERT_ONLY_BIT = 0x03;
+    public static final int INSERT_ONLY_BIT = 0x04;
     public static final String INSERT_ONLY_STRING = "insert_only";
     public static final String DEFAULT_VALUE_STRING = TransactionalValidationListener.DEFAULT_TRANSACTIONAL_PROPERTY;
     public static final String INSERTONLY_VALUE_STRING = TransactionalValidationListener.INSERTONLY_TRANSACTIONAL_PROPERTY;
 
     private AcidOperationalProperties() {
     }
+
 
     /**
      * Returns an acidOperationalProperties object that represents default ACID behavior for tables
@@ -496,6 +496,7 @@ public class AcidUtils {
       AcidOperationalProperties obj = new AcidOperationalProperties();
       obj.setSplitUpdate(true);
       obj.setHashBasedMerge(false);
+      obj.setInsertOnly(false);
       return obj;
     }
 
@@ -556,6 +557,9 @@ public class AcidUtils {
       }
       if ((properties & HASH_BASED_MERGE_BIT)  > 0) {
         obj.setHashBasedMerge(true);
+      }
+      if ((properties & INSERT_ONLY_BIT) > 0) {
+        obj.setInsertOnly(true);
       }
       return obj;
     }
@@ -926,15 +930,14 @@ public class AcidUtils {
                                        ValidWriteIdList writeIdList,
                                        Ref<Boolean> useFileIds,
                                        boolean ignoreEmptyFiles,
-                                       Map<String, String> tblproperties
-                                       ) throws IOException {
+                                       Map<String, String> tblproperties) throws IOException {
     FileSystem fs = directory.getFileSystem(conf);
     // The following 'deltas' includes all kinds of delta files including insert & delete deltas.
     final List<ParsedDelta> deltas = new ArrayList<ParsedDelta>();
     List<ParsedDelta> working = new ArrayList<ParsedDelta>();
     List<FileStatus> originalDirectories = new ArrayList<FileStatus>();
     final List<FileStatus> obsolete = new ArrayList<FileStatus>();
-    final List<FileStatus> abortedDirectories = new ArrayList<FileStatus>();
+    final List<FileStatus> abortedDirectories = new ArrayList<>();
     List<HdfsFileStatusWithId> childrenWithId = null;
     Boolean val = useFileIds.value;
     if (val == null || val) {
