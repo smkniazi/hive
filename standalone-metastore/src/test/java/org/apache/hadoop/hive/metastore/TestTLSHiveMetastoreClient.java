@@ -44,7 +44,7 @@ import java.security.KeyPair;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 
-public class TestHMSTLS {
+public class TestTLSHiveMetastoreClient {
 
   private static Path serverKeyStore, serverTrustStore;
   private static Path clientKeyStore, clientTrustStore;
@@ -63,7 +63,7 @@ public class TestHMSTLS {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    outputDir = KeyStoreTestUtil.getClasspathDir(TestHMSTLS.class);
+    outputDir = KeyStoreTestUtil.getClasspathDir(TestTLSHiveMetastoreClient.class);
 
     generateCerts();
     Configuration sslServerConf = KeyStoreTestUtil.createServerSSLConfig(serverKeyStore.toString(),
@@ -74,6 +74,7 @@ public class TestHMSTLS {
 
     // Configure SSL
     hiveConf = MetastoreConf.newMetastoreConf();
+    MetaStoreTestUtils.setConfForStandloneMode(hiveConf);
 
     hiveConf.set(MetastoreConf.ConfVars.HIVE_SUPER_USER.getVarname(),
         UserGroupInformation.getCurrentUser().getUserName());
@@ -89,7 +90,7 @@ public class TestHMSTLS {
         MockPartitionExpressionForMetastore.class, PartitionExpressionProxy.class);
     hiveConf.setBoolean(MetastoreConf.ConfVars.EXECUTE_SET_UGI.getVarname(), true);
 
-    int msPort = MetaStoreUtils.startMetaStore(hiveConf);
+    int msPort = MetaStoreTestUtils.startMetaStoreWithRetry(hiveConf);
     hiveConf.set(MetastoreConf.ConfVars.THRIFT_URIS.getVarname(), "thrift://localhost:" + msPort);
     hiveConf.set(MetastoreConf.ConfVars.INIT_HOOKS.getVarname(), "");
     hiveConf.setBoolean(MetastoreConf.ConfVars.HIVE_SUPPORT_CONCURRENCY.getVarname(), false);

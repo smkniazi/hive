@@ -332,6 +332,18 @@
       <artifactId>sqlline</artifactId>
       <version>${sqlline.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.60</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <version>1.60</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- test scope dependencies -->
 
@@ -862,4 +874,11 @@
     </repository>
   </repositories>
 
+  <distributionManagement>
+    <repository>
+      <id>Hops</id>
+      <name>Hops Repo</name>
+      <url>https://bbc1.sics.se/archiva/repository/Hops/</url>
+    </repository>
+  </distributionManagement>
 </project>

@@ -959,6 +959,16 @@ public class HiveConf extends Configuration {
     @Deprecated
     METASTORE_STORE_MANAGER_TYPE("datanucleus.storeManagerType", "rdbms", "metadata store type"),
 
+
+    @Deprecated
+    METASTORE_AUTO_CREATE_SCHEMA("datanucleus.schema.autoCreateSchema", false, "Datanucleus autoCreateSchema"),
+    @Deprecated
+    METASTORE_AUTO_CREATE_TABLES("datanucleus.schema.autoCreateTables", false, "Datanucleus autoCreateTables"),
+    @Deprecated
+    METASTORE_AUTO_CREATE_COLUMNS("datanucleus.schema.autoCreateColumns", false, "Datanucleus autoCreateColumns"),
+    @Deprecated
+    METASTORE_MYSQL_ENGINE("datanucleus.rdbms.mysql.engineType","ndbcluster", "MySQL engine to use"),
+
     METASTORE_SCHEMA_VERIFICATION("hive.metastore.schema.verification", true,
         "Enforce metastore schema version consistency.\n" +
         "True: Verify that version information stored in is compatible with one from Hive jars.  Also disable automatic\n" +

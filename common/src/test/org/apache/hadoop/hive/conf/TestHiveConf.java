@@ -22,14 +22,20 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory;
+import org.apache.hadoop.security.ssl.KeyStoreTestUtil;
 import org.apache.hadoop.security.ssl.SSLFactory;
 import org.apache.hadoop.util.Shell;
 import org.apache.hive.common.util.HiveTestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -197,5 +203,36 @@ public class TestHiveConf {
     conf.setQueryString(query);
     Assert.assertEquals(URLEncoder.encode(query, "UTF-8"), conf.get(ConfVars.HIVEQUERYSTRING.varname));
     Assert.assertEquals(query, conf.getQueryString());
+  }
+
+  @Test
+  public void testLoadSSLServer() throws Exception {
+    Configuration hadoopConf = writeSSLServer();
+    HiveConf conf = new HiveConf(hadoopConf, TestHiveConf.class, false);
+
+    Assert.assertEquals("ssl.test", conf.get("ssl.test"));
+  }
+
+  @Test
+  public void testNoSSLServerForClient() throws Exception {
+    Configuration hadoopConf = writeSSLServer();
+    HiveConf conf = new HiveConf(hadoopConf, TestHiveConf.class, true);
+
+    Assert.assertNull(conf.get("ssl.test"));
+  }
+
+  private Configuration writeSSLServer() throws Exception {
+    Configuration sslConf = new Configuration(false);
+    sslConf.set("ssl.test", "ssl.test");
+
+    Path sslServerPath = Paths.get(KeyStoreTestUtil.getClasspathDir(TestHiveConf.class), "ssl-server.xml");
+    try (FileWriter fw = new FileWriter(sslServerPath.toString(), false)) {
+      sslConf.writeXml(fw);
+      fw.flush();
+    }
+
+    Configuration hadoopConf = new Configuration();
+    hadoopConf.set(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml");
+    return hadoopConf;
   }
 }

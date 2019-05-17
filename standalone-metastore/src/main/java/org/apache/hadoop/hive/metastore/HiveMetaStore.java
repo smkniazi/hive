@@ -8963,18 +8963,17 @@ public class HiveMetaStore extends ThriftHiveMetastore {
         CertificateLocalizationCtx.getInstance().setCertificateLocalization(certLocService);
 
         // Add shutdown hook to shutdown the CertificateLocalizationService
-        shutdownHookMgr.addShutdownHook(() -> {
+        if (shutdownHookMgr != null) {
+          // ShutdownHookMgr is not available during tests
+          shutdownHookMgr.addShutdownHook(() -> {
             String shutdownMsg = "Shutting down the CertificateLocalizationService.";
             HMSHandler.LOG.info(shutdownMsg);
             certLocService.stop();
-        }, 10);
+          }, 10);
+        }
 
         // enable SSL support for HMS
         List<String> sslVersionBlacklist = new ArrayList<String>();
-        // TODO(Fabio) read ssl version blacklist from core-site.xml
-        // for (String sslVersion : conf.get(.SSL).split(",")) {
-        //   sslVersionBlacklist.add(sslVersion);
-        // }
 
         serverSocket = TServerSocketFactory.getServerSocket(conf,
             TServerSocketFactory.TSocketType.TWOWAYTLS, null, port);
