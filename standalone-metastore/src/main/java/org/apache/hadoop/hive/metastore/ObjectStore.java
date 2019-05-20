@@ -831,7 +831,9 @@ public class ObjectStore implements RawStore, Configurable {
     try {
       MCatalog mCat = getMCatalog(catName);
       if (org.apache.commons.lang.StringUtils.isNotBlank(cat.getLocationUri())) {
-        mCat.setLocationUri(cat.getLocationUri());
+        MStorageDescriptor msd = new MStorageDescriptor();
+        msd.setLocation(cat.getLocationUri());
+        mCat.setSd(msd);
       }
       if (org.apache.commons.lang.StringUtils.isNotBlank(cat.getDescription())) {
         mCat.setDescription(cat.getDescription());
@@ -916,18 +918,20 @@ public class ObjectStore implements RawStore, Configurable {
     }
   }
 
-  private MCatalog catToMCat(Catalog cat) {
+  private MCatalog catToMCat(Catalog cat) throws MetaException {
     MCatalog mCat = new MCatalog();
     mCat.setName(normalizeIdentifier(cat.getName()));
     if (cat.isSetDescription()) {
       mCat.setDescription(cat.getDescription());
     }
-    mCat.setLocationUri(cat.getLocationUri());
+    MStorageDescriptor msd = new MStorageDescriptor();
+    msd.setLocation(cat.getLocationUri());
+    mCat.setSd(msd);
     return mCat;
   }
 
   private Catalog mCatToCat(MCatalog mCat) {
-    Catalog cat = new Catalog(mCat.getName(), mCat.getLocationUri());
+    Catalog cat = new Catalog(mCat.getName(), mCat.getSd() != null ? mCat.getSd().getLocation() : null);
     if (mCat.getDescription() != null) {
       cat.setDescription(mCat.getDescription());
     }

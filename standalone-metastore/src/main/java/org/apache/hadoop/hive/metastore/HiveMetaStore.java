@@ -722,7 +722,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       try {
         Catalog defaultCat = ms.getCatalog(DEFAULT_CATALOG_NAME);
         // Null check because in some test cases we get a null from ms.getCatalog.
-        if (defaultCat !=null && defaultCat.getLocationUri().equals("TBD")) {
+        if (defaultCat !=null && defaultCat.getLocationUri() == null) {
           // One time update issue.  When the new 'hive' catalog is created in an upgrade the
           // script does not know the location of the warehouse.  So we need to update it.
           LOG.info("Setting location of default catalog, as it hasn't been done after upgrade");

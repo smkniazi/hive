@@ -40,6 +40,8 @@ import org.apache.hadoop.hive.metastore.MetaStoreSchemaInfoFactory;
 import org.apache.hadoop.hive.metastore.TableType;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
+import org.apache.hadoop.hive.metastore.model.helper.InodeHelper;
+import org.apache.hadoop.hive.metastore.model.helper.InodePK;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper.MetaStoreConnectionInfo;
 import org.apache.hadoop.hive.metastore.tools.HiveSchemaHelper.NestedScriptParser;
@@ -917,15 +919,35 @@ public class HiveSchemaTool {
         }
         int catNum = rs.getInt(1) + 1;
 
+        query = "select max(" + quoteIf("SD_ID") + ") from " + quoteIf("SDS");
+        LOG.debug("Going to run " + query);
+        rs = stmt.executeQuery(query);
+        int maxSDS = 1;
+        if (rs.next()) {
+          maxSDS = rs.getInt(1) + 1;
+        }
+
+        // Insert the Storage descriptor
+        InodeHelper inodeHelper = InodeHelper.getInstance();
+        inodeHelper.setConf(hiveConf);
+        InodePK inodePK = inodeHelper.getInodePK(location);
+
+        String insertSD = "INSERT INTO " + quoteIf("SDS") + " (" + quoteIf("SD_ID") + "," + quoteIf("LOCATION") + ", "
+            + quoteIf("NAME") + ", " + quoteIf("PARENT_ID") + ", " + quoteIf("PARTITION_ID") + ", " + quoteIf("IS_COMPRESSED") + ", "
+            + quoteIf("IS_STOREDASSUBDIRECTORIES") + "," + quoteIf("NUM_BUCKETS") + ",) " +
+            "VALUES ("+ maxSDS +", '"+ location +"', '" + inodePK.name + "', " +
+            inodePK.parentId + "," + inodePK.partitionId + ",0,0,1)";
+        stmt.execute(insertSD);
+
         String update = "insert into " + quoteIf("CTLGS") +
-            "(" + quoteIf("CTLG_ID") + ", " + quoteIf("NAME") + ", " + quoteAlways("DESC") + ", " + quoteIf( "LOCATION_URI") + ") " +
-            " values (" + catNum + ", '" + catName + "', '" + description + "', '" + location + "')";
+            "(" + quoteIf("CTLG_ID") + ", " + quoteIf("NAME") + ", " + quoteAlways("DESC") + ", " + quoteIf( "SD_ID") + ") " +
+            " values (" + catNum + ", '" + catName + "', '" + description + "', '" + maxSDS + "')";
         LOG.debug("Going to run " + update);
         stmt.execute(update);
         conn.commit();
         success = true;
       }
-    } catch (SQLException e) {
+    } catch (SQLException | MetaException e) {
       throw new HiveMetaException("Failed to add catalog", e);
     } finally {
       try {

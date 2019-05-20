@@ -20,16 +20,16 @@ package org.apache.hadoop.hive.metastore.model;
 public class MCatalog {
   private String name;
   private String description;
-  private String locationUri;
+  private MStorageDescriptor sd;
 
   public MCatalog() {
 
   }
 
-  public MCatalog(String name, String description, String locationUri) {
+  public MCatalog(String name, String description, MStorageDescriptor sd) {
     this.name = name;
     this.description = description;
-    this.locationUri = locationUri;
+    this.sd = sd;
   }
 
   public String getName() {
@@ -48,11 +48,11 @@ public class MCatalog {
     this.description = description;
   }
 
-  public String getLocationUri() {
-    return locationUri;
+  public MStorageDescriptor getSd() {
+    return sd;
   }
 
-  public void setLocationUri(String locationUri) {
-    this.locationUri = locationUri;
+  public void setSd(MStorageDescriptor sd) {
+    this.sd = sd;
   }
 }

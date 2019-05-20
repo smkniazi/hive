@@ -81,8 +81,9 @@
       <field name="description">
         <column name="DESC" length="4000" jdbc-type="VARCHAR" allows-null="true"/>
       </field>
-      <field name="locationUri">
-        <column name="LOCATION_URI" length="4000" jdbc-type="VARCHAR" allows-null="false"/>
+      <field name="sd" dependent="true">
+          <column name="SD_ID"/>
+          <foreign-key name="DB_SD_FK" delete-action="cascade"/>
       </field>
     </class>
 
