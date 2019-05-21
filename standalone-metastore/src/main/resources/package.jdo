@@ -83,7 +83,7 @@
       </field>
       <field name="sd" dependent="true">
           <column name="SD_ID"/>
-          <foreign-key name="DB_SD_FK" delete-action="cascade"/>
+          <foreign-key name="CTLGS_SD_FK" delete-action="cascade"/>
       </field>
     </class>
 

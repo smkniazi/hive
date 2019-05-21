@@ -61,9 +61,6 @@ public final class MetaStoreFactoryForTests {
         DEFAULT_LIMIT_PARTITION_REQUEST);
     MetaStoreTestUtils.setConfForStandloneMode(conf);
 
-    // Do this only on your own peril, and never in the production code
-    conf.set("datanucleus.autoCreateTables", "false");
-
     // Example for using cluster configuration xml-s
     // -Dtest.hms.client.configs=/tmp/conf/core-site.xml,/tmp/conf/hive-site.xml
     String testHMSClientConfiguration = System.getProperty("test.hms.client.configs");

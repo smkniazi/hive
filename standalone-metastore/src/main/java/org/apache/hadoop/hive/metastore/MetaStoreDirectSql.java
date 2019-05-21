@@ -235,7 +235,7 @@ class MetaStoreDirectSql {
       initQueries.add(pm.newQuery(MNotificationLog.class, "dbName == ''"));
       initQueries.add(pm.newQuery(MNotificationNextId.class, "nextEventId < -1"));
       initQueries.add(pm.newQuery(MWMResourcePlan.class, "name == ''"));
-      initQueries.add(pm.newQuery(MCreationMetadata.class, "db_id == ''"));
+      initQueries.add(pm.newQuery(MCreationMetadata.class, "dbName == ''"));
       Query q;
       while ((q = initQueries.peekFirst()) != null) {
         q.execute();

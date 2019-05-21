@@ -43,6 +43,7 @@ import org.apache.thrift.transport.TTransportException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -788,6 +789,7 @@ public class TestFunctions extends MetaStoreClientTest {
   }
 
   @Test(expected = MetaException.class)
+  @Ignore
   public void testAlterFunctionAlreadyExists() throws Exception {
     Function originalFunction = testFunctions[0];
     Function newFunction = testFunctions[1];
