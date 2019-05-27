@@ -17,6 +17,7 @@ package org.apache.hadoop.hive.llap.security;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hive.common.UgiFactory;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
@@ -54,6 +55,13 @@ public class LlapUgiFactoryFactory {
     }
   }
 
+  private static class CurrentUgiFactory implements UgiFactory {
+    @Override
+    public UserGroupInformation createUgi() throws IOException {
+      return UserGroupInformation.getCurrentUser();
+    }
+  }
+
   public static UgiFactory createFsUgiFactory(Configuration conf) throws IOException {
     String fsKeytab = HiveConf.getVar(conf, ConfVars.LLAP_FS_KERBEROS_KEYTAB_FILE),
         fsPrincipal = HiveConf.getVar(conf, ConfVars.LLAP_FS_KERBEROS_PRINCIPAL);
@@ -62,6 +70,16 @@ public class LlapUgiFactoryFactory {
     if (hasFsKeytab != hasFsPrincipal) {
       throw new IOException("Inconsistent FS keytab settings " + fsKeytab + "; " + fsPrincipal);
     }
-    return hasFsKeytab ? new KerberosUgiFactory(fsKeytab, fsPrincipal) : new NoopUgiFactory();
+
+    boolean hopsTLS = conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT);
+
+    if (hasFsKeytab) {
+      return new KerberosUgiFactory(fsKeytab, fsPrincipal);
+    } else if (hopsTLS) {
+      return new CurrentUgiFactory();
+    } else {
+      return new NoopUgiFactory();
+    }
   }
 }

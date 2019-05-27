@@ -23,7 +23,6 @@ import org.apache.hive.service.rpc.thrift.TSetClientInfoResp;
 import org.apache.hive.service.rpc.thrift.TSetClientInfoReq;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hive.common.auth.HiveAuthUtils;
-import org.apache.hadoop.hive.shims.ShimLoader;
 import org.apache.hive.jdbc.Utils.JdbcConnectionParams;
 import org.apache.hive.service.auth.HiveAuthConstants;
 import org.apache.hive.service.auth.KerberosSaslHelper;
@@ -743,7 +742,7 @@ public class HiveConnection implements java.sql.Connection {
 
       // Note that if the file didn't exists, we wouldn't be this far.
       byte[] keyStore = Files.readAllBytes(Paths.get(sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE)));
-      byte[] trustStore = Files.readAllBytes(Paths.get(sessConfMap.get(JdbcConnectionParams.SSL_KEY_STORE)));
+      byte[] trustStore = Files.readAllBytes(Paths.get(sessConfMap.get(JdbcConnectionParams.SSL_TRUST_STORE)));
 
       openReq.setKeyStore(keyStore);
       openReq.setTrustStore(trustStore);

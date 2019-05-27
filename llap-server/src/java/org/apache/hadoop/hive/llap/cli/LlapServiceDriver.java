@@ -53,6 +53,7 @@ import org.apache.hadoop.hive.llap.daemon.impl.StaticPermanentFunctionChecker;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos;
 import org.apache.hadoop.hive.llap.tezplugins.LlapTezUtils;
 import org.apache.hadoop.registry.client.binding.RegistryUtils;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hadoop.yarn.server.security.CertificateLocalizationService;
 import org.apache.hive.http.HttpServer;
@@ -407,7 +408,9 @@ public class LlapServiceDriver {
               org.apache.arrow.memory.BaseAllocator.class, //arrow-memory
               org.apache.arrow.flatbuf.Schema.class, //arrow-format
               com.google.flatbuffers.Table.class, //flatbuffers
-              com.carrotsearch.hppc.ByteArrayDeque.class //hppc
+              com.carrotsearch.hppc.ByteArrayDeque.class, //hppc
+              org.apache.curator.framework.CuratorFramework.class, //curator-framework
+              org.apache.curator.shaded.com.google.common.collect.Lists.class
               };
 
           for (Class<?> c : dependencies) {
@@ -590,7 +593,8 @@ public class LlapServiceDriver {
           packageDir = new Path(outputDir);
         }
 
-        String remoteDir = conf.get(SliderXmlConfKeys.KEY_SLIDER_BASE_PATH);
+        String user = UserGroupInformation.getCurrentUser().getUserName();
+        String remoteDir = "/user/" + user;
         rc = runPackagePy(args, tmpDir, scriptParent, version, outputDir, remoteDir);
         if (rc == 0) {
           LlapSliderUtils.startCluster(conf, options.getName(), "llap-" + version + ".zip",

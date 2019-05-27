@@ -9533,6 +9533,906 @@ public final class LlapDaemonProtocolProtos {
     // @@protoc_insertion_point(class_scope:NotTezEvent)
   }
 
+  public interface CryptoMaterialOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // required bytes key_store = 1;
+    /**
+     * <code>required bytes key_store = 1;</code>
+     */
+    boolean hasKeyStore();
+    /**
+     * <code>required bytes key_store = 1;</code>
+     */
+    com.google.protobuf.ByteString getKeyStore();
+
+    // required bytes trust_store = 2;
+    /**
+     * <code>required bytes trust_store = 2;</code>
+     */
+    boolean hasTrustStore();
+    /**
+     * <code>required bytes trust_store = 2;</code>
+     */
+    com.google.protobuf.ByteString getTrustStore();
+
+    // required string key_store_password = 3;
+    /**
+     * <code>required string key_store_password = 3;</code>
+     */
+    boolean hasKeyStorePassword();
+    /**
+     * <code>required string key_store_password = 3;</code>
+     */
+    java.lang.String getKeyStorePassword();
+    /**
+     * <code>required string key_store_password = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getKeyStorePasswordBytes();
+
+    // required string trust_store_password = 4;
+    /**
+     * <code>required string trust_store_password = 4;</code>
+     */
+    boolean hasTrustStorePassword();
+    /**
+     * <code>required string trust_store_password = 4;</code>
+     */
+    java.lang.String getTrustStorePassword();
+    /**
+     * <code>required string trust_store_password = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getTrustStorePasswordBytes();
+  }
+  /**
+   * Protobuf type {@code CryptoMaterial}
+   *
+   * <pre>
+   * HopsTLS key/trustStore
+   * </pre>
+   */
+  public static final class CryptoMaterial extends
+      com.google.protobuf.GeneratedMessage
+      implements CryptoMaterialOrBuilder {
+    // Use CryptoMaterial.newBuilder() to construct.
+    private CryptoMaterial(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private CryptoMaterial(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final CryptoMaterial defaultInstance;
+    public static CryptoMaterial getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public CryptoMaterial getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CryptoMaterial(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              keyStore_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              trustStore_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              keyStorePassword_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              trustStorePassword_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.internal_static_CryptoMaterial_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.internal_static_CryptoMaterial_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.class, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<CryptoMaterial> PARSER =
+        new com.google.protobuf.AbstractParser<CryptoMaterial>() {
+      public CryptoMaterial parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CryptoMaterial(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CryptoMaterial> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required bytes key_store = 1;
+    public static final int KEY_STORE_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString keyStore_;
+    /**
+     * <code>required bytes key_store = 1;</code>
+     */
+    public boolean hasKeyStore() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bytes key_store = 1;</code>
+     */
+    public com.google.protobuf.ByteString getKeyStore() {
+      return keyStore_;
+    }
+
+    // required bytes trust_store = 2;
+    public static final int TRUST_STORE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString trustStore_;
+    /**
+     * <code>required bytes trust_store = 2;</code>
+     */
+    public boolean hasTrustStore() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required bytes trust_store = 2;</code>
+     */
+    public com.google.protobuf.ByteString getTrustStore() {
+      return trustStore_;
+    }
+
+    // required string key_store_password = 3;
+    public static final int KEY_STORE_PASSWORD_FIELD_NUMBER = 3;
+    private java.lang.Object keyStorePassword_;
+    /**
+     * <code>required string key_store_password = 3;</code>
+     */
+    public boolean hasKeyStorePassword() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string key_store_password = 3;</code>
+     */
+    public java.lang.String getKeyStorePassword() {
+      java.lang.Object ref = keyStorePassword_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          keyStorePassword_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string key_store_password = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getKeyStorePasswordBytes() {
+      java.lang.Object ref = keyStorePassword_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        keyStorePassword_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string trust_store_password = 4;
+    public static final int TRUST_STORE_PASSWORD_FIELD_NUMBER = 4;
+    private java.lang.Object trustStorePassword_;
+    /**
+     * <code>required string trust_store_password = 4;</code>
+     */
+    public boolean hasTrustStorePassword() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required string trust_store_password = 4;</code>
+     */
+    public java.lang.String getTrustStorePassword() {
+      java.lang.Object ref = trustStorePassword_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          trustStorePassword_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string trust_store_password = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTrustStorePasswordBytes() {
+      java.lang.Object ref = trustStorePassword_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        trustStorePassword_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private void initFields() {
+      keyStore_ = com.google.protobuf.ByteString.EMPTY;
+      trustStore_ = com.google.protobuf.ByteString.EMPTY;
+      keyStorePassword_ = "";
+      trustStorePassword_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasKeyStore()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTrustStore()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasKeyStorePassword()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTrustStorePassword()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, keyStore_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, trustStore_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getKeyStorePasswordBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getTrustStorePasswordBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, keyStore_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, trustStore_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getKeyStorePasswordBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getTrustStorePasswordBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial)) {
+        return super.equals(obj);
+      }
+      org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial other = (org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial) obj;
+
+      boolean result = true;
+      result = result && (hasKeyStore() == other.hasKeyStore());
+      if (hasKeyStore()) {
+        result = result && getKeyStore()
+            .equals(other.getKeyStore());
+      }
+      result = result && (hasTrustStore() == other.hasTrustStore());
+      if (hasTrustStore()) {
+        result = result && getTrustStore()
+            .equals(other.getTrustStore());
+      }
+      result = result && (hasKeyStorePassword() == other.hasKeyStorePassword());
+      if (hasKeyStorePassword()) {
+        result = result && getKeyStorePassword()
+            .equals(other.getKeyStorePassword());
+      }
+      result = result && (hasTrustStorePassword() == other.hasTrustStorePassword());
+      if (hasTrustStorePassword()) {
+        result = result && getTrustStorePassword()
+            .equals(other.getTrustStorePassword());
+      }
+      result = result &&
+          getUnknownFields().equals(other.getUnknownFields());
+      return result;
+    }
+
+    private int memoizedHashCode = 0;
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasKeyStore()) {
+        hash = (37 * hash) + KEY_STORE_FIELD_NUMBER;
+        hash = (53 * hash) + getKeyStore().hashCode();
+      }
+      if (hasTrustStore()) {
+        hash = (37 * hash) + TRUST_STORE_FIELD_NUMBER;
+        hash = (53 * hash) + getTrustStore().hashCode();
+      }
+      if (hasKeyStorePassword()) {
+        hash = (37 * hash) + KEY_STORE_PASSWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getKeyStorePassword().hashCode();
+      }
+      if (hasTrustStorePassword()) {
+        hash = (37 * hash) + TRUST_STORE_PASSWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getTrustStorePassword().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code CryptoMaterial}
+     *
+     * <pre>
+     * HopsTLS key/trustStore
+     * </pre>
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.internal_static_CryptoMaterial_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.internal_static_CryptoMaterial_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.class, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder.class);
+      }
+
+      // Construct using org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        keyStore_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        trustStore_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        keyStorePassword_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        trustStorePassword_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.internal_static_CryptoMaterial_descriptor;
+      }
+
+      public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial getDefaultInstanceForType() {
+        return org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance();
+      }
+
+      public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial build() {
+        org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial buildPartial() {
+        org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial result = new org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.keyStore_ = keyStore_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.trustStore_ = trustStore_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.keyStorePassword_ = keyStorePassword_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.trustStorePassword_ = trustStorePassword_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial) {
+          return mergeFrom((org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial other) {
+        if (other == org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance()) return this;
+        if (other.hasKeyStore()) {
+          setKeyStore(other.getKeyStore());
+        }
+        if (other.hasTrustStore()) {
+          setTrustStore(other.getTrustStore());
+        }
+        if (other.hasKeyStorePassword()) {
+          bitField0_ |= 0x00000004;
+          keyStorePassword_ = other.keyStorePassword_;
+          onChanged();
+        }
+        if (other.hasTrustStorePassword()) {
+          bitField0_ |= 0x00000008;
+          trustStorePassword_ = other.trustStorePassword_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasKeyStore()) {
+          
+          return false;
+        }
+        if (!hasTrustStore()) {
+          
+          return false;
+        }
+        if (!hasKeyStorePassword()) {
+          
+          return false;
+        }
+        if (!hasTrustStorePassword()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required bytes key_store = 1;
+      private com.google.protobuf.ByteString keyStore_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes key_store = 1;</code>
+       */
+      public boolean hasKeyStore() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bytes key_store = 1;</code>
+       */
+      public com.google.protobuf.ByteString getKeyStore() {
+        return keyStore_;
+      }
+      /**
+       * <code>required bytes key_store = 1;</code>
+       */
+      public Builder setKeyStore(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        keyStore_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes key_store = 1;</code>
+       */
+      public Builder clearKeyStore() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        keyStore_ = getDefaultInstance().getKeyStore();
+        onChanged();
+        return this;
+      }
+
+      // required bytes trust_store = 2;
+      private com.google.protobuf.ByteString trustStore_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes trust_store = 2;</code>
+       */
+      public boolean hasTrustStore() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required bytes trust_store = 2;</code>
+       */
+      public com.google.protobuf.ByteString getTrustStore() {
+        return trustStore_;
+      }
+      /**
+       * <code>required bytes trust_store = 2;</code>
+       */
+      public Builder setTrustStore(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        trustStore_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes trust_store = 2;</code>
+       */
+      public Builder clearTrustStore() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        trustStore_ = getDefaultInstance().getTrustStore();
+        onChanged();
+        return this;
+      }
+
+      // required string key_store_password = 3;
+      private java.lang.Object keyStorePassword_ = "";
+      /**
+       * <code>required string key_store_password = 3;</code>
+       */
+      public boolean hasKeyStorePassword() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string key_store_password = 3;</code>
+       */
+      public java.lang.String getKeyStorePassword() {
+        java.lang.Object ref = keyStorePassword_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          keyStorePassword_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string key_store_password = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getKeyStorePasswordBytes() {
+        java.lang.Object ref = keyStorePassword_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          keyStorePassword_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string key_store_password = 3;</code>
+       */
+      public Builder setKeyStorePassword(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        keyStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string key_store_password = 3;</code>
+       */
+      public Builder clearKeyStorePassword() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        keyStorePassword_ = getDefaultInstance().getKeyStorePassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string key_store_password = 3;</code>
+       */
+      public Builder setKeyStorePasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        keyStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string trust_store_password = 4;
+      private java.lang.Object trustStorePassword_ = "";
+      /**
+       * <code>required string trust_store_password = 4;</code>
+       */
+      public boolean hasTrustStorePassword() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required string trust_store_password = 4;</code>
+       */
+      public java.lang.String getTrustStorePassword() {
+        java.lang.Object ref = trustStorePassword_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          trustStorePassword_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string trust_store_password = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTrustStorePasswordBytes() {
+        java.lang.Object ref = trustStorePassword_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          trustStorePassword_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string trust_store_password = 4;</code>
+       */
+      public Builder setTrustStorePassword(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        trustStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string trust_store_password = 4;</code>
+       */
+      public Builder clearTrustStorePassword() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        trustStorePassword_ = getDefaultInstance().getTrustStorePassword();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string trust_store_password = 4;</code>
+       */
+      public Builder setTrustStorePasswordBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        trustStorePassword_ = value;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:CryptoMaterial)
+    }
+
+    static {
+      defaultInstance = new CryptoMaterial(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:CryptoMaterial)
+  }
+
   public interface SubmitWorkRequestProtoOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
@@ -9701,6 +10601,20 @@ public final class LlapDaemonProtocolProtos {
      * <code>optional bool is_guaranteed = 12 [default = false];</code>
      */
     boolean getIsGuaranteed();
+
+    // optional .CryptoMaterial crypto_material = 13;
+    /**
+     * <code>optional .CryptoMaterial crypto_material = 13;</code>
+     */
+    boolean hasCryptoMaterial();
+    /**
+     * <code>optional .CryptoMaterial crypto_material = 13;</code>
+     */
+    org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial getCryptoMaterial();
+    /**
+     * <code>optional .CryptoMaterial crypto_material = 13;</code>
+     */
+    org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder getCryptoMaterialOrBuilder();
   }
   /**
    * Protobuf type {@code SubmitWorkRequestProto}
@@ -9827,6 +10741,19 @@ public final class LlapDaemonProtocolProtos {
             case 96: {
               bitField0_ |= 0x00000800;
               isGuaranteed_ = input.readBool();
+              break;
+            }
+            case 106: {
+              org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder subBuilder = null;
+              if (((bitField0_ & 0x00001000) == 0x00001000)) {
+                subBuilder = cryptoMaterial_.toBuilder();
+              }
+              cryptoMaterial_ = input.readMessage(org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(cryptoMaterial_);
+                cryptoMaterial_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00001000;
               break;
             }
           }
@@ -10155,6 +11082,28 @@ public final class LlapDaemonProtocolProtos {
       return isGuaranteed_;
     }
 
+    // optional .CryptoMaterial crypto_material = 13;
+    public static final int CRYPTO_MATERIAL_FIELD_NUMBER = 13;
+    private org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial cryptoMaterial_;
+    /**
+     * <code>optional .CryptoMaterial crypto_material = 13;</code>
+     */
+    public boolean hasCryptoMaterial() {
+      return ((bitField0_ & 0x00001000) == 0x00001000);
+    }
+    /**
+     * <code>optional .CryptoMaterial crypto_material = 13;</code>
+     */
+    public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial getCryptoMaterial() {
+      return cryptoMaterial_;
+    }
+    /**
+     * <code>optional .CryptoMaterial crypto_material = 13;</code>
+     */
+    public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder getCryptoMaterialOrBuilder() {
+      return cryptoMaterial_;
+    }
+
     private void initFields() {
       workSpec_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.VertexOrBinary.getDefaultInstance();
       workSpecSignature_ = com.google.protobuf.ByteString.EMPTY;
@@ -10168,12 +11117,19 @@ public final class LlapDaemonProtocolProtos {
       initialEventBytes_ = com.google.protobuf.ByteString.EMPTY;
       initialEventSignature_ = com.google.protobuf.ByteString.EMPTY;
       isGuaranteed_ = false;
+      cryptoMaterial_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (hasCryptoMaterial()) {
+        if (!getCryptoMaterial().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -10216,6 +11172,9 @@ public final class LlapDaemonProtocolProtos {
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         output.writeBool(12, isGuaranteed_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeMessage(13, cryptoMaterial_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10273,6 +11232,10 @@ public final class LlapDaemonProtocolProtos {
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(12, isGuaranteed_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, cryptoMaterial_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -10357,6 +11320,11 @@ public final class LlapDaemonProtocolProtos {
         result = result && (getIsGuaranteed()
             == other.getIsGuaranteed());
       }
+      result = result && (hasCryptoMaterial() == other.hasCryptoMaterial());
+      if (hasCryptoMaterial()) {
+        result = result && getCryptoMaterial()
+            .equals(other.getCryptoMaterial());
+      }
       result = result &&
           getUnknownFields().equals(other.getUnknownFields());
       return result;
@@ -10417,6 +11385,10 @@ public final class LlapDaemonProtocolProtos {
       if (hasIsGuaranteed()) {
         hash = (37 * hash) + IS_GUARANTEED_FIELD_NUMBER;
         hash = (53 * hash) + hashBoolean(getIsGuaranteed());
+      }
+      if (hasCryptoMaterial()) {
+        hash = (37 * hash) + CRYPTO_MATERIAL_FIELD_NUMBER;
+        hash = (53 * hash) + getCryptoMaterial().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -10521,6 +11493,7 @@ public final class LlapDaemonProtocolProtos {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getWorkSpecFieldBuilder();
           getFragmentRuntimeInfoFieldBuilder();
+          getCryptoMaterialFieldBuilder();
         }
       }
       private static Builder create() {
@@ -10561,6 +11534,12 @@ public final class LlapDaemonProtocolProtos {
         bitField0_ = (bitField0_ & ~0x00000400);
         isGuaranteed_ = false;
         bitField0_ = (bitField0_ & ~0x00000800);
+        if (cryptoMaterialBuilder_ == null) {
+          cryptoMaterial_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance();
+        } else {
+          cryptoMaterialBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00001000);
         return this;
       }
 
@@ -10645,6 +11624,14 @@ public final class LlapDaemonProtocolProtos {
           to_bitField0_ |= 0x00000800;
         }
         result.isGuaranteed_ = isGuaranteed_;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        if (cryptoMaterialBuilder_ == null) {
+          result.cryptoMaterial_ = cryptoMaterial_;
+        } else {
+          result.cryptoMaterial_ = cryptoMaterialBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -10701,11 +11688,20 @@ public final class LlapDaemonProtocolProtos {
         if (other.hasIsGuaranteed()) {
           setIsGuaranteed(other.getIsGuaranteed());
         }
+        if (other.hasCryptoMaterial()) {
+          mergeCryptoMaterial(other.getCryptoMaterial());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        if (hasCryptoMaterial()) {
+          if (!getCryptoMaterial().isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
 
@@ -11452,6 +12448,123 @@ public final class LlapDaemonProtocolProtos {
         isGuaranteed_ = false;
         onChanged();
         return this;
+      }
+
+      // optional .CryptoMaterial crypto_material = 13;
+      private org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial cryptoMaterial_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder> cryptoMaterialBuilder_;
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public boolean hasCryptoMaterial() {
+        return ((bitField0_ & 0x00001000) == 0x00001000);
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial getCryptoMaterial() {
+        if (cryptoMaterialBuilder_ == null) {
+          return cryptoMaterial_;
+        } else {
+          return cryptoMaterialBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public Builder setCryptoMaterial(org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial value) {
+        if (cryptoMaterialBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          cryptoMaterial_ = value;
+          onChanged();
+        } else {
+          cryptoMaterialBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00001000;
+        return this;
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public Builder setCryptoMaterial(
+          org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder builderForValue) {
+        if (cryptoMaterialBuilder_ == null) {
+          cryptoMaterial_ = builderForValue.build();
+          onChanged();
+        } else {
+          cryptoMaterialBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00001000;
+        return this;
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public Builder mergeCryptoMaterial(org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial value) {
+        if (cryptoMaterialBuilder_ == null) {
+          if (((bitField0_ & 0x00001000) == 0x00001000) &&
+              cryptoMaterial_ != org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance()) {
+            cryptoMaterial_ =
+              org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.newBuilder(cryptoMaterial_).mergeFrom(value).buildPartial();
+          } else {
+            cryptoMaterial_ = value;
+          }
+          onChanged();
+        } else {
+          cryptoMaterialBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00001000;
+        return this;
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public Builder clearCryptoMaterial() {
+        if (cryptoMaterialBuilder_ == null) {
+          cryptoMaterial_ = org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.getDefaultInstance();
+          onChanged();
+        } else {
+          cryptoMaterialBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00001000);
+        return this;
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder getCryptoMaterialBuilder() {
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return getCryptoMaterialFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      public org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder getCryptoMaterialOrBuilder() {
+        if (cryptoMaterialBuilder_ != null) {
+          return cryptoMaterialBuilder_.getMessageOrBuilder();
+        } else {
+          return cryptoMaterial_;
+        }
+      }
+      /**
+       * <code>optional .CryptoMaterial crypto_material = 13;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder> 
+          getCryptoMaterialFieldBuilder() {
+        if (cryptoMaterialBuilder_ == null) {
+          cryptoMaterialBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterial.Builder, org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.CryptoMaterialOrBuilder>(
+                  cryptoMaterial_,
+                  getParentForChildren(),
+                  isClean());
+          cryptoMaterial_ = null;
+        }
+        return cryptoMaterialBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:SubmitWorkRequestProto)
@@ -19766,6 +20879,11 @@ public final class LlapDaemonProtocolProtos {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_NotTezEvent_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_CryptoMaterial_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_CryptoMaterial_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SubmitWorkRequestProto_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -19884,61 +21002,65 @@ public final class LlapDaemonProtocolProtos {
       " \001(\005\022\032\n\022app_attempt_number\030\003 \001(\005\"l\n\013NotT" +
       "ezEvent\022\037\n\027input_event_proto_bytes\030\001 \002(\014" +
       "\022\023\n\013vertex_name\030\002 \002(\t\022\027\n\017dest_input_name" +
-      "\030\003 \002(\t\022\016\n\006key_id\030\004 \001(\005\"\366\002\n\026SubmitWorkReq" +
-      "uestProto\022\"\n\twork_spec\030\001 \001(\0132\017.VertexOrB" +
-      "inary\022\033\n\023work_spec_signature\030\002 \001(\014\022\027\n\017fr" +
-      "agment_number\030\003 \001(\005\022\026\n\016attempt_number\030\004 " +
-      "\001(\005\022\033\n\023container_id_string\030\005 \001(\t\022\017\n\007am_h",
-      "ost\030\006 \001(\t\022\017\n\007am_port\030\007 \001(\005\022\032\n\022credential" +
-      "s_binary\030\010 \001(\014\0223\n\025fragment_runtime_info\030" +
-      "\t \001(\0132\024.FragmentRuntimeInfo\022\033\n\023initial_e" +
-      "vent_bytes\030\n \001(\014\022\037\n\027initial_event_signat" +
-      "ure\030\013 \001(\014\022\034\n\ris_guaranteed\030\014 \001(\010:\005false\"" +
-      "b\n\027SubmitWorkResponseProto\022/\n\020submission" +
-      "_state\030\001 \001(\0162\025.SubmissionStateProto\022\026\n\016u" +
-      "nique_node_id\030\002 \001(\t\"\205\001\n\036SourceStateUpdat" +
-      "edRequestProto\022/\n\020query_identifier\030\001 \001(\013" +
-      "2\025.QueryIdentifierProto\022\020\n\010src_name\030\002 \001(",
-      "\t\022 \n\005state\030\003 \001(\0162\021.SourceStateProto\"!\n\037S" +
-      "ourceStateUpdatedResponseProto\"e\n\031QueryC" +
-      "ompleteRequestProto\022/\n\020query_identifier\030" +
-      "\001 \001(\0132\025.QueryIdentifierProto\022\027\n\014delete_d" +
-      "elay\030\002 \001(\003:\0010\"\034\n\032QueryCompleteResponsePr" +
-      "oto\"t\n\035TerminateFragmentRequestProto\022/\n\020" +
-      "query_identifier\030\001 \001(\0132\025.QueryIdentifier" +
-      "Proto\022\"\n\032fragment_identifier_string\030\002 \001(" +
-      "\t\" \n\036TerminateFragmentResponseProto\"\210\001\n\032" +
-      "UpdateFragmentRequestProto\022/\n\020query_iden",
-      "tifier\030\001 \001(\0132\025.QueryIdentifierProto\022\"\n\032f" +
-      "ragment_identifier_string\030\002 \001(\t\022\025\n\ris_gu" +
-      "aranteed\030\003 \001(\010\"D\n\033UpdateFragmentResponse" +
-      "Proto\022\016\n\006result\030\001 \001(\010\022\025\n\ris_guaranteed\030\002" +
-      " \001(\010\"&\n\024GetTokenRequestProto\022\016\n\006app_id\030\001" +
-      " \001(\t\"&\n\025GetTokenResponseProto\022\r\n\005token\030\001" +
-      " \001(\014\"A\n\033LlapOutputSocketInitMessage\022\023\n\013f" +
-      "ragment_id\030\001 \002(\t\022\r\n\005token\030\002 \001(\014\"\030\n\026Purge" +
-      "CacheRequestProto\"6\n\027PurgeCacheResponseP" +
-      "roto\022\033\n\023purged_memory_bytes\030\001 \001(\003*2\n\020Sou",
-      "rceStateProto\022\017\n\013S_SUCCEEDED\020\001\022\r\n\tS_RUNN" +
-      "ING\020\002*E\n\024SubmissionStateProto\022\014\n\010ACCEPTE" +
-      "D\020\001\022\014\n\010REJECTED\020\002\022\021\n\rEVICTED_OTHER\020\0032\233\003\n" +
-      "\022LlapDaemonProtocol\022?\n\nsubmitWork\022\027.Subm" +
-      "itWorkRequestProto\032\030.SubmitWorkResponseP" +
-      "roto\022W\n\022sourceStateUpdated\022\037.SourceState" +
-      "UpdatedRequestProto\032 .SourceStateUpdated" +
-      "ResponseProto\022H\n\rqueryComplete\022\032.QueryCo" +
-      "mpleteRequestProto\032\033.QueryCompleteRespon" +
-      "seProto\022T\n\021terminateFragment\022\036.Terminate",
-      "FragmentRequestProto\032\037.TerminateFragment" +
-      "ResponseProto\022K\n\016updateFragment\022\033.Update" +
-      "FragmentRequestProto\032\034.UpdateFragmentRes" +
-      "ponseProto2\236\001\n\026LlapManagementProtocol\022C\n" +
-      "\022getDelegationToken\022\025.GetTokenRequestPro" +
-      "to\032\026.GetTokenResponseProto\022?\n\npurgeCache" +
-      "\022\027.PurgeCacheRequestProto\032\030.PurgeCacheRe" +
-      "sponseProtoBH\n&org.apache.hadoop.hive.ll" +
-      "ap.daemon.rpcB\030LlapDaemonProtocolProtos\210" +
-      "\001\001\240\001\001"
+      "\030\003 \002(\t\022\016\n\006key_id\030\004 \001(\005\"r\n\016CryptoMaterial" +
+      "\022\021\n\tkey_store\030\001 \002(\014\022\023\n\013trust_store\030\002 \002(\014" +
+      "\022\032\n\022key_store_password\030\003 \002(\t\022\034\n\024trust_st" +
+      "ore_password\030\004 \002(\t\"\240\003\n\026SubmitWorkRequest" +
+      "Proto\022\"\n\twork_spec\030\001 \001(\0132\017.VertexOrBinar",
+      "y\022\033\n\023work_spec_signature\030\002 \001(\014\022\027\n\017fragme" +
+      "nt_number\030\003 \001(\005\022\026\n\016attempt_number\030\004 \001(\005\022" +
+      "\033\n\023container_id_string\030\005 \001(\t\022\017\n\007am_host\030" +
+      "\006 \001(\t\022\017\n\007am_port\030\007 \001(\005\022\032\n\022credentials_bi" +
+      "nary\030\010 \001(\014\0223\n\025fragment_runtime_info\030\t \001(" +
+      "\0132\024.FragmentRuntimeInfo\022\033\n\023initial_event" +
+      "_bytes\030\n \001(\014\022\037\n\027initial_event_signature\030" +
+      "\013 \001(\014\022\034\n\ris_guaranteed\030\014 \001(\010:\005false\022(\n\017c" +
+      "rypto_material\030\r \001(\0132\017.CryptoMaterial\"b\n" +
+      "\027SubmitWorkResponseProto\022/\n\020submission_s",
+      "tate\030\001 \001(\0162\025.SubmissionStateProto\022\026\n\016uni" +
+      "que_node_id\030\002 \001(\t\"\205\001\n\036SourceStateUpdated" +
+      "RequestProto\022/\n\020query_identifier\030\001 \001(\0132\025" +
+      ".QueryIdentifierProto\022\020\n\010src_name\030\002 \001(\t\022" +
+      " \n\005state\030\003 \001(\0162\021.SourceStateProto\"!\n\037Sou" +
+      "rceStateUpdatedResponseProto\"e\n\031QueryCom" +
+      "pleteRequestProto\022/\n\020query_identifier\030\001 " +
+      "\001(\0132\025.QueryIdentifierProto\022\027\n\014delete_del" +
+      "ay\030\002 \001(\003:\0010\"\034\n\032QueryCompleteResponseProt" +
+      "o\"t\n\035TerminateFragmentRequestProto\022/\n\020qu",
+      "ery_identifier\030\001 \001(\0132\025.QueryIdentifierPr" +
+      "oto\022\"\n\032fragment_identifier_string\030\002 \001(\t\"" +
+      " \n\036TerminateFragmentResponseProto\"\210\001\n\032Up" +
+      "dateFragmentRequestProto\022/\n\020query_identi" +
+      "fier\030\001 \001(\0132\025.QueryIdentifierProto\022\"\n\032fra" +
+      "gment_identifier_string\030\002 \001(\t\022\025\n\ris_guar" +
+      "anteed\030\003 \001(\010\"D\n\033UpdateFragmentResponsePr" +
+      "oto\022\016\n\006result\030\001 \001(\010\022\025\n\ris_guaranteed\030\002 \001" +
+      "(\010\"&\n\024GetTokenRequestProto\022\016\n\006app_id\030\001 \001" +
+      "(\t\"&\n\025GetTokenResponseProto\022\r\n\005token\030\001 \001",
+      "(\014\"A\n\033LlapOutputSocketInitMessage\022\023\n\013fra" +
+      "gment_id\030\001 \002(\t\022\r\n\005token\030\002 \001(\014\"\030\n\026PurgeCa" +
+      "cheRequestProto\"6\n\027PurgeCacheResponsePro" +
+      "to\022\033\n\023purged_memory_bytes\030\001 \001(\003*2\n\020Sourc" +
+      "eStateProto\022\017\n\013S_SUCCEEDED\020\001\022\r\n\tS_RUNNIN" +
+      "G\020\002*E\n\024SubmissionStateProto\022\014\n\010ACCEPTED\020" +
+      "\001\022\014\n\010REJECTED\020\002\022\021\n\rEVICTED_OTHER\020\0032\233\003\n\022L" +
+      "lapDaemonProtocol\022?\n\nsubmitWork\022\027.Submit" +
+      "WorkRequestProto\032\030.SubmitWorkResponsePro" +
+      "to\022W\n\022sourceStateUpdated\022\037.SourceStateUp",
+      "datedRequestProto\032 .SourceStateUpdatedRe" +
+      "sponseProto\022H\n\rqueryComplete\022\032.QueryComp" +
+      "leteRequestProto\032\033.QueryCompleteResponse" +
+      "Proto\022T\n\021terminateFragment\022\036.TerminateFr" +
+      "agmentRequestProto\032\037.TerminateFragmentRe" +
+      "sponseProto\022K\n\016updateFragment\022\033.UpdateFr" +
+      "agmentRequestProto\032\034.UpdateFragmentRespo" +
+      "nseProto2\236\001\n\026LlapManagementProtocol\022C\n\022g" +
+      "etDelegationToken\022\025.GetTokenRequestProto" +
+      "\032\026.GetTokenResponseProto\022?\n\npurgeCache\022\027",
+      ".PurgeCacheRequestProto\032\030.PurgeCacheResp" +
+      "onseProtoBH\n&org.apache.hadoop.hive.llap" +
+      ".daemon.rpcB\030LlapDaemonProtocolProtos\210\001\001" +
+      "\240\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -19999,92 +21121,98 @@ public final class LlapDaemonProtocolProtos {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_NotTezEvent_descriptor,
               new java.lang.String[] { "InputEventProtoBytes", "VertexName", "DestInputName", "KeyId", });
-          internal_static_SubmitWorkRequestProto_descriptor =
+          internal_static_CryptoMaterial_descriptor =
             getDescriptor().getMessageTypes().get(9);
+          internal_static_CryptoMaterial_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_CryptoMaterial_descriptor,
+              new java.lang.String[] { "KeyStore", "TrustStore", "KeyStorePassword", "TrustStorePassword", });
+          internal_static_SubmitWorkRequestProto_descriptor =
+            getDescriptor().getMessageTypes().get(10);
           internal_static_SubmitWorkRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SubmitWorkRequestProto_descriptor,
-              new java.lang.String[] { "WorkSpec", "WorkSpecSignature", "FragmentNumber", "AttemptNumber", "ContainerIdString", "AmHost", "AmPort", "CredentialsBinary", "FragmentRuntimeInfo", "InitialEventBytes", "InitialEventSignature", "IsGuaranteed", });
+              new java.lang.String[] { "WorkSpec", "WorkSpecSignature", "FragmentNumber", "AttemptNumber", "ContainerIdString", "AmHost", "AmPort", "CredentialsBinary", "FragmentRuntimeInfo", "InitialEventBytes", "InitialEventSignature", "IsGuaranteed", "CryptoMaterial", });
           internal_static_SubmitWorkResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_SubmitWorkResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SubmitWorkResponseProto_descriptor,
               new java.lang.String[] { "SubmissionState", "UniqueNodeId", });
           internal_static_SourceStateUpdatedRequestProto_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_SourceStateUpdatedRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SourceStateUpdatedRequestProto_descriptor,
               new java.lang.String[] { "QueryIdentifier", "SrcName", "State", });
           internal_static_SourceStateUpdatedResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(12);
+            getDescriptor().getMessageTypes().get(13);
           internal_static_SourceStateUpdatedResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SourceStateUpdatedResponseProto_descriptor,
               new java.lang.String[] { });
           internal_static_QueryCompleteRequestProto_descriptor =
-            getDescriptor().getMessageTypes().get(13);
+            getDescriptor().getMessageTypes().get(14);
           internal_static_QueryCompleteRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_QueryCompleteRequestProto_descriptor,
               new java.lang.String[] { "QueryIdentifier", "DeleteDelay", });
           internal_static_QueryCompleteResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(14);
+            getDescriptor().getMessageTypes().get(15);
           internal_static_QueryCompleteResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_QueryCompleteResponseProto_descriptor,
               new java.lang.String[] { });
           internal_static_TerminateFragmentRequestProto_descriptor =
-            getDescriptor().getMessageTypes().get(15);
+            getDescriptor().getMessageTypes().get(16);
           internal_static_TerminateFragmentRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TerminateFragmentRequestProto_descriptor,
               new java.lang.String[] { "QueryIdentifier", "FragmentIdentifierString", });
           internal_static_TerminateFragmentResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(16);
+            getDescriptor().getMessageTypes().get(17);
           internal_static_TerminateFragmentResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TerminateFragmentResponseProto_descriptor,
               new java.lang.String[] { });
           internal_static_UpdateFragmentRequestProto_descriptor =
-            getDescriptor().getMessageTypes().get(17);
+            getDescriptor().getMessageTypes().get(18);
           internal_static_UpdateFragmentRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_UpdateFragmentRequestProto_descriptor,
               new java.lang.String[] { "QueryIdentifier", "FragmentIdentifierString", "IsGuaranteed", });
           internal_static_UpdateFragmentResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(18);
+            getDescriptor().getMessageTypes().get(19);
           internal_static_UpdateFragmentResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_UpdateFragmentResponseProto_descriptor,
               new java.lang.String[] { "Result", "IsGuaranteed", });
           internal_static_GetTokenRequestProto_descriptor =
-            getDescriptor().getMessageTypes().get(19);
+            getDescriptor().getMessageTypes().get(20);
           internal_static_GetTokenRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_GetTokenRequestProto_descriptor,
               new java.lang.String[] { "AppId", });
           internal_static_GetTokenResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(20);
+            getDescriptor().getMessageTypes().get(21);
           internal_static_GetTokenResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_GetTokenResponseProto_descriptor,
               new java.lang.String[] { "Token", });
           internal_static_LlapOutputSocketInitMessage_descriptor =
-            getDescriptor().getMessageTypes().get(21);
+            getDescriptor().getMessageTypes().get(22);
           internal_static_LlapOutputSocketInitMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LlapOutputSocketInitMessage_descriptor,
               new java.lang.String[] { "FragmentId", "Token", });
           internal_static_PurgeCacheRequestProto_descriptor =
-            getDescriptor().getMessageTypes().get(22);
+            getDescriptor().getMessageTypes().get(23);
           internal_static_PurgeCacheRequestProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_PurgeCacheRequestProto_descriptor,
               new java.lang.String[] { });
           internal_static_PurgeCacheResponseProto_descriptor =
-            getDescriptor().getMessageTypes().get(23);
+            getDescriptor().getMessageTypes().get(24);
           internal_static_PurgeCacheResponseProto_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_PurgeCacheResponseProto_descriptor,

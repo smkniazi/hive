@@ -14,6 +14,7 @@
 
 package org.apache.hadoop.hive.llap.tezplugins;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hive.llap.tezplugins.LlapTaskSchedulerService.NodeInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hive.llap.registry.LlapServiceInstance;
@@ -21,6 +22,7 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.hive.llap.protocol.LlapTaskUmbilicalProtocol.BooleanArray;
 import org.apache.hadoop.hive.llap.protocol.LlapTaskUmbilicalProtocol.TezAttemptArray;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -819,6 +821,23 @@ public class LlapTaskCommunicator extends TezTaskCommunicatorImpl {
     if (scheduler != null) { // May be null in tests
       // TODO: see javadoc
       builder.setIsGuaranteed(scheduler.isInitialGuaranteed(taskSpec.getTaskAttemptID()));
+    }
+
+    // If HopsTLS is enable add the CryptoMaterial to the request.
+    if (conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+        CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+      String key = FileUtils.readFileToString(new File("material_passwd"));
+      ByteBuffer keyStore = ByteBuffer.wrap(FileUtils.readFileToByteArray(new File("k_certificate")));
+      ByteBuffer trustStore = ByteBuffer.wrap(FileUtils.readFileToByteArray(new File("t_certificate")));
+
+      LlapDaemonProtocolProtos.CryptoMaterial.Builder cryptoMaterialBuilder =
+          LlapDaemonProtocolProtos.CryptoMaterial.newBuilder();
+      cryptoMaterialBuilder.setKeyStore(ByteString.copyFrom(keyStore))
+          .setKeyStorePassword(key)
+          .setTrustStore(ByteString.copyFrom(trustStore))
+          .setTrustStorePassword(key);
+
+      builder.setCryptoMaterial(cryptoMaterialBuilder.build());
     }
     return builder.build();
   }

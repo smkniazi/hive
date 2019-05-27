@@ -25,6 +25,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hive.llap.counters.LlapWmCounters;
 import org.apache.hadoop.hive.llap.counters.WmFragmentCounters;
@@ -33,6 +34,7 @@ import org.apache.hadoop.hive.llap.daemon.HistoryLogger;
 import org.apache.hadoop.hive.llap.daemon.KilledTaskHandler;
 import org.apache.hadoop.hive.llap.daemon.SchedulerFragmentCompletingListener;
 import org.apache.hadoop.hive.llap.daemon.impl.AMReporter.AMNodeInfo;
+import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.FragmentRuntimeInfo;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.IOSpecProto;
 import org.apache.hadoop.hive.llap.daemon.rpc.LlapDaemonProtocolProtos.SignableVertexSpec;
@@ -47,6 +49,7 @@ import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.ssl.CertificateLocalizationCtx;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.log4j.NDC;
@@ -119,6 +122,7 @@ public class TaskRunnerCallable extends CallableWithNdc<TaskRunner2Result> {
   private final String queryId;
   private final HadoopShim tezHadoopShim;
   private boolean shouldRunTask = true;
+  private boolean certsMaterialized = false;
   final Stopwatch runtimeWatch = Stopwatch.createUnstarted();
   final Stopwatch killtimerWatch = Stopwatch.createUnstarted();
   private final AtomicBoolean isStarted = new AtomicBoolean(false);
@@ -228,6 +232,29 @@ public class TaskRunnerCallable extends CallableWithNdc<TaskRunner2Result> {
       }
       fsTaskUgi.addCredentials(credentials);
 
+      // If HopsTLS is enabled, extract the certificates and put them in the certificate materializer
+      if (conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+          CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+        LlapDaemonProtocolProtos.CryptoMaterial cryptoMaterial = request.getCryptoMaterial();
+
+        // Sync materialization to avoid concurrency issues between launch/kill requests
+        synchronized (this) {
+          if (shouldRunTask) {
+            CertificateLocalizationCtx.getInstance().getCertificateLocalization()
+                .materializeCertificates(fsTaskUgi.getUserName(), fsTaskUgi.getApplicationId(), fsTaskUgi.getUserName(),
+                    cryptoMaterial.getKeyStore().asReadOnlyByteBuffer(), cryptoMaterial.getKeyStorePassword(),
+                    cryptoMaterial.getTrustStore().asReadOnlyByteBuffer(), cryptoMaterial.getTrustStorePassword());
+            certsMaterialized = true;
+          }
+        }
+
+        if (certsMaterialized) {
+          LOG.info("Certificates materialized for user {} application id {}", fsTaskUgi.getUserName(),
+              fsTaskUgi.getApplicationId());
+        }
+      }
+
+
       Map<String, ByteBuffer> serviceConsumerMetadata = new HashMap<>();
       serviceConsumerMetadata.put(TezConstants.TEZ_SHUFFLE_HANDLER_SERVICE_ID,
           TezCommonUtils.convertJobTokenToBytes(jobToken));
@@ -307,6 +334,13 @@ public class TaskRunnerCallable extends CallableWithNdc<TaskRunner2Result> {
         }
       } finally {
         IOContextMap.clearThreadAttempt(attemptId);
+
+        // Remove the certificate for this task from
+        if (conf.getBoolean(CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED,
+            CommonConfigurationKeysPublic.IPC_SERVER_SSL_ENABLED_DEFAULT)) {
+          CertificateLocalizationCtx.getInstance().getCertificateLocalization()
+              .removeX509Material(fsTaskUgi.getUserName(), fsTaskUgi.getApplicationId());
+        }
       }
     } finally {
       MDC.clear();
@@ -383,6 +417,16 @@ public class TaskRunnerCallable extends CallableWithNdc<TaskRunner2Result> {
             this.amReporter
                 .unregisterTask(request.getAmHost(), request.getAmPort(),
                     fragmentInfo.getQueryInfo().getQueryIdentifier(), ta);
+          }
+
+          if (certsMaterialized) {
+            try {
+              CertificateLocalizationCtx.getInstance().getCertificateLocalization()
+                  .removeX509Material(fsTaskUgi.getUserName(), fsTaskUgi.getApplicationId());
+            } catch (InterruptedException e) {
+              LOG.warn("Error removing the certificates for user {} and applicationId {}",
+                  fsTaskUgi.getUserName(), fsTaskUgi.getApplicationId());
+            }
           }
         }
       } else {

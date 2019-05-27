@@ -110,6 +110,14 @@ message NotTezEvent {
   optional int32 key_id = 4;
 }
 
+// HopsTLS key/trustStore
+message CryptoMaterial {
+  required bytes key_store = 1;
+  required bytes trust_store = 2;
+  required string key_store_password = 3;
+  required string trust_store_password = 4;
+}
+
 message SubmitWorkRequestProto {
   optional VertexOrBinary work_spec = 1;
   optional bytes work_spec_signature = 2;
@@ -133,11 +141,7 @@ message SubmitWorkRequestProto {
 
   optional bool is_guaranteed = 12 [default = false];
 
-  // HopsTLS key/trustStore
-  optional bytes key_store = 18;
-  optional bytes trust_store = 19;
-  optional string key_store_password = 20;
-  optional string trust_store_password = 21;
+  optional CryptoMaterial crypto_material = 13;
 }
 
 

@@ -131,7 +131,7 @@
     <commons-httpclient.version>3.0.1</commons-httpclient.version>
     <commons-io.version>2.4</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <commons-lang3.version>3.2</commons-lang3.version>
+    <commons-lang3.version>3.5</commons-lang3.version>
     <commons-pool.version>1.5.4</commons-pool.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <derby.version>10.14.1.0</derby.version>
@@ -183,7 +183,7 @@
     <orc.version>1.5.4</orc.version>
     <mockito-all.version>1.10.19</mockito-all.version>
     <mina.version>2.0.0-M5</mina.version>
-    <netty.version>4.1.17.Final</netty.version>
+    <netty.version>4.0.23.Final</netty.version>
     <netty3.version>3.10.5.Final</netty3.version>
     <parquet.version>1.10.0</parquet.version>
     <pig.version>0.16.0</pig.version>
