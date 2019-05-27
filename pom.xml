@@ -17,7 +17,7 @@
 
   <groupId>io.hops.hive</groupId>
   <artifactId>hive</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.0.1</version>
   <packaging>pom</packaging>
 
   <name>Hive</name>
@@ -31,7 +31,6 @@
     <module>vector-code-gen</module>
     <module>beeline</module>
     <module>classification</module>
-    <module>cli</module>
     <module>common</module>
     <module>contrib</module>
     <module>druid-handler</module>
@@ -60,7 +59,7 @@
   </modules>
 
   <properties>
-    <hive.version.shortname>3.0.0</hive.version.shortname>
+    <hive.version.shortname>3.0.0.1</hive.version.shortname>
 
     <!-- Build Properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -193,8 +192,8 @@
     <slf4j.version>1.7.10</slf4j.version>
     <ST4.version>4.0.4</ST4.version>
     <storage-api.version>2.6.1.0</storage-api.version>
-    <tez.version>0.9.1.1-SNAPSHOT</tez.version>
-    <slider.version>0.93.0-incubating-SNAPSHOT</slider.version>
+    <tez.version>0.9.1.1</tez.version>
+    <slider.version>0.93.1-incubating-SNAPSHOT</slider.version>
     <super-csv.version>2.2.0</super-csv.version>
     <spark.version>2.3.0</spark.version>
     <scala.binary.version>2.11</scala.binary.version>
