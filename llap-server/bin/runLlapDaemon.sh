@@ -67,9 +67,7 @@ fi
 
 if [ ! -n "${LLAP_DAEMON_LOGGER}" ]; then
   echo "LLAP_DAEMON_LOGGER not defined... using default: ${LOGGER_DEFAULT}"
-  LLAP_DAEMON_LOGGER=${LOGGER_DEFAULT} fi if [ ! -n "${LLAP_DAEMON_LOG_LEVEL}" ]; then
-  echo "LLAP_DAEMON_LOG_LEVEL not defined... using default: ${LOG_LEVEL_DEFAULT}"
-  LLAP_DAEMON_LOG_LEVEL=${LOG_LEVEL_DEFAULT}
+  LLAP_DAEMON_LOGGER=${LOGGER_DEFAULT}
 fi
 
 CLASSPATH=.:${LLAP_DAEMON_CONF_DIR}:${LLAP_DAEMON_HOME}/lib/*:`${HADOOP_HOME}/bin/hadoop classpath`:${LLAP_DAEMON_HOME}/lib/tez/*:${LLAP_DAEMON_HOME}/lib/udfs/*

@@ -226,14 +226,14 @@ INSERT INTO `CTLGS` VALUES (1, 'hive', 'Default catalog for Hive', null);
 ALTER TABLE `DBS` DROP KEY `UNIQUE_DATABASE`;
 
 -- Add the new column to the DBS table, can't put in the not null constraint yet
-ALTER TABLE `DBS` ADD COLUMN `CTLG_NAME` VARCHAR(256);
+ALTER TABLE `DBS` ADD COLUMN `CTLG_NAME` VARCHAR(256) CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- Update all records in the DBS table to point to the Hive catalog
 UPDATE `DBS` 
   SET `CTLG_NAME` = 'hive';
 
 -- Add the not null constraint
-ALTER TABLE `DBS` CHANGE COLUMN `CTLG_NAME` `CTLG_NAME` varchar(256) NOT NULL;
+ALTER TABLE `DBS` CHANGE COLUMN `CTLG_NAME` `CTLG_NAME` varchar(256) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL;
 
 -- Put back the unique index 
 ALTER TABLE `DBS` ADD UNIQUE KEY `UNIQUE_DATABASE` (`NAME`, `CTLG_NAME`);

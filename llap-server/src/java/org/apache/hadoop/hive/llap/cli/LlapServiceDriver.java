@@ -594,7 +594,7 @@ public class LlapServiceDriver {
         }
 
         String user = UserGroupInformation.getCurrentUser().getUserName();
-        String remoteDir = "/user/" + user;
+        String remoteDir = "/user/" + user + "/.slider";
         rc = runPackagePy(args, tmpDir, scriptParent, version, outputDir, remoteDir);
         if (rc == 0) {
           LlapSliderUtils.startCluster(conf, options.getName(), "llap-" + version + ".zip",

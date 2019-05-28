@@ -709,7 +709,7 @@ public class TestSchemaTool extends TestCase {
   }
 
   public void testHiveMetastoreDbPropertiesTable() throws HiveMetaException, IOException {
-    schemaTool.doInit("3.0.0");
+    schemaTool.doInit("3.0.0.1");
     validateMetastoreDbPropertiesTable();
   }
 
