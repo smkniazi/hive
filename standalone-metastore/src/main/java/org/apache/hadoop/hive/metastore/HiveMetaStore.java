@@ -6847,7 +6847,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
     @Override
     public void set_crypto(ByteBuffer keyStore, String keyStorePassword,
-                           ByteBuffer trustStore, String trustStorePassword) throws MetaException {
+                           ByteBuffer trustStore, String trustStorePassword, boolean update) throws MetaException {
       if (keyStore == null || trustStore == null ||
           keyStorePassword == null || keyStorePassword.isEmpty() ||
           trustStorePassword == null || trustStorePassword.isEmpty()) {
@@ -6857,16 +6857,15 @@ public class HiveMetaStore extends ThriftHiveMetastore {
       // This call happens inside a doAs.
       try {
         String username = UserGroupInformation.getCurrentUser().getUserName();
-        try {
-          certLocService.getX509MaterialLocation(username, username);
-          // no exception is thrown, this means that the certificate has been found in the
-          // CertificateMaterializerService. This means the user is updating their certificate
-          certLocService.updateX509(username, username, keyStore, keyStorePassword, trustStore, trustStorePassword);
-        } catch (FileNotFoundException e) {
-          // The exception is thrown if no certificates are present in the CertificateMaterializerService
-          // This means the client has just opened a connection and it's sending the certificate
-          certLocService.materializeCertificates(username, username, keyStore, keyStorePassword,
-            trustStore, trustStorePassword);
+        String applicationId = UserGroupInformation.getCurrentUser().getApplicationId();
+
+        if (update) {
+          // Update the certificate for this app
+          certLocService.updateX509(username, applicationId, keyStore, keyStorePassword, trustStore, trustStorePassword);
+        } else {
+          // Materialize the certificate or bump the counter
+          certLocService.materializeCertificates(username, applicationId, username, keyStore, keyStorePassword,
+              trustStore, trustStorePassword);
         }
       } catch (IOException | InterruptedException e) {
         throw new MetaException(e.getMessage());
@@ -9022,7 +9021,7 @@ public class HiveMetaStore extends ThriftHiveMetastore {
               UserGroupInformation ugi = ((TUGIContainingTransport)tProtocol.getTransport()).getClientUGI();
               if (ugi != null) {
                 try {
-                  certLocService.removeX509Material(ugi.getUserName());
+                  certLocService.removeX509Material(ugi.getUserName(), ugi.getApplicationId());
                 } catch (Exception e) {}
               }
               // Clean up the flag as the thread is put back in the queue for the next connection
