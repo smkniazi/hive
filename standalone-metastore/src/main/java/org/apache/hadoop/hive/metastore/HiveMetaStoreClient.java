@@ -578,10 +578,11 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
               // machine's certificates.
               if (!username.equals(MetastoreConf.getVar(conf, ConfVars.HIVE_SUPER_USER))) {
                 client.set_crypto(hopsSecurityMaterial.getKeyStore(), hopsSecurityMaterial.getKeyStorePassword(),
-                    hopsSecurityMaterial.getTrustStore(), hopsSecurityMaterial.getTrustStorePassword());
+                    hopsSecurityMaterial.getTrustStore(), hopsSecurityMaterial.getTrustStorePassword(), false);
               }
 
             } catch (IOException | TException e) {
+              tte = new TTransportException(e.getCause());
               LOG.error("set_crypto() not successful", e);
               throw new MetaException(e.getMessage());
             }
@@ -648,20 +649,21 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
 
     if (CertificateLocalizationCtx.getInstance().getCertificateLocalization() != null){
       // Client running within the context of a HS2
-      X509SecurityMaterial userCryptoMaterial = null;
       try {
-        userCryptoMaterial = CertificateLocalizationCtx.getInstance().
-            getCertificateLocalization().getX509MaterialLocation(username);
-      } catch (InterruptedException | FileNotFoundException e) {
+        securityMaterial = readFromCertLocService(username);
+      } catch (InterruptedException e) {
         throw new MetaException(e.toString());
-      }
+      } catch (FileNotFoundException e) {
+        // The certificates are not in the certificate materialization service, try reading from the fs
+        // This might happens in the tests
+        securityMaterial = readClientMaterial();
 
-      securityMaterial = new HopsSecurityMaterial(userCryptoMaterial.getKeyStoreLocation().toString(),
-          userCryptoMaterial.getKeyStoreMem(),
-          userCryptoMaterial.getKeyStorePass(),
-          userCryptoMaterial.getTrustStoreLocation().toString(),
-          userCryptoMaterial.getTrustStoreMem(),
-          userCryptoMaterial.getTrustStorePass());
+        // In this case we are using the APP certificates to connect to the metastore. App certificates are rotated
+        // and revoked, which means that the client needs to periodically update the certificate cached in the metastore
+        // or else the metastore won't be able to operate on the FS if the certificate is rotated.
+        clientCertUpdaterThread = new Thread(new ClientCertUpdater(client, securityMaterial));
+        clientCertUpdaterThread.start();
+      }
     } else {
       // Client not from the HS2 (Example: Spark client)
       securityMaterial = readClientMaterial();
@@ -669,7 +671,6 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
       // In this case we are using the APP certificates to connect to the metastore. App certificates are rotated
       // and revoked, which means that the client needs to periodically update the certificate cached in the metastore
       // or else the metastore won't be able to operate on the FS if the certificate is rotated.
-
       clientCertUpdaterThread = new Thread(new ClientCertUpdater(client, securityMaterial));
       clientCertUpdaterThread.start();
     }
@@ -677,10 +678,24 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
     return securityMaterial;
   }
 
+  private HopsSecurityMaterial readFromCertLocService(String username)
+      throws InterruptedException, FileNotFoundException {
+    X509SecurityMaterial userCryptoMaterial = CertificateLocalizationCtx.getInstance().
+          getCertificateLocalization().getX509MaterialLocation(username);
+
+    return new HopsSecurityMaterial(userCryptoMaterial.getKeyStoreLocation().toString(),
+        userCryptoMaterial.getKeyStoreMem(),
+        userCryptoMaterial.getKeyStorePass(),
+        userCryptoMaterial.getTrustStoreLocation().toString(),
+        userCryptoMaterial.getTrustStoreMem(),
+        userCryptoMaterial.getTrustStorePass());
+  }
+
   private HopsSecurityMaterial readClientMaterial() throws IOException {
     String key = FileUtils.readFileToString(new File("material_passwd"));
     ByteBuffer keyStore = ByteBuffer.wrap(FileUtils.readFileToByteArray(new File("k_certificate")));
     ByteBuffer trustStore = ByteBuffer.wrap(FileUtils.readFileToByteArray(new File("t_certificate")));
+
     return new HopsSecurityMaterial("k_certificate", keyStore, key,
         "t_certificate", trustStore, key);
   }
@@ -729,12 +744,10 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
   }
 
   private class ClientCertUpdater implements Runnable {
-    private ThriftHiveMetastore.Iface client;
     private HopsSecurityMaterial securityMaterial;
     private long lastLoaded = -1L;
 
     ClientCertUpdater(ThriftHiveMetastore.Iface client, HopsSecurityMaterial securityMaterial) {
-      this.client = client;
       this.securityMaterial = securityMaterial;
     }
 
@@ -742,13 +755,13 @@ public class HiveMetaStoreClient implements IMetaStoreClient, AutoCloseable {
     public void run() {
       while (!Thread.currentThread().isInterrupted()) {
         try {
-          Thread.sleep(5000);
+          Thread.sleep(MetastoreConf.getLongVar(conf, ConfVars.CERT_RELOAD_THREAD_SLEEP));
           File trustStore = new File(securityMaterial.getTrustStorePath());
           if (trustStore.lastModified() != lastLoaded) {
             securityMaterial = readClientMaterial();
 
             client.set_crypto(securityMaterial.getKeyStore(), securityMaterial.getKeyStorePassword(),
-                securityMaterial.getTrustStore(), securityMaterial.getTrustStorePassword());
+                securityMaterial.getTrustStore(), securityMaterial.getTrustStorePassword(), true);
 
             lastLoaded = trustStore.lastModified();
           }
