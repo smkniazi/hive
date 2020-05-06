@@ -177,13 +177,16 @@ public class DummyRawStoreForJdoConnection implements RawStore {
 
   @Override
   public Database getDatabase(String catName, String name) throws NoSuchObjectException {
+    return null;
+  }
 
+  @Override
+  public Database getDatabase(String catName, String name, boolean resolveHostname) throws NoSuchObjectException {
     return null;
   }
 
   @Override
   public boolean dropDatabase(String catName, String dbname) throws NoSuchObjectException, MetaException {
-
     return false;
   }
 
@@ -238,7 +241,11 @@ public class DummyRawStoreForJdoConnection implements RawStore {
 
   @Override
   public Table getTable(String catName, String dbName, String tableName) throws MetaException {
+    return null;
+  }
 
+  @Override
+  public Table getTable(String catName, String dbName, String tableName, boolean resolveHostname) throws MetaException {
     return null;
   }
 

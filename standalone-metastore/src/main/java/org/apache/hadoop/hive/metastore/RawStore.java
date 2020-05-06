@@ -191,6 +191,18 @@ public interface RawStore extends Configurable {
       throws NoSuchObjectException;
 
   /**
+   * Get a database.
+   * @param catalogName catalog the database is in.
+   * @param name name of the database.
+   * @param resolveHostname true to resolve the internal hostname
+   * @return the database.
+   * @throws NoSuchObjectException if no such database exists.
+   */
+  Database getDatabase(String catalogName, String name, boolean resolveHostname)
+      throws NoSuchObjectException;
+
+
+  /**
    * Drop a database.
    * @param catalogName catalog the database is in.
    * @param dbname name of the database.
@@ -264,6 +276,17 @@ public interface RawStore extends Configurable {
    * @throws MetaException something went wrong in the RDBMS
    */
   Table getTable(String catalogName, String dbName, String tableName) throws MetaException;
+
+  /**
+   * Get a table object.
+   * @param catalogName catalog the table is in.
+   * @param dbName database the table is in.
+   * @param tableName table name.
+   * @return table object, or null if no such table exists (wow it would be nice if we either
+   * consistently returned null or consistently threw NoSuchObjectException).
+   * @throws MetaException something went wrong in the RDBMS
+   */
+  Table getTable(String catalogName, String dbName, String tableName, boolean resolveHostname) throws MetaException;
 
   /**
    * Add a partition.

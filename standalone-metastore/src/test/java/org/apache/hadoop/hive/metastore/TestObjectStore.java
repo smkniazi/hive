@@ -20,6 +20,16 @@ package org.apache.hadoop.hive.metastore;
 import com.codahale.metrics.Counter;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import com.logicalclocks.servicediscoverclient.Builder;
+import com.logicalclocks.servicediscoverclient.exceptions.ServiceDiscoveryException;
+import com.logicalclocks.servicediscoverclient.resolvers.CachingResolver;
+import com.logicalclocks.servicediscoverclient.resolvers.DnsResolver;
+import com.logicalclocks.servicediscoverclient.resolvers.Type;
+import com.logicalclocks.servicediscoverclient.service.Service;
+import com.logicalclocks.servicediscoverclient.service.ServiceQuery;
+import io.hops.net.ServiceDiscoveryClientFactory;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.metastore.ObjectStore.RetryingExecutor;
 import org.apache.hadoop.conf.Configuration;
@@ -31,6 +41,7 @@ import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.Function;
 import org.apache.hadoop.hive.metastore.api.InvalidInputException;
 import org.apache.hadoop.hive.metastore.api.InvalidObjectException;
+import org.apache.hadoop.hive.metastore.api.InvalidOperationException;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
 import org.apache.hadoop.hive.metastore.api.NotificationEvent;
@@ -58,14 +69,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.common.base.Supplier;
-
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jdo.Query;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,6 +90,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.apache.hadoop.hive.metastore.Warehouse.DEFAULT_CATALOG_NAME;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @Category(MetastoreUnitTest.class)
 public class TestObjectStore {
@@ -199,6 +212,56 @@ public class TestObjectStore {
     wh.deleteDir(db1Path, true);
     wh.deleteDir(db2Path, true);
   }
+  
+  @Test
+  public void testDatabaseOpsWithServiceDiscovery() throws Exception {
+    Configuration conf = new Configuration(this.conf);
+    conf.setBoolean(CommonConfigurationKeysPublic.SERVICE_DISCOVERY_ENABLED_KEY, true);
+
+    String locationURI = "hdfs://namenode.service.consul:8020/some/location.db";
+    String expectedURI = "hdfs://10.0.0.1:8020/some/location.db";
+    
+    Set<Service> nns = Sets.newHashSet(
+        Service.of("namenode.service.consul", "10.0.0.1", 8020),
+        Service.of("namenode.service.consul", "10.0.0.1", 50470));
+    DnsResolver dnsResolver = Mockito.mock(DnsResolver.class);
+    when(dnsResolver.getService(any(ServiceQuery.class))).thenReturn(nns.stream());
+
+    Builder cachingResolverBuilder = new Builder(Type.CACHING)
+            .withServiceDiscoveryClient(dnsResolver);
+    CachingResolver cachingResolver = mock(CachingResolver.class);
+    doCallRealMethod().when(cachingResolver).init(any(Builder.class));
+    when(cachingResolver.getService(any(ServiceQuery.class))).thenCallRealMethod();
+    cachingResolver.init(cachingResolverBuilder);
+
+    ServiceDiscoveryClientFactory.getInstance().setClient(cachingResolver);
+
+    // We need to create a new ObjectStore here to initializeServiceDiscovery
+    ObjectStore objectStore = new ObjectStore();
+    objectStore.setConf(conf);
+    Warehouse wh = new Warehouse(conf);
+    dropAllStoreObjects(objectStore);
+    HiveMetaStore.HMSHandler.createDefaultCatalog(objectStore, wh);
+    Path db1Path = new Path(wh.getWhRoot(), DB1);
+    wh.mkdirs(db1Path);
+  
+    String catName = "tdo1_cat";
+    createTestCatalog(catName);
+    Catalog catalog = objectStore.getCatalog(catName);
+    // Catalog URI does not have a host so Service Discovery should not touch it
+    assertEquals("/tmp", catalog.getLocationUri());
+    
+    // It's necessary to set it again as the first stream is consumed by the creation of the Catalog
+    when(dnsResolver.getService(any(ServiceQuery.class))).thenReturn(nns.stream());
+    Database db1 = new Database(DB1, "description", locationURI, null);
+    db1.setCatalogName(catName);
+    objectStore.createDatabase(db1);
+  
+    Database db = objectStore.getDatabase(catName, DB1);
+    assertEquals(expectedURI, db.getLocationUri());
+    verify(cachingResolver, atLeastOnce()).getService(any(ServiceQuery.class));
+    verify(dnsResolver, times(1)).getService(any(ServiceQuery.class));
+  }
 
   /**
    * Test table operations
@@ -291,11 +354,103 @@ public class TestObjectStore {
     objectStore.dropDatabase(db1.getCatalogName(), DB1);
   }
 
+  @Test
+  public void testTableEnforceWHAuthority()
+      throws MetaException, InvalidObjectException, NoSuchObjectException,
+      InvalidInputException, InvalidOperationException {
+
+    String warehouseURI = "hopsfs://namenode.service.consul:8020/warehouse";
+
+    Configuration conf = new Configuration(this.conf);
+    conf.setStrings(MetastoreConf.ConfVars.WAREHOUSE.getVarname(), warehouseURI);
+    conf.setBoolean(MetastoreConf.ConfVars.ENFORCE_WAREHOUSE_AUTHORITY.getVarname(), true);
+
+    ObjectStore objectStore = new ObjectStore();
+    objectStore.setConf(conf);
+    dropAllStoreObjects(objectStore);
+
+    Path db1Path = new Path(warehouseURI, DB1);
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation(db1Path.toString())
+        .build(conf);
+    objectStore.createDatabase(db1);
+
+    Path tbl1Path = new Path("hopsfs://10.0.2.15:8020/warehouse", DB1 + '/' + TABLE1);
+    StorageDescriptor sd = createFakeSd(tbl1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
+    HashMap<String,String> params = new HashMap<String,String>();
+    params.put("EXTERNAL", "false");
+    Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
+    objectStore.createTable(tbl1);
+
+    Table table1 = objectStore.getTable(DEFAULT_CATALOG_NAME, DB1, TABLE1);
+    // as the enforce_warehouse_authority is set to true, the IP in the location
+    // should have been replaced with the service name
+    assertTrue(table1.getSd().getLocation().startsWith(warehouseURI));
+
+    objectStore.dropDatabase(db1.getCatalogName(), DB1);
+  }
+
+  @Test
+  public void testTableServiceDiscovery()
+      throws MetaException, InvalidObjectException, NoSuchObjectException,
+      InvalidInputException, InvalidOperationException, ServiceDiscoveryException {
+    String warehouseURI = "hopsfs://namenode.service.consul:8020/warehouse";
+
+    Configuration conf = new Configuration(this.conf);
+    conf.setStrings(MetastoreConf.ConfVars.WAREHOUSE.getVarname(), warehouseURI);
+    conf.setBoolean(MetastoreConf.ConfVars.ENFORCE_WAREHOUSE_AUTHORITY.getVarname(), true);
+    conf.setBoolean(CommonConfigurationKeysPublic.SERVICE_DISCOVERY_ENABLED_KEY, true);
+
+    Set<Service> nns = Sets.newHashSet(
+        Service.of("namenode.service.consul", "10.0.2.15", 8020),
+        Service.of("namenode.service.consul", "10.0.2.15", 8020),
+        Service.of("namenode.service.consul", "10.0.2.15", 8020));
+    DnsResolver dnsResolver = Mockito.mock(DnsResolver.class);
+    when(dnsResolver.getService(any(ServiceQuery.class))).thenReturn(nns.stream());
+
+    Builder cachingResolverBuilder = new Builder(Type.CACHING)
+        .withServiceDiscoveryClient(dnsResolver);
+    CachingResolver cachingResolver = mock(CachingResolver.class);
+    doCallRealMethod().when(cachingResolver).init(any(Builder.class));
+    when(cachingResolver.getService(any(ServiceQuery.class))).thenCallRealMethod();
+    cachingResolver.init(cachingResolverBuilder);
+
+    ServiceDiscoveryClientFactory.getInstance().setClient(cachingResolver);
+
+    ObjectStore objectStore = new ObjectStore();
+    objectStore.setConf(conf);
+    dropAllStoreObjects(objectStore);
+
+    Path db1Path = new Path(warehouseURI, DB1);
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation(db1Path.toString())
+        .build(conf);
+    objectStore.createDatabase(db1);
+
+    Path tbl1Path = new Path("hopsfs://10.0.2.15:8020/warehouse", DB1 + '/' + TABLE1);
+    StorageDescriptor sd = createFakeSd(tbl1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
+    HashMap<String,String> params = new HashMap<String,String>();
+    params.put("EXTERNAL", "false");
+    Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd, null, params, null, null, "MANAGED_TABLE");
+    objectStore.createTable(tbl1);
+
+    Table table1 = objectStore.getTable(DEFAULT_CATALOG_NAME, DB1, TABLE1);
+    // as the enforce_warehouse_authority is set to true, the IP in the location
+    // should have been replaced with the service name
+    URI tableURI = URI.create(table1.getSd().getLocation());
+    assertEquals("10.0.2.15:8020", tableURI.getAuthority());
+
+    objectStore.dropDatabase(db1.getCatalogName(), DB1);
+  }
+
   private StorageDescriptor createFakeSd(String location, List<FieldSchema> cols) {
     return new StorageDescriptor(cols, location, null, null, false, 0,
         new SerDeInfo("SerDeName", "serializationLib", null), null, null, null);
   }
-
 
   /**
    * Tests partition operations
@@ -362,6 +517,118 @@ public class TestObjectStore {
 
     objectStore.dropPartition(DEFAULT_CATALOG_NAME, DB1, TABLE1, value2);
     objectStore.dropTable(DEFAULT_CATALOG_NAME, DB1, TABLE1);
+    objectStore.dropDatabase(db1.getCatalogName(), DB1);
+  }
+
+  @Test
+  public void testPartitionEnforceWHAuthority()
+      throws MetaException, InvalidObjectException, NoSuchObjectException, InvalidInputException {
+    String warehouseURI = "hopsfs://namenode.service.consul:8020/warehouse";
+
+    Configuration conf = new Configuration(this.conf);
+    conf.setStrings(MetastoreConf.ConfVars.WAREHOUSE.getVarname(), warehouseURI);
+    conf.setBoolean(MetastoreConf.ConfVars.ENFORCE_WAREHOUSE_AUTHORITY.getVarname(), true);
+
+    ObjectStore objectStore = new ObjectStore();
+    objectStore.setConf(conf);
+    dropAllStoreObjects(objectStore);
+
+    Path db1Path = new Path(warehouseURI, DB1);
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation(db1Path.toString())
+        .build(conf);
+    objectStore.createDatabase(db1);
+
+    FieldSchema partitionKey1 = new FieldSchema("Country", ColumnType.STRING_TYPE_NAME, "");
+    FieldSchema partitionKey2 = new FieldSchema("State", ColumnType.STRING_TYPE_NAME, "");
+
+    Path tbl1Path = new Path("hopsfs://10.0.2.15:8020/warehouse", DB1 + '/' + TABLE1);
+    StorageDescriptor sd = createFakeSd(tbl1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
+    HashMap<String,String> tableParams = new HashMap<String,String>();
+    tableParams.put("EXTERNAL", "false");
+    Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd,
+        Arrays.asList(partitionKey1, partitionKey2), tableParams, null, null, "MANAGED_TABLE");
+    objectStore.createTable(tbl1);
+
+    Path part1Path = new Path(tbl1Path, "US/CA/");
+    StorageDescriptor partSd = createFakeSd(part1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
+    List<String> partVals = Arrays.asList("US", "CA");
+    Partition part1 = new Partition(partVals, DB1, TABLE1, 111, 111, partSd, null);
+    part1.setCatName(DEFAULT_CATALOG_NAME);
+    objectStore.addPartition(part1);
+
+    // Check partition warehouse authority
+    Partition partition = objectStore.getPartition(DEFAULT_CATALOG_NAME, DB1, TABLE1, partVals);
+    assertTrue(partition.getSd().getLocation().startsWith(warehouseURI));
+
+    objectStore.dropDatabase(db1.getCatalogName(), DB1);
+  }
+
+  @Test
+  public void testPartitionServiceDiscovery()
+      throws MetaException, InvalidObjectException, NoSuchObjectException,
+      InvalidInputException, ServiceDiscoveryException {
+    String warehouseURI = "hopsfs://namenode.service.consul:8020/warehouse";
+
+    Configuration conf = new Configuration(this.conf);
+    conf.setStrings(MetastoreConf.ConfVars.WAREHOUSE.getVarname(), warehouseURI);
+    conf.setBoolean(MetastoreConf.ConfVars.ENFORCE_WAREHOUSE_AUTHORITY.getVarname(), true);
+    conf.setBoolean(CommonConfigurationKeysPublic.SERVICE_DISCOVERY_ENABLED_KEY, true);
+
+    Set<Service> nns = Sets.newHashSet(
+        Service.of("namenode.service.consul", "10.0.2.15", 8020),
+        Service.of("namenode.service.consul", "10.0.2.15", 8020),
+        Service.of("namenode.service.consul", "10.0.2.15", 50470));
+
+    DnsResolver dnsResolver = Mockito.mock(DnsResolver.class);
+    when(dnsResolver.getService(any(ServiceQuery.class))).thenReturn(nns.stream());
+
+    Builder cachingResolverBuilder = new Builder(Type.CACHING)
+        .withServiceDiscoveryClient(dnsResolver);
+    CachingResolver cachingResolver = mock(CachingResolver.class);
+    doCallRealMethod().when(cachingResolver).init(any(Builder.class));
+    when(cachingResolver.getService(any(ServiceQuery.class))).thenCallRealMethod();
+    cachingResolver.init(cachingResolverBuilder);
+
+    ServiceDiscoveryClientFactory.getInstance().setClient(cachingResolver);
+
+    ObjectStore objectStore = new ObjectStore();
+    objectStore.setConf(conf);
+    dropAllStoreObjects(objectStore);
+
+    Path db1Path = new Path(warehouseURI, DB1);
+    Database db1 = new DatabaseBuilder()
+        .setName(DB1)
+        .setDescription("description")
+        .setLocation(db1Path.toString())
+        .build(conf);
+    objectStore.createDatabase(db1);
+
+    FieldSchema partitionKey1 = new FieldSchema("Country", ColumnType.STRING_TYPE_NAME, "");
+    FieldSchema partitionKey2 = new FieldSchema("State", ColumnType.STRING_TYPE_NAME, "");
+
+    Path tbl1Path = new Path("hopsfs://10.0.2.15:8020/warehouse", DB1 + '/' + TABLE1);
+    StorageDescriptor sd = createFakeSd(tbl1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
+    HashMap<String,String> tableParams = new HashMap<String,String>();
+    tableParams.put("EXTERNAL", "false");
+    Table tbl1 = new Table(TABLE1, DB1, "owner", 1, 2, 3, sd,
+        Arrays.asList(partitionKey1, partitionKey2), tableParams, null, null, "MANAGED_TABLE");
+    objectStore.createTable(tbl1);
+
+    Path part1Path = new Path(tbl1Path, "US/CA");
+    StorageDescriptor partSd = createFakeSd(part1Path.toString(), ImmutableList.of(new FieldSchema("pk_col", "double", null)));
+    List<String> partVals = Arrays.asList("US", "CA");
+    Partition part1 = new Partition(partVals, DB1, TABLE1, 111, 111, partSd, new HashMap<>());
+    part1.setCatName(DEFAULT_CATALOG_NAME);
+    objectStore.addPartition(part1);
+
+    // Check Objectstore is returning resolved service name
+    Partition partition = objectStore.getPartition(DEFAULT_CATALOG_NAME, DB1, TABLE1, partVals);
+    URI uri = URI.create(partition.getSd().getLocation());
+    assertEquals("10.0.2.15:8020", uri.getAuthority());
+
     objectStore.dropDatabase(db1.getCatalogName(), DB1);
   }
 
@@ -550,6 +817,8 @@ public class TestObjectStore {
     final int NO_EVENT_ID = 0;
     final int FIRST_EVENT_ID = 1;
     final int SECOND_EVENT_ID = 2;
+
+    objectStore.cleanNotificationEvents(1);
 
     NotificationEvent event =
         new NotificationEvent(0, 0, EventMessage.EventType.CREATE_DATABASE.toString(), "");

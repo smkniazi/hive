@@ -192,6 +192,11 @@ public class DummyRawStoreControlledCommit implements RawStore, Configurable {
   }
 
   @Override
+  public Database getDatabase(String catName, String dbName, boolean resolveHostname) throws NoSuchObjectException {
+    return objectStore.getDatabase(catName, dbName, resolveHostname);
+  }
+
+  @Override
   public boolean dropDatabase(String catName, String dbName)
       throws NoSuchObjectException, MetaException {
     return objectStore.dropDatabase(catName, dbName);
@@ -244,6 +249,11 @@ public class DummyRawStoreControlledCommit implements RawStore, Configurable {
   @Override
   public Table getTable(String catName, String dbName, String tableName) throws MetaException {
     return objectStore.getTable(catName, dbName, tableName);
+  }
+
+  @Override
+  public Table getTable(String catName, String dbName, String tableName, boolean resolveHostname) throws MetaException {
+    return objectStore.getTable(catName, dbName, tableName, resolveHostname);
   }
 
   @Override

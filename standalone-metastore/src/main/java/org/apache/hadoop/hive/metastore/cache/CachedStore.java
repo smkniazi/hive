@@ -764,12 +764,17 @@ public class CachedStore implements RawStore, Configurable {
 
   @Override
   public Database getDatabase(String catName, String dbName) throws NoSuchObjectException {
+    return getDatabase(catName, dbName, true);
+  }
+
+  @Override
+  public Database getDatabase(String catName, String dbName, boolean resolveHostname) throws NoSuchObjectException {
     if (!sharedCache.isDatabaseCachePrewarmed()) {
       return rawStore.getDatabase(catName, dbName);
     }
     dbName = dbName.toLowerCase();
     Database db = sharedCache.getDatabaseFromCache(StringUtils.normalizeIdentifier(catName),
-            StringUtils.normalizeIdentifier(dbName));
+        StringUtils.normalizeIdentifier(dbName));
     if (db == null) {
       throw new NoSuchObjectException();
     }
@@ -877,6 +882,11 @@ public class CachedStore implements RawStore, Configurable {
 
   @Override
   public Table getTable(String catName, String dbName, String tblName) throws MetaException {
+    return getTable(catName, dbName, tblName, false);
+  }
+
+  @Override
+  public Table getTable(String catName, String dbName, String tblName, boolean resolveHostname) throws MetaException {
     catName = normalizeIdentifier(catName);
     dbName = StringUtils.normalizeIdentifier(dbName);
     tblName = StringUtils.normalizeIdentifier(tblName);
