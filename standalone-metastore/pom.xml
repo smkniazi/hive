@@ -702,7 +702,17 @@
             <derby.stream.error.file>${test.tmp.dir}/derby.log</derby.stream.error.file>
             <log4j.debug>true</log4j.debug>
             <java.io.tmpdir>${test.tmp.dir}</java.io.tmpdir>
-            <javax.jdo.option.ConnectionURL>jdbc:derby:memory:${test.tmp.dir}/junit_metastore_db;create=true</javax.jdo.option.ConnectionURL>
+            <!--javax.jdo.option.ConnectionURL>jdbc:derby:memory:${test.tmp.dir}/junit_metastore_db;create=true</javax.jdo.option.ConnectionURL-->
+            <!-- <javax.jdo.option.ConnectionURL>jdbc:derby:;databaseName=/tmp/metastore_db;create=true</javax.jdo.option.ConnectionURL> -->
+
+            <javax.jdo.option.ConnectionURL>jdbc:mysql://localhost:3306/metastore?useUnicode=true</javax.jdo.option.ConnectionURL>
+            <javax.jdo.option.ConnectionUserName>hop</javax.jdo.option.ConnectionUserName>
+            <javax.jdo.option.ConnectionPassword>hop</javax.jdo.option.ConnectionPassword>
+    				<javax.jdo.option.ConnectionDriverName>com.mysql.jdbc.Driver</javax.jdo.option.ConnectionDriverName>
+    				<!-- <javax.jdo.option.ConnectionDriverName>com.mysql.cj.jdbc.Driver</javax.jdo.option.ConnectionDriverName> -->
+    				<javax.jdo.PersistenceManagerFactoryClass>org.datanucleus.api.jdo.JDOPersistenceManagerFactory</javax.jdo.PersistenceManagerFactoryClass>
+    				<hive.druid.metadata.db.type>mysql</hive.druid.metadata.db.type>
+
             <metastore.schema.verification>false</metastore.schema.verification>
             <test.tmp.dir>${test.tmp.dir}</test.tmp.dir>
             <metastore.warehouse.dir>${test.warehouse.scheme}${test.warehouse.dir}</metastore.warehouse.dir>
