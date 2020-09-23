@@ -5197,8 +5197,8 @@ public class HiveConf extends Configuration {
     // Load ssl-server.xml (in HADOOP_CONF_DIR) if we are not in the context of a client
     if (!client) {
       String resource = get(SSLFactory.SSL_SERVER_CONF_KEY, "ssl-server.xml");
-      String resourcePath = ClassLoader.getSystemResource(resource).getPath();
-      if (new File(resourcePath).canRead()) {
+      URL resourceURL = ClassLoader.getSystemResource(resource);
+      if (resourceURL != null && (new File(resourceURL.getPath()).canRead())) {
         addResource(resource);
       } else {
         LOG.warn("Could not load ssl-server, this is probably a client so it is fine. Continuing.");
